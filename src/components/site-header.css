@@ -77,15 +77,26 @@
   display: none;
 }
 
-@media (min-width: 1024px) {
+/* The full pill fits from md up (~520px pill vs ~560px free right of the logo
+   at 768) — RIGHT-aligned so it clears the fixed wordmark, then centred once
+   there's room at lg. Below md the mobile controls take over. */
+@media (min-width: 768px) {
   .site-nav {
     position: fixed;
     top: 1rem;
     inset-inline: 0;
     z-index: 10000;
     display: flex;
-    justify-content: center;
+    justify-content: flex-end;
+    padding-inline-end: 1rem;
     transition: opacity var(--duration-normal) var(--ease-standard);
+  }
+}
+
+@media (min-width: 1024px) {
+  .site-nav {
+    justify-content: center;
+    padding-inline-end: 0;
   }
 }
 
@@ -292,7 +303,8 @@
   gap: 0.5rem;
 }
 
-@media (min-width: 1024px) {
+/* Mobile controls hand over to the pill nav at the same md cutoff. */
+@media (min-width: 768px) {
   .site-header__mobile-home,
   .site-header__mobile-actions {
     display: none;

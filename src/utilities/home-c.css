@@ -345,7 +345,9 @@
   gap: clamp(2rem, 4vw, 3.5rem);
 }
 
-@media (min-width: 1024px) {
+/* The two-column split starts at md (768px) — there's room for it well before
+   the desktop nav cutoff; below md the blocks stack. */
+@media (min-width: 768px) {
   .intro__grid {
     grid-template-columns: repeat(12, minmax(0, 1fr));
     column-gap: var(--grid-gutter);
