@@ -428,15 +428,6 @@
   text-wrap: pretty;
 }
 
-/* Once the desktop grid kicks in, hold a higher floor: the bare 2.6vw term sags
-   to ~27-33px between 1024-1300px, which reads undersized in the 6-column slot.
-   The floor carries ~34px until 2.6vw overtakes it (~1310px); 1440+ unchanged. */
-@media (min-width: 1024px) {
-  .intro__statement {
-    font-size: clamp(2.125rem, 2.6vw, 4rem);
-  }
-}
-
 .intro__statement .miller-text {
   font-weight: var(--font-weight-semibold);
 }
