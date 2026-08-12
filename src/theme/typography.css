@@ -59,4 +59,11 @@
   --letter-spacing-normal: 0em;
   --letter-spacing-wide: 0.025em;
   --letter-spacing-wider: 0.05em;
+
+  /* THE tracking rule for uppercase DISPLAY headings (hero lockup, work titles,
+     DS category caps): one shared value so all big caps sit consistently tight.
+     Deliberate exception: small uppercase MICRO-LABELS (eyebrows, categories,
+     nav links, arrow-links) keep their wider per-role tracking — tight tracking
+     at label sizes hurts legibility. */
+  --tracking-caps: -0.015em;
 }

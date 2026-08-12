@@ -205,7 +205,7 @@
   font-size: clamp(2.4rem, 8vw, 4.1rem);
   font-weight: 800;
   line-height: 0.9;
-  letter-spacing: -0.015em;
+  letter-spacing: var(--tracking-caps);
   text-transform: uppercase;
 }
 
@@ -541,10 +541,55 @@
   font-size: clamp(1.5rem, 1.9vw, 2.5rem);
   line-height: 1.15; /* tighter, since the larger title wraps to several lines */
   font-weight: var(--font-weight-bold);
-  letter-spacing: 0.02em;
+  letter-spacing: var(--tracking-caps); /* the shared display-caps tracking rule */
   text-transform: uppercase;
   color: var(--color-icon-black);
   text-wrap: balance;
+  /* Reserve room at the measure's end for the hover arrow below, so the text
+     never runs the full card width. */
+  padding-inline-end: 1.5em;
+}
+
+/* Hover arrow — text-height (1em), icon blue, flows inline after the title's
+   last word (it always occupies its space, so nothing reflows on hover; it just
+   fades + slides in). Colour comes from the token via a masked box, keeping the
+   arrow glyph identical to the arrow-link's. Longhand mask properties on
+   purpose: the minifier mangles multi-part mask shorthands (see LESSONS.md on
+   Lightning CSS), and -webkit- first. */
+.work__title::after {
+  content: "";
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  margin-left: 0.35em;
+  vertical-align: -0.1em;
+  background-color: var(--color-icon-blue);
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12h14'/%3E%3Cpath d='m12 5 7 7-7 7'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12h14'/%3E%3Cpath d='m12 5 7 7-7 7'/%3E%3C/svg%3E");
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  opacity: 0;
+  translate: -0.25em 0;
+  transition:
+    opacity var(--duration-normal) var(--ease-standard),
+    translate var(--duration-normal) var(--ease-decelerate);
+}
+
+.work__item:hover .work__title::after,
+.work__item:focus-visible .work__title::after {
+  opacity: 1;
+  translate: 0 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .work__title::after {
+    transition: none;
+    translate: 0 0;
+  }
 }
 
 .work__meta {

@@ -225,7 +225,7 @@
   margin: 0;
   font-size: var(--text-xl);
   font-weight: var(--font-weight-bold);
-  letter-spacing: 0.02em;
+  letter-spacing: var(--tracking-caps); /* shared display-caps tracking rule */
   text-transform: uppercase;
 }
 
@@ -412,6 +412,7 @@
 .ds-fs-h2 { font-size: var(--heading-2); font-weight: var(--font-weight-bold); }
 .ds-fs-h3 { font-size: var(--heading-3); font-weight: var(--font-weight-semibold); }
 .ds-fs-card { font-size: var(--card-title); font-weight: var(--font-weight-bold); }
+.ds-caps-sample { text-transform: uppercase; letter-spacing: var(--tracking-caps); }
 .ds-fw-400 { font-weight: 400; }
 .ds-fw-500 { font-weight: 500; }
 .ds-fw-600 { font-weight: 600; }
