@@ -1,0 +1,52 @@
+/* filter-bar.css — the category filter chips on listing pages. Anchor-based:
+ * the chips are real <a> links (a no-JS / crawlable baseline that a Drupal Views
+ * exposed filter honours server-side); js/work-filter.js enhances them to filter
+ * the grid in place. Active chip = brand primary; inactive = a translucent
+ * foreground wash. Port of the filter row in v40-1-icon/components/page-header.tsx.
+ *
+ * Lives inside .page-header__filters (the scroll viewport). Owns the flex track:
+ * left-aligned (scrolls) on mobile, centred once the chips fit (lg+).
+ *
+ * Drupal: a Views exposed filter (taxonomy term) themed as links, not a <select>.
+ * The active term gets .is-active + aria-current="true" computed in preprocess.
+ */
+
+.filter-bar {
+  display: flex;
+  gap: var(--spacing-sm);
+  padding-inline: clamp(1rem, 3vw, 3rem);
+  justify-content: flex-start;
+}
+
+@media (min-width: 1024px) {
+  .filter-bar {
+    justify-content: center;
+  }
+}
+
+.filter-bar__chip {
+  flex-shrink: 0;
+  padding: var(--spacing-2xs) var(--spacing-sm);
+  border-radius: var(--radius-sm);
+  font-size: 10px; /* Custom value: v0 chip label is a fixed 10px micro-caps */
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  text-decoration: none;
+  color: var(--color-foreground);
+  background: color-mix(in srgb, var(--color-foreground) 10%, transparent);
+  transition:
+    background var(--duration-normal) var(--ease-standard),
+    color var(--duration-normal) var(--ease-standard);
+}
+
+.filter-bar__chip:hover,
+.filter-bar__chip:focus-visible {
+  background: color-mix(in srgb, var(--color-foreground) 20%, transparent);
+}
+
+.filter-bar__chip.is-active {
+  color: var(--color-primary-foreground);
+  background: var(--color-primary);
+}

@@ -1,0 +1,60 @@
+/* ICON Agency — build entry.
+ * Tailwind v4 runs the core, reads every @theme block to know which tokens
+ * become utilities, scans the @source paths for used classes, and emits the
+ * minified result to css/main.css.
+ *
+ * The import order below IS the dependency graph:
+ *   theme → base → utilities → components → page-specific
+ * No layer references a layer above it.
+ */
+
+@import "tailwindcss";
+
+/* Where Tailwind looks for utility classes used in markup. */
+@source "../templates";
+@source "../index.html";
+
+/* Class-based dark mode (.dark on <html>) — the site default. */
+@custom-variant dark (&:is(.dark *));
+
+/* Tokens */
+@import "./theme/colors.css";
+@import "./theme/typography.css";
+@import "./theme/spacing.css";
+@import "./theme/radius.css";
+@import "./theme/breakpoints.css";
+@import "./theme/motion.css";
+
+/* Base */
+@import "./base/reset.css";
+@import "./base/typography.css";
+@import "./base/prose.css";
+
+/* Utilities */
+@import "./utilities/container.css";
+@import "./utilities/effects.css";
+@import "./utilities/animations.css";
+
+/* Components — one BEM block per file */
+@import "./components/site-header.css";
+@import "./components/hero.css";
+@import "./components/hero-sphere.css";
+@import "./components/logo-loop.css";
+@import "./components/tagline.css";
+@import "./components/reveal.css";
+@import "./components/section-title.css";
+@import "./components/more-link.css";
+@import "./components/project-card.css";
+@import "./components/work-section.css";
+@import "./components/work-grid.css";
+@import "./components/page-header.css";
+@import "./components/filter-bar.css";
+@import "./components/pager.css";
+@import "./components/image-grid.css";
+@import "./components/pull-quote.css";
+@import "./components/more-work.css";
+
+/* Page-specific overrides — keep tiny */
+@import "./utilities/home-page.css";
+@import "./utilities/work-article.css";
+@import "./utilities/home-c.css";

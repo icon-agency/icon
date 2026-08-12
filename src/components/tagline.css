@@ -1,0 +1,95 @@
+/* tagline.css — centered multi-line tagline headline.
+ *
+ * Behaviour: js/tagline.js — per-line scroll reveal, desktop fit-to-width
+ * sizing, and cursor-pop work images. Faithful port of
+ * v40-1-icon/components/tagline-section.tsx (+ hooks/use-cursor-pops.ts).
+ *
+ * Drupal: SDC `tagline` — prop is one rich-text field; the editor wraps the
+ * serif words in <em>/a span the theme maps to .miller-text. The pops layer +
+ * fit-to-width are presentational behaviour attached by the library.
+ */
+
+.tagline {
+  position: relative;
+  text-align: center;
+  margin-bottom: clamp(4rem, 8vw, 12rem);
+}
+
+/* Region where work images pop around the cursor. Sits above the heading
+   (z 10 vs 2) so the images flash in front, then fade. */
+.tagline__pops {
+  position: absolute;
+  inset: -16rem -50vw;
+  width: 200vw;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.tagline__heading {
+  position: relative;
+  z-index: 2;
+  max-width: 1300px;
+  margin-inline: auto;
+  padding-inline: 2rem;
+  font-weight: var(--font-weight-medium);
+  line-height: 1.2;
+  letter-spacing: 0;
+  text-wrap: balance;
+  /* Mobile size; js/tagline.js fits the longest line to the box on lg+. */
+  font-size: clamp(1.875rem, 4vw, 5rem);
+}
+
+@media (min-width: 1024px) {
+  .tagline__heading { padding-inline: 0; }
+}
+
+/* Lines flow inline on mobile, become explicit blocks on desktop. */
+.tagline__line {
+  display: inline;
+}
+
+@media (min-width: 1024px) {
+  .tagline__line { display: block; }
+}
+
+/* Per-line reveal — only hidden once JS is present (no-JS shows everything). */
+.js-animations .tagline__line {
+  opacity: 0;
+  transform: translateY(12px);
+  transition:
+    opacity 0.7s var(--ease-standard),
+    transform 0.7s var(--ease-standard);
+}
+
+.js-animations .tagline.is-visible .tagline__line {
+  opacity: 1;
+  transform: none;
+}
+
+.js-animations .tagline.is-visible .tagline__line:nth-child(2) {
+  transition-delay: 0.1s;
+}
+
+.js-animations .tagline.is-visible .tagline__line:nth-child(3) {
+  transition-delay: 0.2s;
+}
+
+/* Pop images injected by JS (dynamic size/position set inline). */
+.tagline__pop {
+  position: absolute;
+  z-index: 0;
+  border-radius: var(--radius-icon);
+  box-shadow: 0 8px 24px rgb(0 0 0 / 0.25);
+  object-fit: cover;
+  pointer-events: none;
+  user-select: none;
+  will-change: transform, opacity;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .js-animations .tagline__line {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}

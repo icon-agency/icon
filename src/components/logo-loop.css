@@ -1,0 +1,19 @@
+/* logo-loop.css — the looping ICON logo-mark animation (a brand element used
+   as the tagline lead-in, and again in the mobile menu). The greyscale/contrast
+   treatment comes from the .homepage-icon-black utility (theme-aware). */
+
+.logo-loop {
+  display: flex;
+  justify-content: center;
+  margin-bottom: clamp(2rem, 4vw, 3rem);
+}
+
+.logo-loop__video {
+  width: clamp(8rem, 12vw, 12rem);
+  /* 340×340 source — reserve the height up front so the video's late metadata
+     load doesn't shift the layout (avoids CLS, and on homeB stops the shift from
+     disrupting the pinned hero's ScrollTrigger geometry). */
+  aspect-ratio: 1 / 1;
+  height: auto;
+  object-fit: contain;
+}

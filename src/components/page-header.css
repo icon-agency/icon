@@ -1,0 +1,48 @@
+/* page-header.css — the listing-page masthead: a large centred heading (with
+ * serif-italic accents), an optional CTA button, and a horizontally-scrollable
+ * filter row. Port of v40-1-icon/components/page-header.tsx. Used by /work
+ * (and the future /news) listing pages.
+ *
+ * The heading fades/rises via the shared [data-animate] host (js/reveal.js).
+ * The filter chips are the .filter-bar component, sitting in the scroll
+ * viewport this block owns. Colour is inherited (var(--color-icon-black)) so
+ * the masthead adapts to a re-themed scope (e.g. .theme-work-article).
+ *
+ * Drupal: the View header region (heading + subscribe CTA) above an exposed
+ * filter form themed as .filter-bar. No paragraph type of its own; the copy and
+ * CTA come from the View.
+ */
+
+.page-header {
+  padding-inline: clamp(1rem, 3vw, 3rem);
+  /* Clears the fixed site-header; mirrors v0 pt-32 / md:pt-36 / lg:pt-40. */
+  padding-top: clamp(8rem, 12vw, 10rem);
+}
+
+.page-header__inner {
+  text-align: center;
+  margin-bottom: var(--spacing-3xl);
+}
+
+.page-header__heading {
+  /* Custom fluid value: matches v0's clamp(3rem, 6vw, 4.5rem) listing headline. */
+  font-size: clamp(3rem, 6vw, 4.5rem);
+  font-weight: var(--font-weight-semibold);
+  line-height: 1;
+  letter-spacing: -0.025em;
+  margin: 0;
+  color: var(--color-icon-black);
+}
+
+.page-header__cta {
+  margin-top: var(--spacing-2xl);
+}
+
+/* Horizontally-scrollable filter row — bleeds to the page edges on mobile so
+ * chips scroll under the viewport edge; the inner .filter-bar re-adds the edge
+ * padding and centres once the chips fit (lg+). Pair with .scrollbar-hide. */
+.page-header__filters {
+  margin-inline: calc(-1 * clamp(1rem, 3vw, 3rem));
+  margin-bottom: var(--spacing-md);
+  overflow-x: auto;
+}

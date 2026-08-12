@@ -1,0 +1,31 @@
+/* spacing.css — named spacing scale + fluid section rhythm.
+ *
+ * The named --spacing-* keys generate utilities (p-md, gap-lg, m-xl, …)
+ * alongside Tailwind's default numeric scale (p-4, gap-8 — still available).
+ * Values from lib/tokens.ts.
+ *
+ * Fluid section tokens live in :root for use in component CSS where large
+ * responsive vertical rhythm is needed (mirrors the design's section margins).
+ */
+
+@theme {
+  --spacing-3xs: 0.125rem; /* 2px  */
+  --spacing-2xs: 0.25rem;  /* 4px  */
+  --spacing-xs: 0.5rem;    /* 8px  */
+  --spacing-sm: 0.75rem;   /* 12px */
+  --spacing-md: 1rem;      /* 16px */
+  --spacing-lg: 1.5rem;    /* 24px */
+  --spacing-xl: 2rem;      /* 32px */
+  --spacing-2xl: 3rem;     /* 48px */
+  --spacing-3xl: 4rem;     /* 64px */
+}
+
+:root {
+  /* Fluid vertical rhythm between major sections. */
+  --space-section: clamp(4rem, 8vw, 12rem);
+  --space-section-sm: clamp(2rem, 5vw, 6rem);
+
+  /* Layout container. */
+  --container-max: 90rem; /* 1440px — refine per design during rebuild */
+  --container-pad: clamp(1.5rem, 4vw, 4rem);
+}

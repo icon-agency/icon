@@ -1,0 +1,65 @@
+/* reveal.css — the ICON "white → blue → content" entrance swipe. Wraps a card;
+ * on scroll-in a white overlay drops away, a brand-blue overlay swipes up over
+ * it, then the blue swipes off to reveal the content. Faithful port of
+ * v40-1-icon/components/video-reveal.tsx. Sequenced by js/work.js (IO → phase
+ * classes); progressive-enhancement + reduced-motion safe.
+ *
+ * Drupal: a presentational wrapper attached by the `icon/work` behaviour
+ * (Drupal.behaviors.iconReveal), or just a <div class="reveal"> the editor
+ * never sees.
+ */
+
+.reveal {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-icon);
+  height: 100%;
+  /* Names a view-progress timeline on the CARD box so the parallax media inside
+     (project-card / image-grid / case-study featured) can reference it via
+     `animation-timeline: --card-parallax`. It anchors to the document scroller —
+     NOT the clipped frame that bare `view()` would resolve to — so the images
+     actually translate as the card scrolls through the viewport. */
+  view-timeline-name: --card-parallax;
+}
+
+.reveal__content {
+  height: 100%;
+}
+
+.reveal__white,
+.reveal__blue {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-icon);
+  transform: translateY(100%); /* off-screen by default — no-JS shows content */
+  transition: transform 500ms ease-in-out;
+}
+
+.reveal__white {
+  z-index: 10;
+  background: var(--color-white);
+}
+
+.reveal__blue {
+  z-index: 20;
+  background: var(--color-brand-blue);
+}
+
+/* JS present: cover with white until the sequence runs. */
+.js-animations .reveal__white { transform: translateY(0); }
+.js-animations .reveal__content { visibility: hidden; }
+
+/* Phase 1 — white drops away, blue swipes up to cover. */
+.reveal.is-revealing .reveal__white { transform: translateY(100%); }
+.reveal.is-revealing .reveal__blue { transform: translateY(0); }
+
+/* Phase 2 — blue swipes off the top, content shows. */
+.reveal.is-revealed .reveal__white { transform: translateY(100%); }
+.reveal.is-revealed .reveal__blue { transform: translateY(-110%); }
+.reveal.is-revealed .reveal__content { visibility: visible; }
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal__white,
+  .reveal__blue { display: none; }
+  .js-animations .reveal__content { visibility: visible; }
+}

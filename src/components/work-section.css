@@ -1,0 +1,72 @@
+/* work-section.css — the home "featured work" section: a 12-column grid of
+ * project cards led by a brand-blue promo card. Faithful port of the layout in
+ * v40-1-icon/components/project-section.tsx (rows: [4 promo, 8], [6, 6], [8, 4]).
+ * Cards stack to full width below lg.
+ *
+ * Drupal: a `work_teaser` paragraph (a few referenced work nodes + the promo
+ * copy/CTA) → preprocess → thin Twig. The cards are project-card SDCs.
+ */
+
+.work-section {
+  padding-inline: clamp(1rem, 3vw, 3rem);
+}
+
+.work-section__grid {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 1rem;
+  align-items: stretch;
+  margin-bottom: 1rem;
+}
+
+.work-section__grid--first {
+  margin-top: clamp(3rem, 6vw, 6rem);
+}
+
+/* Spans — full width on mobile, the design grid on lg+. */
+.work-section__col {
+  grid-column: span 12;
+  min-width: 0;
+}
+
+@media (min-width: 1024px) {
+  .work-section__col--4 { grid-column: span 4; }
+  .work-section__col--6 { grid-column: span 6; }
+  .work-section__col--8 { grid-column: span 8; }
+}
+
+/* ---- Promo card --------------------------------------------------------- */
+
+.work-promo {
+  --promo-pad: clamp(1rem, 2vw, 2rem);
+  position: relative;
+  height: 100%;
+  min-height: clamp(300px, 40vw, 600px);
+  display: flex;
+  flex-direction: column;
+  padding: var(--promo-pad);
+  padding-top: clamp(3.5rem, 5vw, 5.5rem); /* room for the Work label */
+  border-radius: var(--radius-icon);
+  background: var(--color-brand-blue);
+  color: var(--color-white);
+}
+
+.work-promo__header {
+  position: absolute;
+  top: var(--promo-pad);
+  left: var(--promo-pad);
+  right: var(--promo-pad);
+}
+
+.work-promo__title {
+  margin: 0;
+  font-size: clamp(1.5rem, 2.4vw, 2.4rem);
+  font-weight: var(--font-weight-bold);
+  line-height: 1.1;
+  text-transform: uppercase;
+}
+
+.work-promo__cta {
+  margin-top: auto; /* push the button to the bottom */
+  padding-top: 1.5rem;
+}

@@ -1,0 +1,19 @@
+/* radius.css — corner radius scale.
+ * --radius is the raw base; sm/md/lg/xl derive from it (matches the v0 build,
+ * which overrides Tailwind's defaults). --radius-icon is the brand 4px corner
+ * used on media/cards. */
+
+:root {
+  --radius: 0.625rem; /* 10px */
+}
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+@theme {
+  --radius-icon: 4px;
+}

@@ -1,0 +1,22 @@
+/* container.css — the only hand-written layout primitives.
+ * Prefixed u- to mark them as primitives (not BEM components, not Tailwind).
+ * The design is largely 12-column, so u-grid defaults to 12 tracks. */
+
+@layer utilities {
+  .u-container {
+    width: 100%;
+    max-width: var(--container-max);
+    margin-inline: auto;
+    padding-inline: var(--container-pad);
+  }
+
+  .u-container--wide {
+    max-width: none;
+  }
+
+  .u-grid {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: var(--spacing-lg);
+  }
+}

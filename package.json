@@ -1,0 +1,18 @@
+{
+  "name": "icon-agency",
+  "version": "0.1.0",
+  "private": true,
+  "description": "ICON Agency site — semantic HTML + Tailwind v4 + GSAP, built for Drupal (SDC / Canvas) handoff.",
+  "scripts": {
+    "dev": "tailwindcss -i src/main.css -o css/main.css --watch",
+    "build": "tailwindcss -i src/main.css -o css/main.css --minify",
+    "verify": "tailwindcss -i src/main.css -o css/main.css --minify"
+  },
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.1.9",
+    "tailwindcss": "^4.1.9"
+  },
+  "dependencies": {
+    "gsap": "^3.13.0"
+  }
+}

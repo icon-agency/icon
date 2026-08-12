@@ -1,0 +1,43 @@
+/* reset.css — additive base on top of Tailwind's preflight.
+ * Preflight already handles box-sizing, margin zeroing and img max-width;
+ * this file only adds the project-specific bits. */
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  /* Contain full-bleed heroes, parallax overshoot and the off-screen menu.
+     Use `clip`, NOT `hidden`: `overflow-x: hidden` promotes <body> to a scroll
+     container (it forces overflow-y to `auto`), which re-anchors every descendant
+     view()/named view-timeline to <body> — which never scrolls, the document root
+     does — and freezes all the card parallax. `clip` clips the same overflow with
+     no scroll-container side effect. (See LESSONS.md.) */
+  body {
+    min-height: 100vh;
+    overflow-x: clip;
+  }
+
+  img,
+  picture,
+  video,
+  canvas,
+  svg {
+    display: block;
+    max-width: 100%;
+  }
+
+  /* Media that ships at one resolution will look soft above the large
+     breakpoints — author with srcset/sizes (see LESSONS). */
+
+  :focus-visible {
+    outline: 2px solid var(--color-icon-blue);
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+}

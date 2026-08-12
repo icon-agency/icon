@@ -1,0 +1,23 @@
+/* home-page.css — page-specific layout for the home page. Keep tiny:
+   prefer a component modifier over page-level CSS where possible. */
+
+.home-main {
+  width: 100%;
+  max-width: 4000px;
+  margin-inline: auto;
+}
+
+/* Contained intro block: logo loop + tagline. */
+.home-intro {
+  padding-block: clamp(4rem, 8vw, 10rem);
+  padding-inline: clamp(1rem, 3vw, 3rem);
+}
+
+/* Temporary spacer so following sections can be scrolled to during the build. */
+.home-placeholder {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: var(--space-section) 1.5rem;
+  text-align: center;
+}

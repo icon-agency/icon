@@ -1,0 +1,62 @@
+/* typography.css — fonts + fluid type scale.
+ *
+ * Two families: Kumbh Sans (body, loaded via Google Fonts) and Miller Text
+ * (display serif, loaded via Typekit kit bhv7yrj). See index.html / templates.
+ *
+ * The fluid --text-* scale is wired to Tailwind's type utilities so markup
+ * (text-2xl, text-4xl, …) and component CSS (var(--text-2xl)) agree on one
+ * scale. Values come from the design's clamp scale (lib/tokens.ts + globals).
+ *
+ * NOTE: the v0 build defined a fluid scale but left markup on Tailwind's fixed
+ * defaults, so utility-driven text there is NOT fluid. We deliberately make the
+ * scale coherent here; validate exact sizes per-component against the running
+ * reference during the rebuild.
+ */
+
+@theme inline {
+  --font-sans: "Kumbh Sans", system-ui, -apple-system, sans-serif;
+  --font-serif: "miller-text", serif;
+}
+
+@theme {
+  --text-xs: clamp(0.75rem, 0.7vw, 0.875rem);
+  --text-sm: clamp(0.875rem, 0.85vw, 1rem);
+  --text-base: clamp(1rem, 1vw, 1.125rem);
+  --text-lg: clamp(1.125rem, 1.2vw, 1.25rem);
+  --text-xl: clamp(1.25rem, 1.5vw, 1.5rem);
+  --text-2xl: clamp(1.5rem, 2vw, 1.875rem);
+  --text-3xl: clamp(1.875rem, 2.5vw, 2.25rem);
+  --text-4xl: clamp(2.25rem, 3vw, 3rem);
+  --text-5xl: clamp(3rem, 4vw, 4rem);
+  --text-6xl: clamp(3.75rem, 5vw, 5rem);
+  --text-7xl: 4.5rem;
+  --text-8xl: 6rem;
+  --text-9xl: 8rem;
+}
+
+:root {
+  /* Semantic display sizes used by headings and cards. */
+  --heading-1: clamp(2.5rem, 6vw, 4.5rem);
+  --heading-2: clamp(2rem, 4vw, 3.5rem);
+  --heading-3: clamp(1.5rem, 3vw, 2.5rem);
+  --card-title: clamp(0.9rem, 1.5vw, 1.5rem);
+  --card-subtitle: clamp(0.875rem, 0.85vw, 1.25rem);
+
+  /* Weights */
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  /* Line heights */
+  --line-height-tight: 1.2;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.75;
+
+  /* Letter spacing */
+  --letter-spacing-tighter: -0.05em;
+  --letter-spacing-tight: -0.025em;
+  --letter-spacing-normal: 0em;
+  --letter-spacing-wide: 0.025em;
+  --letter-spacing-wider: 0.05em;
+}

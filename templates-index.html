@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ICON Agency — Template Index</title>
+
+    <!-- Fonts: Kumbh Sans (Google) + Miller Text (Typekit kit bhv7yrj) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Kumbh+Sans:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="https://use.typekit.net/bhv7yrj.css" />
+    <link rel="stylesheet" href="css/main.css" />
+
+    <!-- Dev-only orientation page (not part of the Drupal handoff). Styles are
+         scoped here and token-driven; no raw colours, no Drupal component.
+         Add a new template = add a list item below. -->
+    <style>
+      .index-main {
+        padding-block: var(--space-section-sm);
+      }
+
+      .index-head {
+        max-width: 46rem;
+        margin-bottom: var(--spacing-2xl);
+      }
+
+      .index-head h1 {
+        margin-top: var(--spacing-sm);
+      }
+
+      .index-head__lead {
+        margin-top: var(--spacing-md);
+      }
+
+      .index-grid {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: var(--spacing-lg);
+      }
+
+      @media (min-width: 768px) {
+        .index-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+
+      .index-card {
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing-2xs);
+        height: 100%;
+        padding: var(--spacing-xl);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-lg);
+        background-color: var(--color-secondary);
+        text-decoration: none;
+        transition: var(--transition-base);
+      }
+
+      .index-card:hover,
+      .index-card:focus-visible {
+        border-color: var(--color-icon-blue);
+        transform: translateY(-2px);
+      }
+
+      .index-card__name {
+        font-size: var(--card-title);
+        font-weight: var(--font-weight-semibold);
+        color: var(--color-icon-black);
+      }
+
+      .index-card__path {
+        font-family: ui-monospace, "SF Mono", Menlo, monospace;
+        font-size: var(--text-sm);
+        color: var(--color-muted-foreground);
+      }
+
+      .index-card__desc {
+        margin-top: var(--spacing-2xs);
+        color: var(--color-icon-grey);
+      }
+
+      .index-card__cta {
+        margin-top: auto;
+        padding-top: var(--spacing-md);
+        font-weight: var(--font-weight-medium);
+        color: var(--color-icon-black);
+      }
+    </style>
+  </head>
+  <body>
+    <main class="u-container index-main">
+      <header class="index-head">
+        <p class="icon-tagline text-icon-blue">ICON Agency · build</p>
+        <h1 class="text-icon-black">
+          Template <span class="miller-text">index</span>
+        </h1>
+        <p class="index-head__lead text-2xl text-icon-grey">
+          Front-end build pages. Pick one to preview.
+        </p>
+      </header>
+
+      <ul class="index-grid">
+        <li>
+          <a class="index-card" href="templates/home.html">
+            <span class="index-card__name">Home</span>
+            <span class="index-card__path">/templates/home.html</span>
+            <span class="index-card__desc"
+              >Full-bleed video hero with the GSAP scramble headline, looping logo
+              mark, and the cursor-pop “Make what matters” tagline.</span
+            >
+            <span class="index-card__cta">Open →</span>
+          </a>
+        </li>
+        <li>
+          <a class="index-card" href="templates/homeB.html">
+            <span class="index-card__name">Home B</span>
+            <span class="index-card__path">/templates/homeB.html</span>
+            <span class="index-card__desc"
+              >Orbiting 3D photo-sphere hero (Three.js) — 13 hero assets on
+              billboarded cards you can drag to rotate, around a centred “Make
+              what matters”.</span
+            >
+            <span class="index-card__cta">Open →</span>
+          </a>
+        </li>
+        <li>
+          <a class="index-card" href="templates/homeC.html">
+            <span class="index-card__name">Home C</span>
+            <span class="index-card__path">/templates/homeC.html</span>
+            <span class="index-card__desc"
+              >Zypsy-inspired editorial homepage — full-bleed hero with the “Make
+              what matters” lockup, line-mask text reveals (GSAP SplitText),
+              clip-and-scale image reveals, Lenis smooth scroll, and a parallax
+              hero.</span
+            >
+            <span class="index-card__cta">Open →</span>
+          </a>
+        </li>
+        <li>
+          <a class="index-card" href="templates/work.html">
+            <span class="index-card__name">Work</span>
+            <span class="index-card__path">/templates/work.html</span>
+            <span class="index-card__desc"
+              >Filterable project listing — a 12-column masonry grid of
+              project cards (reveal swipe + hover-video), a category filter bar,
+              and pagination. Footer stubbed.</span
+            >
+            <span class="index-card__cta">Open →</span>
+          </a>
+        </li>
+        <li>
+          <a class="index-card" href="templates/work-article.html">
+            <span class="index-card__name">Work — case study</span>
+            <span class="index-card__path">/templates/work-article.html</span>
+            <span class="index-card__desc"
+              >Light-themed (per-route token rebind) iCanQuit case study —
+              parallax featured image, two-column prose rows, parallax image
+              grids, a serif pull-quote, and a “More work” block. Footer
+              stubbed.</span
+            >
+            <span class="index-card__cta">Open →</span>
+          </a>
+        </li>
+      </ul>
+    </main>
+  </body>
+</html>

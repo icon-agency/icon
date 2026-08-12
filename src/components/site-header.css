@@ -1,0 +1,533 @@
+/* site-header.css — global header: wordmark logo, desktop pill nav with a
+ * scroll-revealed home glyph and SERVICES submenu, mobile controls, and the
+ * full-screen mobile menu. Faithful port of
+ * v40-1-icon/components/navigation-bar.tsx + site-logo.tsx.
+ *
+ * Behaviour: js/header.js (scroll state + menu toggle). The WebGL shader behind
+ * the mobile menu is a DEFERRED island — a gradient stands in for now.
+ *
+ * Drupal: this is the theme header region, not a paragraph. The desktop nav +
+ * mobile menu render from one menu (main). Logo is the site-branding block.
+ */
+
+/* Shared control size: the mobile button squares AND the wordmark height both
+   read from this, so the logo is always exactly as tall as the buttons. */
+.site-header {
+  --header-control: 3.5rem;
+}
+
+/* ---- Wordmark logo (fixed top-left) ------------------------------------- */
+
+/* Fixed, and fades out in place as you scroll (instead of scrolling off);
+   the home glyph (desktop pill / mobile button) fades in to take its place.
+   Fade rules are below the position media queries. */
+.site-logo {
+  position: fixed;
+  top: 1rem; /* aligns with the mobile controls (also top: 1rem) */
+  left: 1.5rem;
+  z-index: 10001;
+  color: var(--color-foreground);
+  display: inline-flex;
+  transition:
+    opacity var(--duration-normal) var(--ease-standard),
+    color var(--duration-normal) var(--ease-standard);
+}
+
+/* Mobile: exactly the button-square height. Desktop (controls hidden): grow. */
+.site-logo__mark {
+  height: var(--header-control);
+  width: auto;
+}
+
+@media (min-width: 768px) {
+  .site-logo { left: 2rem; }
+}
+@media (min-width: 1024px) {
+  .site-logo { top: 1.5rem; left: 2.5rem; }
+  .site-logo__mark { height: 3.75rem; }
+}
+@media (min-width: 1280px) {
+  .site-logo { top: 2rem; left: 3rem; }
+  .site-logo__mark { height: 4.25rem; }
+}
+@media (min-width: 1536px) {
+  .site-logo__mark { height: 4.5rem; }
+}
+
+/* Fade the wordmark out once you scroll past the hero, swapping it for the home
+   glyph (desktop pill / mobile button). This is a ONE-SHOT transition triggered
+   by js/header.js (.is-faded, at the same scroll point the glyph appears) — it
+   runs to completion via the opacity transition on .site-logo above, rather than
+   scrubbing with scroll position, so a partial scroll never leaves the wordmark
+   stuck half-faded. (Pages without header.js keep the wordmark always visible.) */
+.site-logo.is-faded {
+  opacity: 0;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-logo {
+    transition: none;
+  }
+}
+
+/* ---- Desktop pill nav --------------------------------------------------- */
+
+.site-nav {
+  display: none;
+}
+
+@media (min-width: 1024px) {
+  .site-nav {
+    position: fixed;
+    top: 1rem;
+    inset-inline: 0;
+    z-index: 10000;
+    display: flex;
+    justify-content: center;
+    transition: opacity var(--duration-normal) var(--ease-standard);
+  }
+}
+
+.site-nav__pill {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-md);
+  background: transparent;
+  transition: background var(--duration-normal) var(--ease-standard);
+}
+
+/* The top row: logo glyph + links. */
+.site-nav__row {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  min-height: 2rem;
+}
+
+/* Frosted when scrolled OR when the submenu is open/hovered — so the drawer
+   reads even at the top of the page. -webkit- first (LESSONS). */
+.site-nav.is-scrolled .site-nav__pill,
+.site-nav.is-submenu-open .site-nav__pill,
+.site-nav__pill:has(.site-nav__item--has-submenu:hover),
+.site-nav__pill:has(.site-nav__drawer:hover) {
+  background: var(--nav-bg-scrolled);
+  -webkit-backdrop-filter: blur(24px);
+  backdrop-filter: blur(24px);
+}
+
+.site-nav__list {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.site-nav__item {
+  position: relative;
+}
+
+.site-nav__link {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem;
+  font-size: var(--text-xs);
+  font-weight: var(--font-weight-bold);
+  line-height: 1;
+  color: var(--color-foreground);
+  text-decoration: none;
+  border-radius: var(--radius-sm);
+  transition:
+    color var(--duration-normal) var(--ease-standard),
+    background var(--duration-normal) var(--ease-standard);
+}
+
+.site-nav__link:hover {
+  background: color-mix(in srgb, var(--color-background) 20%, transparent);
+  color: var(--color-icon-blue);
+}
+
+/* Home glyph — collapsed until scrolled past the hero. */
+.site-nav__home {
+  display: inline-flex;
+  align-items: center;
+  max-width: 0;
+  padding-left: 0;
+  padding-right: 0;
+  overflow: hidden;
+  opacity: 0;
+  color: var(--color-foreground);
+  transition:
+    max-width var(--duration-normal) var(--ease-standard),
+    opacity var(--duration-fast) var(--ease-standard),
+    padding var(--duration-normal) var(--ease-standard),
+    color var(--duration-normal) var(--ease-standard);
+}
+
+.site-nav.show-home .site-nav__home {
+  max-width: 2.5rem;
+  padding-left: 0.25rem;
+  padding-right: 0.5rem;
+  opacity: 1;
+}
+
+.site-nav__home:hover {
+  color: var(--color-icon-blue);
+}
+
+.site-nav__home-glyph {
+  height: 1.25rem;
+  width: auto;
+}
+
+/* SERVICES drawer — expands the pill downward instead of floating over the
+   page. Height animates via grid-template-rows 0fr→1fr (no magic max-height).
+   js/header.js owns the open state (hover-intent, focus, touch, Esc) and sets
+   --submenu-offset to align the items under SERVICES. */
+.site-nav__drawer {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows var(--duration-normal) var(--ease-standard);
+}
+
+.site-nav.is-submenu-open .site-nav__drawer,
+.site-nav__pill:has(.site-nav__item--has-submenu:hover) .site-nav__drawer,
+.site-nav__pill:has(.site-nav__drawer:hover) .site-nav__drawer {
+  grid-template-rows: 1fr;
+}
+
+.site-nav__drawer-inner {
+  overflow: hidden;
+  min-height: 0;
+  /* Pin to the row-driven width so a long submenu label can't widen the pill —
+     keeps the row the sole width authority (no measure/relayout feedback). */
+  width: 0;
+  min-width: 100%;
+}
+
+.site-nav__submenu-list {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.75rem;
+  margin: 0;
+  /* top gap from the row; extra bottom room before the pill's rounded corner;
+     left pad aligns items under SERVICES (JS-set) */
+  padding: 1rem 0 1rem var(--submenu-offset, 0.5rem);
+  list-style: none;
+}
+
+.site-nav__submenu-link {
+  display: block;
+  padding: 0.25rem 0;
+  font-size: var(--text-xs);
+  font-weight: var(--font-weight-bold);
+  text-transform: uppercase; /* labels are authored natural-case */
+  color: var(--color-foreground);
+  text-decoration: none;
+  transition: opacity var(--duration-fast) var(--ease-standard);
+}
+
+.site-nav__submenu-link:hover {
+  opacity: 0.7;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-nav__drawer {
+    transition: none;
+  }
+}
+
+/* ---- Over-hero inversion ------------------------------------------------ *
+ * While the fixed header overlaps a dark hero, force it to light-on-dark so the
+ * wordmark + nav stay legible on the hero media WHATEVER the page theme (in dark
+ * theme it already is light, so this is a no-op there; in light theme it flips).
+ * A page opts in by toggling .is-over-hero on .site-header while its hero is
+ * behind the header (js/home-c.js does this via an IntersectionObserver). The
+ * colour + pill background transitions above make it a quick cross-fade at the
+ * hero boundary. */
+.site-header.is-over-hero .site-logo,
+.site-header.is-over-hero .site-nav__link,
+.site-header.is-over-hero .site-nav__home,
+.site-header.is-over-hero .site-nav__submenu-link {
+  color: var(--color-white);
+}
+
+/* Keep the frosted pill dark-tinted when it appears over the hero, so the white
+   links read against it (the light-theme pill would wash them out). */
+.site-header.is-over-hero .site-nav.is-scrolled .site-nav__pill,
+.site-header.is-over-hero .site-nav.is-submenu-open .site-nav__pill,
+.site-header.is-over-hero .site-nav__pill:has(.site-nav__item--has-submenu:hover),
+.site-header.is-over-hero .site-nav__pill:has(.site-nav__drawer:hover) {
+  background: rgb(30 30 30 / 0.8);
+}
+
+/* ---- Mobile controls ---------------------------------------------------- */
+
+.site-header__mobile-home {
+  position: fixed;
+  top: 1rem;
+  left: 1rem;
+  z-index: 10000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--duration-normal) var(--ease-standard);
+}
+
+.site-header__mobile-home.is-visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.site-header__mobile-actions {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  z-index: 10000;
+  display: flex;
+  gap: 0.5rem;
+}
+
+@media (min-width: 1024px) {
+  .site-header__mobile-home,
+  .site-header__mobile-actions {
+    display: none;
+  }
+}
+
+.icon-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--header-control);
+  height: var(--header-control);
+  border: 0;
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--color-foreground) 50%, transparent);
+  color: var(--color-background);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.1);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  cursor: pointer;
+  transition: color var(--duration-normal) var(--ease-standard);
+}
+
+.icon-button:hover {
+  color: var(--color-icon-blue);
+}
+
+.icon-button__icon {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+/* Hamburger → X */
+.menu-toggle {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  width: var(--header-control);
+  height: var(--header-control);
+  border: 0;
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--color-foreground) 50%, transparent);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  cursor: pointer;
+  z-index: 10002;
+}
+
+.menu-toggle__bar {
+  display: block;
+  width: 1.5rem;
+  height: 2px;
+  background: var(--color-background);
+  transition: transform var(--duration-normal) var(--ease-standard);
+}
+
+.menu-toggle.is-open .menu-toggle__bar {
+  position: absolute;
+  background: var(--color-white);
+}
+
+.menu-toggle.is-open .menu-toggle__bar:nth-child(1) {
+  transform: rotate(45deg);
+}
+
+.menu-toggle.is-open .menu-toggle__bar:nth-child(2) {
+  transform: rotate(-45deg);
+}
+
+/* ---- Full-screen mobile menu -------------------------------------------- */
+
+.mobile-menu {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  overflow: hidden;
+  opacity: 0;
+  transition: opacity var(--duration-normal) var(--ease-standard);
+}
+
+.mobile-menu.is-open {
+  opacity: 1;
+}
+
+/* Shader stand-in (DEFERRED: replace with the WebGL ChromaFlow/Swirl shader). */
+.mobile-menu__bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background:
+    radial-gradient(120% 120% at 20% 10%, var(--color-shader-blue), transparent 60%),
+    linear-gradient(160deg, var(--color-shader-blue) 0%, #1e1e1e 55%);
+}
+
+.mobile-menu__inner {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  padding: 0.75rem 1.5rem;
+}
+
+.mobile-menu__logo {
+  position: absolute;
+  top: 0.75rem;
+  left: 1.5rem;
+  z-index: 10001;
+  color: var(--color-white);
+}
+
+.mobile-menu__logo .site-logo__mark {
+  height: 3.75rem;
+}
+
+.mobile-menu__cols {
+  flex: 1;
+  overflow-y: auto;
+  margin-top: 6rem;
+  padding-bottom: 5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+@media (min-width: 640px) {
+  .mobile-menu__cols {
+    flex-direction: row;
+    gap: 4rem;
+  }
+}
+
+.mobile-menu__nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex: 1;
+}
+
+.mobile-menu__link {
+  display: block;
+  font-size: var(--text-4xl);
+  font-weight: var(--font-weight-semibold);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: var(--color-white);
+  text-decoration: none;
+}
+
+.mobile-menu__link:hover {
+  color: color-mix(in srgb, var(--color-white) 80%, transparent);
+}
+
+.mobile-menu__services {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  flex: 1;
+  padding-top: 0.75rem;
+}
+
+.mobile-menu__service {
+  display: block;
+  font-size: var(--text-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-white);
+  text-decoration: none;
+}
+
+.mobile-menu__service:hover {
+  color: color-mix(in srgb, var(--color-white) 80%, transparent);
+}
+
+.mobile-menu__social {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 1rem);
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem 1.5rem;
+}
+
+.mobile-menu__social-link {
+  border: 0;
+  background: none;
+  font-size: var(--text-xs);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.025em;
+  text-transform: uppercase;
+  color: var(--color-white);
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.mobile-menu__social-link:hover {
+  color: color-mix(in srgb, var(--color-white) 80%, transparent);
+}
+
+/* Staggered slide-in of menu items when open (matches the v0 timings). */
+.mobile-menu.is-open .mobile-menu__link,
+.mobile-menu.is-open .mobile-menu__service,
+.mobile-menu.is-open .mobile-menu__social-link {
+  animation: slideIn 0.5s var(--ease-decelerate) both;
+}
+
+.mobile-menu.is-open .mobile-menu__link:nth-child(1) { animation-delay: 0.20s; }
+.mobile-menu.is-open .mobile-menu__link:nth-child(2) { animation-delay: 0.30s; }
+.mobile-menu.is-open .mobile-menu__link:nth-child(3) { animation-delay: 0.40s; }
+.mobile-menu.is-open .mobile-menu__link:nth-child(4) { animation-delay: 0.50s; }
+.mobile-menu.is-open .mobile-menu__link:nth-child(5) { animation-delay: 0.60s; }
+.mobile-menu.is-open .mobile-menu__link:nth-child(6) { animation-delay: 0.70s; }
+.mobile-menu.is-open .mobile-menu__service:nth-child(n) { animation-delay: 0.7s; }
+
+body.is-menu-open {
+  overflow: hidden;
+}
+
+/* When the menu is open, hide the page chrome that would show through:
+   the fixed wordmark, the mobile home glyph, and the contact button.
+   The menu has its own logo, and the toggle stays as the close (X). */
+body.is-menu-open .site-logo,
+body.is-menu-open .site-header__mobile-home,
+body.is-menu-open .site-header__mobile-actions .icon-button {
+  opacity: 0;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mobile-menu.is-open .mobile-menu__link,
+  .mobile-menu.is-open .mobile-menu__service,
+  .mobile-menu.is-open .mobile-menu__social-link {
+    animation: none;
+  }
+}

@@ -1,0 +1,25 @@
+/* motion.css — durations, easings, transition tokens.
+ * Values from lib/tokens.ts. Easings are exposed as ease-* utilities;
+ * durations + composed transitions are plain tokens for component CSS.
+ * Keyframes and animation utilities live in utilities/animations.css. */
+
+@theme {
+  --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-accelerate: cubic-bezier(0.4, 0, 1, 1);
+  --ease-decelerate: cubic-bezier(0, 0, 0.2, 1);
+}
+
+:root {
+  --duration-fast: 150ms;
+  --duration-normal: 300ms;
+  --duration-slow: 500ms;
+  --duration-slower: 1000ms;
+
+  --transition-base: var(--duration-normal) var(--ease-standard);
+  --transition-slow: var(--duration-slow) var(--ease-standard);
+
+  /* Decorative effect knobs (used by utilities/effects.css). */
+  --overlay-blur: 24px;
+  --overlay-opacity: 0.5;
+  --video-filter: saturate(0) contrast(2) brightness(0.7);
+}

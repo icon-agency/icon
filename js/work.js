@@ -1,0 +1,97 @@
+/* work.js — behaviours for the home work section:
+ *   1. reveal swipe (white → blue → content) on scroll-in
+ *   2. section-title underline draw-in
+ *   3. project-card hover-video (play on hover/focus/touch, debounced) — only
+ *      revealed once the video can actually play, so a missing remote video
+ *      degrades to the tint + arrow hover.
+ * IntersectionObserver-driven, reduced-motion guarded.
+ * Drupal: Drupal.behaviors.iconWork. */
+(function () {
+  "use strict";
+
+  var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var hasIO = "IntersectionObserver" in window;
+
+  // ---- 1. Reveal swipe ----------------------------------------------------
+  var reveals = Array.prototype.slice.call(document.querySelectorAll("[data-reveal]"));
+  if (reveals.length) {
+    if (!hasIO) {
+      reveals.forEach(function (el) { el.classList.add("is-revealed"); });
+    } else {
+      var rIO = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (!e.isIntersecting && e.boundingClientRect.top >= 0) return;
+          var el = e.target;
+          rIO.unobserve(el);
+          if (reduce) { el.classList.add("is-revealed"); return; }
+          window.setTimeout(function () { el.classList.add("is-revealing"); }, 300);
+          window.setTimeout(function () {
+            el.classList.remove("is-revealing");
+            el.classList.add("is-revealed");
+          }, 900);
+        });
+      }, { threshold: 0.05 });
+      reveals.forEach(function (el) { rIO.observe(el); });
+    }
+  }
+
+  // ---- 2. Section-title underline ----------------------------------------
+  var titles = Array.prototype.slice.call(document.querySelectorAll(".section-title"));
+  if (titles.length) {
+    if (!hasIO) {
+      titles.forEach(function (el) { el.classList.add("is-visible"); });
+    } else {
+      var tIO = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (e.isIntersecting) { e.target.classList.add("is-visible"); tIO.unobserve(e.target); }
+        });
+      }, { threshold: 0.1, rootMargin: "0px 0px -50px 0px" });
+      titles.forEach(function (el) { tIO.observe(el); });
+    }
+  }
+
+  // ---- 3. Project-card hover-video + touch -------------------------------
+  Array.prototype.slice.call(document.querySelectorAll(".project-card")).forEach(function (card) {
+    var video = card.querySelector("video[data-hover-video]");
+    var timer = null;
+
+    if (video) {
+      video.muted = true;
+      video.loop = true;
+      video.playsInline = true;
+      video.preload = "auto";
+      var ready = function () { card.classList.add("is-media-ready"); };
+      video.addEventListener("loadeddata", ready);
+      video.addEventListener("canplay", ready);
+      // On error the card simply never becomes media-ready → tint + arrow only.
+      try { video.load(); } catch (e) {}
+    } else if (card.querySelector("img.project-card__hover")) {
+      card.classList.add("is-media-ready"); // a hover-image is always ready
+    }
+
+    function play() {
+      if (!video || reduce) return;
+      window.clearTimeout(timer);
+      timer = window.setTimeout(function () {
+        if (video.paused) {
+          try { video.currentTime = 0; } catch (e) {}
+          var p = video.play();
+          if (p && p.catch) p.catch(function () {});
+        }
+      }, 100);
+    }
+    function stop() {
+      if (!video) return;
+      window.clearTimeout(timer);
+      timer = window.setTimeout(function () { if (!video.paused) video.pause(); }, 100);
+    }
+
+    card.addEventListener("mouseenter", play);
+    card.addEventListener("mouseleave", stop);
+    card.addEventListener("focusin", play);
+    card.addEventListener("focusout", stop);
+    card.addEventListener("touchstart", function () { card.classList.add("is-touched"); play(); }, { passive: true });
+    card.addEventListener("touchend", function () { card.classList.remove("is-touched"); stop(); }, { passive: true });
+    card.addEventListener("touchcancel", function () { card.classList.remove("is-touched"); stop(); }, { passive: true });
+  });
+})();

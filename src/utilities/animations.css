@@ -1,0 +1,73 @@
+/* animations.css — keyframes + the shared scroll-reveal host.
+ *
+ * Two motion systems run on this site:
+ *   1. Scroll-reveal (this file's [data-animate] host) for simple fade/rise.
+ *   2. GSAP timelines (hero letter reveal, cursor pops, parallax) attached
+ *      per component in JS.
+ * Both are cancelled under prefers-reduced-motion. See docs/animation.md
+ * (added during the docs pass). */
+
+/* ---- Scroll-reveal host -------------------------------------------------- */
+
+/* Before JS boots, elements render fully visible (no-JS safe). */
+.js-animations [data-animate] {
+  opacity: 0;
+  transform: translateY(20px);
+  transition:
+    opacity var(--duration-slow) var(--ease-standard),
+    transform var(--duration-slow) var(--ease-standard);
+  transition-delay: var(--animate-delay, 0ms);
+}
+
+.js-animations [data-animate].is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* ---- Marquee + decorative keyframes ------------------------------------- */
+
+@keyframes grain {
+  0%,
+  100% { transform: translate(0, 0); }
+  10% { transform: translate(-0.1%, -0.1%); }
+  20% { transform: translate(0.1%, 0.1%); }
+  30% { transform: translate(-0.2%, -0.1%); }
+  40% { transform: translate(0.2%, 0.1%); }
+  50% { transform: translate(-0.1%, -0.1%); }
+  60% { transform: translate(0.1%, 0.1%); }
+  70% { transform: translate(-0.1%, -0.1%); }
+  80% { transform: translate(0.2%, 0.1%); }
+  90% { transform: translate(-0.1%, -0.1%); }
+}
+
+@keyframes scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-100%); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ---- Reduced motion ------------------------------------------------------ */
+
+@media (prefers-reduced-motion: reduce) {
+  .js-animations [data-animate] {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  [data-parallax],
+  [data-parallax-bg],
+  [data-parallax-media] {
+    transform: none !important;
+    will-change: auto;
+  }
+}

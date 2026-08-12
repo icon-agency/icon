@@ -1,0 +1,40 @@
+/* section-title.css — small uppercase label with an underline that draws in on
+ * scroll. Reused across home sections (Work, News, Awards…). Port of
+ * v40-1-icon/components/section-title.tsx. js/work.js adds .is-visible on IO.
+ * Colour is inherited (currentColor), so it adapts on the blue promo card. */
+
+.section-title {
+  position: relative;
+  padding-bottom: 0.5rem;
+}
+
+.section-title__label {
+  display: block;
+  font-size: var(--text-sm);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  opacity: 1;
+  transition: opacity 700ms var(--ease-standard);
+}
+
+.section-title__rule {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  border-bottom: 1px solid currentColor;
+  transition: width 1000ms var(--ease-decelerate) 300ms;
+}
+
+/* Hidden until revealed only when JS is present (no-JS shows it). */
+.js-animations .section-title__label { opacity: 0; }
+.js-animations .section-title__rule { width: 0; }
+
+.js-animations .section-title.is-visible .section-title__label { opacity: 1; }
+.js-animations .section-title.is-visible .section-title__rule { width: 100%; }
+
+@media (prefers-reduced-motion: reduce) {
+  .js-animations .section-title__label { opacity: 1; }
+  .js-animations .section-title__rule { width: 100%; transition: none; }
+}

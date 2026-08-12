@@ -1,0 +1,132 @@
+/* hero-sphere.css — full-viewport WebGL "celestial mobile": 12 billboarded
+ * photo cards orbiting an invisible sphere around a centred "Make what matters"
+ * headline. Markup: templates/homeB.html (.hero-sphere). Behaviour: js/hero-sphere.js
+ * (Three.js scene + scalar-physics rAF loop + drag/momentum, reduced-motion +
+ * no-WebGL guarded). homeB-only — it does NOT replace the .hero used by home.html.
+ *
+ * Drupal: SDC `hero-sphere` — props { images[] (work media), title_lines[] }.
+ * The canvas is decorative (aria-hidden); the accessible <h1> with an sr-only
+ * "Make what matters" is always in the DOM. Three.js attaches as the
+ * `icon/hero-sphere` library via Drupal.behaviors.iconHeroSphere.
+ */
+
+.hero-sphere {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  height: 100svh;
+  overflow: hidden; /* scoped to the hero: the page still scrolls to content below */
+  /* Match the page background (#1e1e1e in dark) so the hero blends seamlessly
+     into the content below — same token the original .hero uses. */
+  background-color: var(--color-background);
+}
+
+/* WebGL surface. Sits below the site header (z-index 10000+) so nav clicks
+   never reach it; drag is bound to the canvas only. The hero video, headline and
+   orbiting cards all live INSIDE this canvas now (WebGL), so it owns the scene. */
+.hero-sphere__canvas {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  cursor: grab;
+  /* Let vertical touch gestures scroll the page through to content below;
+     horizontal drags rotate the sphere. (Mouse drag still tilts — see JS.) */
+  touch-action: pan-y;
+  opacity: 0;
+  transition: opacity 800ms var(--ease-decelerate);
+}
+
+.hero-sphere__canvas.is-ready {
+  opacity: 1;
+}
+
+.hero-sphere.is-dragging .hero-sphere__canvas {
+  cursor: grabbing;
+}
+
+/* Hidden <video> sources feeding the WebGL VideoTextures. Kept in the DOM and
+   renderable (not display:none, which can pause decoding) but visually absent. */
+.hero-sphere__source {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ---- Accessible / fallback headline ------------------------------------- */
+/* The real heading. Its sr-only span carries the accessible name in every
+   path. The visible serif lines render only as the no-JS / no-WebGL fallback —
+   when WebGL drives the canvas they're hidden (the canvas paints the headline). */
+.hero-sphere__title {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+/* Staggered layout matching the original hero headline: "Make" italic-left,
+   "what" right, "matters" left, within a block centred by .hero-sphere__title. */
+.hero-sphere__lines {
+  display: inline-block;
+  font-family: var(--font-serif);
+  font-weight: 700;
+  color: var(--color-white);
+  /* Single fluid scale (~midway between the original and the 50%-reduced
+     headline); line-height/letter-spacing are font-relative so the stagger +
+     spacing scale together. Mirrored in js/hero-sphere.js textFontFor(). */
+  font-size: clamp(2rem, 8vw, 8.5rem);
+  line-height: 0.9;
+  letter-spacing: -0.02em;
+}
+
+.hero-sphere__line {
+  display: block;
+  white-space: nowrap;
+}
+
+.hero-sphere__line--make {
+  text-align: left;
+  font-style: italic;
+}
+
+.hero-sphere__line--what {
+  text-align: right;
+}
+
+.hero-sphere__line--matters {
+  text-align: left;
+}
+
+/* JS present → assume the canvas will paint the headline; hide the DOM lines to
+   avoid a flash. The `.js-animations` class is set on <html> before first paint
+   (see homeB.html head), so no-JS visitors keep the visible fallback. */
+.js-animations .hero-sphere__lines {
+  display: none;
+}
+
+/* …but if WebGL is unavailable (or the context is lost), bring the DOM
+   headline back as the static fallback on the black backdrop. */
+.hero-sphere.no-webgl .hero-sphere__lines {
+  display: inline-block;
+}
+
+/* Reduced motion: the JS renders a single static frame (no rAF loop, no drag,
+   no pinned choreography). Keep the canvas fade instant so there's no perceived
+   motion. */
+@media (prefers-reduced-motion: reduce) {
+  .hero-sphere__canvas {
+    transition: none;
+    /* Static single frame, no drag handlers bound — don't imply draggability. */
+    cursor: default;
+  }
+}

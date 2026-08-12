@@ -1,0 +1,81 @@
+/* pager.css — listing pagination: a previous control, a status pill
+ * ("Page 1 of 3 (11 projects)"), and a next control. Real <a> navigation;
+ * a disabled control renders as a non-interactive <span> (no href). 48px square
+ * controls on the brand --radius-icon corner. Port of
+ * v40-1-icon/components/pagination-controls.tsx, recoloured to dark-aware
+ * neutral surfaces (--pager-surface) — v0's literal gray-100/200 would vanish
+ * on the dark default background.
+ *
+ * Drupal: override pager.html.twig → this BEM; compose the status string from
+ * the pager vars. The disabled prev on page 1 is emitted as <span>, not <a>.
+ */
+
+.pager {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-md);
+  margin-block: var(--space-section-sm);
+}
+
+.pager__prev,
+.pager__next {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  border-radius: var(--radius-icon);
+  transition:
+    background var(--duration-normal) var(--ease-standard),
+    transform var(--duration-normal) var(--ease-standard),
+    opacity var(--duration-normal) var(--ease-standard);
+}
+
+.pager__prev {
+  color: var(--color-icon-grey);
+  background: var(--pager-surface);
+}
+
+.pager__prev:hover,
+.pager__prev:focus-visible {
+  background: var(--pager-surface-strong);
+  transform: translateX(-0.25rem);
+}
+
+.pager__next {
+  color: var(--color-background);
+  background: var(--color-foreground);
+}
+
+.pager__next:hover,
+.pager__next:focus-visible {
+  opacity: 0.9;
+  transform: translateX(0.25rem);
+}
+
+/* Disabled = rendered as a <span> (no href): dim, no pointer, no hover shift. */
+.pager__prev--disabled,
+.pager__next--disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.pager__status {
+  display: inline-flex;
+  align-items: center;
+  height: 3rem;
+  padding-inline: var(--spacing-lg);
+  border-radius: var(--radius-icon);
+  font-size: var(--text-sm);
+  font-weight: var(--font-weight-medium);
+  white-space: nowrap;
+  color: var(--color-icon-grey);
+  background: var(--pager-surface);
+}
+
+.pager__prev svg,
+.pager__next svg {
+  width: 1.25rem;
+  height: 1.25rem;
+}

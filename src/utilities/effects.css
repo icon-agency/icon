@@ -1,0 +1,90 @@
+/* effects.css — bespoke single-purpose utilities ported from the v0 build.
+ * These are genuine cross-component helpers (not BEM blocks, not layout).
+ * Component-specific effects (nav overlay, menu underline, shader canvas)
+ * stay with their components during the rebuild. */
+
+@layer utilities {
+  /* Display serif, italic — the "miller-text" accent used in headings. */
+  .miller-text {
+    font-family: var(--font-serif);
+    font-weight: 700;
+    font-style: italic;
+  }
+
+  .fluid-heading {
+    font-size: var(--heading-1);
+    line-height: 1;
+    font-weight: 500;
+  }
+
+  .icon-tagline {
+    font-weight: 500;
+    font-size: var(--text-xs);
+  }
+
+  .text-card-title {
+    font-size: var(--card-title);
+    font-weight: 500;
+  }
+
+  .text-card-subtitle {
+    font-size: var(--card-subtitle);
+    font-weight: 500;
+  }
+
+  /* Greyscale/high-contrast treatment for video + "icon black" imagery. */
+  .icon-video-filter {
+    filter: var(--video-filter);
+  }
+
+  .homepage-icon-black {
+    filter: saturate(0) contrast(2) brightness(0.7);
+  }
+
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Frosted-glass overlay (menus, panels).
+     -webkit- declared first so the unprefixed form survives minification
+     (Lightning CSS drops the first of a prefixed pair — see LESSONS). */
+  .overlay-frosted-glass {
+    background-color: rgb(30 30 30 / var(--overlay-opacity));
+    -webkit-backdrop-filter: blur(var(--overlay-blur));
+    backdrop-filter: blur(var(--overlay-blur));
+  }
+
+  /* Animated film grain — decorative overlay layer. */
+  .animated-grain {
+    position: absolute;
+    inset: -50%;
+    width: 200%;
+    height: 200%;
+    opacity: 0.25;
+    mix-blend-mode: overlay;
+    pointer-events: none;
+    will-change: transform;
+    animation: grain 20s steps(8) infinite;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.5' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 2 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    background-size: 50px 50px;
+    image-rendering: pixelated;
+  }
+}
+
+/* Dark-mode treatments for the imagery filters. */
+.dark .homepage-icon-black {
+  filter: saturate(0) contrast(2) brightness(2) invert(1);
+}
+.dark .overlay-frosted-glass {
+  background-color: rgb(245 245 245 / var(--overlay-opacity));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animated-grain {
+    animation: none;
+  }
+}

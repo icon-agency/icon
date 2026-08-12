@@ -1,0 +1,180 @@
+/* hero.css — full-bleed video hero with GSAP letter-reveal headline.
+ *
+ * Markup: templates/home.html (.hero). Behaviour: js/hero.js (GSAP timeline +
+ * scroll parallax, both reduced-motion guarded). Faithful port of
+ * v40-1-icon/components/video-hero.tsx.
+ *
+ * Drupal: SDC `hero` — props { video_src, video_poster, title_lines[] }.
+ * The headline split into letters is presentational; preprocess passes the
+ * three lines, the Twig splits to <span class="hero__letter"> and emits a
+ * sr-only accessible title.
+ */
+
+.hero {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  height: 100svh;
+  overflow: hidden;
+  background-color: var(--color-background);
+}
+
+/* ---- Media stack -------------------------------------------------------- */
+
+.hero__media {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.hero__media-fallback {
+  position: absolute;
+  inset: 0;
+  background-color: var(--color-muted);
+}
+
+.hero__video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  will-change: transform;
+}
+
+/* Bottom fade into the page background so the hero blends into what follows. */
+.hero__gradient {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  height: 24rem;
+  z-index: 1;
+  background: linear-gradient(to top, var(--color-background), transparent);
+}
+
+/* Black cover that fades out once the video is ready. JS adds .is-covering on
+   boot and removes it after load; absent JS it stays transparent (no block). */
+.hero__overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background-color: var(--color-black);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 1500ms var(--ease-decelerate);
+}
+
+.hero__overlay.is-covering {
+  opacity: 1;
+}
+
+/* ---- Headline ----------------------------------------------------------- */
+
+.hero__content {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero__title {
+  margin: 0;
+  max-width: 90vw;
+  padding-inline: 1rem;
+  transform: translateY(-2rem);
+  perspective: 1000px;
+}
+
+.hero__lines {
+  display: inline-block;
+  font-family: var(--font-serif);
+  font-weight: 700;
+  color: var(--color-white);
+  font-size: min(14vw, 140px);
+  line-height: 0.9;
+  letter-spacing: -0.02em;
+  transform-style: preserve-3d;
+}
+
+.hero__line {
+  display: block;
+  position: relative;
+  white-space: nowrap;
+}
+
+.hero__line--make {
+  text-align: left;
+  font-style: italic;
+}
+
+.hero__line--what {
+  text-align: right;
+}
+
+.hero__line--matters {
+  text-align: left;
+}
+
+/* Per-character slots for the scramble — fixed width so each letter holds its
+   final position while it scrambles in place (no horizontal reflow). js/hero.js
+   restores plain text once the entrance finishes. */
+.hero__char {
+  display: inline-block;
+  text-align: center;
+  white-space: pre;
+}
+
+/* Lines start hidden — JS scrambles them in. Only when JS is present and the
+   user hasn't asked for reduced motion; otherwise they render immediately. */
+@media (prefers-reduced-motion: no-preference) {
+  .js-animations .hero__line {
+    visibility: hidden;
+  }
+}
+
+@media (min-width: 640px) {
+  .hero__title { max-width: 70vw; }
+}
+
+@media (min-width: 1024px) {
+  .hero__title { max-width: 50vw; }
+  .hero__lines { font-size: 12vw; }
+}
+
+@media (min-width: 1280px) {
+  .hero__title { max-width: 40vw; }
+  .hero__lines { font-size: 10vw; }
+}
+
+@media (min-width: 1536px) {
+  .hero__title { max-width: 35vw; }
+  .hero__lines { font-size: 180px; }
+}
+
+/* ---- Parallax ----------------------------------------------------------- */
+/* Compositor-driven scroll parallax: the video translates down at half scroll
+   speed over the hero's height. Runs off the main thread so it's smooth and
+   stays exactly in lockstep with scroll (no main-thread desync / stutter).
+   js/hero.js only takes over on browsers without scroll-driven animations. */
+@keyframes hero-video-parallax {
+  to {
+    transform: translate3d(0, 50vh, 0);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: scroll()) {
+    .hero__video {
+      animation: hero-video-parallax linear both;
+      animation-timeline: scroll(root);
+      animation-range: 0 100vh;
+    }
+  }
+}
+
+/* No-JS / reduced-motion: show the headline immediately, no cover, no parallax. */
+@media (prefers-reduced-motion: reduce) {
+  .hero__overlay { transition: none; }
+}

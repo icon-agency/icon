@@ -1,0 +1,158 @@
+/* work-article.css — PAGE-SPECIFIC layer for the /work/article case study.
+ * Imported LAST in src/main.css so it cascades over everything.
+ *
+ * Holds three concerns:
+ *  1. .theme-work-article — a per-route LIGHT theme. The site default is dark
+ *     (.dark on <html>); this scope sits on the SAME <html> element (class="dark
+ *     theme-work-article") and re-binds the brand vars to the work-article
+ *     palette (already in colors.css as --work-article-*). It must be on <html>,
+ *     not <body>: Tailwind v4 registers the --color-* aliases and resolves them
+ *     at :root, so a body-level rebind would re-theme the raw vars (prose) but
+ *     NOT the --color-* aliases / utilities. On <html> it reaches both. No inline
+ *     styles, no rebuild — the same mechanism .dark uses; it wins over .dark by
+ *     source order. The reveal swipe is unaffected (FIXED --color-brand-blue).
+ *  2. .case-study — the article layout: centred hero, featured media, two-column
+ *     text rows.
+ *  3. Compositor parallax (animation-timeline: view(), intensity 8) on the
+ *     featured image — never a scroll handler (see LESSONS.md / docs/animation.md).
+ *
+ * Drupal: a case_study node. template_preprocess_html adds the theme-work-article
+ * body class for the node type; the body renders inside .content-page.
+ */
+
+/* ---- 1. Per-route light theme ------------------------------------------- */
+
+.theme-work-article {
+  /* Two role pointers (ink + surface) so everything below derives from them and
+   * the dev toggle can swap the two override colours by flipping the pointers
+   * (.is-inverted). The raw values still live only in colors.css. */
+  --wa-ink: var(--work-article-text);    /* #441170 purple */
+  --wa-surface: var(--work-article-bg);  /* #ebe5fe lilac  */
+
+  --background: var(--wa-surface);
+  --foreground: var(--wa-ink);
+  --icon-black: var(--wa-ink);
+  --icon-grey: color-mix(in srgb, var(--wa-ink) 80%, transparent);
+  --icon-blue: var(--wa-ink);
+  --border: color-mix(in srgb, var(--wa-ink) 20%, transparent);
+  --secondary: color-mix(in srgb, var(--wa-ink) 8%, transparent);
+  /* Frosted nav pill, tinted to the folio surface (the dark default would be
+   * illegible under the folio nav links). */
+  --nav-bg-scrolled: color-mix(in srgb, var(--wa-surface) 78%, transparent);
+  background-color: var(--wa-surface);
+  /* Default ink for inherited text (section-title label, more-link) — prose
+   * elements set their own brand-token colours on top of this. */
+  color: var(--wa-ink);
+}
+
+/* Inverted folio — the dev toggle swaps the two override colours: light ink on
+ * the dark purple surface. Everything re-themes because it all reads --wa-*. */
+.theme-work-article.is-inverted {
+  --wa-ink: var(--work-article-bg);    /* #ebe5fe lilac  */
+  --wa-surface: var(--work-article-text); /* #441170 purple */
+}
+
+/* The fixed wordmark inherits the article ink (v0 used an inline colorOverride). */
+.theme-work-article .site-logo {
+  color: var(--wa-ink);
+}
+
+/* ---- 2. Layout ----------------------------------------------------------- */
+
+.case-study {
+  padding-inline: clamp(1rem, 3vw, 3rem);
+  padding-top: clamp(8rem, 12vw, 10rem);
+  padding-bottom: var(--space-section);
+}
+
+.case-study__hero {
+  text-align: center;
+  margin-bottom: clamp(3rem, 6vw, 6rem);
+}
+
+.case-study__eyebrow {
+  margin: 0 0 var(--spacing-lg);
+  font-size: var(--text-xs);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-icon-black);
+}
+
+.case-study__title {
+  max-width: 24ch;
+  margin: 0 auto;
+  /* Custom fluid value: matches v0's clamp(3rem, 6vw, 4.5rem) case-study headline. */
+  font-size: clamp(3rem, 6vw, 4.5rem);
+  font-weight: var(--font-weight-semibold);
+  line-height: 1;
+  letter-spacing: -0.025em;
+  color: var(--color-icon-black);
+}
+
+/* Featured image — reveal-wrapped frame with compositor parallax (intensity 8). */
+.case-study__featured {
+  margin: 0 0 clamp(3rem, 6vw, 6rem);
+}
+
+.case-study__featured-frame {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-radius: var(--radius-icon);
+}
+
+.case-study__featured-media {
+  position: absolute;
+  inset-inline: 0;
+  top: -11%;
+  width: 100%;
+  height: 117%; /* 101 + intensity(8) * 2 — oversized so ±8% travel never exposes an edge */
+  object-fit: cover;
+  will-change: transform;
+}
+
+@keyframes case-study-parallax {
+  from { transform: translateY(8%); }
+  to { transform: translateY(-8%); }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .case-study__featured-media {
+      animation: case-study-parallax linear both;
+      animation-timeline: --card-parallax; /* named timeline on the .reveal ancestor */
+    }
+  }
+}
+
+/* Standalone autoplaying video — reveal-wrapped, no parallax. Native muted-loop
+ * autoplay (no JS); the reveal swipe covers the first frames during load. */
+.case-study__video {
+  margin: 0 0 clamp(3rem, 6vw, 6rem);
+}
+
+.case-study__video-media {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border-radius: var(--radius-icon);
+}
+
+/* Two-column text rows: heading left, body right (stacks below lg). Pair with
+ * .content-page so the h2 / p / h3 / ul inside get the prose treatment. */
+.content-columns {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-xl);
+  margin-block: clamp(2rem, 5vw, 6rem);
+  text-align: left;
+}
+
+@media (min-width: 1024px) {
+  .content-columns {
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(2rem, 4vw, 3rem);
+  }
+}

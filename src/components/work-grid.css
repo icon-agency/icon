@@ -1,0 +1,42 @@
+/* work-grid.css — the /work LISTING grid: one continuous 12-column grid of
+ * project cards whose column spans follow a repeating 8-item rhythm
+ * (8,4,6,6,4,8,6,6) emitted per item in the template loop — NOT via :nth-child —
+ * so the pattern survives filtered / paged subsets (js/work-filter.js re-flows
+ * it on filter). Cards stack full width below lg.
+ *
+ * Distinct from work-section.css, which is the HOME promo-led featured grid
+ * (rows [4 promo, 8], [6,6], [8,4]). This is a plain card grid with no promo.
+ * Each card is wrapped in .reveal and is the project-card SDC.
+ *
+ * Drupal: a View over case_study nodes. Preprocess computes the span modifier
+ * from (index % 8) and exposes the category slug as data-category (the filter
+ * hook); each row renders the project_card SDC inside a .reveal wrapper.
+ */
+
+.work-grid {
+  padding-inline: clamp(1rem, 3vw, 3rem);
+  padding-bottom: var(--spacing-3xl);
+}
+
+.work-grid__grid {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  grid-auto-rows: 1fr;
+  gap: var(--spacing-md);
+  align-items: stretch;
+}
+
+/* Spans — full width on mobile, the design rhythm at lg+. */
+.work-grid__col {
+  grid-column: span 12;
+  min-width: 0;
+}
+
+@media (min-width: 1024px) {
+  .work-grid__col--4 { grid-column: span 4; }
+  .work-grid__col--6 { grid-column: span 6; }
+  .work-grid__col--8 { grid-column: span 8; }
+}
+
+/* Filtered-out cards (js/work-filter.js toggles the hidden attribute). */
+.work-grid__col[hidden] { display: none; }

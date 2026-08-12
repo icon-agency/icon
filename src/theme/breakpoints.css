@@ -1,0 +1,14 @@
+/* breakpoints.css
+ *
+ * This design uses Tailwind v4's DEFAULT breakpoints:
+ *   sm 640 · md 768 · lg 1024 · xl 1280 · 2xl 1536
+ * lg (1024) is the mobile-menu / desktop cutoff (see the reference layout).
+ * Only the two large additions are declared here.
+ *
+ * Available as variants in markup: 3xl:… 4xl:…  and via
+ * @media (min-width: var(--breakpoint-3xl)) in component CSS. */
+
+@theme {
+  --breakpoint-3xl: 120rem; /* 1920px */
+  --breakpoint-4xl: 160rem; /* 2560px */
+}

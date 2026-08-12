@@ -1,0 +1,32 @@
+/* pull-quote.css — the big serif pull-quote (HighlightContent in v0). Centred,
+ * fluid, serif-italic at MEDIUM weight, fading up via the [data-animate] host
+ * (js/reveal.js). Colour inherits the page ink so it re-themes under
+ * .theme-work-article.
+ *
+ * NB: this deliberately does NOT use the .miller-text utility — that helper is
+ * hard-wired to font-weight 700, whereas v0's HighlightContent renders the serif
+ * at font-medium (500). So we set the serif/italic/500 here directly.
+ *
+ * Lives OUTSIDE .content-page so the prose blockquote rules (capped at 2rem,
+ * upright) don't apply.
+ *
+ * Drupal: a pull_quote paragraph — field_quote (text long).
+ */
+
+.pull-quote {
+  margin: 0;
+  padding-block: clamp(2rem, 6vw, 6rem);
+  text-align: center;
+}
+
+.pull-quote__text {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: var(--font-weight-medium);
+  /* Custom fluid value: matches v0's clamp(1.875rem, 4vw, 5rem) pull-quote. */
+  font-size: clamp(1.875rem, 4vw, 5rem);
+  line-height: 1.2;
+  color: var(--color-icon-black);
+  text-wrap: balance;
+}
