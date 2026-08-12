@@ -1,0 +1,576 @@
+/* design-system.css — PAGE layer for the design-system index (/index.html).
+ * A living style guide for the ICON tokens and components. NOT a Drupal
+ * template — an internal reference (the GreenPowerDS pattern, adapted to this
+ * build's Tailwind-v4 token architecture). Demos wear the production CSS in
+ * this same bundle; this file styles only the DS chrome (shell, sidebar,
+ * sections, swatches, specimens).
+ *
+ * Shell lessons inherited from GreenPowerDS (their LESSONS.md):
+ *  - the app frame uses overflow: clip (hidden would create a scroll container
+ *    that anchor jumps can scroll with no way back);
+ *  - the frame keeps position: relative so absolutely-positioned visually-
+ *    hidden descendants can't inflate the document height;
+ *  - the content pane is the ONLY scroll container — scripts bind to it.
+ */
+
+/* ---- App shell ---------------------------------------------------------- */
+
+.ds-app {
+  position: relative; /* containing block for stray absolute descendants */
+  display: grid;
+  grid-template-columns: 16rem minmax(0, 1fr);
+  height: 100dvh;
+  overflow: clip;
+  background: var(--color-background);
+  color: var(--color-foreground);
+}
+
+/* The mobile-drawer backdrop must NOT be a desktop grid item — hidden by
+   default everywhere, shown (fixed) only while the drawer is open. */
+.ds-backdrop {
+  display: none;
+}
+
+/* ---- Sidebar ------------------------------------------------------------ */
+
+.ds-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+  padding: var(--spacing-lg) var(--spacing-md);
+  border-right: 1px solid var(--color-border);
+  overflow-y: auto;
+  background: var(--color-background);
+}
+
+.ds-sidebar__brand {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: var(--color-icon-black);
+  text-decoration: none;
+}
+
+.ds-sidebar__brand svg {
+  height: 1.6rem;
+  width: auto;
+}
+
+.ds-sidebar__brand-label {
+  font-size: var(--text-xs);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.ds-nav {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  font-size: var(--text-xs);
+}
+
+.ds-nav__group-title {
+  margin: 0 0 0.35rem;
+  font-size: 0.7rem;
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-icon-grey);
+}
+
+.ds-nav__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.ds-nav__link {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.28rem 0.5rem;
+  border-radius: var(--radius-sm);
+  color: var(--color-icon-black);
+  text-decoration: none;
+  line-height: 1.3;
+}
+
+.ds-nav__link:hover {
+  background: color-mix(in srgb, var(--color-icon-black) 7%, transparent);
+}
+
+.ds-nav__link.is-active {
+  background: color-mix(in srgb, var(--color-icon-black) 10%, transparent);
+  font-weight: var(--font-weight-semibold);
+}
+
+/* External page links (open a template) carry a small arrow glyph. */
+.ds-nav__link--external svg {
+  width: 0.7rem;
+  height: 0.7rem;
+  flex: none;
+  opacity: 0.55;
+}
+
+/* De-emphasised group: prototypes that are NOT part of the system. */
+.ds-nav__list--muted .ds-nav__link {
+  color: var(--color-icon-grey);
+}
+
+.ds-nav__section {
+  border-top: 1px solid var(--color-border);
+  padding-top: var(--spacing-md);
+}
+
+.ds-nav__section summary {
+  cursor: pointer;
+  font-size: 0.7rem;
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-icon-grey);
+  margin-bottom: var(--spacing-sm);
+}
+
+.ds-nav__section .ds-nav__group + .ds-nav__group {
+  margin-top: var(--spacing-md);
+}
+
+.ds-sidebar__footer {
+  margin-top: auto;
+  padding-top: var(--spacing-md);
+  border-top: 1px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  font-size: 0.7rem;
+}
+
+.ds-sidebar__footer a {
+  color: var(--color-icon-grey);
+  text-decoration: none;
+}
+.ds-sidebar__footer a:hover { color: var(--color-icon-black); }
+
+/* ---- Content pane ------------------------------------------------------- */
+
+.ds-main {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  /* Grid items default to min-height auto — without this the column grows to
+     its content height inside the clipped shell and the pane can never scroll. */
+  min-height: 0;
+}
+
+.ds-topbar {
+  display: none; /* mobile only */
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.6rem var(--spacing-md);
+  border-bottom: 1px solid var(--color-border);
+  font-size: var(--text-xs);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.ds-content {
+  flex: 1;
+  min-height: 0; /* same trap as .ds-main, one level down (flex item) */
+  overflow-y: auto;
+  padding: var(--spacing-2xl) clamp(1.25rem, 4vw, 4rem) 6rem;
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ds-content { scroll-behavior: auto; }
+}
+
+.ds-content__inner {
+  max-width: 68rem;
+}
+
+/* ---- Page intro --------------------------------------------------------- */
+
+.ds-intro__title {
+  margin: 0 0 var(--spacing-sm);
+  font-size: var(--text-4xl);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: -0.01em;
+  text-wrap: pretty;
+}
+
+.ds-intro__lede {
+  margin: 0;
+  max-width: 46rem;
+  font-size: var(--text-base);
+  line-height: 1.6;
+  color: var(--color-icon-grey);
+  text-wrap: pretty;
+}
+
+/* ---- Category bands + sections ------------------------------------------ */
+
+.ds-category {
+  margin-top: var(--spacing-3xl);
+  padding-top: var(--spacing-lg);
+  border-top: 2px solid var(--color-icon-black);
+}
+
+.ds-category__title {
+  margin: 0;
+  font-size: var(--text-xl);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.ds-category__note {
+  margin: 0.4rem 0 0;
+  max-width: 46rem;
+  font-size: var(--text-sm);
+  color: var(--color-icon-grey);
+  text-wrap: pretty;
+}
+
+.ds-section {
+  margin-top: var(--spacing-2xl);
+  scroll-margin-top: var(--spacing-lg);
+}
+
+.ds-section__title {
+  margin: 0 0 var(--spacing-sm);
+  font-size: var(--text-2xl);
+  font-weight: var(--font-weight-semibold);
+}
+
+.ds-section__intro {
+  margin: 0 0 var(--spacing-md);
+  max-width: 46rem;
+  font-size: var(--text-sm);
+  line-height: 1.6;
+  color: var(--color-icon-grey);
+  text-wrap: pretty;
+}
+
+.ds-group {
+  margin-top: var(--spacing-lg);
+}
+
+.ds-group__title {
+  margin: 0 0 0.3rem;
+  font-size: var(--text-sm);
+  font-weight: var(--font-weight-bold);
+}
+
+.ds-group__note {
+  margin: 0 0 var(--spacing-sm);
+  max-width: 46rem;
+  font-size: var(--text-sm);
+  line-height: 1.55;
+  color: var(--color-icon-grey);
+  text-wrap: pretty;
+}
+
+.ds-code {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 0.82em;
+  padding: 0.1em 0.35em;
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--color-icon-black) 7%, transparent);
+}
+
+/* Demo frame: a bordered stage the live component markup sits inside. */
+.ds-demo {
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-lg);
+  overflow-x: auto;
+}
+
+.ds-demo__label {
+  margin: 0.4rem 0 0;
+  font-size: 0.72rem;
+  color: var(--color-icon-grey);
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+}
+
+/* Link-out card for components that can't be honestly demoed at reduced scale. */
+.ds-thumb-link {
+  display: block;
+  max-width: 26rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  transition: border-color var(--duration-normal) var(--ease-standard);
+}
+.ds-thumb-link:hover { border-color: var(--color-icon-black); }
+.ds-thumb-link img { display: block; width: 100%; aspect-ratio: 16 / 9; object-fit: cover; }
+.ds-thumb-link figcaption {
+  padding: 0.6rem 0.85rem;
+  font-size: var(--text-xs);
+  font-weight: var(--font-weight-semibold);
+}
+
+/* ---- Colour swatches ---------------------------------------------------- */
+
+.ds-swatches {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr));
+  gap: var(--spacing-sm);
+}
+
+.ds-swatch {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.ds-swatch__chip {
+  height: 3.4rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.ds-swatch__meta {
+  padding: 0.5rem 0.65rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.ds-swatch__name {
+  font-size: 0.78rem;
+  font-weight: var(--font-weight-semibold);
+}
+
+.ds-swatch__token,
+.ds-swatch__value {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 0.68rem;
+  color: var(--color-icon-grey);
+}
+
+/* ---- Type specimens ----------------------------------------------------- */
+
+.ds-specimen {
+  display: grid;
+  grid-template-columns: 9rem minmax(0, 1fr) auto;
+  gap: var(--spacing-md);
+  align-items: baseline;
+  padding: 0.55rem 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.ds-specimen__label {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 0.72rem;
+  color: var(--color-icon-grey);
+}
+
+.ds-specimen__sample {
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ds-specimen__px {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 0.72rem;
+  color: var(--color-icon-grey);
+}
+
+/* Specimen helpers — token-driven sizes for the demo rows, so the page needs
+   no inline styles (the AGENTS rule verify will enforce). One class per token. */
+.ds-fs-xs { font-size: var(--text-xs); }
+.ds-fs-sm { font-size: var(--text-sm); }
+.ds-fs-base { font-size: var(--text-base); }
+.ds-fs-lg { font-size: var(--text-lg); }
+.ds-fs-xl { font-size: var(--text-xl); }
+.ds-fs-2xl { font-size: var(--text-2xl); }
+.ds-fs-3xl { font-size: var(--text-3xl); }
+.ds-fs-4xl { font-size: var(--text-4xl); }
+.ds-fs-5xl { font-size: var(--text-5xl); }
+.ds-fs-6xl { font-size: var(--text-6xl); }
+.ds-fs-h1 { font-size: var(--heading-1); font-weight: var(--font-weight-bold); }
+.ds-fs-h2 { font-size: var(--heading-2); font-weight: var(--font-weight-bold); }
+.ds-fs-h3 { font-size: var(--heading-3); font-weight: var(--font-weight-semibold); }
+.ds-fs-card { font-size: var(--card-title); font-weight: var(--font-weight-bold); }
+.ds-fw-400 { font-weight: 400; }
+.ds-fw-500 { font-weight: 500; }
+.ds-fw-600 { font-weight: 600; }
+.ds-fw-700 { font-weight: 700; }
+.ds-fw-800 { font-weight: 800; }
+.ds-w-3xs { width: var(--spacing-3xs); }
+.ds-w-2xs { width: var(--spacing-2xs); }
+.ds-w-xs { width: var(--spacing-xs); }
+.ds-w-sm { width: var(--spacing-sm); }
+.ds-w-md { width: var(--spacing-md); }
+.ds-w-lg { width: var(--spacing-lg); }
+.ds-w-xl { width: var(--spacing-xl); }
+.ds-w-2xl { width: var(--spacing-2xl); }
+.ds-w-3xl { width: var(--spacing-3xl); }
+.ds-r-sm { border-radius: var(--radius-sm); }
+.ds-r-md { border-radius: var(--radius-md); }
+.ds-r-lg { border-radius: var(--radius-lg); }
+.ds-r-xl { border-radius: var(--radius-xl); }
+.ds-r-icon { border-radius: var(--radius-icon); }
+
+/* ---- Spacing bars ------------------------------------------------------- */
+
+.ds-space-row {
+  display: grid;
+  grid-template-columns: 9rem minmax(0, 1fr) auto;
+  gap: var(--spacing-md);
+  align-items: center;
+  padding: 0.4rem 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.ds-space-row__bar {
+  height: 1rem;
+  border-radius: 2px;
+  background: var(--color-icon-blue);
+}
+
+/* ---- Radius chips ------------------------------------------------------- */
+
+.ds-radius-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-md);
+}
+
+.ds-radius-chip {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 0.68rem;
+  color: var(--color-icon-grey);
+}
+
+.ds-radius-chip__box {
+  width: 4.5rem;
+  height: 3rem;
+  border: 2px solid var(--color-icon-black);
+}
+
+/* ---- Motion demos ------------------------------------------------------- */
+
+.ds-ease-row {
+  display: grid;
+  grid-template-columns: 9rem minmax(0, 1fr) auto;
+  gap: var(--spacing-md);
+  align-items: center;
+  padding: 0.4rem 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.ds-ease-row__track {
+  position: relative;
+  height: 1.4rem;
+}
+
+.ds-ease-row__dot {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 9999px;
+  background: var(--color-icon-blue);
+  translate: 0 -50%;
+  transition-property: left;
+  transition-duration: var(--duration-slow);
+}
+
+/* Hover/focus anywhere on the row slides the dot across its track. */
+.ds-ease-row:hover .ds-ease-row__dot,
+.ds-ease-row:focus-within .ds-ease-row__dot {
+  left: calc(100% - 1rem);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ds-ease-row__dot { transition: none; }
+}
+
+/* ---- Plain data table --------------------------------------------------- */
+
+.ds-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--text-sm);
+}
+
+.ds-table th,
+.ds-table td {
+  text-align: left;
+  padding: 0.45rem 0.75rem 0.45rem 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.ds-table th {
+  font-size: 0.72rem;
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-icon-grey);
+}
+
+.ds-table code { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 0.82em; }
+
+/* ---- Mobile: sidebar becomes a drawer ----------------------------------- */
+
+@media (max-width: 900px) {
+  .ds-app {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .ds-topbar { display: flex; }
+
+  .ds-topbar__toggle {
+    border: 1px solid var(--color-border);
+    background: none;
+    border-radius: var(--radius-sm);
+    padding: 0.3rem 0.7rem;
+    font: inherit;
+    cursor: pointer;
+  }
+
+  .ds-sidebar {
+    position: fixed;
+    inset: 0 30% 0 0;
+    z-index: 50;
+    transform: translateX(-100%);
+    transition: transform var(--duration-normal) var(--ease-standard);
+    border-right: 1px solid var(--color-border);
+  }
+
+  .ds-app.is-nav-open .ds-sidebar { transform: translateX(0); }
+
+  .ds-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 40;
+    background: rgb(0 0 0 / 0.4);
+    border: 0;
+    display: none;
+  }
+
+  .ds-app.is-nav-open .ds-backdrop { display: block; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ds-sidebar { transition: none; }
+  }
+}

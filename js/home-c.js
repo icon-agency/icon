@@ -30,7 +30,7 @@
   // ---- 2. Hero load sequence ---------------------------------------------
   var hero = document.querySelector("[data-hero]");
   if (hero) {
-    var hImg = hero.querySelector(".homec-hero__img");
+    var hImg = hero.querySelector(".hero__img");
     var ready = function () { hero.classList.add("is-ready"); };
     if (!hImg || hImg.complete) {
       // one extra frame so the pre-.is-ready state paints first (no flash of end state)
@@ -96,6 +96,20 @@
     }
   }
 
+  // ---- 3b. Clients marquee pause (WCAG 2.2.2) ----------------------------
+  // Toggles .is-paused on the section (CSS pauses all three tracks) and keeps
+  // aria-pressed + the label in sync. The button is CSS-hidden under reduced
+  // motion, where the marquee never animates.
+  var clientsPause = document.querySelector("[data-clients-pause]");
+  if (clientsPause) {
+    var clientsSection = clientsPause.closest(".clients");
+    clientsPause.addEventListener("click", function () {
+      var paused = clientsSection.classList.toggle("is-paused");
+      clientsPause.setAttribute("aria-pressed", paused ? "true" : "false");
+      clientsPause.setAttribute("aria-label", paused ? "Play client name animation" : "Pause client name animation");
+    });
+  }
+
   // ---- 4. SplitText line-mask text reveals -------------------------------
   var texts = Array.prototype.slice.call(document.querySelectorAll("[data-reveal-text]"));
   if (texts.length && splitOk && !reduce && hasIO) {
@@ -103,7 +117,7 @@
       texts.forEach(function (el) {
         var split;
         try {
-          split = new window.SplitText(el, { type: "lines", mask: "lines", linesClass: "hc-line" });
+          split = new window.SplitText(el, { type: "lines", mask: "lines", linesClass: "split-line" });
         } catch (e) { return; } // leave the text as authored on failure
         window.gsap.set(split.lines, { yPercent: 115 });
         var tIO = new IntersectionObserver(function (entries) {

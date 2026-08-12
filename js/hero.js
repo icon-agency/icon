@@ -13,7 +13,7 @@
 
   var overlay = hero.querySelector("[data-hero-overlay]");
   var video = hero.querySelector("[data-hero-video]");
-  var lines = Array.prototype.slice.call(hero.querySelectorAll(".hero__line"));
+  var lines = Array.prototype.slice.call(hero.querySelectorAll(".video-hero__line"));
   var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   var gsap = window.gsap;
   var hasGsap = typeof gsap !== "undefined";
@@ -54,7 +54,7 @@
     var spans = [];
     for (var m = 0; m < text.length; m++) {
       var s = document.createElement("span");
-      s.className = "hero__char";
+      s.className = "video-hero__char";
       s.textContent = text[m];
       if (widths[m]) s.style.width = widths[m] + "px";
       line.appendChild(s);

@@ -2,11 +2,473 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta http-equiv="refresh" content="0; url=templates/homeC.html" />
-    <link rel="canonical" href="templates/homeC.html" />
-    <title>ICON Agency — Make what matters</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Design System — ICON Agency</title>
+    <meta name="description" content="Living reference for the ICON Agency design tokens and components. Internal guide — not a production page." />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Kumbh+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://use.typekit.net/bhv7yrj.css" />
+    <link rel="stylesheet" href="css/main.css" />
+
+    <!-- Dev-only theme toggle (bottom-right): flips .dark on <html> so every
+         token-driven swatch and demo on this page re-resolves live. -->
+    <script src="js/theme-toggle.js"></script>
   </head>
   <body>
-    <p>Redirecting to the <a href="templates/homeC.html">ICON Agency prototype</a>…</p>
+    <div class="ds-app" id="ds-app">
+      <button class="ds-backdrop" data-ds-backdrop aria-label="Close navigation" tabindex="-1"></button>
+
+      <!-- ================= SIDEBAR ================= -->
+      <aside class="ds-sidebar" id="ds-sidebar">
+        <a class="ds-sidebar__brand" href="./">
+          <svg viewBox="0 0 154 50" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="ICON">
+            <path d="M153.042 18.4117L148.607 14.7183H142.101C140.042 14.7183 138.367 13.0435 138.367 10.9848V0H149.309C151.367 0 153.042 1.67487 153.042 3.73356V18.4117ZM139.902 1.53434V10.9848C139.902 12.1974 140.888 13.184 142.101 13.184H149.162L151.508 15.1374V3.73356C151.508 2.52088 150.521 1.53434 149.309 1.53434H139.902Z" fill="currentColor" />
+            <path d="M80.7421 29.5428C80.7421 34.619 76.6127 38.7489 71.5366 38.7489C66.4604 38.7489 62.3305 34.619 62.3305 29.5428C62.3305 24.4665 66.4602 20.3372 71.5366 20.3372C76.6129 20.3372 80.7421 24.4668 80.7421 29.5428ZM91.8734 29.543C91.8734 18.3293 82.7503 9.20605 71.5363 9.20605C60.3222 9.20605 51.1992 18.3293 51.1992 29.543C51.1992 40.7567 60.3222 49.8802 71.5363 49.8802C82.7503 49.8802 91.8734 40.7567 91.8734 29.543Z" fill="currentColor" />
+            <path d="M37.7394 9.20606C26.5256 9.20606 17.4023 18.3293 17.4023 29.5431C17.4023 40.7569 26.5256 49.8802 37.7394 49.8802C42.5976 49.8802 47.3 48.115 51.009 44.9045L44.4842 36.366C42.67 38.1648 40.2872 39.1512 37.7394 39.1512C32.4416 39.1512 28.1316 34.841 28.1316 29.5431C28.1316 24.2453 32.4416 19.935 37.7394 19.935C40.3244 19.935 42.7325 20.9469 44.5542 22.7911L51.1997 14.3433C47.4621 11.0286 42.6924 9.20606 37.7394 9.20606Z" fill="currentColor" />
+            <path d="M12.8008 9.20605H0V49.8802H12.8008V9.20605Z" fill="currentColor" />
+            <path d="M121.726 9.20605V28.158L107.498 9.20605H96.4766V49.8802H108.513V30.9753L123.827 49.8802H133.763V9.20605H121.726Z" fill="currentColor" />
+          </svg>
+          <span class="ds-sidebar__brand-label">Design System</span>
+        </a>
+
+        <nav class="ds-nav" aria-label="Design system">
+          <div class="ds-nav__group">
+            <p class="ds-nav__group-title">Template</p>
+            <ul class="ds-nav__list">
+              <li><a class="ds-nav__link ds-nav__link--external" href="templates/homeC.html">Home <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7" /><path d="M8 7h9v9" /></svg></a></li>
+            </ul>
+          </div>
+
+          <div class="ds-nav__group">
+            <p class="ds-nav__group-title">Prototypes — not in system</p>
+            <ul class="ds-nav__list ds-nav__list--muted">
+              <li><a class="ds-nav__link ds-nav__link--external" href="templates/home.html">Home A (video hero) <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7" /><path d="M8 7h9v9" /></svg></a></li>
+              <li><a class="ds-nav__link ds-nav__link--external" href="templates/homeB.html">Home B (photo sphere) <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7" /><path d="M8 7h9v9" /></svg></a></li>
+              <li><a class="ds-nav__link ds-nav__link--external" href="templates/work.html">Work listing <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7" /><path d="M8 7h9v9" /></svg></a></li>
+              <li><a class="ds-nav__link ds-nav__link--external" href="templates/work-article.html">Work article <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7" /><path d="M8 7h9v9" /></svg></a></li>
+            </ul>
+          </div>
+
+          <details class="ds-nav__section" open>
+            <summary>Pattern Library</summary>
+            <div class="ds-nav__group">
+              <p class="ds-nav__group-title">Foundations</p>
+              <ul class="ds-nav__list">
+                <li><a class="ds-nav__link" href="#colours">Colours</a></li>
+                <li><a class="ds-nav__link" href="#typography">Typography</a></li>
+                <li><a class="ds-nav__link" href="#spacing">Spacing &amp; layout</a></li>
+                <li><a class="ds-nav__link" href="#radius">Radius</a></li>
+                <li><a class="ds-nav__link" href="#motion">Motion</a></li>
+                <li><a class="ds-nav__link" href="#breakpoints">Breakpoints</a></li>
+              </ul>
+            </div>
+            <div class="ds-nav__group">
+              <p class="ds-nav__group-title">Components</p>
+              <ul class="ds-nav__list">
+                <li><a class="ds-nav__link" href="#hero">Hero</a></li>
+                <!-- Phase 2 — uncomment each entry as its section ships:
+                <li><a class="ds-nav__link" href="#header">Site header</a></li>
+                <li><a class="ds-nav__link" href="#intro">Intro statement</a></li>
+                <li><a class="ds-nav__link" href="#work">Work grid</a></li>
+                <li><a class="ds-nav__link" href="#clients">Clients marquee</a></li>
+                <li><a class="ds-nav__link" href="#news">News scroller</a></li>
+                <li><a class="ds-nav__link" href="#arrow-link">Arrow link</a></li>
+                <li><a class="ds-nav__link" href="#primitives">Reveal primitives</a></li>
+                -->
+              </ul>
+            </div>
+          </details>
+        </nav>
+
+        <div class="ds-sidebar__footer">
+          <a href="https://github.com/icon-agency/icon">GitHub repository ↗</a>
+        </div>
+      </aside>
+
+      <!-- ================= CONTENT ================= -->
+      <div class="ds-main">
+        <div class="ds-topbar">
+          <span>ICON Design System</span>
+          <button class="ds-topbar__toggle" type="button" aria-expanded="false" aria-controls="ds-sidebar" data-ds-nav-toggle>Menu</button>
+        </div>
+
+        <main class="ds-content" id="ds-content">
+          <div class="ds-content__inner">
+            <header class="ds-intro">
+              <h1 class="ds-intro__title">ICON Design System</h1>
+              <p class="ds-intro__lede">
+                A living reference for the design tokens and components behind the ICON Agency build.
+                The <a href="templates/homeC.html">Home template</a> is the canonical page; everything
+                catalogued here maps to a Single Directory Component for the Drupal Canvas build.
+                This page is an internal guide, not a production template. Demos wear the production
+                CSS — the same <code class="ds-code">css/main.css</code> the site ships.
+              </p>
+            </header>
+
+            <!-- ================= FOUNDATIONS ================= -->
+            <div class="ds-category" id="foundations">
+              <h2 class="ds-category__title">Foundations</h2>
+              <p class="ds-category__note">
+                Every design value flows through a token. Raw colour values exist in exactly one file
+                (<code class="ds-code">src/theme/colors.css</code>); type, spacing, radius and motion are
+                Tailwind v4 <code class="ds-code">@theme</code> custom properties in <code class="ds-code">src/theme/</code>.
+              </p>
+            </div>
+
+            <section class="ds-section" id="colours">
+              <h3 class="ds-section__title">Colours</h3>
+              <p class="ds-section__intro">
+                Chips below are painted with the live tokens, so they re-resolve when the theme flips —
+                use the toggle (bottom-right) to inspect the dark palette. Values noted as text are the
+                light-theme values; dark values in brackets. Brand aliases invert in dark;
+                <code class="ds-code">--color-brand-blue</code> deliberately never does.
+              </p>
+
+              <div class="ds-group">
+                <h4 class="ds-group__title">Brand</h4>
+                <ul class="ds-swatches">
+                  <li class="ds-swatch"><div class="ds-swatch__chip bg-icon-black"></div><div class="ds-swatch__meta"><span class="ds-swatch__name">Icon black</span><span class="ds-swatch__token">--color-icon-black</span><span class="ds-swatch__value">#1e1e1e (dark: #f5f5f5)</span></div></li>
+                  <li class="ds-swatch"><div class="ds-swatch__chip bg-icon-grey"></div><div class="ds-swatch__meta"><span class="ds-swatch__name">Icon grey</span><span class="ds-swatch__token">--color-icon-grey</span><span class="ds-swatch__value">icon-black @ 80%</span></div></li>
+                  <li class="ds-swatch"><div class="ds-swatch__chip bg-icon-blue"></div><div class="ds-swatch__meta"><span class="ds-swatch__name">Icon blue</span><span class="ds-swatch__token">--color-icon-blue</span><span class="ds-swatch__value">#0000ff (dark: white @ 80%)</span></div></li>
+                </ul>
+              </div>
+
+              <div class="ds-group">
+                <h4 class="ds-group__title">Fixed — never re-theme</h4>
+                <ul class="ds-swatches">
+                  <li class="ds-swatch"><div class="ds-swatch__chip bg-white"></div><div class="ds-swatch__meta"><span class="ds-swatch__name">White</span><span class="ds-swatch__token">--color-white</span><span class="ds-swatch__value">#ffffff</span></div></li>
+                  <li class="ds-swatch"><div class="ds-swatch__chip bg-black"></div><div class="ds-swatch__meta"><span class="ds-swatch__name">Black</span><span class="ds-swatch__token">--color-black</span><span class="ds-swatch__value">#000000</span></div></li>
+                  <li class="ds-swatch"><div class="ds-swatch__chip bg-brand-blue"></div><div class="ds-swatch__meta"><span class="ds-swatch__name">Brand blue</span><span class="ds-swatch__token">--color-brand-blue</span><span class="ds-swatch__value">#0000ff — reveal swipe, promo card</span></div></li>
+                  <li class="ds-swatch"><div class="ds-swatch__chip bg-shader-blue"></div><div class="ds-swatch__meta"><span class="ds-swatch__name">Shader blue</span><span class="ds-swatch__token">--color-shader-blue</span><span class="ds-swatch__value">#142cfe — menu / footer shader</span></div></li>
+                </ul>
+              </div>
+
+              <div class="ds-group">
+                <h4 class="ds-group__title">Semantic roles</h4>
+                <p class="ds-group__note">
+                  The shadcn-style role set (<code class="ds-code">background</code>, <code class="ds-code">foreground</code>,
+                  <code class="ds-code">border</code>, <code class="ds-code">muted</code>, …) is mapped through
+                  <code class="ds-code">@theme inline</code>, so a runtime <code class="ds-code">.dark</code> class on
+                  <code class="ds-code">&lt;html&gt;</code> re-themes without a rebuild. Per-route overrides rebind on
+                  <code class="ds-code">&lt;html&gt;</code>, never <code class="ds-code">&lt;body&gt;</code> (see LESSONS.md).
+                </p>
+                <ul class="ds-swatches">
+                  <li class="ds-swatch"><div class="ds-swatch__chip bg-background"></div><div class="ds-swatch__meta"><span class="ds-swatch__name">Background</span><span class="ds-swatch__token">--color-background</span><span class="ds-swatch__value">white (dark: #1e1e1e)</span></div></li>
+                  <li class="ds-swatch"><div class="ds-swatch__chip bg-foreground"></div><div class="ds-swatch__meta"><span class="ds-swatch__name">Foreground</span><span class="ds-swatch__token">--color-foreground</span><span class="ds-swatch__value">near-black (dark: near-white)</span></div></li>
+                  <li class="ds-swatch"><div class="ds-swatch__chip bg-border"></div><div class="ds-swatch__meta"><span class="ds-swatch__name">Border</span><span class="ds-swatch__token">--color-border</span><span class="ds-swatch__value">neutral hairline</span></div></li>
+                  <li class="ds-swatch"><div class="ds-swatch__chip bg-muted-foreground"></div><div class="ds-swatch__meta"><span class="ds-swatch__name">Muted foreground</span><span class="ds-swatch__token">--color-muted-foreground</span><span class="ds-swatch__value">secondary text</span></div></li>
+                </ul>
+              </div>
+            </section>
+
+            <section class="ds-section" id="typography">
+              <h3 class="ds-section__title">Typography</h3>
+              <p class="ds-section__intro">
+                Kumbh Sans (Google Fonts) carries the interface; Miller Text italic (Typekit kit
+                <code class="ds-code">bhv7yrj</code>) is the serif accent — "Make", "matters", every second
+                marquee client. Pixel readouts are measured live from the cascade, not typed in, so this
+                panel cannot drift from the real scale.
+              </p>
+
+              <div class="ds-group">
+                <h4 class="ds-group__title">Typefaces</h4>
+                <div class="ds-specimen"><span class="ds-specimen__label">Kumbh 400</span><span class="ds-specimen__sample ds-fw-400 ds-fs-2xl">Make what matters</span><span class="ds-specimen__px"></span></div>
+                <div class="ds-specimen"><span class="ds-specimen__label">Kumbh 500</span><span class="ds-specimen__sample ds-fw-500 ds-fs-2xl">Make what matters</span><span class="ds-specimen__px"></span></div>
+                <div class="ds-specimen"><span class="ds-specimen__label">Kumbh 600</span><span class="ds-specimen__sample ds-fw-600 ds-fs-2xl">Make what matters</span><span class="ds-specimen__px"></span></div>
+                <div class="ds-specimen"><span class="ds-specimen__label">Kumbh 700</span><span class="ds-specimen__sample ds-fw-700 ds-fs-2xl">Make what matters</span><span class="ds-specimen__px"></span></div>
+                <div class="ds-specimen"><span class="ds-specimen__label">Kumbh 800</span><span class="ds-specimen__sample ds-fw-800 ds-fs-2xl">MAKE WHAT MATTERS</span><span class="ds-specimen__px"></span></div>
+                <div class="ds-specimen"><span class="ds-specimen__label">Miller italic</span><span class="ds-specimen__sample miller-text ds-fs-2xl">Make what matters</span><span class="ds-specimen__px"></span></div>
+              </div>
+
+              <div class="ds-group">
+                <h4 class="ds-group__title">Fluid scale</h4>
+                <p class="ds-group__note">
+                  <code class="ds-code">--text-xs</code> … <code class="ds-code">--text-6xl</code> are viewport
+                  clamps; 7xl–9xl are fixed display sizes. The homepage layer
+                  (<code class="ds-code">.page-home</code>) locally raises the xs/sm/lg ceilings so supporting
+                  type keeps growing on ultra-wide screens — the values below are the site-wide defaults.
+                </p>
+                <div class="ds-specimen"><span class="ds-specimen__label">--text-xs</span><span class="ds-specimen__sample ds-fs-xs" data-type-px>Strategic communications for complex change</span><span class="ds-specimen__px"></span></div>
+                <div class="ds-specimen"><span class="ds-specimen__label">--text-sm</span><span class="ds-specimen__sample ds-fs-sm" data-type-px>Strategic communications for complex change</span><span class="ds-specimen__px"></span></div>
+                <div class="ds-specimen"><span class="ds-specimen__label">--text-base</span><span class="ds-specimen__sample ds-fs-base" data-type-px>Strategic communications for complex change</span><span class="ds-specimen__px"></span></div>
+                <div class="ds-specimen"><span class="ds-specimen__label">--text-lg</span><span class="ds-specimen__sample ds-fs-lg" data-type-px>Strategic communications for complex change</span><span class="ds-specimen__px"></span></div>
+                <div class="ds-specimen"><span class="ds-specimen__label">--text-xl</span><span class="ds-specimen__sample ds-fs-xl" data-type-px>Make what matters</span><span class="ds-specimen__px"></span></div>
+                <div class="ds-specimen"><span class="ds-specimen__label">--text-2xl</span><span class="ds-specimen__sample ds-fs-2xl" data-type-px>Make what matters</span><span class="ds-specimen__px"></span></div>
+                <div class="ds-specimen"><span class="ds-specimen__label">--text-3xl</span><span class="ds-specimen__sample ds-fs-3xl" data-type-px>Make what matters</span><span class="ds-specimen__px"></span></div>
+                <div class="ds-specimen"><span class="ds-specimen__label">--text-4xl</span><span class="ds-specimen__sample ds-fs-4xl" data-type-px>Make what matters</span><span class="ds-specimen__px"></span></div>
+                <div class="ds-specimen"><span class="ds-specimen__label">--text-5xl</span><span class="ds-specimen__sample ds-fs-5xl" data-type-px>Matters</span><span class="ds-specimen__px"></span></div>
+                <div class="ds-specimen"><span class="ds-specimen__label">--text-6xl</span><span class="ds-specimen__sample ds-fs-6xl" data-type-px>Matters</span><span class="ds-specimen__px"></span></div>
+              </div>
+
+              <div class="ds-group">
+                <h4 class="ds-group__title">Display sizes</h4>
+                <div class="ds-specimen"><span class="ds-specimen__label">--heading-1</span><span class="ds-specimen__sample ds-fs-h1" data-type-px>Heading one</span><span class="ds-specimen__px"></span></div>
+                <div class="ds-specimen"><span class="ds-specimen__label">--heading-2</span><span class="ds-specimen__sample ds-fs-h2" data-type-px>Heading two</span><span class="ds-specimen__px"></span></div>
+                <div class="ds-specimen"><span class="ds-specimen__label">--heading-3</span><span class="ds-specimen__sample ds-fs-h3" data-type-px>Heading three</span><span class="ds-specimen__px"></span></div>
+                <div class="ds-specimen"><span class="ds-specimen__label">--card-title</span><span class="ds-specimen__sample ds-fs-card" data-type-px>Card title</span><span class="ds-specimen__px"></span></div>
+              </div>
+
+              <div class="ds-group">
+                <h4 class="ds-group__title">Wrapping &amp; the lockup rule</h4>
+                <p class="ds-group__note">
+                  <code class="ds-code">text-wrap: pretty</code> is the default on all content;
+                  <code class="ds-code">balance</code> only where asked for (currently the work titles).
+                  The hero lockup's caps are sized so the WHAT/MATTERS letter height matches the ICON
+                  wordmark's letter height at each logo breakpoint — do not grow the lockup for wide
+                  screens; the logo caps at 1536px, so the lockup does too.
+                </p>
+              </div>
+            </section>
+
+            <section class="ds-section" id="spacing">
+              <h3 class="ds-section__title">Spacing &amp; layout</h3>
+              <p class="ds-section__intro">
+                Named spacing keys generate utilities (<code class="ds-code">p-md</code>,
+                <code class="ds-code">gap-lg</code>) alongside Tailwind's numeric scale. Fluid section rhythm
+                and the container live as <code class="ds-code">:root</code> tokens consumed by component CSS.
+              </p>
+
+              <div class="ds-group">
+                <h4 class="ds-group__title">Named scale</h4>
+                <div class="ds-space-row"><span class="ds-specimen__label">--spacing-3xs</span><div><div class="ds-space-row__bar ds-w-3xs"></div></div><span class="ds-specimen__px">2px</span></div>
+                <div class="ds-space-row"><span class="ds-specimen__label">--spacing-2xs</span><div><div class="ds-space-row__bar ds-w-2xs"></div></div><span class="ds-specimen__px">4px</span></div>
+                <div class="ds-space-row"><span class="ds-specimen__label">--spacing-xs</span><div><div class="ds-space-row__bar ds-w-xs"></div></div><span class="ds-specimen__px">8px</span></div>
+                <div class="ds-space-row"><span class="ds-specimen__label">--spacing-sm</span><div><div class="ds-space-row__bar ds-w-sm"></div></div><span class="ds-specimen__px">12px</span></div>
+                <div class="ds-space-row"><span class="ds-specimen__label">--spacing-md</span><div><div class="ds-space-row__bar ds-w-md"></div></div><span class="ds-specimen__px">16px</span></div>
+                <div class="ds-space-row"><span class="ds-specimen__label">--spacing-lg</span><div><div class="ds-space-row__bar ds-w-lg"></div></div><span class="ds-specimen__px">24px</span></div>
+                <div class="ds-space-row"><span class="ds-specimen__label">--spacing-xl</span><div><div class="ds-space-row__bar ds-w-xl"></div></div><span class="ds-specimen__px">32px</span></div>
+                <div class="ds-space-row"><span class="ds-specimen__label">--spacing-2xl</span><div><div class="ds-space-row__bar ds-w-2xl"></div></div><span class="ds-specimen__px">48px</span></div>
+                <div class="ds-space-row"><span class="ds-specimen__label">--spacing-3xl</span><div><div class="ds-space-row__bar ds-w-3xl"></div></div><span class="ds-specimen__px">64px</span></div>
+              </div>
+
+              <div class="ds-group">
+                <h4 class="ds-group__title">Containers — a settled decision</h4>
+                <p class="ds-group__note">
+                  The site default is <code class="ds-code">.u-container</code>: a 90rem (1440px) cap with a
+                  fluid gutter. The homepage deliberately breaks it —
+                  <code class="ds-code">.page-home</code> uncaps the container entirely
+                  (theonecentre-style: the composition keeps expanding on ultra-wide screens, held in only
+                  by a gutter that scales to ~120px, with type ceilings raised to match). Settled with the
+                  client-side of the build; do not re-cap the homepage.
+                </p>
+                <table class="ds-table">
+                  <thead><tr><th>Token</th><th>Value</th><th>Role</th></tr></thead>
+                  <tbody>
+                    <tr><td><code>--container-max</code></td><td>90rem</td><td>site-wide content cap (not on homepage)</td></tr>
+                    <tr><td><code>--container-pad</code></td><td>clamp(1.5rem, 4vw, 4rem)</td><td>side gutter (homepage raises the cap to 7.5rem)</td></tr>
+                    <tr><td><code>--grid-gutter</code></td><td>clamp(1rem, 2.2vw, 3rem)</td><td>homepage 12-column gutter</td></tr>
+                    <tr><td><code>--space-section</code></td><td>clamp(4rem, 8vw, 12rem)</td><td>vertical rhythm between major sections</td></tr>
+                    <tr><td><code>--space-section-sm</code></td><td>clamp(2rem, 5vw, 6rem)</td><td>tighter section rhythm</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </section>
+
+            <section class="ds-section" id="radius">
+              <h3 class="ds-section__title">Radius</h3>
+              <p class="ds-section__intro">
+                A derived scale from a 10px base, plus the brand 4px
+                <code class="ds-code">--radius-icon</code> used on every media frame and card.
+              </p>
+              <div class="ds-radius-row">
+                <div class="ds-radius-chip"><div class="ds-radius-chip__box ds-r-sm"></div>--radius-sm · 6px</div>
+                <div class="ds-radius-chip"><div class="ds-radius-chip__box ds-r-md"></div>--radius-md · 8px</div>
+                <div class="ds-radius-chip"><div class="ds-radius-chip__box ds-r-lg"></div>--radius-lg · 10px</div>
+                <div class="ds-radius-chip"><div class="ds-radius-chip__box ds-r-xl"></div>--radius-xl · 14px</div>
+                <div class="ds-radius-chip"><div class="ds-radius-chip__box ds-r-icon"></div>--radius-icon · 4px</div>
+              </div>
+            </section>
+
+            <section class="ds-section" id="motion">
+              <h3 class="ds-section__title">Motion</h3>
+              <p class="ds-section__intro">
+                Three easings and four durations cover the interface. Hover a row to run its easing.
+                Policy: scroll-linked movement runs on the compositor via CSS scroll-driven animations
+                (<code class="ds-code">animation-timeline</code>) — never a scroll handler; one-shot entrances
+                are class-triggered transitions so they always play out in full; everything is
+                reduced-motion guarded. GSAP (SplitText) and Lenis are page-level enhancements on the
+                homepage, not requirements.
+              </p>
+
+              <div class="ds-group">
+                <h4 class="ds-group__title">Easings</h4>
+                <div class="ds-ease-row" tabindex="0"><span class="ds-specimen__label">--ease-standard</span><div class="ds-ease-row__track"><div class="ds-ease-row__dot ease-standard"></div></div><span class="ds-specimen__px">cubic-bezier(.4, 0, .2, 1)</span></div>
+                <div class="ds-ease-row" tabindex="0"><span class="ds-specimen__label">--ease-decelerate</span><div class="ds-ease-row__track"><div class="ds-ease-row__dot ease-decelerate"></div></div><span class="ds-specimen__px">cubic-bezier(0, 0, .2, 1)</span></div>
+                <div class="ds-ease-row" tabindex="0"><span class="ds-specimen__label">--ease-accelerate</span><div class="ds-ease-row__track"><div class="ds-ease-row__dot ease-accelerate"></div></div><span class="ds-specimen__px">cubic-bezier(.4, 0, 1, 1)</span></div>
+              </div>
+
+              <div class="ds-group">
+                <h4 class="ds-group__title">Durations</h4>
+                <table class="ds-table">
+                  <thead><tr><th>Token</th><th>Value</th><th>Use</th></tr></thead>
+                  <tbody>
+                    <tr><td><code>--duration-fast</code></td><td>150ms</td><td>hovers, small state flips</td></tr>
+                    <tr><td><code>--duration-normal</code></td><td>300ms</td><td>most transitions (nav, theme fades)</td></tr>
+                    <tr><td><code>--duration-slow</code></td><td>500ms</td><td>large moves, staged entrances</td></tr>
+                    <tr><td><code>--duration-slower</code></td><td>1000ms</td><td>hero-scale choreography</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </section>
+
+            <section class="ds-section" id="breakpoints">
+              <h3 class="ds-section__title">Breakpoints</h3>
+              <p class="ds-section__intro">
+                Tailwind v4 defaults plus two wide-screen additions. Fluid clamps do most responsive
+                work; breakpoints are for layout changes only. <code class="ds-code">lg</code> (1024px) is
+                the mobile-menu / desktop-nav cutoff.
+              </p>
+              <table class="ds-table">
+                <thead><tr><th>Name</th><th>Width</th><th>Note</th></tr></thead>
+                <tbody>
+                  <tr><td><code>sm</code></td><td>640px</td><td></td></tr>
+                  <tr><td><code>md</code></td><td>768px</td><td></td></tr>
+                  <tr><td><code>lg</code></td><td>1024px</td><td>nav collapse point</td></tr>
+                  <tr><td><code>xl</code></td><td>1280px</td><td>logo size step</td></tr>
+                  <tr><td><code>2xl</code></td><td>1536px</td><td>logo + lockup cap</td></tr>
+                  <tr><td><code>3xl</code></td><td>1920px</td><td>custom — wide screens</td></tr>
+                  <tr><td><code>4xl</code></td><td>2560px</td><td>custom — ultra-wide</td></tr>
+                </tbody>
+              </table>
+            </section>
+
+            <!-- ================= COMPONENTS ================= -->
+            <div class="ds-category" id="components">
+              <h2 class="ds-category__title">Components</h2>
+              <p class="ds-category__note">
+                Each block below is (or will be) one SDC in the Drupal Canvas build — the BEM block, CSS
+                file, SDC folder and field prefix share a root name; variants are a single enum prop.
+                Sections land here incrementally; sidebar entries are uncommented as each ships.
+              </p>
+            </div>
+
+            <section class="ds-section" id="hero">
+              <h3 class="ds-section__title">Hero</h3>
+              <p class="ds-section__intro">
+                <code class="ds-code">.hero</code> — full-bleed 100svh media hero with the real-text
+                "Make what matters" lockup (Miller italic + Kumbh 800, sized to the logo), word-by-word
+                cascade in, triggered word-by-word exit on scroll (reverse order), image parallax and a
+                picture-in-picture campaign video.
+              </p>
+              <div class="ds-group">
+                <h4 class="ds-group__title">Why it is not demoed here</h4>
+                <p class="ds-group__note">
+                  The hero is scroll choreography — load cascade, triggered exit, compositor parallax,
+                  header inversion. A scaled inline copy would misrepresent all of it. Open the real thing:
+                </p>
+                <a class="ds-thumb-link" href="templates/homeC.html">
+                  <figure>
+                    <figcaption>Open the Home template → hero, at full scale</figcaption>
+                  </figure>
+                </a>
+              </div>
+              <div class="ds-group">
+                <h4 class="ds-group__title">Drupal (Canvas / SDC)</h4>
+                <p class="ds-group__note">
+                  SDC <code class="ds-code">hero</code>. Props: <code class="ds-code">headline</code> (the lockup
+                  is markup-built from it), <code class="ds-code">media</code> (image or video),
+                  <code class="ds-code">pip_video</code> (optional). Behaviour js maps to
+                  <code class="ds-code">Drupal.behaviors.iconHome</code> (load sequence, exit trigger, header
+                  inversion). The <code class="ds-code">sr-only</code> real text is the accessible name; the
+                  lockup is <code class="ds-code">aria-hidden</code>.
+                </p>
+              </div>
+            </section>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <!-- ================= DS PAGE SCRIPTS (page-local, not site behaviours) -->
+    <script>
+      // Mobile sidebar drawer. Class-free default keeps the desktop sidebar
+      // visible with no JS.
+      (function () {
+        "use strict";
+        var app = document.getElementById("ds-app");
+        var toggle = document.querySelector("[data-ds-nav-toggle]");
+        var backdrop = document.querySelector("[data-ds-backdrop]");
+        if (!app || !toggle) return;
+        function set(open) {
+          app.classList.toggle("is-nav-open", open);
+          toggle.setAttribute("aria-expanded", open ? "true" : "false");
+        }
+        toggle.addEventListener("click", function () { set(!app.classList.contains("is-nav-open")); });
+        if (backdrop) backdrop.addEventListener("click", function () { set(false); });
+        // Close the drawer after choosing a destination.
+        document.querySelectorAll(".ds-nav a").forEach(function (a) {
+          a.addEventListener("click", function () { set(false); });
+        });
+      })();
+
+      // Scrollspy — highlights the sidebar link for the section in view.
+      // Recomputed from geometry on the PANE's scroll (rAF-coalesced), not from
+      // IntersectionObserver callbacks: an IO winner computed during initial
+      // layout goes stale until the next boundary crossing, and a docs pane
+      // scrolls constantly anyway (the GreenPowerDS scrollspy lesson, taken one
+      // step further).
+      (function () {
+        "use strict";
+        var pane = document.getElementById("ds-content");
+        var sections = Array.prototype.slice.call(document.querySelectorAll(".ds-section[id]"));
+        var links = {};
+        document.querySelectorAll('.ds-nav a[href^="#"]').forEach(function (a) {
+          links[a.getAttribute("href").slice(1)] = a;
+        });
+        if (!pane || !sections.length) return;
+        var raf = 0;
+        function recompute() {
+          raf = 0;
+          // Winner: the last section whose top has passed 30% of the pane —
+          // except at the very bottom, where a short final section could never
+          // pass the line: there the last section wins outright.
+          var current = sections[0];
+          if (pane.scrollTop + pane.clientHeight >= pane.scrollHeight - 2) {
+            current = sections[sections.length - 1];
+          } else {
+            var line = pane.getBoundingClientRect().top + pane.clientHeight * 0.3;
+            sections.forEach(function (s) {
+              if (s.getBoundingClientRect().top <= line) current = s;
+            });
+          }
+          Object.keys(links).forEach(function (k) {
+            links[k].classList.toggle("is-active", k === current.id);
+          });
+        }
+        function schedule() {
+          if (!raf) raf = window.requestAnimationFrame(recompute);
+        }
+        pane.addEventListener("scroll", schedule, { passive: true });
+        window.addEventListener("resize", schedule, { passive: true });
+        if (document.fonts && document.fonts.ready) document.fonts.ready.then(schedule);
+        schedule();
+      })();
+
+      // Live type measurement — fills each specimen's px readout from the
+      // computed cascade so the panel can never drift from the real scale.
+      // Re-run on resize (the clamps are viewport-driven).
+      (function () {
+        "use strict";
+        var rows = Array.prototype.slice.call(document.querySelectorAll(".ds-specimen"));
+        function measure() {
+          rows.forEach(function (row) {
+            var sample = row.querySelector(".ds-specimen__sample");
+            var out = row.querySelector(".ds-specimen__px");
+            if (!sample || !out) return;
+            var px = parseFloat(window.getComputedStyle(sample).fontSize);
+            out.textContent = Math.round(px * 10) / 10 + "px";
+          });
+        }
+        var t = 0;
+        window.addEventListener("resize", function () {
+          window.clearTimeout(t);
+          t = window.setTimeout(measure, 150);
+        }, { passive: true });
+        if (document.fonts && document.fonts.ready) document.fonts.ready.then(measure);
+        measure();
+      })();
+    </script>
   </body>
 </html>

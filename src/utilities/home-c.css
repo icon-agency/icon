@@ -1,14 +1,18 @@
-/* home-c.css — PAGE-SPECIFIC layer for the Home C prototype (templates/homeC.html).
- * A zypsy-inspired editorial homepage: full-bleed hero, three-column statement,
- * asymmetric work grid, big wrapping client list, news grid. Imported LAST.
+/* home-c.css — PAGE layer for the CANONICAL homepage (templates/homeC.html).
+ * Editorial homepage: full-bleed hero, intro statement, asymmetric work grid,
+ * tri-row client marquee, pinned news scroller. Imported LAST.
+ *
+ * Block names here are the site's public API (promoted from the old homec-*
+ * prototype namespace): .hero, .intro, .work, .clients, .news, .arrow-link,
+ * .media-reveal, .page-home. They are catalogued in the design-system index
+ * (/index.html) and will become the SDC component names in the Drupal Canvas
+ * build (see docs/design-system-plan.md). The other templates (home, homeB,
+ * work, work-article) are prototypes OUTSIDE the system; their old .hero was
+ * renamed .video-hero to free the canonical name.
  *
  * Motion lives in js/home-c.js (GSAP SplitText line-mask text reveals + Lenis
  * smooth scroll + IntersectionObserver image reveals) and in the reveal-fx block
  * below. Everything is reduced-motion guarded and no-JS safe.
- *
- * This is an experimental prototype variant (like homeB's Three.js hero) — the
- * CSS is deliberately self-contained here rather than split into components.
- * Drupal: not part of the handoff yet; a look-and-feel study.
  */
 
 /* ======================================================================
@@ -20,15 +24,15 @@
  *
  * The zoom is fully contained by the frame (overflow: hidden + a fixed
  * aspect-ratio), so it never nudges the caption or the surrounding layout.
- * NB: the effect stays on the MEDIA, never on the observed .homec-reveal frame —
+ * NB: the effect stays on the MEDIA, never on the observed .media-reveal frame —
  * a transform/clip on the observed element itself would skew its
  * IntersectionObserver ratio; the frame must keep its full box. (See LESSONS.md.) */
-.homec-reveal {
+.media-reveal {
   overflow: hidden;
 }
 
-.js-animations .homec-reveal img,
-.js-animations .homec-reveal video {
+.js-animations .media-reveal img,
+.js-animations .media-reveal video {
   /* Tiny mask anchored in the BOTTOM-LEFT corner (top+right clipped 84%, bottom+
      left 0), so the reveal grows up-and-right from that corner instead of the
      centre. transform-origin matches, so the scale settles toward the same corner. */
@@ -43,27 +47,27 @@
   will-change: clip-path, scale, opacity;
 }
 
-.js-animations .homec-reveal.is-revealed img,
-.js-animations .homec-reveal.is-revealed video {
+.js-animations .media-reveal.is-revealed img,
+.js-animations .media-reveal.is-revealed video {
   clip-path: inset(0 round var(--radius-icon)); /* grows to full size */
   scale: 1;
   opacity: 1;
 }
 
-/* Line-mask text: SplitText wraps each line in an overflow-hidden .hc-line and
+/* Line-mask text: SplitText wraps each line in an overflow-hidden .split-line and
  * js/home-c.js slides the inner lines up. Base rule keeps text visible if JS or
  * SplitText never runs. */
-.hc-line {
+.split-line {
   overflow: hidden;
 }
 
 /* Simple fade-up reuses the shared [data-animate] host (reveal.js). */
 
 @media (prefers-reduced-motion: reduce) {
-  .js-animations .homec-reveal img,
-  .js-animations .homec-reveal video,
-  .js-animations .homec-reveal.is-revealed img,
-  .js-animations .homec-reveal.is-revealed video {
+  .js-animations .media-reveal img,
+  .js-animations .media-reveal video,
+  .js-animations .media-reveal.is-revealed img,
+  .js-animations .media-reveal.is-revealed video {
     clip-path: none;
     transform: none;
     scale: none;
@@ -76,7 +80,7 @@
  * Page shell
  * ==================================================================== */
 
-.homec-main {
+.page-home {
   background: var(--color-background);
   overflow: clip; /* contain full-bleed + parallax overshoot without a scroll container */
 
@@ -90,7 +94,7 @@
 
   /* Shared 12-column grid gutter (clamp) — intro + work snap to the same columns
      and gutters inside .u-container, so section edges line up down the page. */
-  --homec-gutter: clamp(1rem, 2.2vw, 3rem);
+  --grid-gutter: clamp(1rem, 2.2vw, 3rem);
 
   /* Supporting type keeps scaling on wide screens. Same floor as the global scale
      on normal desktops (the global --text-* tokens sit near their MIN until
@@ -105,7 +109,7 @@
 /* Drop the 90rem cap on Home C sections — they run edge-to-edge, held in only by
    the fluid --container-pad above. Unlayered here, so it beats .u-container's
    max-width in @layer utilities regardless of specificity. */
-.homec-main .u-container {
+.page-home .u-container {
   max-width: none;
 }
 
@@ -113,7 +117,7 @@
  * Hero
  * ==================================================================== */
 
-.homec-hero {
+.hero {
   position: relative;
   min-height: 100svh;
   overflow: hidden;
@@ -124,24 +128,24 @@
 
 /* Wrapper carries the load-in zoom; the image inside carries the scroll parallax.
    Splitting the two keeps them on separate transforms (no conflict). */
-.homec-hero__media {
+.hero__media {
   position: absolute;
   inset: 0;
   z-index: 0;
   overflow: hidden;
 }
 
-.js-animations [data-hero] .homec-hero__media {
+.js-animations [data-hero] .hero__media {
   transform: scale(1.08);
   transition: transform 1.6s var(--ease-decelerate);
   will-change: transform;
 }
-.js-animations [data-hero].is-ready .homec-hero__media {
+.js-animations [data-hero].is-ready .hero__media {
   transform: scale(1);
 }
 
 /* Oversized + offset so the ±8% scroll parallax never exposes an edge. */
-.homec-hero__img {
+.hero__img {
   position: absolute;
   inset-inline: 0;
   top: -10%;
@@ -151,21 +155,21 @@
   object-position: center 30%;
 }
 
-@keyframes homec-hero-parallax {
+@keyframes hero-parallax {
   from { transform: translate3d(0, 8%, 0); }
   to { transform: translate3d(0, -8%, 0); }
 }
 @media (prefers-reduced-motion: no-preference) {
   @supports (animation-timeline: scroll()) {
-    .homec-hero__img {
-      animation: homec-hero-parallax linear both;
+    .hero__img {
+      animation: hero-parallax linear both;
       animation-timeline: scroll(root);
       animation-range: 0 100svh;
     }
   }
 }
 
-.homec-hero__gradient {
+.hero__gradient {
   position: absolute;
   inset: 0;
   z-index: 1;
@@ -173,7 +177,7 @@
     linear-gradient(to bottom, rgb(0 0 0 / 0.45) 0%, transparent 30%, transparent 55%, rgb(0 0 0 / 0.65) 100%);
 }
 
-.homec-hero__inner {
+.hero__inner {
   position: relative;
   z-index: 2;
   width: 100%;
@@ -185,14 +189,14 @@
 /* Real-text "Make what matters" lockup, in our fonts: Miller Text italic for
    "Make", heavy Kumbh Sans uppercase for "WHAT MATTERS". Rebuilds the brand SVG
    as live, responsive, accessible type. */
-.homec-hero__headline {
+.hero__headline {
   margin: 0;
   color: var(--color-white);
   text-align: center;
   text-wrap: pretty;
 }
 
-.homec-hero__lockup {
+.hero__lockup {
   display: block;
   /* Sized so the WHAT/MATTERS caps match the ICON wordmark's LETTER height at
      each of the logo's breakpoints (Kumbh 800 cap-height ≈ 0.747em; the ICON
@@ -205,11 +209,11 @@
   text-transform: uppercase;
 }
 
-@media (min-width: 1024px) { .homec-hero__lockup { font-size: 4.1rem; } } /* logo 3.75rem */
-@media (min-width: 1280px) { .homec-hero__lockup { font-size: 4.6rem; } } /* logo 4.25rem */
-@media (min-width: 1536px) { .homec-hero__lockup { font-size: 4.9rem; } } /* logo 4.5rem  */
+@media (min-width: 1024px) { .hero__lockup { font-size: 4.1rem; } } /* logo 3.75rem */
+@media (min-width: 1280px) { .hero__lockup { font-size: 4.6rem; } } /* logo 4.25rem */
+@media (min-width: 1536px) { .hero__lockup { font-size: 4.9rem; } } /* logo 4.5rem  */
 
-.homec-hero__lockup-line {
+.hero__lockup-line {
   display: block;
   /* Mask for the line-slide reveal. The vertical padding gives the tight
      line-height (0.9) enough room that ascenders / the italic "Make" aren't
@@ -220,7 +224,7 @@
   margin-block: -0.16em;
 }
 
-.homec-hero__make {
+.hero__make {
   font-family: var(--font-serif);
   font-style: italic;
   font-weight: var(--font-weight-medium);
@@ -239,11 +243,11 @@
    gap and the logo-matched sizing stay intact), and the reveal rides the hero's
    load sequence (.is-ready) rather than a scroll trigger. Mirrors the statement's
    timing: ~0.9s, decelerating, ~0.09s between lines. */
-.homec-hero__word {
+.hero__word {
   display: inline-block;
   will-change: transform, translate;
 }
-.js-animations [data-hero] .homec-hero__word {
+.js-animations [data-hero] .hero__word {
   transform: translateY(125%);
   /* Word-by-word cascade with PER-DIRECTION delays (--w is 0/1/2 = Make/What/Matters):
      - entrance (transform, on .is-ready): reading order  Make → What → Matters  [w * step]
@@ -254,11 +258,11 @@
     transform 0.62s var(--ease-decelerate) calc(var(--w, 0) * 0.2s),
     translate 0.62s var(--ease-decelerate) calc((2 - var(--w, 0)) * 0.2s);
 }
-.js-animations [data-hero].is-ready .homec-hero__word {
+.js-animations [data-hero].is-ready .hero__word {
   transform: translateY(0);
 }
 @media (prefers-reduced-motion: reduce) {
-  .js-animations [data-hero] .homec-hero__word {
+  .js-animations [data-hero] .hero__word {
     transform: none;
     transition: none;
   }
@@ -274,12 +278,12 @@
    entrance's `transform` (see the base rule). A scrubbed version was replaced
    because it froze mid-exit when you stopped scrolling and stranded "Matters"
    unless you scrolled far enough (LESSONS.md: one-shot trigger, not scrub). */
-.js-animations [data-hero].is-exiting .homec-hero__word {
+.js-animations [data-hero].is-exiting .hero__word {
   translate: 0 130%;
 }
 
 /* Picture-in-picture campaign video, bottom-right. */
-.homec-hero__pip {
+.hero__pip {
   position: absolute;
   right: clamp(1rem, 3vw, 3rem);
   bottom: clamp(1rem, 3vw, 3rem);
@@ -292,14 +296,14 @@
   border: 1px solid rgb(255 255 255 / 0.15);
 }
 
-.homec-hero__pip video {
+.hero__pip video {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
 }
 
-.homec-hero__pip-play {
+.hero__pip-play {
   position: absolute;
   left: 0.5rem;
   bottom: 0.5rem;
@@ -313,16 +317,16 @@
   color: var(--color-black);
   pointer-events: none;
 }
-.homec-hero__pip-play svg { width: 0.85rem; height: 0.85rem; }
+.hero__pip-play svg { width: 0.85rem; height: 0.85rem; }
 
-.js-animations [data-hero] .homec-hero__pip {
+.js-animations [data-hero] .hero__pip {
   opacity: 0;
   transform: translateY(1.5rem);
   transition:
     opacity 0.8s var(--ease-standard) 0.6s,
     transform 0.8s var(--ease-decelerate) 0.6s;
 }
-.js-animations [data-hero].is-ready .homec-hero__pip {
+.js-animations [data-hero].is-ready .hero__pip {
   opacity: 1;
   transform: translateY(0);
 }
@@ -331,20 +335,20 @@
  * Intro statement — three columns
  * ==================================================================== */
 
-.homec-intro {
+.intro {
   padding-block: clamp(4rem, 10vw, 9rem);
 }
 
-.homec-intro__grid {
+.intro__grid {
   display: grid;
   grid-template-columns: 1fr;
   gap: clamp(2rem, 4vw, 3.5rem);
 }
 
 @media (min-width: 1024px) {
-  .homec-intro__grid {
+  .intro__grid {
     grid-template-columns: repeat(12, minmax(0, 1fr));
-    column-gap: var(--homec-gutter);
+    column-gap: var(--grid-gutter);
     row-gap: 0;
     /* Align the small lede and the big statement on their FIRST-LINE baselines
        (not their tops) so the two blocks start on the same line despite the very
@@ -355,42 +359,42 @@
      lede's short-cap text keeps a comfortable line length instead of wrapping
      into a skinny 3-col column; it steps back to the narrow 3-col only once the
      container is wide enough for that to read well. Statement stays at cols 7–12. */
-  .homec-intro__lede-col { grid-column: 1 / span 5; }
-  .homec-intro__statement { grid-column: 7 / span 6; }
+  .intro__lede-col { grid-column: 1 / span 5; }
+  .intro__statement { grid-column: 7 / span 6; }
 }
 
 @media (min-width: 1280px) {
-  .homec-intro__lede-col { grid-column: 1 / span 4; }
+  .intro__lede-col { grid-column: 1 / span 4; }
 }
 
 @media (min-width: 1536px) {
-  .homec-intro__lede-col { grid-column: 1 / span 3; }
+  .intro__lede-col { grid-column: 1 / span 3; }
 }
 
-.homec-intro__lede {
+.intro__lede {
   font-size: var(--text-xs);
   font-weight: var(--font-weight-semibold);
   letter-spacing: 0.06em;
   text-transform: uppercase;
   line-height: 1.4;
   color: var(--color-icon-black);
-  /* Width is governed by the .homec-intro__lede-col grid span (fluid, per breakpoint). */
+  /* Width is governed by the .intro__lede-col grid span (fluid, per breakpoint). */
 }
 
 /* "Our expertise" list — sits below the lede in the left column (bottom-left),
    each item prefixed with a "/". */
-.homec-intro__expertise-col {
+.intro__expertise-col {
   margin-top: clamp(2rem, 5vw, 4rem);
 }
 
-.homec-intro__label {
+.intro__label {
   display: block;
   margin-bottom: var(--spacing-sm);
   font-size: var(--text-xs);
   color: var(--color-icon-grey);
 }
 
-.homec-intro__expertise {
+.intro__expertise {
   list-style: none;
   margin: 0;
   padding: 0;
@@ -399,7 +403,7 @@
   gap: 0; /* items sit line-to-line via line-height (below), matching the lede */
 }
 
-.homec-intro__expertise li {
+.intro__expertise li {
   font-size: var(--text-xs);
   font-weight: var(--font-weight-semibold);
   line-height: 1.4; /* same line rhythm as the lede above */
@@ -408,11 +412,11 @@
   color: var(--color-icon-black);
 }
 
-.homec-intro__expertise li::before {
+.intro__expertise li::before {
   content: "/ ";
 }
 
-.homec-intro__statement {
+.intro__statement {
   /* Custom fluid value: big editorial lead. Keeps growing on wide screens (raised
      cap) — ~37px @1440 → 64px by ~2460px — so it scales with the fluid container. */
   font-size: clamp(1.5rem, 2.6vw, 4rem);
@@ -423,7 +427,7 @@
   text-wrap: pretty;
 }
 
-.homec-intro__statement .miller-text {
+.intro__statement .miller-text {
   font-weight: var(--font-weight-semibold);
 }
 
@@ -431,14 +435,14 @@
  * Work — asymmetric editorial grid
  * ==================================================================== */
 
-.homec-work {
+.work {
   padding-bottom: clamp(3rem, 8vw, 7rem);
 }
 
-.homec-work__row {
+.work__row {
   display: grid;
   grid-template-columns: 1fr;
-  gap: clamp(2rem, 5vw, 4rem) var(--homec-gutter);
+  gap: clamp(2rem, 5vw, 4rem) var(--grid-gutter);
   margin-bottom: clamp(3rem, 7vw, 6rem);
 }
 
@@ -446,37 +450,37 @@
    6-column tiles (top-aligned: left landscape, right taller square); the feature
    row spans all 12. */
 @media (min-width: 900px) {
-  .homec-work__row {
+  .work__row {
     grid-template-columns: repeat(12, minmax(0, 1fr));
-    column-gap: var(--homec-gutter);
+    column-gap: var(--grid-gutter);
     align-items: start;
   }
-  .homec-work__row--split .homec-work__item:first-child { grid-column: 1 / span 6; }
-  .homec-work__row--split .homec-work__item:last-child { grid-column: 7 / span 6; }
-  .homec-work__item--wide { grid-column: 1 / -1; }
-  .homec-work__row--split .homec-work__item:first-child .homec-work__figure {
+  .work__row--split .work__item:first-child { grid-column: 1 / span 6; }
+  .work__row--split .work__item:last-child { grid-column: 7 / span 6; }
+  .work__item--wide { grid-column: 1 / -1; }
+  .work__row--split .work__item:first-child .work__figure {
     aspect-ratio: 3 / 2;
   }
-  .homec-work__row--split .homec-work__item:last-child .homec-work__figure {
+  .work__row--split .work__item:last-child .work__figure {
     aspect-ratio: 1 / 1;
   }
   /* Mirror the split for this row — the taller (square) figure on the LEFT,
      the shorter (landscape) one on the right. Extra class → wins over the above. */
-  .homec-work__row--split.homec-work__row--tall-left .homec-work__item:first-child .homec-work__figure {
+  .work__row--split.work__row--tall-left .work__item:first-child .work__figure {
     aspect-ratio: 1 / 1;
   }
-  .homec-work__row--split.homec-work__row--tall-left .homec-work__item:last-child .homec-work__figure {
+  .work__row--split.work__row--tall-left .work__item:last-child .work__figure {
     aspect-ratio: 3 / 2;
   }
 }
 
-.homec-work__item {
+.work__item {
   display: block;
   text-decoration: none;
   color: inherit;
 }
 
-.homec-work__figure {
+.work__figure {
   position: relative;
   margin: 0;
   border-radius: var(--radius-icon);
@@ -488,12 +492,12 @@
   view-timeline-name: --work-media;
 }
 
-.homec-work__item--wide .homec-work__figure {
+.work__item--wide .work__figure {
   aspect-ratio: 21 / 9;
 }
 
 /* Oversized + offset so the scroll parallax translate never exposes an edge. */
-.homec-work__img {
+.work__img {
   position: absolute;
   inset-inline: 0;
   top: -5%;
@@ -507,28 +511,28 @@
    reveal drives the individual `scale` property; this drives `transform`, so the
    two compose on the same element without fighting. Compositor-driven via the
    frame's named view timeline — never a scroll handler (see LESSONS.md). */
-@keyframes homec-work-scroll {
+@keyframes work-scroll {
   from { transform: translateY(-3%) scale(1); }
   to { transform: translateY(3%) scale(1.05); }
 }
 
 @media (prefers-reduced-motion: no-preference) {
   @supports (animation-timeline: view()) {
-    .homec-work__img {
-      animation: homec-work-scroll linear both;
+    .work__img {
+      animation: work-scroll linear both;
       animation-timeline: --work-media;
     }
   }
 }
 
-.homec-work__caption {
+.work__caption {
   margin-top: var(--spacing-md);
   display: flex;
   flex-direction: column;
   gap: 0.15rem;
 }
 
-.homec-work__title {
+.work__title {
   margin: 0;
   /* Prominent work headline — ~26px @1440 → 40px on wide screens. */
   font-size: clamp(1.5rem, 1.9vw, 2.5rem);
@@ -540,12 +544,12 @@
   text-wrap: balance;
 }
 
-.homec-work__meta {
+.work__meta {
   font-size: var(--text-xs);
   color: var(--color-icon-grey);
 }
 
-.homec-work__more {
+.work__more {
   display: flex;
   justify-content: center;
   margin-top: clamp(1rem, 4vw, 3rem);
@@ -555,7 +559,7 @@
  * Clients — big wrapping list
  * ==================================================================== */
 
-.homec-clients {
+.clients {
   /* Full-bleed out of the container so the marquee runs edge to edge. */
   position: relative;
   width: 100vw;
@@ -569,8 +573,8 @@
 
 /* Top + bottom rules — inset to the content margins (not full-bleed like the
    marquee) and in icon black. */
-.homec-clients::before,
-.homec-clients::after {
+.clients::before,
+.clients::after {
   content: "";
   position: absolute;
   left: var(--container-pad);
@@ -578,20 +582,20 @@
   height: 1px;
   background: var(--color-icon-black);
 }
-.homec-clients::before { top: 0; }
-.homec-clients::after { bottom: 0; }
+.clients::before { top: 0; }
+.clients::after { bottom: 0; }
 
 /* Auto-scrolling client marquee. Two identical tracks abut and translate by 100%;
  * as the first exits the second fills it — a seamless loop. Three rows: the middle
  * runs left, the top + bottom run the opposite way (--reverse). Runs edge to edge
  * (no fade) and never pauses. */
-.homec-clients__scroller {
+.clients__scroller {
   display: flex;
   width: 100%;
   overflow: hidden;
 }
 
-.homec-clients__track {
+.clients__track {
   display: flex;
   flex: 0 0 auto;
   align-items: center;
@@ -599,15 +603,15 @@
   margin: 0;
   padding: 0 clamp(2rem, 4vw, 4rem) 0 0;
   list-style: none;
-  animation: homec-clients-scroll 80s linear infinite;
+  animation: clients-scroll 80s linear infinite;
 }
 
 /* Opposite direction for the top + bottom rows. */
-.homec-clients__scroller--reverse .homec-clients__track {
+.clients__scroller--reverse .clients__track {
   animation-direction: reverse;
 }
 
-.homec-client {
+.client {
   flex: 0 0 auto;
   white-space: nowrap;
   /* Custom fluid value: oversized display marquee. Raised cap so it keeps growing
@@ -626,21 +630,64 @@
    both the real and the aria-hidden duplicate track. NB: each track holds an
    ODD number of clients (11), so the rhythm doubles up once at the loop seam;
    even out the count for a perfectly continuous A-B-A-B. */
-.homec-client:nth-child(even) {
+.client:nth-child(even) {
   font-family: var(--font-serif);
   font-style: italic;
 }
 
-@keyframes homec-clients-scroll {
+@keyframes clients-scroll {
   to { transform: translateX(-100%); }
 }
 
+/* Pause control — WCAG 2.2.2 (Level A): any auto-motion >5s needs a visible
+   pause. Sits inside the section's bottom content margin; icon swaps via
+   .is-paused (JS toggles the class + aria-pressed). */
+.clients__pause {
+  position: absolute;
+  right: var(--container-pad);
+  bottom: 0.75rem;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  border: 1px solid color-mix(in srgb, var(--color-icon-black) 30%, transparent);
+  border-radius: 9999px;
+  background: var(--color-background);
+  color: var(--color-icon-black);
+  cursor: pointer;
+  transition: border-color var(--duration-normal) var(--ease-standard);
+}
+
+.clients__pause:hover {
+  border-color: var(--color-icon-black);
+}
+
+.clients__pause-icon {
+  width: 0.8rem;
+  height: 0.8rem;
+}
+
+/* Icon swap: show pause bars while running, play triangle while paused. */
+.clients__pause-icon--play { display: none; }
+.clients.is-paused .clients__pause-icon--pause { display: none; }
+.clients.is-paused .clients__pause-icon--play { display: block; }
+
+.clients.is-paused .clients__track {
+  animation-play-state: paused;
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .homec-clients__track {
+  .clients__track {
     animation: none;
   }
-  .homec-clients__scroller {
+  .clients__scroller {
     overflow-x: auto;
+  }
+  .clients__pause {
+    display: none; /* nothing is animating — no control needed */
   }
 }
 
@@ -654,11 +701,11 @@
  * scroll. Once the track finishes, the pin releases and vertical scroll resumes.
  * Pure CSS — no ScrollTrigger. Degrades to a native horizontal swipe where
  * scroll-timeline is unsupported or under reduced motion. */
-.homec-news {
+.news {
   position: relative;
 }
 
-.homec-news__pin {
+.news__pin {
   height: 250vh; /* pinned-scroll distance: 4 cards → a bit more travel so the horizontal sweep isn't rushed */
   /* A VIEW timeline (the pin need not be a scroll container). The track animates
      over the `contain` phase — exactly while the sticky child covers the
@@ -667,7 +714,7 @@
   view-timeline-axis: block;
 }
 
-.homec-news__sticky {
+.news__sticky {
   position: sticky;
   top: 0;
   height: 100svh;
@@ -679,14 +726,14 @@
   border-top: 1px solid var(--color-border);
 }
 
-.homec-news__head {
+.news__head {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
   padding-inline: var(--container-pad);
 }
 
-.homec-news__eyebrow {
+.news__eyebrow {
   font-size: var(--text-xs);
   font-weight: var(--font-weight-bold);
   letter-spacing: 0.1em;
@@ -694,12 +741,12 @@
   color: var(--color-icon-grey);
 }
 
-.homec-news__track {
+.news__track {
   display: flex;
   gap: clamp(1.25rem, 2.5vw, 2rem);
   width: max-content;
   padding-inline: var(--container-pad);
-  animation: homec-news-x linear both;
+  animation: news-x linear both;
   animation-timeline: --news-pin;
   /* Bleed the sweep ~14% into the entry/exit phases so it blends with the last
      bit of vertical scroll-in and the first bit of scroll-out — a fluid handoff
@@ -707,11 +754,11 @@
   animation-range: contain -14% contain 114%;
 }
 
-@keyframes homec-news-x {
+@keyframes news-x {
   to { transform: translateX(calc(-100% + 100vw)); }
 }
 
-.homec-news__card {
+.news__card {
   flex: 0 0 auto;
   /* Narrower than the old 4:3 cards — square figures are taller, so keep the
      card + meta + title within the pinned 100svh. */
@@ -721,7 +768,7 @@
   color: inherit;
 }
 
-.homec-news__figure {
+.news__figure {
   position: relative;
   margin: 0 0 var(--spacing-md);
   border-radius: var(--radius-icon);
@@ -732,7 +779,7 @@
 /* Slightly oversized on both axes — just enough overscan (3% a side) to cover the
    small parallax drift below without exposing an edge. Kept small so the square
    source sits close to its natural size with minimal crop. */
-.homec-news__img {
+.news__img {
   position: absolute;
   top: -3%;
   left: -3%;
@@ -750,22 +797,22 @@
      through the viewport, i.e. --news-pin's full `cover` phase. On `transform`.
    Separate properties (translate vs transform) so the two compose without fighting,
    and each carries its own timeline range. Both also compose with the reveal's
-   `scale`/`clip-path`/`opacity` (.homec-reveal, matching the work images). */
-@keyframes homec-news-img-x {
+   `scale`/`clip-path`/`opacity` (.media-reveal, matching the work images). */
+@keyframes news-img-x {
   from { translate: -2% 0; }
   to { translate: 2% 0; }
 }
-@keyframes homec-news-img-y {
+@keyframes news-img-y {
   from { transform: translateY(-0.75%); }
   to { transform: translateY(0.75%); }
 }
 
 @media (prefers-reduced-motion: no-preference) {
   @supports (animation-timeline: view()) {
-    .homec-news__img {
+    .news__img {
       animation:
-        homec-news-img-x linear both,
-        homec-news-img-y linear both;
+        news-img-x linear both,
+        news-img-y linear both;
       animation-timeline: --news-pin, --news-pin;
       animation-range: contain -14% contain 114%, cover 0% cover 100%;
     }
@@ -773,7 +820,7 @@
 }
 
 /* Category + date row above the title. */
-.homec-news__meta {
+.news__meta {
   display: flex;
   align-items: baseline;
   gap: 0.75rem;
@@ -783,16 +830,16 @@
   text-transform: uppercase;
 }
 
-.homec-news__category {
+.news__category {
   font-weight: var(--font-weight-bold);
   color: var(--color-icon-black);
 }
 
-.homec-news__date {
+.news__date {
   color: var(--color-icon-grey);
 }
 
-.homec-news__title {
+.news__title {
   margin: 0;
   font-size: var(--text-lg);
   font-weight: var(--font-weight-medium);
@@ -804,23 +851,23 @@
 /* Fallback — no scroll-timeline support or reduced motion: a plain, swipeable
    horizontal scroller (no pin, no coupled animation). */
 @supports not (animation-timeline: scroll()) {
-  .homec-news__pin { height: auto; }
-  .homec-news__sticky { position: static; height: auto; overflow-x: auto; padding-block: clamp(3rem, 8vw, 6rem); }
-  .homec-news__track { animation: none; scroll-snap-type: x proximity; }
-  .homec-news__card { scroll-snap-align: start; }
+  .news__pin { height: auto; }
+  .news__sticky { position: static; height: auto; overflow-x: auto; padding-block: clamp(3rem, 8vw, 6rem); }
+  .news__track { animation: none; scroll-snap-type: x proximity; }
+  .news__card { scroll-snap-align: start; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .homec-news__pin { height: auto; }
-  .homec-news__sticky { position: static; height: auto; overflow-x: auto; padding-block: clamp(3rem, 8vw, 6rem); }
-  .homec-news__track { animation: none; }
+  .news__pin { height: auto; }
+  .news__sticky { position: static; height: auto; overflow-x: auto; padding-block: clamp(3rem, 8vw, 6rem); }
+  .news__track { animation: none; }
 }
 
 /* ======================================================================
  * Shared: the "more" pill link + section rhythm
  * ==================================================================== */
 
-.homec-morelink {
+.arrow-link {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
@@ -832,13 +879,13 @@
   text-decoration: none;
 }
 
-.homec-morelink svg {
+.arrow-link svg {
   width: 1.1rem;
   height: 1.1rem;
   transition: transform var(--duration-normal) var(--ease-standard);
 }
 
-.homec-morelink:hover svg,
-.homec-morelink:focus-visible svg {
+.arrow-link:hover svg,
+.arrow-link:focus-visible svg {
   transform: translateX(0.25rem);
 }
