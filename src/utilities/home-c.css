@@ -372,10 +372,11 @@
 }
 
 .intro__lede {
+  /* Same type treatment as .intro__label ("Our expertise"): sentence case,
+     regular weight, no tracking — only the colour differs (icon-black, as
+     requested; the label is icon-grey). */
   font-size: var(--text-xs);
-  font-weight: var(--font-weight-semibold);
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+  font-weight: var(--font-weight-normal);
   line-height: 1.4;
   color: var(--color-icon-black);
   /* Width is governed by the .intro__lede-col grid span (fluid, per breakpoint). */
