@@ -68,9 +68,9 @@
               <p class="ds-nav__group-title">Components</p>
               <ul class="ds-nav__list">
                 <li><a class="ds-nav__link" href="#hero">Hero</a></li>
+                <li><a class="ds-nav__link" href="#intro">Intro statement</a></li>
                 <!-- Phase 2 — uncomment each entry as its section ships:
                 <li><a class="ds-nav__link" href="#header">Site header</a></li>
-                <li><a class="ds-nav__link" href="#intro">Intro statement</a></li>
                 <li><a class="ds-nav__link" href="#work">Work grid</a></li>
                 <li><a class="ds-nav__link" href="#clients">Clients marquee</a></li>
                 <li><a class="ds-nav__link" href="#news">News scroller</a></li>
@@ -373,6 +373,73 @@
                   <code class="ds-code">Drupal.behaviors.iconHome</code> (load sequence, exit trigger, header
                   inversion). The <code class="ds-code">sr-only</code> real text is the accessible name; the
                   lockup is <code class="ds-code">aria-hidden</code>.
+                </p>
+              </div>
+            </section>
+
+            <section class="ds-section" id="intro">
+              <h3 class="ds-section__title">Intro statement</h3>
+              <p class="ds-section__intro">
+                <code class="ds-code">.intro</code> — the two-part editorial opener: a small uppercase lede
+                with the "/"-prefixed expertise list stacked beneath it (left, 5→4→3 columns as the
+                viewport widens), and the big fluid statement at columns 7–12. The two blocks align on
+                their <em>first-line baselines</em> (<code class="ds-code">align-items: baseline</code> on the
+                grid), not their tops — the small and large type start on the same line.
+              </p>
+
+              <div class="ds-group">
+                <h4 class="ds-group__title">Live</h4>
+                <p class="ds-group__note">
+                  Real markup wearing the production CSS. On the homepage the section spans the uncapped
+                  container with raised type ceilings; here it wears the site-default tokens at the
+                  pane's width. The demo stage supplies <code class="ds-code">--grid-gutter</code> the way the
+                  page layer does on the homepage. Without page JS the reveals simply don't run — the
+                  no-JS state you see is the real fallback.
+                </p>
+                <div class="ds-demo ds-demo--home-context">
+                  <section class="intro u-container" aria-label="About ICON">
+                    <div class="intro__grid">
+                      <div class="intro__lede-col">
+                        <p class="intro__lede" data-animate>
+                          ICON is an independent Australian strategic communications agency
+                          for complex change &mdash; recognised with 14 Agency of the Year
+                          awards since 2021.
+                        </p>
+                        <div class="intro__expertise-col" data-animate>
+                          <span class="intro__label">Our expertise</span>
+                          <ul class="intro__expertise">
+                            <li>Creative</li>
+                            <li>Communications</li>
+                            <li>Digital</li>
+                            <li>Reputation</li>
+                            <li>Production</li>
+                          </ul>
+                        </div>
+                      </div>
+                      <p class="intro__statement" data-reveal-text>
+                        — with deep experience across government, technology, health, education
+                        and social impact. From strategy to execution, we help organisations and
+                        change-makers create work that <span class="miller-text">matters</span>.
+                      </p>
+                    </div>
+                  </section>
+                </div>
+                <p class="ds-demo__label">intro · .intro — .intro__lede-col (lede + expertise) + .intro__statement, baseline-aligned 12-col grid</p>
+              </div>
+
+              <div class="ds-group">
+                <h4 class="ds-group__title">Drupal (Canvas / SDC)</h4>
+                <p class="ds-group__note">
+                  SDC <code class="ds-code">intro</code>. Props: <code class="ds-code">lede</code> (plain text —
+                  the CSS uppercases it), <code class="ds-code">expertise_label</code>,
+                  <code class="ds-code">expertise_items</code> (list of strings; the "/" prefix is a CSS
+                  <code class="ds-code">::before</code>, never typed content),
+                  <code class="ds-code">statement</code> (rich text; the serif emphasis is a
+                  <code class="ds-code">.miller-text</code> span). No variants. Behaviours: the shared
+                  <code class="ds-code">[data-animate]</code> fade (reveal behaviour) and the SplitText
+                  line-mask on <code class="ds-code">[data-reveal-text]</code> — SplitText itself supplies the
+                  accessibility shim (<code class="ds-code">aria-label</code> on the split paragraph,
+                  <code class="ds-code">aria-hidden</code> line masks).
                 </p>
               </div>
             </section>

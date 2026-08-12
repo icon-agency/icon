@@ -299,6 +299,13 @@
   font-family: ui-monospace, "SF Mono", Menlo, monospace;
 }
 
+/* Home-page context for demos: components authored for the homepage read
+   page-layer tokens (.page-home). The demo stage supplies the same tokens —
+   exactly what the Drupal page template will do around the SDC. */
+.ds-demo--home-context {
+  --grid-gutter: clamp(1rem, 2.2vw, 3rem);
+}
+
 /* Link-out card for components that can't be honestly demoed at reduced scale. */
 .ds-thumb-link {
   display: block;
