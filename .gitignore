@@ -2,3 +2,6 @@ node_modules/
 v40-1-icon/
 .DS_Store
 *.log
+
+# unrelated nested project
+GreenPowerDS/

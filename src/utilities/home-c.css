@@ -557,15 +557,29 @@
 
 .homec-clients {
   /* Full-bleed out of the container so the marquee runs edge to edge. */
+  position: relative;
   width: 100vw;
   margin-inline: calc(50% - 50vw);
   padding-block: clamp(3.5rem, 8vw, 7rem);
-  border-block: 1px solid var(--color-border);
   /* Stack the three marquee rows, tightly. */
   display: flex;
   flex-direction: column;
   gap: clamp(0.35rem, 0.9vw, 1rem);
 }
+
+/* Top + bottom rules — inset to the content margins (not full-bleed like the
+   marquee) and in icon black. */
+.homec-clients::before,
+.homec-clients::after {
+  content: "";
+  position: absolute;
+  left: var(--container-pad);
+  right: var(--container-pad);
+  height: 1px;
+  background: var(--color-icon-black);
+}
+.homec-clients::before { top: 0; }
+.homec-clients::after { bottom: 0; }
 
 /* Auto-scrolling client marquee. Two identical tracks abut and translate by 100%;
  * as the first exits the second fills it — a seamless loop. Three rows: the middle
