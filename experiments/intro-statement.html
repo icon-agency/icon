@@ -1,0 +1,580 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Experiment — Intro statement × 3</title>
+    <meta name="robots" content="noindex" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Kumbh+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://use.typekit.net/bhv7yrj.css" />
+    <link rel="stylesheet" href="../css/main.css" />
+
+    <!-- EXPERIMENT — deliberately self-contained. All styles live in this one
+         inline block (no component CSS is touched) until a direction is
+         approved; then the winner gets promoted into the system properly.
+         Animation vocabulary is the site's own: word masks staggered by a --w
+         index, IntersectionObserver .in reveals, and compositor scroll-driven
+         animation via view-timeline (never scroll handlers). -->
+    <style>
+      /* ---- page chrome ---- */
+      .exp-page {
+        background: var(--color-background);
+        color: var(--color-icon-black);
+        overflow: clip;
+      }
+
+      .exp-topbar {
+        position: fixed;
+        top: 0;
+        inset-inline: 0;
+        z-index: 100;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.7rem clamp(1rem, 3vw, 2.5rem);
+        font-size: 0.72rem;
+        font-weight: var(--font-weight-bold);
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        background: color-mix(in srgb, var(--color-background) 82%, transparent);
+        -webkit-backdrop-filter: blur(14px);
+        backdrop-filter: blur(14px);
+        border-bottom: 1px solid var(--color-border);
+      }
+      .exp-topbar a { color: var(--color-icon-black); text-decoration: none; }
+      .exp-topbar a:hover { color: var(--color-icon-blue); }
+      .exp-topbar__hint { color: var(--color-icon-grey); font-weight: var(--font-weight-normal); letter-spacing: 0.04em; text-transform: none; }
+
+      .exp-label {
+        position: absolute;
+        top: clamp(1.2rem, 3vw, 2.4rem);
+        left: clamp(1rem, 3vw, 2.5rem);
+        display: flex;
+        align-items: baseline;
+        gap: 0.6rem;
+        font-size: 0.72rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--color-icon-grey);
+      }
+      .exp-label b { color: var(--color-icon-blue); font-weight: var(--font-weight-bold); }
+
+      .exp-section {
+        position: relative;
+        border-bottom: 1px solid var(--color-border);
+      }
+
+      /* ---- shared word-mask reveal (the hero's cascade, generalised) ----
+         JS wraps each word: <span class="w"><span class="wi">word</span></span>
+         and indexes it with --w. Hidden states only under .js so no-JS renders
+         everything plainly. */
+      .w { display: inline-block; overflow: hidden; vertical-align: bottom; padding-block: 0.08em; margin-block: -0.08em; }
+      .wi { display: inline-block; }
+      .js .reveal-words .wi {
+        translate: 0 118%;
+        transition: translate 0.7s var(--ease-decelerate);
+        transition-delay: calc(var(--w, 0) * 55ms);
+      }
+      .js .reveal-words.in .wi { translate: 0 0; }
+
+      .js .fade-item {
+        opacity: 0;
+        translate: 0 1.2rem;
+        transition:
+          opacity 0.8s var(--ease-standard),
+          translate 0.9s var(--ease-decelerate);
+        transition-delay: var(--d, 0ms);
+      }
+      .js .fade-item.in { opacity: 1; translate: 0 0; }
+
+      /* ================================================================
+         01 · MONUMENT — as briefed: centred display caps, then the offset
+         band (statement left, award + expertise scattered right).
+         ================================================================ */
+      .exp-monument {
+        padding: clamp(6rem, 14vh, 11rem) clamp(1.25rem, 4vw, 4rem) clamp(5rem, 12vh, 9rem);
+      }
+
+      .exp-monument__headline {
+        margin: 0 auto;
+        max-width: 18ch;
+        font-size: clamp(2.6rem, 6.5vw, 7rem);
+        line-height: 0.98;
+        font-weight: 800;
+        letter-spacing: var(--tracking-caps);
+        text-transform: uppercase;
+        text-align: center;
+        text-wrap: balance;
+      }
+
+      .exp-monument__band {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: clamp(2.5rem, 5vw, 4rem);
+        margin-top: clamp(4rem, 10vh, 8rem);
+      }
+
+      @media (min-width: 900px) {
+        .exp-monument__band {
+          grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+        }
+      }
+
+      .exp-monument__statement {
+        margin: 0;
+        max-width: 21ch;
+        font-size: clamp(1.6rem, 3vw, 3.1rem);
+        line-height: 1.22;
+        font-weight: var(--font-weight-medium);
+        letter-spacing: -0.01em;
+        text-wrap: pretty;
+      }
+
+      .exp-monument__aside {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        gap: 3rem;
+        font-size: var(--text-sm);
+      }
+
+      .exp-monument__award { margin: 0; color: var(--color-icon-grey); max-width: 34ch; }
+
+      .exp-monument__expertise-wrap {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        gap: 2rem;
+      }
+      .exp-monument__expertise-label { color: var(--color-icon-grey); }
+      .exp-monument__expertise {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        text-align: left;
+        font-weight: var(--font-weight-semibold);
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        font-size: var(--text-xs);
+        line-height: 1.5;
+      }
+      .exp-monument__expertise li::before { content: "/ "; }
+
+      /* faint scroll drift on the statement — the project-card parallax idea */
+      @media (prefers-reduced-motion: no-preference) {
+        @supports (animation-timeline: view()) {
+          .exp-monument__band { view-timeline-name: --exp-band; }
+          @keyframes exp-band-drift { from { transform: translateY(2.5rem); } to { transform: translateY(-1rem); } }
+          .exp-monument__aside {
+            animation: exp-band-drift linear both;
+            animation-timeline: --exp-band;
+            animation-range: cover 0% cover 100%;
+          }
+        }
+      }
+
+      /* ================================================================
+         02 · KINETIC — pinned scroll piece. Giant caps lines drift in
+         alternating directions while the scroll scrubs; outlined lines fill;
+         then the statement ILLUMINATES word by word, driven by the same pin
+         timeline (each word's animation-range offset by its --i index).
+         ================================================================ */
+      .exp-kinetic__pin {
+        height: 340vh;
+        view-timeline-name: --exp-pin;
+        view-timeline-axis: block;
+      }
+
+      .exp-kinetic__sticky {
+        position: sticky;
+        top: 0;
+        height: 100svh;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: clamp(2rem, 6vh, 4rem);
+        padding-inline: clamp(1.25rem, 4vw, 4rem);
+      }
+
+      .exp-kinetic__lines {
+        display: flex;
+        flex-direction: column;
+        font-size: clamp(3rem, 10.5vw, 10rem);
+        line-height: 0.94;
+        font-weight: 800;
+        letter-spacing: var(--tracking-caps);
+        text-transform: uppercase;
+        white-space: nowrap;
+      }
+
+      .exp-kinetic__line { will-change: transform; }
+      .exp-kinetic__line--outline {
+        color: transparent;
+        -webkit-text-stroke: 1.5px var(--color-icon-black);
+      }
+      .exp-kinetic__line--blue { -webkit-text-stroke-color: var(--color-icon-blue); }
+
+      .exp-kinetic__statement {
+        margin: 0;
+        max-width: 44ch;
+        font-size: clamp(1.15rem, 1.9vw, 1.85rem);
+        line-height: 1.4;
+        font-weight: var(--font-weight-medium);
+        text-wrap: pretty;
+      }
+
+      /* per-word illumination: muted at rest, scrubbed to full ink */
+      .exp-kinetic__statement .kw { color: color-mix(in srgb, var(--color-icon-black) 16%, transparent); }
+
+      .exp-kinetic__meta {
+        display: flex;
+        gap: clamp(2rem, 6vw, 5rem);
+        font-size: var(--text-xs);
+        color: var(--color-icon-grey);
+      }
+      .exp-kinetic__meta ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0.4rem 1.1rem; font-weight: var(--font-weight-semibold); letter-spacing: 0.06em; text-transform: uppercase; color: var(--color-icon-black); }
+      .exp-kinetic__meta li::before { content: "/ "; }
+
+      @media (prefers-reduced-motion: no-preference) {
+        @supports (animation-timeline: scroll()) {
+          @keyframes exp-drift-l { from { transform: translateX(4%); } to { transform: translateX(-7%); } }
+          @keyframes exp-drift-r { from { transform: translateX(-9%); } to { transform: translateX(2%); } }
+          @keyframes exp-fill { to { color: var(--color-icon-black); -webkit-text-stroke-color: transparent; } }
+          @keyframes exp-fill-blue { to { color: var(--color-icon-blue); -webkit-text-stroke-color: transparent; } }
+          @keyframes exp-illuminate { to { color: var(--color-icon-black); } }
+
+          .exp-kinetic__line--l { animation: exp-drift-l linear both; animation-timeline: --exp-pin; animation-range: cover 0% cover 100%; }
+          .exp-kinetic__line--r { animation: exp-drift-r linear both; animation-timeline: --exp-pin; animation-range: cover 0% cover 100%; }
+          .exp-kinetic__line--outline {
+            animation: exp-drift-l linear both, exp-fill linear both;
+            animation-timeline: --exp-pin, --exp-pin;
+            animation-range: cover 0% cover 100%, contain 5% contain 45%;
+          }
+          .exp-kinetic__line--outline.exp-kinetic__line--r {
+            animation: exp-drift-r linear both, exp-fill linear both;
+            animation-timeline: --exp-pin, --exp-pin;
+            animation-range: cover 0% cover 100%, contain 10% contain 50%;
+          }
+          /* the brand-accent line fills to ICON blue, slightly later */
+          .exp-kinetic__line--outline.exp-kinetic__line--blue {
+            animation: exp-drift-l linear both, exp-fill-blue linear both;
+            animation-timeline: --exp-pin, --exp-pin;
+            animation-range: cover 0% cover 100%, contain 15% contain 55%;
+          }
+          /* each word lights up across its own slice of the pin */
+          .exp-kinetic__statement .kw {
+            animation: exp-illuminate linear both;
+            animation-timeline: --exp-pin;
+            animation-range-start: contain calc(28% + var(--i, 0) * 1.4%);
+            animation-range-end: contain calc(36% + var(--i, 0) * 1.4%);
+          }
+        }
+      }
+
+      /* fallback: no scroll-timeline support (or reduced motion) — no pin,
+         everything at full ink */
+      @supports not (animation-timeline: scroll()) {
+        .exp-kinetic__pin { height: auto; }
+        .exp-kinetic__sticky { position: static; height: auto; padding-block: clamp(4rem, 10vh, 7rem); }
+        .exp-kinetic__lines { white-space: normal; }
+        .exp-kinetic__statement .kw { color: var(--color-icon-black); }
+        .exp-kinetic__line--outline { color: var(--color-icon-black); -webkit-text-stroke: 0; }
+        .exp-kinetic__line--blue { color: var(--color-icon-blue); }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .exp-kinetic__pin { height: auto; }
+        .exp-kinetic__sticky { position: static; height: auto; padding-block: clamp(4rem, 10vh, 7rem); }
+        .exp-kinetic__lines { white-space: normal; }
+        .exp-kinetic__statement .kw { color: var(--color-icon-black); }
+        .exp-kinetic__line--outline { color: var(--color-icon-black); -webkit-text-stroke: 0; }
+        .exp-kinetic__line--blue { color: var(--color-icon-blue); }
+      }
+
+      /* ================================================================
+         03 · DUET — the brand's serif × caps pairing as an asymmetric
+         poster. "complex change" swaps to Miller italic; the expertise list
+         runs as a vertical rail; the em-dash draws itself before the
+         statement. Serif words enter from the left, caps from the right.
+         ================================================================ */
+      .exp-duet {
+        display: grid;
+        grid-template-columns: auto minmax(0, 1fr);
+        gap: clamp(1.5rem, 4vw, 4rem);
+        padding: clamp(5rem, 12vh, 9rem) clamp(1.25rem, 4vw, 4rem);
+      }
+
+      .exp-duet__rail {
+        writing-mode: vertical-rl;
+        rotate: 180deg;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        font-size: 0.72rem;
+        font-weight: var(--font-weight-semibold);
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--color-icon-grey);
+        border-left: 1px solid var(--color-border);
+        padding-left: 1rem;
+      }
+      .exp-duet__rail li { transition: color var(--duration-fast) var(--ease-standard); }
+      .exp-duet__rail li:hover { color: var(--color-icon-blue); }
+
+      .exp-duet__lockup {
+        margin: 0 0 clamp(3rem, 8vh, 6rem);
+        font-size: clamp(2.6rem, 7.2vw, 7.5rem);
+        line-height: 1.02;
+        font-weight: 800;
+        letter-spacing: var(--tracking-caps);
+        text-transform: uppercase;
+        text-wrap: balance;
+      }
+
+      .exp-duet__serif {
+        font-family: var(--font-serif);
+        font-style: italic;
+        font-weight: var(--font-weight-medium);
+        font-size: 1.08em;
+        letter-spacing: 0;
+        text-transform: none;
+        color: var(--color-icon-blue);
+        padding-right: 0.06em;
+      }
+
+      .exp-duet__lower {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: clamp(2rem, 5vw, 4rem);
+      }
+      @media (min-width: 900px) {
+        .exp-duet__lower { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: end; }
+      }
+
+      .exp-duet__statement {
+        position: relative;
+        margin: 0;
+        max-width: 34ch;
+        font-size: clamp(1.25rem, 2vw, 1.9rem);
+        line-height: 1.38;
+        font-weight: var(--font-weight-medium);
+        text-wrap: pretty;
+        padding-top: 1.4rem;
+      }
+      /* the em-dash draws itself */
+      .exp-duet__statement::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 3.2em;
+        height: 3px;
+        background: var(--color-icon-blue);
+        transform-origin: left center;
+      }
+      .js .exp-duet__statement::before {
+        scale: 0 1;
+        transition: scale 0.9s var(--ease-decelerate) 0.15s;
+      }
+      .js .exp-duet__statement.in::before { scale: 1 1; }
+
+      .exp-duet__award {
+        margin: 0;
+        justify-self: end;
+        text-align: right;
+        max-width: 26ch;
+        font-size: var(--text-sm);
+        color: var(--color-icon-grey);
+        text-wrap: pretty;
+      }
+
+      /* serif words slide in from the LEFT; caps words rise — same mask
+         primitive, different axis */
+      .js .exp-duet__lockup .w { padding-inline: 0.06em; margin-inline: -0.06em; }
+      .js .exp-duet__lockup .exp-duet__serif .wi,
+      .js .exp-duet__lockup .wi.wi--serif {
+        translate: -110% 0;
+      }
+      .js .exp-duet__lockup.in .wi.wi--serif { translate: 0 0; }
+
+      @media (prefers-reduced-motion: reduce) {
+        .js .reveal-words .wi,
+        .js .fade-item,
+        .js .exp-duet__lockup .wi.wi--serif { translate: 0 0; opacity: 1; transition: none; }
+        .js .exp-duet__statement::before { scale: 1 1; transition: none; }
+      }
+    </style>
+  </head>
+  <body class="exp-page">
+    <div class="exp-topbar">
+      <a href="../index.html">&larr; Design system</a>
+      <span class="exp-topbar__hint">Experiment — intro statement, three directions. Markup inline until a direction is approved.</span>
+    </div>
+
+    <!-- ================= 01 · MONUMENT ================= -->
+    <section class="exp-section" aria-label="Direction 01 — Monument">
+      <p class="exp-label"><b>01</b> Monument — as briefed</p>
+      <div class="exp-monument">
+        <h2 class="exp-monument__headline reveal-words" data-words>A strategic communications agency for complex change</h2>
+        <div class="exp-monument__band">
+          <p class="exp-monument__statement reveal-words" data-words>&mdash; with deep experience across government, technology, health, education and social impact. From strategy to execution, we help organisations and change-makers create work that matters.</p>
+          <div class="exp-monument__aside">
+            <p class="exp-monument__award fade-item">Recognised with 14 Agency of the Year awards since 2021.</p>
+            <div class="exp-monument__expertise-wrap">
+              <span class="exp-monument__expertise-label fade-item" style="--d: 120ms">Our expertise</span>
+              <ul class="exp-monument__expertise fade-item" style="--d: 240ms">
+                <li>Creative</li>
+                <li>Communications</li>
+                <li>Digital</li>
+                <li>Reputation</li>
+                <li>Production</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= 02 · KINETIC ================= -->
+    <section class="exp-section" aria-label="Direction 02 — Kinetic">
+      <div class="exp-kinetic__pin">
+        <div class="exp-kinetic__sticky">
+          <p class="exp-label"><b>02</b> Kinetic — pinned scrub, drifting lines, word illumination</p>
+          <h2 class="exp-kinetic__lines" aria-label="A strategic communications agency for complex change">
+            <span class="exp-kinetic__line exp-kinetic__line--l" aria-hidden="true">A strategic</span>
+            <span class="exp-kinetic__line exp-kinetic__line--outline exp-kinetic__line--r" aria-hidden="true">communications</span>
+            <span class="exp-kinetic__line exp-kinetic__line--l" aria-hidden="true">agency for</span>
+            <span class="exp-kinetic__line exp-kinetic__line--outline exp-kinetic__line--blue" aria-hidden="true">complex change</span>
+          </h2>
+          <p class="exp-kinetic__statement" data-illuminate>&mdash; with deep experience across government, technology, health, education and social impact. From strategy to execution, we help organisations and change-makers create work that matters.</p>
+          <div class="exp-kinetic__meta">
+            <span>Recognised with 14 Agency of the Year awards since 2021.</span>
+            <ul aria-label="Our expertise">
+              <li>Creative</li>
+              <li>Communications</li>
+              <li>Digital</li>
+              <li>Reputation</li>
+              <li>Production</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= 03 · DUET ================= -->
+    <section class="exp-section" aria-label="Direction 03 — Duet">
+      <div class="exp-duet">
+        <ul class="exp-duet__rail" aria-label="Our expertise">
+          <li>Creative</li>
+          <li>Communications</li>
+          <li>Digital</li>
+          <li>Reputation</li>
+          <li>Production</li>
+        </ul>
+        <div>
+          <p class="exp-label" style="position: static; margin: 0 0 2.5rem"><b>03</b> Duet — serif &times; caps, drawn dash, vertical rail</p>
+          <h2 class="exp-duet__lockup reveal-words" data-words data-serif-words="complex change">A strategic communications agency for <span class="exp-duet__serif">complex change</span></h2>
+          <div class="exp-duet__lower">
+            <p class="exp-duet__statement reveal-words fade-container" data-words>with deep experience across government, technology, health, education and social impact. From strategy to execution, we help organisations and change-makers create work that <em class="miller-text">matters</em>.</p>
+            <p class="exp-duet__award fade-item" style="--d: 300ms">Recognised with 14 Agency of the Year awards since 2021.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <script>
+      /* EXPERIMENT behaviours — inline until approved. One IIFE:
+         1. word splitting for the mask cascade (--w index per word);
+         2. word splitting for the kinetic illumination (--i index per word);
+         3. IntersectionObserver adds .in (shared reveal trigger).
+         No-JS: without the .js class nothing is ever hidden. */
+      (function () {
+        "use strict";
+        document.documentElement.classList.add("js");
+        var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+        // 1. mask-cascade word split — keeps existing child elements (the serif
+        // span in Duet) by walking text nodes only.
+        function splitWords(el) {
+          var idx = 0;
+          function walk(node) {
+            var isSerif = !!(node.parentElement && node.parentElement.closest(".exp-duet__serif, .miller-text"));
+            if (node.nodeType === 3) {
+              var frag = document.createDocumentFragment();
+              node.textContent.split(/(\s+)/).forEach(function (part) {
+                if (!part) return;
+                if (/^\s+$/.test(part)) { frag.appendChild(document.createTextNode(part)); return; }
+                var w = document.createElement("span");
+                w.className = "w";
+                var wi = document.createElement("span");
+                wi.className = "wi" + (isSerif ? " wi--serif" : "");
+                wi.textContent = part;
+                wi.style.setProperty("--w", idx++);
+                wi.style.transitionDelay = "calc(var(--w) * 55ms)";
+                w.appendChild(wi);
+                frag.appendChild(w);
+              });
+              node.parentNode.replaceChild(frag, node);
+            } else if (node.nodeType === 1) {
+              Array.prototype.slice.call(node.childNodes).forEach(walk);
+            }
+          }
+          var label = el.textContent.replace(/\s+/g, " ").trim();
+          el.setAttribute("aria-label", label);
+          Array.prototype.slice.call(el.childNodes).forEach(walk);
+          // hide the shredded words from AT — the aria-label carries the text
+          el.querySelectorAll(".w").forEach(function (w) { w.setAttribute("aria-hidden", "true"); });
+        }
+
+        // 2. illumination split — flat word spans indexed with --i
+        function splitIlluminate(el) {
+          var label = el.textContent.replace(/\s+/g, " ").trim();
+          el.setAttribute("aria-label", label);
+          var words = el.textContent.split(/(\s+)/);
+          el.textContent = "";
+          var i = 0;
+          words.forEach(function (part) {
+            if (!part) return;
+            if (/^\s+$/.test(part)) { el.appendChild(document.createTextNode(" ")); return; }
+            var s = document.createElement("span");
+            s.className = "kw";
+            s.setAttribute("aria-hidden", "true");
+            s.textContent = part;
+            s.style.setProperty("--i", i++);
+            el.appendChild(s);
+          });
+        }
+
+        if (!reduce) {
+          document.querySelectorAll("[data-words]").forEach(splitWords);
+          document.querySelectorAll("[data-illuminate]").forEach(splitIlluminate);
+        }
+
+        // 3. shared in-view trigger
+        var targets = document.querySelectorAll(".reveal-words, .fade-item");
+        if (!("IntersectionObserver" in window) || reduce) {
+          targets.forEach(function (el) { el.classList.add("in"); });
+          return;
+        }
+        var io = new IntersectionObserver(function (entries) {
+          entries.forEach(function (e) {
+            if (!e.isIntersecting) return;
+            e.target.classList.add("in");
+            io.unobserve(e.target);
+          });
+        }, { threshold: 0.2, rootMargin: "0px 0px -8% 0px" });
+        targets.forEach(function (el) { io.observe(el); });
+
+        // Duet's drawn dash shares the statement's .in
+        document.querySelectorAll(".exp-duet__statement").forEach(function (el) { io.observe(el); });
+      })();
+    </script>
+  </body>
+</html>
