@@ -306,6 +306,23 @@
   --grid-gutter: clamp(1rem, 2.2vw, 3rem);
 }
 
+/* Demo-stage neutralisers: the intro strip full-bleeds against the REAL
+   viewport (100vw margin trick) and its DRAG badge is position: fixed — both
+   would escape the bordered stage here, so inside a demo the strip fills the
+   stage instead and the badge is hidden. Page behaviour is untouched. */
+.ds-demo .intro__viewport {
+  width: 100%;
+  margin-inline: 0;
+}
+.ds-demo .intro__badge {
+  display: none;
+}
+/* The sticky expertise label would crawl against the DS page's own scroller;
+   in the stage it just rests beside the first item. */
+.ds-demo .intro__expertise-label {
+  position: static;
+}
+
 /* Link-out card for components that can't be honestly demoed at reduced scale. */
 .ds-thumb-link {
   display: block;

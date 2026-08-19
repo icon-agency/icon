@@ -1,0 +1,763 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Experiment — Hero</title>
+    <meta name="robots" content="noindex" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Kumbh+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://use.typekit.net/bhv7yrj.css" />
+    <link rel="stylesheet" href="../css/main.css" />
+
+    <script>
+      document.documentElement.classList.add("js-animations");
+    </script>
+
+    <!-- EXPERIMENT — deliberately self-contained. Every style lives in this one
+         inline block under an `exp-` namespace (the production .hero component
+         is NOT touched) until a direction is approved; then the winner gets
+         promoted into the system properly. 01 mirrors what ships today so the
+         variants can be judged against it. -->
+    <style>
+      /* ---- page chrome (matches the other experiment pages) ---- */
+      .exp-page {
+        background: var(--color-background);
+        color: var(--color-icon-black);
+      }
+
+      .exp-topbar {
+        position: fixed;
+        top: 0;
+        inset-inline: 0;
+        z-index: 100;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.7rem clamp(1rem, 3vw, 2.5rem);
+        font-size: 0.72rem;
+        font-weight: var(--font-weight-bold);
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        background: color-mix(in srgb, var(--color-background) 82%, transparent);
+        -webkit-backdrop-filter: blur(14px);
+        backdrop-filter: blur(14px);
+        border-bottom: 1px solid var(--color-border);
+      }
+      .exp-topbar a { color: var(--color-icon-black); text-decoration: none; }
+      .exp-topbar a:hover { color: var(--color-icon-blue); }
+      .exp-topbar__hint { color: var(--color-icon-grey); font-weight: var(--font-weight-normal); letter-spacing: 0.04em; text-transform: none; }
+
+      .exp-label {
+        display: flex;
+        align-items: baseline;
+        gap: 0.6rem;
+        padding: clamp(2.5rem, 6vw, 4.5rem) clamp(1rem, 3vw, 2.5rem) 0;
+        font-size: 0.72rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--color-icon-grey);
+      }
+      .exp-label b { color: var(--color-icon-blue); font-weight: var(--font-weight-bold); }
+      .exp-note {
+        margin: 0.5rem 0 clamp(1.5rem, 3vw, 2.5rem);
+        padding: 0 clamp(1rem, 3vw, 2.5rem);
+        max-width: 68ch;
+        font-size: var(--text-xs);
+        line-height: 1.5;
+        color: var(--color-icon-grey);
+      }
+
+      .exp-section {
+        position: relative;
+        padding-bottom: clamp(2.5rem, 6vw, 4.5rem);
+        border-bottom: 1px solid var(--color-border);
+      }
+
+      /* ==================================================================
+       * 01 · CURRENT — full-bleed media, centred real-text lockup
+       * Mirrors the production .hero: an oversized image that settles out of
+       * a load zoom and drifts on scroll, a top+bottom gradient scrim, the
+       * "Make what matters" lockup rebuilt as live type (Miller Text italic
+       * "Make" + heavy Kumbh caps), and the corner PiP.
+       * ================================================================ */
+      .exp-hero {
+        position: relative;
+        min-height: 100svh;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      /* Wrapper carries the load-in zoom; the image inside carries the scroll
+         parallax — separate transforms so the two never fight. */
+      .exp-hero__media {
+        position: absolute;
+        inset: 0;
+        z-index: 0;
+        overflow: hidden;
+        transform: scale(1.08);
+        transition: transform 1.6s var(--ease-decelerate);
+        will-change: transform;
+      }
+      .exp-hero.is-ready .exp-hero__media { transform: scale(1); }
+
+      /* Oversized + offset so the ±8% scroll parallax never exposes an edge. */
+      .exp-hero__img {
+        position: absolute;
+        inset-inline: 0;
+        top: -10%;
+        width: 100%;
+        height: 120%;
+        object-fit: cover;
+        object-position: center 30%;
+      }
+
+      @keyframes exp-hero-parallax {
+        from { transform: translate3d(0, 8%, 0); }
+        to { transform: translate3d(0, -8%, 0); }
+      }
+      @media (prefers-reduced-motion: no-preference) {
+        @supports (animation-timeline: scroll()) {
+          .exp-hero__img {
+            animation: exp-hero-parallax linear both;
+            animation-timeline: scroll(root);
+            animation-range: 0 100svh;
+          }
+        }
+      }
+
+      .exp-hero__gradient {
+        position: absolute;
+        inset: 0;
+        z-index: 1;
+        background: linear-gradient(
+          to bottom,
+          rgb(0 0 0 / 0.45) 0%,
+          transparent 30%,
+          transparent 55%,
+          rgb(0 0 0 / 0.65) 100%
+        );
+      }
+
+      .exp-hero__inner {
+        position: relative;
+        z-index: 2;
+        width: 100%;
+        padding-inline: clamp(1.5rem, 4.2vw, 7.5rem);
+        display: flex;
+        justify-content: center;
+      }
+
+      .exp-hero__headline {
+        margin: 0;
+        color: var(--color-white);
+        text-align: center;
+        text-wrap: pretty;
+      }
+
+      /* Same scale as the WORK / NEWS display headings through tablet, then the
+         intro headline's slower curve on big screens (see home-c.css). */
+      .exp-hero__lockup {
+        display: block;
+        font-size: clamp(3rem, min(7vw, clamp(6rem, 5.6vw, 9rem)), 9rem);
+        font-weight: 800;
+        line-height: 0.9;
+        letter-spacing: var(--tracking-caps);
+        text-transform: uppercase;
+      }
+
+      /* Mask for the line-slide reveal; the vertical padding gives the tight
+         line-height room so ascenders and the italic "Make" aren't clipped. */
+      .exp-hero__lockup-line {
+        display: block;
+        overflow: hidden;
+        padding-block: 0.16em;
+        margin-block: -0.16em;
+      }
+
+      .exp-hero__make {
+        font-family: var(--font-serif);
+        font-style: italic;
+        font-weight: var(--font-weight-medium);
+        font-size: 1.06em;
+        letter-spacing: 0;
+        text-transform: none;
+        padding-right: 0.13em; /* the only Make→WHAT gap; no literal space */
+      }
+
+      /* Word-by-word cascade with PER-DIRECTION delays (--w = 0/1/2):
+         entrance in reading order, exit in reverse. The 0.2s step is well under
+         the 0.62s slide, so the words overlap rather than queue. */
+      .exp-hero__word {
+        display: inline-block;
+        transform: translateY(125%);
+        transition:
+          transform 0.62s var(--ease-decelerate) calc(var(--w, 0) * 0.2s),
+          translate 0.62s var(--ease-decelerate) calc((2 - var(--w, 0)) * 0.2s);
+        will-change: transform, translate;
+      }
+      .exp-hero.is-ready .exp-hero__word { transform: translateY(0); }
+      .exp-hero.is-exiting .exp-hero__word { translate: 0 -125%; }
+
+      .exp-hero__pip {
+        position: absolute;
+        right: clamp(1rem, 3vw, 2.5rem);
+        bottom: clamp(1rem, 3vw, 2.5rem);
+        z-index: 3;
+        width: clamp(7rem, 12vw, 11rem);
+        aspect-ratio: 16 / 10;
+        border-radius: var(--radius-md);
+        overflow: hidden;
+        opacity: 0;
+        transition: opacity 0.8s var(--ease-standard) 0.6s;
+      }
+      .exp-hero.is-ready .exp-hero__pip { opacity: 1; }
+      .exp-hero__pip video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+      .exp-hero__pip-play {
+        position: absolute;
+        left: 0.5rem;
+        bottom: 0.5rem;
+        width: 1.25rem;
+        height: 1.25rem;
+        color: var(--color-white);
+      }
+      .exp-hero__pip-play svg { width: 100%; height: 100%; display: block; }
+
+      @media (prefers-reduced-motion: reduce) {
+        .exp-hero__media,
+        .exp-hero__word,
+        .exp-hero__pip {
+          transform: none;
+          translate: none;
+          opacity: 1;
+          transition: none;
+        }
+      }
+
+      /* Spacer so the exit animation has somewhere to scroll to. */
+      .exp-scroll-room { height: 60vh; }
+
+      /* ==================================================================
+       * 02 · STACK TAKEOVER — the homepage's work pieces load in one by one:
+       * each POPS in at the viewport centre, then quickly shrinks onto a
+       * small snapshot stack. When the last lands, a 0.5s beat, then it
+       * scales up into a full-screen takeover and hands off to a slideshow:
+       * 3s per piece, 0.1s cross-fades, Ken Burns on the stills, client
+       * name small in the bottom-left.
+       * ================================================================ */
+      .exp-stack {
+        position: relative;
+        height: 100svh;
+        overflow: hidden;
+        /* light page ground while the pile builds (per the reference); the
+           takeover then covers it with media */
+        background: var(--color-background);
+      }
+
+      /* ---- phase 1: the pop-and-stack pile ---- */
+      .exp-stack__stage {
+        position: absolute;
+        inset: 0;
+        z-index: 2;
+        display: grid;
+        place-items: center; /* every card shares the centre cell */
+      }
+      .exp-stack.is-live .exp-stack__stage {
+        opacity: 0;
+        transition: opacity 0.18s var(--ease-standard);
+        pointer-events: none;
+      }
+
+      .exp-stack__card {
+        grid-area: 1 / 1; /* stacked — DOM order = pile order */
+        margin: 0;
+        width: clamp(20rem, 32vw, 40rem); /* the pile reads big before the takeover */
+        aspect-ratio: 16 / 10;
+        border-radius: var(--radius-icon);
+        overflow: hidden;
+        /* soft pile depth, as in the mock (scales with the takeover, but by
+           then the card covers the viewport so the shadow is off-screen) */
+        opacity: 0;
+        transform: scale(0.25) rotate(0deg); /* grows up from here */
+        will-change: transform, opacity;
+      }
+      /* the snapshot tilts each card settles into (echoes the intro strip) */
+      .exp-stack__card:nth-child(1) { --r: -4deg; }
+      .exp-stack__card:nth-child(2) { --r: 3deg; }
+      .exp-stack__card:nth-child(3) { --r: -2deg; }
+      .exp-stack__card:nth-child(4) { --r: 4.5deg; }
+      .exp-stack__card:nth-child(5) { --r: -3deg; }
+      .exp-stack__card:nth-child(6) { --r: 2.5deg; }
+
+      /* pop: comes UP from small, overshooting just past the pile size… */
+      .exp-stack__card.is-pop {
+        opacity: 1;
+        transform: scale(1.12) rotate(0deg);
+        transition:
+          opacity 0.1s ease-out,
+          transform 0.19s cubic-bezier(0.2, 1.6, 0.35, 1);
+      }
+      /* …then settles onto the pile at full size, taking its tilt */
+      .exp-stack__card.is-stacked {
+        transform: scale(1) rotate(var(--r, 0deg));
+        transition: transform 0.2s var(--ease-decelerate);
+      }
+      /* …and the last card grows to swallow the viewport (js sets the
+         cover scale from the measured card + viewport ratio) */
+      .exp-stack__card.is-takeover {
+        transform: scale(var(--cover-scale, 9)) rotate(0deg);
+        transition: transform 0.75s var(--ease-decelerate);
+      }
+
+      .exp-stack__card img,
+      .exp-stack__card video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+
+      /* ---- phase 2: the full-screen slideshow ---- */
+      .exp-stack__show {
+        position: absolute;
+        inset: 0;
+        z-index: 1;
+      }
+      .exp-stack__slide {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        opacity: 0;
+        transition: opacity 0.1s linear; /* the super-quick cross-fade */
+      }
+      .exp-stack__slide.is-active { opacity: 1; }
+
+      /* subtle Ken Burns on the stills only, direction alternating */
+      @keyframes exp-kb-in {
+        from { transform: scale(1); }
+        to { transform: scale(1.08) translate3d(1.2%, -0.8%, 0); }
+      }
+      @keyframes exp-kb-out {
+        from { transform: scale(1.08) translate3d(-1%, 0.8%, 0); }
+        to { transform: scale(1); }
+      }
+      img.exp-stack__slide.is-active { animation: exp-kb-in 3.4s ease-out both; }
+      img.exp-stack__slide.is-active:nth-of-type(even) { animation-name: exp-kb-out; }
+
+      /* ---- "Make what matters" — enters once the takeover completes ----
+         Same lockup + word-mask rise as the production hero (and 01 above):
+         Miller italic "Make", heavy Kumbh caps, each word rising through an
+         overflow-hidden line on a 0.2s stagger. Triggered by .is-live, which
+         js adds at the exact end of the takeover transition. */
+      .exp-stack__inner {
+        position: absolute;
+        inset: 0;
+        z-index: 2;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding-inline: clamp(1.5rem, 4.2vw, 7.5rem);
+        pointer-events: none;
+      }
+
+      .exp-stack__headline {
+        margin: 0;
+        color: var(--color-white);
+        text-align: center;
+        text-wrap: pretty;
+      }
+
+      /* Three-line stack, left-aligned inside a centred block, with ONE
+         vertical axis (the mock's red line) running through the M of Make,
+         the H of WHAT and the M of MATTERS: the Make and MATTERS lines are
+         indented by exactly the W's advance (1.073em in Kumbh 800 caps,
+         including the tracking that follows it — measured), so WHAT's W
+         hangs left of the axis and its H lands on it. */
+      /* Centred stack for now (the axis/hang arrangement is parked — set
+         text-align back to left and restore the --w-hang paddings below to
+         revive it once the mock lands). */
+      .exp-stack__lockup {
+        --w-hang: 1.073em;
+        /* Extra breathing room between the three lines, on top of the leading. */
+        --lead: 0.1em;
+        /* The serif italic "Make" sits on a different baseline within its line
+           box than the Kumbh caps do (different ascent/descent metrics), so
+           equal BOX steps still leave unequal INK gaps. Measured at 116px the
+           Make→WHAT gap came out 8.4px (0.072em) tighter than WHAT→MATTERS;
+           this puts the two visually identical. */
+        --make-fix: 0.072em;
+        display: inline-block;
+        text-align: center;
+        font-size: clamp(3rem, min(7vw, clamp(6rem, 5.6vw, 9rem)), 9rem);
+        font-weight: 800;
+        /* Tighter than the shipping hero's 0.9 — three stacked lines want the
+           caps to sit closer, so the block reads as one mass. Safe against the
+           line masks: caps have no descenders and "Make" has none either. */
+        line-height: 0.8;
+        letter-spacing: var(--tracking-caps);
+        text-transform: uppercase;
+      }
+
+      /* The mask needs vertical padding so the tight leading never clips an
+         ascender — but that padding must not open the lines back up. Adjacent
+         negative margins COLLAPSE (the most negative wins, they don't sum), so
+         cancelling 0.32em of padding between two lines takes -0.32em on the
+         bottom edge alone; the outer edges only need -0.16em. Net: the visual
+         step equals the line-height exactly. */
+      .exp-stack__lockup-line {
+        display: block;
+        overflow: hidden;
+        padding-block: 0.16em;
+        margin-block: -0.16em calc(-0.32em + var(--lead));
+        padding-left: 0; /* centred — no axis indent */
+      }
+      /* the serif line needs the metric correction on top of the lead */
+      .exp-stack__lockup-line:first-child {
+        margin-bottom: calc(-0.32em + var(--lead) + var(--make-fix));
+      }
+      .exp-stack__lockup-line:last-child {
+        margin-bottom: -0.16em; /* trim the block's bottom padding only */
+      }
+      .exp-stack__lockup-line--what {
+        padding-left: 0;
+      }
+
+      /* The serif italic reads smaller at the same size, so it is scaled up —
+         which would also scale its (unitless) line-height and open a wider gap
+         under it. Dividing the leading by the same factor keeps every step in
+         the stack identical. */
+      .exp-stack__make {
+        --serif-scale: 1.06;
+        font-family: var(--font-serif);
+        font-style: italic;
+        font-weight: var(--font-weight-medium);
+        font-size: calc(1em * var(--serif-scale));
+        line-height: calc(0.8 / var(--serif-scale));
+        letter-spacing: 0;
+        text-transform: none;
+      }
+
+      /* block, not inline-block: an inline-block sits on the parent's baseline,
+         so the strut's descender space would pad each line out again. One word
+         per line here, so block costs nothing. */
+      .exp-stack__word {
+        display: block;
+        transform: translateY(125%);
+        transition: transform 0.62s var(--ease-decelerate) calc(var(--w, 0) * 0.2s);
+        will-change: transform;
+      }
+      .exp-stack.is-live .exp-stack__word { transform: translateY(0); }
+
+      /* scrim so the type reads on any reel frame: a light overall dim plus
+         the hero's top/bottom gradients, fading in with the takeover */
+      .exp-stack__scrim {
+        position: absolute;
+        inset: 0;
+        background:
+          linear-gradient(rgb(0 0 0 / 0.18), rgb(0 0 0 / 0.18)),
+          linear-gradient(to bottom, rgb(0 0 0 / 0.45) 0%, transparent 30%, transparent 55%, rgb(0 0 0 / 0.65) 100%);
+        opacity: 0;
+        transition: opacity 0.5s var(--ease-standard);
+      }
+      .exp-stack.is-live .exp-stack__scrim { opacity: 1; }
+
+      /* client name — small, bottom-left, appears with the takeover */
+      .exp-stack__client {
+        position: absolute;
+        left: clamp(1.25rem, 3vw, 2.5rem);
+        bottom: clamp(1.1rem, 2.5vw, 2rem);
+        z-index: 3;
+        margin: 0;
+        font-size: 0.78rem;
+        font-weight: var(--font-weight-bold);
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--color-white);
+        text-shadow: 0 1px 12px rgb(0 0 0 / 0.35);
+        opacity: 0;
+        transition: opacity 0.4s var(--ease-standard) 0.2s;
+      }
+      .exp-stack.is-live .exp-stack__client { opacity: 1; }
+
+      @media (prefers-reduced-motion: reduce) {
+        .exp-stack__card,
+        .exp-stack__card.is-pop,
+        .exp-stack__card.is-stacked,
+        .exp-stack__card.is-takeover {
+          opacity: 1;
+          transform: none;
+          transition: none;
+        }
+        img.exp-stack__slide.is-active { animation: none; }
+        .exp-stack__slide { transition: none; }
+        .exp-stack__word { transform: none; transition: none; }
+        .exp-stack__scrim { opacity: 1; transition: none; }
+      }
+    </style>
+  </head>
+  <body class="exp-page">
+    <div class="exp-topbar">
+      <a href="../index.html">&larr; Design system</a>
+      <span class="exp-topbar__hint">Experiment — hero. Markup inline until a direction is approved.</span>
+    </div>
+
+    <!-- ================= 01 · CURRENT ================= -->
+    <section class="exp-section" aria-label="Direction 01 — Current">
+      <p class="exp-label"><b>01</b> Previous — full-bleed media, centred lockup</p>
+      <p class="exp-note">
+        The production hero, for reference: the image settles out of a 1.08 load zoom and drifts
+        &plusmn;8% on scroll (compositor-driven, via <code>animation-timeline: scroll()</code>), a
+        top-and-bottom scrim keeps the type legible on any frame, and &ldquo;Make what
+        matters&rdquo; is live type rather than the brand SVG &mdash; Miller Text italic
+        &ldquo;Make&rdquo; against heavy Kumbh caps. The words rise out of line masks on load and
+        exit in reverse order once you scroll past a threshold.
+      </p>
+
+      <div class="exp-hero" data-hero>
+        <div class="exp-hero__media" aria-hidden="true">
+          <img class="exp-hero__img" src="../assets/work/running-wings-campaign.jpeg" alt="" />
+        </div>
+        <div class="exp-hero__gradient" aria-hidden="true"></div>
+
+        <div class="exp-hero__inner">
+          <h1 class="exp-hero__headline">
+            <span class="sr-only">Make what matters</span>
+            <span class="exp-hero__lockup" aria-hidden="true">
+              <span class="exp-hero__lockup-line"><span class="exp-hero__word exp-hero__make" style="--w: 0">Make</span><span class="exp-hero__word" style="--w: 1">What</span></span>
+              <span class="exp-hero__lockup-line"><span class="exp-hero__word" style="--w: 2">Matters</span></span>
+            </span>
+          </h1>
+        </div>
+
+        <div class="exp-hero__pip">
+          <video src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Fit%20for%20every%20run-2njxDf5jukWVF3307VGGVpEgRjOLUy.mp4" muted loop playsinline autoplay preload="auto" aria-hidden="true"></video>
+          <span class="exp-hero__pip-play" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z" /></svg>
+          </span>
+        </div>
+      </div>
+      <div class="exp-scroll-room"></div>
+    </section>
+
+    <!-- ================= 02 · STACK TAKEOVER ================= -->
+    <section class="exp-section" aria-label="Direction 02 — Stack takeover">
+      <p class="exp-label"><b>02</b> Stack takeover — work pops in, piles up, goes full-screen · APPROVED, promoted to the homepage</p>
+      <p class="exp-note">
+        The homepage's five work pieces load in one by one: each pops in at the viewport centre,
+        then quickly shrinks onto a small snapshot pile (the intro strip&rsquo;s tilt language).
+        When the last lands, a 0.5s beat &mdash; then it scales up into a full-screen takeover.
+        The moment the takeover completes, &ldquo;Make what matters&rdquo; rises word-by-word
+        through its line masks (the production hero&rsquo;s lockup and cascade) while the reel
+        begins underneath: 3 seconds per piece with a 0.1s cross-fade, videos playing, stills on
+        a subtle Ken Burns, and the client name small in the bottom-left. Starts when the
+        section scrolls into view.
+      </p>
+
+      <div class="exp-stack" data-stack>
+        <!-- the lockup rises word-by-word the moment the takeover completes -->
+        <div class="exp-stack__inner">
+          <h1 class="exp-stack__headline">
+            <span class="sr-only">Make what matters</span>
+            <span class="exp-stack__lockup" aria-hidden="true">
+              <span class="exp-stack__lockup-line"><span class="exp-stack__word exp-stack__make" style="--w: 0">Make</span></span>
+              <span class="exp-stack__lockup-line exp-stack__lockup-line--what"><span class="exp-stack__word" style="--w: 1">What</span></span>
+              <span class="exp-stack__lockup-line"><span class="exp-stack__word" style="--w: 2">Matters</span></span>
+            </span>
+          </h1>
+        </div>
+
+        <!-- phase 2: full-screen reel (sits under the stack, revealed by the takeover) -->
+        <div class="exp-stack__show" aria-hidden="true">
+          <video class="exp-stack__slide" data-client="PHN North Western Melbourne" src="../assets/video/NWMPHN_RAISEIT_30s_16-9_h264_2.mp4" muted playsinline loop preload="auto"></video>
+          <img class="exp-stack__slide" data-client="Permanent Protection Visa" src="../assets/work/PPV.jpg" alt="" />
+          <video class="exp-stack__slide" data-client="The Athlete&rsquo;s Foot" src="../assets/video/Banner-Fit%20For%20Every%20Run.mp4" muted playsinline loop preload="auto"></video>
+          <img class="exp-stack__slide" data-client="Cancer Institute NSW" src="../assets/work/iCanQuit.png" alt="" />
+          <img class="exp-stack__slide" data-client="Museum of Australian Democracy (MoAD)" src="../assets/work/Democracy-Cards-Tile.jpg" alt="" />
+          <video class="exp-stack__slide" data-client="Alcohol and Drug Foundation" src="../assets/video/the%20Alcohol%20and%20Drug%20Foundation.mp4" muted playsinline loop preload="auto"></video>
+          <div class="exp-stack__scrim"></div>
+        </div>
+
+        <!-- phase 1: the pop-and-stack pile -->
+        <div class="exp-stack__stage" aria-hidden="true">
+          <figure class="exp-stack__card"><video src="../assets/video/NWMPHN_RAISEIT_30s_16-9_h264_2.mp4" muted playsinline preload="auto"></video></figure>
+          <figure class="exp-stack__card"><img src="../assets/work/PPV.jpg" alt="" /></figure>
+          <figure class="exp-stack__card"><video src="../assets/video/Banner-Fit%20For%20Every%20Run.mp4" muted playsinline preload="auto"></video></figure>
+          <figure class="exp-stack__card"><img src="../assets/work/iCanQuit.png" alt="" /></figure>
+          <figure class="exp-stack__card"><img src="../assets/work/Democracy-Cards-Tile.jpg" alt="" /></figure>
+          <figure class="exp-stack__card"><video src="../assets/video/the%20Alcohol%20and%20Drug%20Foundation.mp4" muted playsinline preload="auto"></video></figure>
+        </div>
+
+        <p class="exp-stack__client" data-client-label></p>
+      </div>
+    </section>
+
+    <script>
+      // 02 · Stack takeover — pop → stack → 0.5s beat → full-screen takeover →
+      // 3s-per-piece reel with 0.1s cross-fades. Each card pops only once its
+      // own media is displayable (raced against a timeout so one slow file
+      // can't stall the line). Reduced motion: no choreography — the reel
+      // simply runs with hard cuts and no Ken Burns (CSS side).
+      (function () {
+        "use strict";
+        var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        var root = document.querySelector("[data-stack]");
+        if (!root) return;
+
+        var cards = Array.prototype.slice.call(root.querySelectorAll(".exp-stack__card"));
+        var slides = Array.prototype.slice.call(root.querySelectorAll(".exp-stack__slide"));
+        var label = root.querySelector("[data-client-label]");
+        // Stills get a glance; films get room to actually play a beat.
+        var HOLD_IMAGE = 3000, HOLD_VIDEO = 6000, XFADE = 100;
+        var holdFor = function (el) { return el.tagName === "VIDEO" ? HOLD_VIDEO : HOLD_IMAGE; };
+
+        var wait = function (ms) { return new Promise(function (r) { setTimeout(r, ms); }); };
+
+        var mediaReady = function (card) {
+          return new Promise(function (res) {
+            var m = card.querySelector("img, video");
+            if (!m) return res();
+            var done = function () { res(); };
+            if (m.tagName === "IMG") {
+              if (m.complete) return res();
+              m.addEventListener("load", done, { once: true });
+              m.addEventListener("error", done, { once: true });
+            } else {
+              if (m.readyState >= 2) return res();
+              m.addEventListener("loadeddata", done, { once: true });
+              m.addEventListener("error", done, { once: true });
+            }
+            setTimeout(done, 1500); // never let one file stall the line
+          });
+        };
+
+        var activate = function (i) {
+          slides.forEach(function (s, j) {
+            var on = i === j;
+            s.classList.toggle("is-active", on);
+            if (s.tagName === "VIDEO") {
+              if (on) {
+                try { s.currentTime = 0; } catch (e) {}
+                s.play().catch(function () {});
+              } else {
+                s.pause();
+              }
+            }
+          });
+          label.textContent = slides[i].getAttribute("data-client");
+        };
+
+        // setTimeout chain, not setInterval: each slide holds for its own
+        // duration, so a film can sit longer than a still.
+        var loop = function (start) {
+          var i = start;
+          var next = function () {
+            i = (i + 1) % slides.length;
+            activate(i);
+            setTimeout(next, holdFor(slides[i]) + XFADE);
+          };
+          setTimeout(next, holdFor(slides[i]) + XFADE);
+        };
+
+        var run = function () {
+          if (reduce) {
+            cards.forEach(function (c) { c.classList.add("is-pop", "is-stacked"); });
+            root.classList.add("is-live");
+            activate(0);
+            loop(0);
+            return;
+          }
+          var seq = Promise.resolve();
+          cards.forEach(function (card) {
+            seq = seq
+              .then(function () { return mediaReady(card); })
+              .then(function () {
+                card.classList.add("is-pop");
+                return wait(190); // a quick punch in…
+              })
+              .then(function () {
+                card.classList.add("is-stacked"); // …then straight onto the pile
+                return wait(90);
+              });
+          });
+          seq
+            .then(function () { return wait(1100); }) // hold on the finished pile…
+            .then(function () {
+              var last = cards[cards.length - 1];
+              // uniform scale that covers the viewport from the card's laid-out size
+              var scale = Math.max(
+                window.innerWidth / last.offsetWidth,
+                window.innerHeight / last.offsetHeight
+              ) * 1.02;
+              last.style.setProperty("--cover-scale", scale);
+              last.classList.add("is-takeover");
+              return wait(750); // ride the takeover transition
+            })
+            .then(function () {
+              activate(slides.length - 1); // reel starts on the takeover piece
+              root.classList.add("is-live"); // stage fades off the live reel
+              loop(slides.length - 1);
+            });
+        };
+
+        // Kick off when the section actually arrives on screen.
+        var started = false;
+        var kick = function () { if (!started) { started = true; run(); } };
+        if ("IntersectionObserver" in window) {
+          new IntersectionObserver(function (entries, io) {
+            entries.forEach(function (e) {
+              if (e.isIntersecting) { io.disconnect(); kick(); }
+            });
+          }, { threshold: 0.35 }).observe(root);
+        } else {
+          kick();
+        }
+      })();
+    </script>
+
+    <script>
+      // Load sequence + triggered headline exit, mirroring js/home-c.js for the
+      // production hero. Each .exp-hero runs independently, so future variants
+      // on this page get the same behaviour for free.
+      (function () {
+        "use strict";
+        var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        var heroes = Array.prototype.slice.call(document.querySelectorAll("[data-hero]"));
+
+        heroes.forEach(function (hero) {
+          var img = hero.querySelector(".exp-hero__img");
+          var ready = function () { hero.classList.add("is-ready"); };
+          if (!img || img.complete) {
+            // one extra frame so the pre-.is-ready state paints first
+            requestAnimationFrame(function () { requestAnimationFrame(ready); });
+          } else {
+            img.addEventListener("load", ready);
+            img.addEventListener("error", ready);
+            setTimeout(ready, 2500); // safety net
+          }
+
+          if (reduce) return;
+          // Triggered (not scrubbed): past a small threshold the lockup plays
+          // out IN FULL, and back in when you return above it.
+          var sync = function () {
+            var r = hero.getBoundingClientRect();
+            var past = -r.top > Math.max(60, window.innerHeight * 0.12);
+            hero.classList.toggle("is-exiting", past && r.bottom > 0);
+          };
+          window.addEventListener("scroll", sync, { passive: true });
+          sync();
+        });
+      })();
+    </script>
+  </body>
+</html>

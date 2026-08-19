@@ -44,7 +44,9 @@
           <div class="ds-nav__group">
             <p class="ds-nav__group-title">Experiments</p>
             <ul class="ds-nav__list">
-              <li><a class="ds-nav__link ds-nav__link--external" href="experiments/intro-statement.html">Intro statement &times; 3 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7" /><path d="M8 7h9v9" /></svg></a></li>
+              <li><a class="ds-nav__link ds-nav__link--external" href="experiments/hero.html">Hero <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7" /><path d="M8 7h9v9" /></svg></a></li>
+              <li><a class="ds-nav__link ds-nav__link--external" href="experiments/intro-statement.html">Intro statement &times; 7 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7" /><path d="M8 7h9v9" /></svg></a></li>
+              <li><a class="ds-nav__link ds-nav__link--external" href="experiments/client-scrollers.html">Client scrollers <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7" /><path d="M8 7h9v9" /></svg></a></li>
             </ul>
           </div>
 
@@ -136,7 +138,7 @@
               <div class="ds-group">
                 <h4 class="ds-group__title">Brand</h4>
                 <ul class="ds-swatches">
-                  <li class="ds-swatch"><div class="ds-swatch__chip bg-icon-black"></div><div class="ds-swatch__meta"><span class="ds-swatch__name">Icon black</span><span class="ds-swatch__token">--color-icon-black</span><span class="ds-swatch__value">#1e1e1e (dark: #f5f5f5)</span></div></li>
+                  <li class="ds-swatch"><div class="ds-swatch__chip bg-icon-black"></div><div class="ds-swatch__meta"><span class="ds-swatch__name">Icon black</span><span class="ds-swatch__token">--color-icon-black</span><span class="ds-swatch__value">#111111 (dark: #f5f5f5)</span></div></li>
                   <li class="ds-swatch"><div class="ds-swatch__chip bg-icon-grey"></div><div class="ds-swatch__meta"><span class="ds-swatch__name">Icon grey</span><span class="ds-swatch__token">--color-icon-grey</span><span class="ds-swatch__value">icon-black @ 80%</span></div></li>
                   <li class="ds-swatch"><div class="ds-swatch__chip bg-icon-blue"></div><div class="ds-swatch__meta"><span class="ds-swatch__name">Icon blue</span><span class="ds-swatch__token">--color-icon-blue</span><span class="ds-swatch__value">#0000ff (dark: white @ 80%)</span></div></li>
                 </ul>
@@ -367,16 +369,21 @@
             <section class="ds-section" id="hero">
               <h3 class="ds-section__title">Hero</h3>
               <p class="ds-section__intro">
-                <code class="ds-code">.hero</code> — full-bleed 100svh media hero with the real-text
-                "Make what matters" lockup (Miller italic + Kumbh 800, sized to the logo), word-by-word
-                cascade in, triggered word-by-word exit on scroll (reverse order), image parallax and a
-                picture-in-picture campaign video.
+                <code class="ds-code">.hero</code> — full-bleed 100svh <strong>stack takeover</strong>
+                (promoted from the approved <a href="experiments/hero.html">Hero experiment</a>, 02): the
+                work pieces pop in at the viewport centre one by one and shrink onto a small snapshot
+                pile; after a 0.5s beat the last scales up to cover the viewport and hands off to a reel
+                — 3s per piece, 0.1s cross-fades, videos playing while active, stills on a subtle Ken
+                Burns, client name small in the bottom-left. The real-text "Make what matters" lockup
+                (Miller italic + Kumbh 800, three centred lines) rises word-by-word the moment the
+                takeover completes, and plays out in reverse order on scroll.
               </p>
               <div class="ds-group">
                 <h4 class="ds-group__title">Why it is not demoed here</h4>
                 <p class="ds-group__note">
-                  The hero is scroll choreography — load cascade, triggered exit, compositor parallax,
-                  header inversion. A scaled inline copy would misrepresent all of it. Open the real thing:
+                  The hero is timed choreography — the pop-and-stack load sequence, the takeover, the
+                  reel and its cross-fades, the lockup cascade, header inversion. A scaled inline copy
+                  would misrepresent all of it. Open the real thing:
                 </p>
                 <a class="ds-thumb-link" href="templates/homeC.html">
                   <figure>
@@ -387,79 +394,118 @@
               <div class="ds-group">
                 <h4 class="ds-group__title">Drupal (Canvas / SDC)</h4>
                 <p class="ds-group__note">
-                  SDC <code class="ds-code">hero</code>. Props: <code class="ds-code">headline</code> (the lockup
-                  is markup-built from it), <code class="ds-code">media</code> (image or video),
-                  <code class="ds-code">pip_video</code> (optional). Behaviour js maps to
-                  <code class="ds-code">Drupal.behaviors.iconHome</code> (load sequence, exit trigger, header
-                  inversion). The <code class="ds-code">sr-only</code> real text is the accessible name; the
-                  lockup is <code class="ds-code">aria-hidden</code>.
+                  SDC <code class="ds-code">hero</code>. Props: <code class="ds-code">headline</code> (the
+                  lockup is markup-built from it) and <code class="ds-code">pieces</code> — a list of work
+                  items, each with a media file (image or video) and a <code class="ds-code">client</code>
+                  name; the template renders each piece TWICE, once as a
+                  <code class="ds-code">.hero__card</code> in the pile and once as a
+                  <code class="ds-code">.hero__slide</code> in the reel. No variants. Behaviour js maps to
+                  <code class="ds-code">Drupal.behaviors.iconHome</code> (pop/stack sequence, takeover,
+                  reel, exit trigger, header inversion) — each card waits on its own media before popping,
+                  and reduced motion skips the choreography and runs the reel with hard cuts. The
+                  <code class="ds-code">sr-only</code> real text is the accessible name; the lockup, pile
+                  and reel are all <code class="ds-code">aria-hidden</code>.
                 </p>
               </div>
             </section>
 
             <section class="ds-section" id="intro">
-              <h3 class="ds-section__title">Intro statement</h3>
+              <h3 class="ds-section__title">Intro &mdash; strip</h3>
               <p class="ds-section__intro">
-                <code class="ds-code">.intro</code> — the two-part editorial opener: a small uppercase lede
-                with the "/"-prefixed expertise list stacked beneath it (left, 5→4→3 columns as the
-                viewport widens), and the big fluid statement at columns 7–12. The two blocks align on
-                their <em>first-line baselines</em> (<code class="ds-code">align-items: baseline</code> on the
-                grid), not their tops — the small and large type start on the same line.
+                <code class="ds-code">.intro</code> &mdash; the approved
+                <a href="experiments/intro-statement.html">Strip experiment</a> (weareboring.nl
+                reference): the transparent logo-mark video (tinted to ink), a centred
+                sentence-case headline, then a full-bleed draggable filmstrip of tilted photos.
+                The strip drifts on an infinite GSAP marquee; dragging straightens the cards and
+                leans them with the drag velocity before momentum decays them back to their
+                scattered tilts; hover stalls the drift and straightens the hovered card while a
+                DRAG badge chases the cursor. Below, the band (statement + About left,
+                expertise ledger right) scrolls naturally &mdash; only the &ldquo;Our
+                expertise&rdquo; label locks: sticky against the viewport, it holds while the
+                list slides up past it, and whichever item sits beside it is inked. Hovering an
+                item slides the name right, then fades a &ldquo;/&rdquo; in just before it,
+                both in accent blue.
               </p>
 
               <div class="ds-group">
                 <h4 class="ds-group__title">Live</h4>
                 <p class="ds-group__note">
-                  Real markup wearing the production CSS. On the homepage the section spans the uncapped
-                  container with raised type ceilings; here it wears the site-default tokens at the
-                  pane's width. The demo stage supplies <code class="ds-code">--grid-gutter</code> the way the
-                  page layer does on the homepage. Without page JS the reveals simply don't run — the
-                  no-JS state you see is the real fallback.
+                  Real markup wearing the production CSS. This page loads no page JS or GSAP, so
+                  this is the genuine no-JS state: the cards rest on their CSS
+                  <code class="ds-code">--r</code> tilts (the strip scrolls natively instead of
+                  drifting), the word cascade doesn&rsquo;t run, and the first expertise item is
+                  inked by the no-JS fallback. The logo video and the &ldquo;/&rdquo; hover
+                  (CSS-only) do work here. The sticky &ldquo;Our expertise&rdquo; label and
+                  its scroll-highlight need the page-length scroll, so the label just rests in
+                  place in this stage; the stage also neutralises the strip&rsquo;s
+                  real-viewport full-bleed and hides the fixed DRAG badge.
                 </p>
                 <div class="ds-demo ds-demo--home-context">
-                  <section class="intro u-container" aria-label="About ICON">
-                    <div class="intro__grid">
-                      <div class="intro__lede-col">
-                        <p class="intro__lede" data-animate>
-                          ICON is an independent Australian strategic communications agency
-                          for complex change &mdash; recognised with 14 Agency of the Year
-                          awards since 2021.
-                        </p>
-                        <div class="intro__expertise-col" data-animate>
-                          <span class="intro__label">Our expertise</span>
-                          <ul class="intro__expertise">
-                            <li>Creative</li>
-                            <li>Communications</li>
-                            <li>Digital</li>
-                            <li>Reputation</li>
-                            <li>Production</li>
-                          </ul>
-                        </div>
+                  <section class="intro" aria-label="About ICON">
+                    <video class="intro__mark" autoplay loop muted playsinline aria-hidden="true">
+                      <source src="assets/video/logo-long.mp4" type='video/mp4; codecs="hvc1"' />
+                      <source src="assets/video/logo-long.webm" type="video/webm" />
+                    </video>
+                    <h2 class="intro__headline">
+                      A strategic communications agency for complex change
+                    </h2>
+                    <div class="intro__viewport">
+                      <div class="intro__track">
+                        <figure class="intro__card"><img src="assets/social/541240095_18521684290046950_5964549715252983713_n.jpg" alt="ICON studio life" /></figure>
+                        <figure class="intro__card"><img src="assets/social/549225380_18527147089046950_2159648127282235906_n.jpg" alt="ICON team at work" /></figure>
+                        <figure class="intro__card"><img src="assets/social/627444563_18555467572046950_1262000765995898142_n.jpg" alt="ICON team on Sydney Harbour" /></figure>
+                        <figure class="intro__card"><img src="assets/social/545109535_18525186949046950_8652350879767222386_n.jpg" alt="ICON studio life" /></figure>
+                        <figure class="intro__card"><img src="assets/social/564545908_18531909973046950_6284360111624424011_n.jpg" alt="ICON event" /></figure>
                       </div>
-                      <p class="intro__statement" data-reveal-text>
-                        — with deep experience across government, technology, health, education
-                        and social impact. From strategy to execution, we help organisations and
-                        change-makers create work that <span class="miller-text">matters</span>.
-                      </p>
+                    </div>
+                    <div class="intro__band">
+                      <div class="intro__expertise">
+                        <span class="intro__expertise-label">Our expertise</span>
+                        <ul class="intro__expertise-list" aria-label="Our expertise">
+                          <li><a href="#">Creative</a></li>
+                          <li><a href="#">Communications</a></li>
+                          <li><a href="#">Digital</a></li>
+                          <li><a href="#">Reputation</a></li>
+                          <li><a href="#">Production</a></li>
+                        </ul>
+                      </div>
+                      <div class="intro__prose">
+                        <p class="intro__statement">
+                          ICON is an independent Australian agency with over 24 years of
+                          experience. We&rsquo;ve built deep expertise across government,
+                          technology, health, education and social impact, helping organisations
+                          and change-makers create work that matters.
+                        </p>
+                        <a class="intro__about" href="#">About us</a>
+                      </div>
                     </div>
                   </section>
                 </div>
-                <p class="ds-demo__label">intro · .intro — .intro__lede-col (lede + expertise) + .intro__statement, baseline-aligned 12-col grid</p>
+                <p class="ds-demo__label">intro · .intro — __mark video + __headline + __viewport (__track of tilted __cards) + __band (__expertise sticky label + list | __statement + __about) + fixed __badge</p>
               </div>
 
               <div class="ds-group">
                 <h4 class="ds-group__title">Drupal (Canvas / SDC)</h4>
                 <p class="ds-group__note">
-                  SDC <code class="ds-code">intro</code>. Props: <code class="ds-code">lede</code> (plain text —
-                  the CSS uppercases it), <code class="ds-code">expertise_label</code>,
-                  <code class="ds-code">expertise_items</code> (list of strings; the "/" prefix is a CSS
-                  <code class="ds-code">::before</code>, never typed content),
-                  <code class="ds-code">statement</code> (rich text; the serif emphasis is a
-                  <code class="ds-code">.miller-text</code> span). No variants. Behaviours: the shared
-                  <code class="ds-code">[data-animate]</code> fade (reveal behaviour) and the SplitText
-                  line-mask on <code class="ds-code">[data-reveal-text]</code> — SplitText itself supplies the
-                  accessibility shim (<code class="ds-code">aria-label</code> on the split paragraph,
-                  <code class="ds-code">aria-hidden</code> line masks).
+                  SDC <code class="ds-code">intro</code>. Props: <code class="ds-code">mark_video</code>
+                  (mp4 HEVC-alpha + webm VP9-alpha pair &mdash; Safari takes the hvc1-typed mp4,
+                  Chrome/Firefox the webm), <code class="ds-code">headline</code>,
+                  <code class="ds-code">strip_images</code> (list of images; the template
+                  duplicates nothing &mdash; the behaviour clones the set once, aria-hidden, for
+                  the seamless wrap), <code class="ds-code">statement</code>,
+                  <code class="ds-code">about_link</code>, <code class="ds-code">expertise_label</code>,
+                  <code class="ds-code">expertise_links</code> (label + url each). No variants.
+                  The &ldquo;/&rdquo; glyphs and card tilts are CSS
+                  (<code class="ds-code">::before</code> / <code class="ds-code">--r</code>), never
+                  typed content or inline styles. Behaviours
+                  (<code class="ds-code">Drupal.behaviors.iconHome</code>): the word-cascade on
+                  <code class="ds-code">[data-reveal-words]</code>, the shared
+                  <code class="ds-code">[data-animate]</code> fade, the marquee + drag + hover on
+                  <code class="ds-code">[data-strip]</code> with its
+                  <code class="ds-code">[data-strip-badge]</code>, the autoplay kick on
+                  <code class="ds-code">[data-intro-mark]</code>, and the expertise
+                  scroll-highlight (inks the list item beside the sticky label). All
+                  reduced-motion safe (no autoplay/lean/badge; drag still works); depends on gsap.
                 </p>
               </div>
             </section>

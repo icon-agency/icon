@@ -45,8 +45,8 @@
   --sidebar-ring: oklch(0.708 0 0);
 
   /* ICON brand */
-  --icon-black: #1e1e1e;
-  --icon-grey: rgba(30, 30, 30, 0.8);
+  --icon-black: #111111; /* darkened from #1e1e1e (user request, Aug 2026) */
+  --icon-grey: rgba(17, 17, 17, 0.8); /* icon-black @ 80% — keep in step with it */
   --icon-blue: #0000ff;
 
   /* Work-article accent theming (per-route override in the v0 build) */
@@ -102,6 +102,35 @@
   --nav-bg-scrolled: rgb(30 30 30 / 0.8); /* frosted pill, dark */
   --pager-surface: rgb(255 255 255 / 0.08);        /* pager prev + status pill */
   --pager-surface-strong: rgb(255 255 255 / 0.16); /* pager prev hover */
+}
+
+/* Blue theme — brand-blue page with white ink. Third dev-toggle option beside
+   light and .dark; same mechanism (class on <html>, so the @theme inline
+   --color-* aliases re-resolve — see LESSONS.md on per-route theme scope).
+   Accents that are blue in the other themes flip to white here. */
+.theme-blue {
+  --background: #0000ff;
+  --foreground: #ffffff;
+  --card: #0000e0;
+  --card-foreground: #ffffff;
+  --popover: #0000e0;
+  --popover-foreground: #ffffff;
+  --primary: #ffffff;
+  --primary-foreground: #0000ff;
+  --muted: #0000c8;
+  --muted-foreground: rgba(255, 255, 255, 0.7);
+  --border: rgba(255, 255, 255, 0.28);
+  --input: rgba(255, 255, 255, 0.28);
+  --ring: rgba(255, 255, 255, 0.6);
+
+  /* ICON brand on blue */
+  --icon-black: #ffffff;
+  --icon-grey: rgba(255, 255, 255, 0.75);
+  --icon-blue: #ffffff;
+
+  --nav-bg-scrolled: rgb(0 0 190 / 0.8); /* frosted pill, blue */
+  --pager-surface: rgb(255 255 255 / 0.12);
+  --pager-surface-strong: rgb(255 255 255 / 0.22);
 }
 
 @theme inline {

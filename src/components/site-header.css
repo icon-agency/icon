@@ -28,6 +28,14 @@
   z-index: 10001;
   color: var(--color-foreground);
   display: inline-flex;
+  /* Doubles as the MASK for the wordmark's slide reveal (see .is-faded below):
+     the anchor box is exactly the mark's size, so the mark can travel out of it
+     and be clipped — the same masked reveal the hero lockup lines use. An
+     element's own focus ring is not clipped by its own overflow, so the
+     keyboard outline still shows. */
+  overflow: hidden;
+  /* opacity stays transitioned for the menu-open hide (further down); the
+     scroll hide uses the mask instead. */
   transition:
     opacity var(--duration-normal) var(--ease-standard),
     color var(--duration-normal) var(--ease-standard);
@@ -37,6 +45,9 @@
 .site-logo__mark {
   height: var(--header-control);
   width: auto;
+  /* Matches the hero words' slide (0.62s, decelerating). */
+  transition: translate 0.62s var(--ease-decelerate);
+  will-change: translate;
 }
 
 @media (min-width: 768px) {
@@ -54,19 +65,24 @@
   .site-logo__mark { height: 4.5rem; }
 }
 
-/* Fade the wordmark out once you scroll past the hero, swapping it for the home
-   glyph (desktop pill / mobile button). This is a ONE-SHOT transition triggered
-   by js/header.js (.is-faded, at the same scroll point the glyph appears) — it
-   runs to completion via the opacity transition on .site-logo above, rather than
-   scrubbing with scroll position, so a partial scroll never leaves the wordmark
-   stuck half-faded. (Pages without header.js keep the wordmark always visible.) */
+/* Hide the wordmark once you scroll past the hero, swapping it for the home
+   glyph (desktop pill / mobile button). It SLIDES up behind the anchor's mask —
+   the same masked reveal the hero lockup lines use — rather than fading. A
+   ONE-SHOT transition triggered by js/header.js (.is-faded, at the same scroll
+   point the glyph appears), so it runs to completion instead of scrubbing with
+   scroll position and never leaves the wordmark stranded half-way. (Pages
+   without header.js keep the wordmark always visible.) */
 .site-logo.is-faded {
-  opacity: 0;
   pointer-events: none;
 }
 
+.site-logo.is-faded .site-logo__mark {
+  translate: 0 -115%; /* clears the mask, including the bubble's overshoot */
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .site-logo {
+  .site-logo,
+  .site-logo__mark {
     transition: none;
   }
 }

@@ -28,7 +28,7 @@
   </head>
   <body>
     <!-- ================= HEADER (global region) ================= -->
-    <header class="site-header is-over-hero">
+    <header class="site-header">
       <a class="site-logo" href="/" aria-label="ICON Agency — home">
         <svg class="site-logo__mark" viewBox="0 0 154 50" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
           <path d="M153.042 18.4117L148.607 14.7183H142.101C140.042 14.7183 138.367 13.0435 138.367 10.9848V0H149.309C151.367 0 153.042 1.67487 153.042 3.73356V18.4117ZM139.902 1.53434V10.9848C139.902 12.1974 140.888 13.184 142.101 13.184H149.162L151.508 15.1374V3.73356C151.508 2.52088 150.521 1.53434 149.309 1.53434H139.902Z" fill="currentColor" />
@@ -136,62 +136,115 @@
 
     <main class="page-home" id="main">
       <!-- ================= HERO ================= -->
+      <!-- Stack takeover (promoted from experiments/hero.html, 02): the work
+           pieces pop in at the centre one by one, shrink onto a snapshot pile,
+           then the last scales up into a full-screen takeover. From there a
+           reel plays each piece for 3s with a 0.1s cross-fade (stills get a
+           subtle Ken Burns) while "Make what matters" rises word-by-word. -->
       <section class="hero" data-hero>
-        <div class="hero__media" aria-hidden="true">
-          <img class="hero__img" src="../assets/work/running-wings-campaign.jpeg" alt="" />
+        <!-- the reel — sits under the pile, revealed by the takeover -->
+        <div class="hero__show" aria-hidden="true">
+          <video class="hero__slide" data-client="PHN North Western Melbourne" src="../assets/video/NWMPHN_RAISEIT_30s_16-9_h264_2.mp4" muted playsinline loop preload="auto"></video>
+          <img class="hero__slide" data-client="Permanent Protection Visa" src="../assets/work/PPV.jpg" alt="" />
+          <video class="hero__slide" data-client="The Athlete&rsquo;s Foot" src="../assets/video/Banner-Fit%20For%20Every%20Run.mp4" muted playsinline loop preload="auto"></video>
+          <img class="hero__slide" data-client="Cancer Institute NSW" src="../assets/work/iCanQuit.png" alt="" />
+          <img class="hero__slide" data-client="Museum of Australian Democracy (MoAD)" src="../assets/work/Democracy-Cards-Tile.jpg" alt="" />
+          <video class="hero__slide" data-client="Alcohol and Drug Foundation" src="../assets/video/the%20Alcohol%20and%20Drug%20Foundation.mp4" muted playsinline loop preload="auto"></video>
+          <div class="hero__scrim"></div>
         </div>
-        <div class="hero__gradient" aria-hidden="true"></div>
+
+        <!-- the pop-and-stack pile -->
+        <div class="hero__stage" aria-hidden="true">
+          <figure class="hero__card"><video src="../assets/video/NWMPHN_RAISEIT_30s_16-9_h264_2.mp4" muted playsinline preload="auto"></video></figure>
+          <figure class="hero__card"><img src="../assets/work/PPV.jpg" alt="" /></figure>
+          <figure class="hero__card"><video src="../assets/video/Banner-Fit%20For%20Every%20Run.mp4" muted playsinline preload="auto"></video></figure>
+          <figure class="hero__card"><img src="../assets/work/iCanQuit.png" alt="" /></figure>
+          <figure class="hero__card"><img src="../assets/work/Democracy-Cards-Tile.jpg" alt="" /></figure>
+          <figure class="hero__card"><video src="../assets/video/the%20Alcohol%20and%20Drug%20Foundation.mp4" muted playsinline preload="auto"></video></figure>
+        </div>
 
         <div class="hero__inner">
           <h1 class="hero__headline">
             <span class="sr-only">Make what matters</span>
             <span class="hero__lockup" aria-hidden="true">
-              <span class="hero__lockup-line"><span class="hero__word hero__make" style="--w: 0">Make</span><span class="hero__word" style="--w: 1">What</span></span>
+              <span class="hero__lockup-line"><span class="hero__word hero__make" style="--w: 0">Make</span></span>
+              <span class="hero__lockup-line"><span class="hero__word" style="--w: 1">What</span></span>
               <span class="hero__lockup-line"><span class="hero__word" style="--w: 2">Matters</span></span>
             </span>
           </h1>
         </div>
 
-        <div class="hero__pip">
-          <video src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Fit%20for%20every%20run-2njxDf5jukWVF3307VGGVpEgRjOLUy.mp4" muted loop playsinline autoplay preload="auto" aria-hidden="true"></video>
-          <span class="hero__pip-play" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z" /></svg>
-          </span>
-        </div>
+        <p class="hero__client" data-client-label></p>
       </section>
 
       <!-- ================= INTRO STATEMENT ================= -->
+      <!-- Strip intro (promoted from experiments/intro-statement.html, 04):
+           the transparent logo-mark video, a centred sentence-case headline,
+           then a FULL-BLEED draggable filmstrip of tilted snapshots (GSAP
+           marquee: drag with momentum, cards straighten + lean with the drag,
+           hover stalls and straightens a card, a DRAG badge chases the
+           cursor). Below, a PINNED band: statement + About us left, and the
+           expertise list right — the pin's scroll progress inks each item in
+           turn while "Our expertise" slides down beside it. Behaviours in
+           js/home-c.js. -->
       <section class="intro u-container" aria-label="About ICON">
-        <div class="intro__grid">
-          <div class="intro__lede-col">
-            <p class="intro__lede" data-animate>
-              ICON is an independent Australian strategic communications agency
-              for complex change &mdash; recognised with 14 Agency of the Year
-              awards since 2021.
-            </p>
+        <!-- Transparent logo animation. Safari plays the HEVC-with-alpha mp4
+             (the hvc1 codec hint steers it there); Chrome/Firefox can't decode
+             HEVC and fall through to the VP9-alpha webm. -->
+        <video class="intro__mark" autoplay loop muted playsinline aria-hidden="true" data-intro-mark>
+          <source src="../assets/video/logo-long.mp4" type='video/mp4; codecs="hvc1"' />
+          <source src="../assets/video/logo-long.webm" type="video/webm" />
+        </video>
 
-            <div class="intro__expertise-col" data-animate style="--animate-delay: 120ms">
-              <span class="intro__label">Our expertise</span>
-              <ul class="intro__expertise">
-                <li>Creative</li>
-                <li>Communications</li>
-                <li>Digital</li>
-                <li>Reputation</li>
-                <li>Production</li>
-              </ul>
-            </div>
+        <h2 class="intro__headline" data-reveal-words>
+          A strategic communications agency for complex change
+        </h2>
+
+        <div class="intro__viewport" data-strip>
+          <div class="intro__track">
+            <figure class="intro__card"><img src="../assets/social/541240095_18522306214046950_4236794973395548804_n.jpg" alt="ICON team" /></figure>
+            <figure class="intro__card"><img src="../assets/social/549225380_18526183636046950_8985863362688304705_n.jpg" alt="ICON team" /></figure>
+            <figure class="intro__card"><img src="../assets/social/627444563_18555467572046950_1262000765995898142_n.jpg" alt="ICON team on Sydney Harbour" /></figure>
+            <figure class="intro__card"><img src="../assets/social/545109535_18525186949046950_8652350879767222386_n.jpg" alt="ICON studio" /></figure>
+            <figure class="intro__card"><img src="../assets/social/564545908_18531909973046950_6284360111624424011_n.jpg" alt="ICON team" /></figure>
+            <figure class="intro__card"><img src="../assets/social/652796841_18569668621046950_5321019827262752594_n.jpg" alt="ICON crew" /></figure>
+            <figure class="intro__card"><img src="../assets/social/671244438_18579002227046950_4344755441794837199_n.jpg" alt="ICON culture" /></figure>
+            <figure class="intro__card"><img src="../assets/social/616265353_18549911215046950_7228439008647051683_n.jpg" alt="ICON team" /></figure>
+            <figure class="intro__card"><img src="../assets/social/627494402_18555766234046950_1068044228574929997_n.jpg" alt="ICON team" /></figure>
+            <figure class="intro__card"><img src="../assets/social/613766757_18550078000046950_7458803704460631675_n.jpg" alt="ICON team" /></figure>
           </div>
-
-          <p class="intro__statement" data-reveal-text>
-            — with deep experience across government, technology, health, education
-            and social impact. From strategy to execution, we help organisations and
-            change-makers create work that <span class="miller-text">matters</span>.
-          </p>
         </div>
+
+        <div class="intro__band">
+          <div class="intro__expertise" data-animate style="--animate-delay: 120ms">
+            <!-- The label is sticky: it locks mid-viewport while the list
+                 scrolls up past it, and js inks whichever item sits beside it. -->
+            <span class="intro__expertise-label">Our expertise</span>
+            <ul class="intro__expertise-list" aria-label="Our expertise">
+              <li><a href="/services#creative">Creative</a></li>
+              <li><a href="/services#communications">Communications</a></li>
+              <li><a href="/services/digital">Digital</a></li>
+              <li><a href="/services#reputation">Reputation</a></li>
+              <li><a href="/services#production">Production</a></li>
+            </ul>
+          </div>
+          <div class="intro__prose">
+            <p class="intro__statement" data-reveal-words>
+              ICON is an independent Australian agency with over 24 years of
+              experience. We&rsquo;ve built deep expertise across government,
+              technology, health, education and social impact, helping
+              organisations and change-makers create work that matters.
+            </p>
+            <a class="intro__about" href="/about" data-animate style="--animate-delay: 200ms">About us</a>
+          </div>
+        </div>
+        <div class="intro__badge" data-strip-badge aria-hidden="true">Drag</div>
       </section>
 
       <!-- ================= WORK ================= -->
       <section class="work u-container" aria-label="Selected work">
+        <h2 class="work__heading" data-reveal-words>Work</h2>
+
         <div class="work__row work__row--split">
           <a class="work__item" href="/work/article" aria-label="Transforming the elephant in the room into conversations that change lives — PHN North Western Melbourne">
             <figure class="work__figure media-reveal" data-reveal-img>
@@ -248,12 +301,9 @@
           </a>
         </div>
 
-        <div class="work__more">
-          <a class="arrow-link" href="/work">
-            More work
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
-          </a>
-        </div>
+        <p class="work__more-wrap">
+          <a class="work__more" href="/work" data-reveal-words>All work</a>
+        </p>
       </section>
 
       <!-- ================= CLIENTS ================= -->
@@ -367,8 +417,8 @@
         <div class="news__pin">
           <div class="news__sticky">
             <div class="news__head">
-              <span class="news__eyebrow">The latest</span>
-              <a class="arrow-link" href="/news">More news <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg></a>
+              <h2 class="news__heading">News</h2>
+              <a class="news__more" href="/news">More</a>
             </div>
             <div class="news__track">
             <a class="news__card" href="/news/article" aria-label="ICON and Butterfly Foundation partner in new campaign to help Australians rethink negative self body talk">

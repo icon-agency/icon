@@ -114,81 +114,148 @@
 }
 
 /* ======================================================================
- * Hero
+ * Hero — stack takeover (promoted from the approved 02 experiment)
+ *
+ * The work pieces load in one by one: each POPS in at the viewport centre,
+ * then shrinks fast onto a small snapshot pile. When the last lands, a 0.5s
+ * beat — then it scales up into a full-screen takeover and hands off to a
+ * reel: 3s per piece, 0.1s cross-fades, videos playing, stills on a subtle
+ * Ken Burns, client name small in the bottom-left. "Make what matters" rises
+ * word-by-word the moment the takeover completes. All in js/home-c.js;
+ * reduced motion skips the choreography and just runs the reel.
  * ==================================================================== */
 
 .hero {
   position: relative;
   min-height: 100svh;
   overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  /* Page ground (white in the light theme): the pile pops in against it, then
+     the takeover covers it with the work. The header rides this — light theme
+     over the white pile, inverted once the media takes over (see js 2b). */
+  background: var(--color-background);
 }
 
-/* Wrapper carries the load-in zoom; the image inside carries the scroll parallax.
-   Splitting the two keeps them on separate transforms (no conflict). */
-.hero__media {
+/* ---- the pop-and-stack pile ---- */
+.hero__stage {
   position: absolute;
   inset: 0;
-  z-index: 0;
+  z-index: 2;
+  display: grid;
+  place-items: center; /* every card shares the centre cell */
+}
+.js-animations [data-hero].is-live .hero__stage {
+  opacity: 0;
+  transition: opacity 0.18s var(--ease-standard);
+  pointer-events: none;
+}
+
+.hero__card {
+  grid-area: 1 / 1; /* stacked — DOM order = pile order */
+  margin: 0;
+  width: clamp(20rem, 32vw, 40rem); /* the pile reads big before the takeover */
+  aspect-ratio: 16 / 10;
+  border-radius: var(--radius-icon);
   overflow: hidden;
+  will-change: transform, opacity;
+}
+/* the snapshot tilts each card settles into (echoes the intro strip) */
+.hero__card:nth-child(1) { --r: -4deg; }
+.hero__card:nth-child(2) { --r: 3deg; }
+.hero__card:nth-child(3) { --r: -2deg; }
+.hero__card:nth-child(4) { --r: 4.5deg; }
+.hero__card:nth-child(5) { --r: -3deg; }
+.hero__card:nth-child(6) { --r: 2.5deg; }
+
+.js-animations [data-hero] .hero__card {
+  opacity: 0;
+  transform: scale(0.25) rotate(0deg); /* grows up from here */
+}
+/* pop: comes UP from small, overshooting just past the pile size… */
+.js-animations [data-hero] .hero__card.is-pop {
+  opacity: 1;
+  transform: scale(1.12) rotate(0deg);
+  transition:
+    opacity 0.1s ease-out,
+    transform 0.19s cubic-bezier(0.2, 1.6, 0.35, 1);
+}
+/* …then settles onto the pile at full size, taking its tilt */
+.js-animations [data-hero] .hero__card.is-stacked {
+  transform: scale(1) rotate(var(--r, 0deg));
+  transition: transform 0.2s var(--ease-decelerate);
+}
+/* …and the last card grows to swallow the viewport (js sets the cover scale
+   from the measured card + viewport ratio) */
+.js-animations [data-hero] .hero__card.is-takeover {
+  transform: scale(var(--cover-scale, 9)) rotate(0deg);
+  transition: transform 0.75s var(--ease-decelerate);
 }
 
-.js-animations [data-hero] .hero__media {
-  transform: scale(1.08);
-  transition: transform 1.6s var(--ease-decelerate);
-  will-change: transform;
-}
-.js-animations [data-hero].is-ready .hero__media {
-  transform: scale(1);
-}
-
-/* Oversized + offset so the ±8% scroll parallax never exposes an edge. */
-.hero__img {
-  position: absolute;
-  inset-inline: 0;
-  top: -10%;
+.hero__card img,
+.hero__card video {
   width: 100%;
-  height: 120%;
+  height: 100%;
   object-fit: cover;
-  object-position: center 30%;
+  display: block;
 }
 
-@keyframes hero-parallax {
-  from { transform: translate3d(0, 8%, 0); }
-  to { transform: translate3d(0, -8%, 0); }
-}
-@media (prefers-reduced-motion: no-preference) {
-  @supports (animation-timeline: scroll()) {
-    .hero__img {
-      animation: hero-parallax linear both;
-      animation-timeline: scroll(root);
-      animation-range: 0 100svh;
-    }
-  }
-}
-
-.hero__gradient {
+/* ---- the full-screen reel ---- */
+.hero__show {
   position: absolute;
   inset: 0;
   z-index: 1;
-  background:
-    linear-gradient(to bottom, rgb(0 0 0 / 0.45) 0%, transparent 30%, transparent 55%, rgb(0 0 0 / 0.65) 100%);
 }
 
-.hero__inner {
-  position: relative;
-  z-index: 2;
+.hero__slide {
+  position: absolute;
+  inset: 0;
   width: 100%;
-  padding-inline: var(--container-pad);
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 0.1s linear; /* the super-quick cross-fade */
+}
+.hero__slide.is-active { opacity: 1; }
+
+/* subtle Ken Burns on the stills only, direction alternating */
+@keyframes hero-kb-in {
+  from { transform: scale(1); }
+  to { transform: scale(1.08) translate3d(1.2%, -0.8%, 0); }
+}
+@keyframes hero-kb-out {
+  from { transform: scale(1.08) translate3d(-1%, 0.8%, 0); }
+  to { transform: scale(1); }
+}
+.js-animations img.hero__slide.is-active { animation: hero-kb-in 3.4s ease-out both; }
+.js-animations img.hero__slide.is-active:nth-of-type(even) { animation-name: hero-kb-out; }
+
+/* Scrim so the lockup reads on any reel frame: a light overall dim plus the
+   top/bottom gradients, fading in with the takeover. */
+.hero__scrim {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(rgb(0 0 0 / 0.18), rgb(0 0 0 / 0.18)),
+    linear-gradient(to bottom, rgb(0 0 0 / 0.45) 0%, transparent 30%, transparent 55%, rgb(0 0 0 / 0.65) 100%);
+  opacity: 0;
+  transition: opacity 0.5s var(--ease-standard);
+}
+[data-hero].is-live .hero__scrim { opacity: 1; }
+
+/* ---- the lockup ---- */
+.hero__inner {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
   display: flex;
+  align-items: center;
   justify-content: center;
+  padding-inline: var(--container-pad);
+  pointer-events: none;
 }
 
 /* Real-text "Make what matters" lockup, in our fonts: Miller Text italic for
-   "Make", heavy Kumbh Sans uppercase for "WHAT MATTERS". Rebuilds the brand SVG
-   as live, responsive, accessible type. */
+   "Make", heavy Kumbh Sans uppercase for "WHAT MATTERS". Rebuilds the brand
+   SVG as live, responsive, accessible type. */
 .hero__headline {
   margin: 0;
   color: var(--color-white);
@@ -197,241 +264,408 @@
 }
 
 .hero__lockup {
-  display: block;
-  /* Sized so the WHAT/MATTERS caps match the ICON wordmark's LETTER height at
-     each of the logo's breakpoints (Kumbh 800 cap-height ≈ 0.747em; the ICON
-     letters are ≈ 0.814 of the logo's box, the bubble sits above). Stepped to
-     track the logo's own rem breakpoints (mirrors site-header.css). */
-  font-size: clamp(2.4rem, 8vw, 4.1rem);
+  /* Extra breathing room between the three lines, on top of the leading. */
+  --lead: 0.1em;
+  /* The serif italic "Make" sits on a different baseline within its line box
+     than the Kumbh caps do (different ascent/descent metrics), so equal BOX
+     steps still leave unequal INK gaps. Measured: the Make→WHAT gap came out
+     0.072em tighter than WHAT→MATTERS; this puts the two visually identical. */
+  --make-fix: 0.072em;
+  display: inline-block;
+  text-align: center;
+  /* Same scale as the WORK / NEWS display headings through tablet, then the
+     intro headline's slower curve on big screens. */
+  font-size: clamp(3rem, min(7vw, clamp(6rem, 5.6vw, 9rem)), 9rem);
   font-weight: 800;
-  line-height: 0.9;
+  line-height: 0.8;
   letter-spacing: var(--tracking-caps);
   text-transform: uppercase;
 }
 
-@media (min-width: 1024px) { .hero__lockup { font-size: 4.1rem; } } /* logo 3.75rem */
-@media (min-width: 1280px) { .hero__lockup { font-size: 4.6rem; } } /* logo 4.25rem */
-@media (min-width: 1536px) { .hero__lockup { font-size: 4.9rem; } } /* logo 4.5rem  */
-
+/* The mask needs vertical padding so the tight leading never clips an
+   ascender — but that padding must not open the lines back up. Adjacent
+   negative margins COLLAPSE (the most negative wins, they don't sum), so
+   cancelling 0.32em of padding between two lines takes -0.32em on the bottom
+   edge alone; the outer edges only need -0.16em. */
 .hero__lockup-line {
   display: block;
-  /* Mask for the line-slide reveal. The vertical padding gives the tight
-     line-height (0.9) enough room that ascenders / the italic "Make" aren't
-     clipped at rest; the equal negative margin keeps the two lines' spacing
-     unchanged. */
   overflow: hidden;
   padding-block: 0.16em;
-  margin-block: -0.16em;
+  margin-block: -0.16em calc(-0.32em + var(--lead));
+}
+/* the serif line needs the metric correction on top of the lead */
+.hero__lockup-line:first-child {
+  margin-bottom: calc(-0.32em + var(--lead) + var(--make-fix));
+}
+.hero__lockup-line:last-child {
+  margin-bottom: -0.16em; /* trim the block's bottom padding only */
 }
 
+/* The serif italic reads smaller at the same size, so it is scaled up — which
+   would also scale its (unitless) line-height and open a wider gap under it.
+   Dividing the leading by the same factor keeps every step identical. */
 .hero__make {
+  --serif-scale: 1.06;
   font-family: var(--font-serif);
   font-style: italic;
   font-weight: var(--font-weight-medium);
-  font-size: 1.06em; /* serif italic reads a touch smaller than the caps */
+  font-size: calc(1em * var(--serif-scale));
+  line-height: calc(0.8 / var(--serif-scale));
   letter-spacing: 0;
   text-transform: none;
-  /* Matches the tight Make→WHAT gap in make-what-matters.svg (~0.13em of the
-     cap height). The literal word-space is removed in the markup; this is the
-     only gap. */
-  padding-right: 0.13em;
 }
 
-/* Headline reveal — the SAME line-mask effect as the intro statement's
-   SplitText reveal: each line slides up from behind its mask, staggered. Here
-   the lockup's two lines are authored explicitly (so the serif "Make", the tight
-   gap and the logo-matched sizing stay intact), and the reveal rides the hero's
-   load sequence (.is-ready) rather than a scroll trigger. Mirrors the statement's
-   timing: ~0.9s, decelerating, ~0.09s between lines. */
+/* block, not inline-block: an inline-block sits on the parent's baseline, so
+   the strut's descender space would pad each line out again. One word per
+   line here, so block costs nothing. */
 .hero__word {
-  display: inline-block;
-  will-change: transform, translate;
+  display: block;
+  will-change: transform;
 }
+
+/* The words wait below their masks and rise word-by-word on a 0.2s stagger the
+   moment the takeover completes (.is-live), then play OUT in reverse order once
+   you scroll past the hero (.is-exiting, set in js). Entry rides `transform`
+   and exit rides `translate` — separate properties, so the two never fight. */
 .js-animations [data-hero] .hero__word {
   transform: translateY(125%);
-  /* Word-by-word cascade with PER-DIRECTION delays (--w is 0/1/2 = Make/What/Matters):
-     - entrance (transform, on .is-ready): reading order  Make → What → Matters  [w * step]
-     - exit    (translate, on .is-exiting): REVERSE order  Matters → What → Make  [(2-w) * step]
-     The 0.2s step is well under the 0.62s slide, so each next word starts while the
-     previous is still moving — a tight overlapping cascade rather than one-then-the-next. */
   transition:
     transform 0.62s var(--ease-decelerate) calc(var(--w, 0) * 0.2s),
     translate 0.62s var(--ease-decelerate) calc((2 - var(--w, 0)) * 0.2s);
 }
-.js-animations [data-hero].is-ready .hero__word {
+.js-animations [data-hero].is-live .hero__word {
   transform: translateY(0);
 }
+.js-animations [data-hero].is-exiting .hero__word {
+  translate: 0 -125%;
+}
+
+/* Client name — small, bottom-left, appears with the takeover. */
+.hero__client {
+  position: absolute;
+  left: var(--container-pad);
+  bottom: clamp(1.1rem, 2.5vw, 2rem);
+  z-index: 4;
+  margin: 0;
+  font-size: 0.78rem;
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-white);
+  text-shadow: 0 1px 12px rgb(0 0 0 / 0.35);
+  opacity: 0;
+  transition: opacity 0.4s var(--ease-standard) 0.2s;
+}
+[data-hero].is-live .hero__client { opacity: 1; }
+
 @media (prefers-reduced-motion: reduce) {
-  .js-animations [data-hero] .hero__word {
+  .js-animations [data-hero] .hero__card,
+  .js-animations [data-hero] .hero__card.is-pop,
+  .js-animations [data-hero] .hero__card.is-stacked,
+  .js-animations [data-hero] .hero__card.is-takeover {
+    opacity: 1;
     transform: none;
     transition: none;
   }
-}
-
-/* Headline exit — TRIGGERED, not scroll-scrubbed. Once you scroll past a small
-   threshold, js/home-c.js adds .is-exiting on the hero and the whole lockup plays
-   its word-by-word exit OUT IN FULL (each word slides down behind its line mask),
-   completing on its own even if you stop scrolling — and plays back IN when you
-   return to the top. Staggered ONE WORD AT A TIME by --w (Make → What → Matters)
-   using the SAME 0.62s slide / 0.46s step as the entrance transition above, so it
-   reads as the load reveal in reverse. Uses `translate` so it composes with the
-   entrance's `transform` (see the base rule). A scrubbed version was replaced
-   because it froze mid-exit when you stopped scrolling and stranded "Matters"
-   unless you scrolled far enough (LESSONS.md: one-shot trigger, not scrub). */
-.js-animations [data-hero].is-exiting .hero__word {
-  translate: 0 130%;
-}
-
-/* Picture-in-picture campaign video, bottom-right. */
-.hero__pip {
-  position: absolute;
-  right: clamp(1rem, 3vw, 3rem);
-  bottom: clamp(1rem, 3vw, 3rem);
-  z-index: 2;
-  width: clamp(9rem, 16vw, 16rem);
-  aspect-ratio: 16 / 10;
-  border-radius: var(--radius-icon);
-  overflow: hidden;
-  box-shadow: 0 12px 40px rgb(0 0 0 / 0.45);
-  border: 1px solid rgb(255 255 255 / 0.15);
-}
-
-.hero__pip video {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-
-.hero__pip-play {
-  position: absolute;
-  left: 0.5rem;
-  bottom: 0.5rem;
-  width: 1.75rem;
-  height: 1.75rem;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 9999px;
-  background: rgb(255 255 255 / 0.9);
-  color: var(--color-black);
-  pointer-events: none;
-}
-.hero__pip-play svg { width: 0.85rem; height: 0.85rem; }
-
-.js-animations [data-hero] .hero__pip {
-  opacity: 0;
-  transform: translateY(1.5rem);
-  transition:
-    opacity 0.8s var(--ease-standard) 0.6s,
-    transform 0.8s var(--ease-decelerate) 0.6s;
-}
-.js-animations [data-hero].is-ready .hero__pip {
-  opacity: 1;
-  transform: translateY(0);
+  .js-animations img.hero__slide.is-active { animation: none; }
+  .hero__slide { transition: none; }
+  .js-animations [data-hero] .hero__word,
+  .js-animations [data-hero].is-exiting .hero__word {
+    transform: none;
+    translate: none;
+    transition: none;
+  }
+  .hero__scrim { opacity: 1; transition: none; }
 }
 
 /* ======================================================================
- * Intro statement — three columns
+ * Intro — strip (promoted from the approved 04 · Strip experiment;
+ * weareboring.nl reference)
+ *
+ * The transparent logo-mark video, a centred sentence-case headline, then a
+ * FULL-BLEED draggable filmstrip of tilted snapshots: a GSAP-ticker marquee
+ * you can grab — drag hands its velocity to a decaying momentum, the cards
+ * STRAIGHTEN out of their scattered tilts and lean together with the drag,
+ * hovering stalls the autoplay and straightens the hovered card, and a DRAG
+ * badge chases the cursor. Below, the band (statement + About us left,
+ * expertise list right) scrolls naturally — only the "Our expertise" label
+ * locks: sticky against the viewport, it holds while the list slides up past
+ * it and js inks whichever item sits beside it (js/home-c.js). Headline +
+ * statement word-cascade in via [data-reveal-words].
  * ==================================================================== */
 
 .intro {
   padding-block: clamp(4rem, 10vw, 9rem);
+  /* Tighter at the bottom than the top, so WORK arrives on screen sooner. */
+  padding-bottom: clamp(2rem, 4vw, 3.5rem);
+  /* One source of truth for the intro's display scale: the headline sets its
+     font-size from this, and the logo-mark video takes a fixed FRACTION of it
+     (--mark-ratio), so the mark scales on exactly the same curve as the type
+     at every width instead of sitting at a fixed pixel size. */
+  --intro-display: clamp(2.4rem, 5.6vw, 9rem);
+  --mark-ratio: 1.25;
 }
 
-.intro__grid {
+/* Transparent logo-animation video, tinted to ink: brightness(0) blacks out
+   every visible pixel while the alpha channel is preserved. In the dark and
+   blue themes the ink is light, so the tint inverts to white. */
+.intro__mark {
+  display: block;
+  width: calc(var(--mark-ratio) * var(--intro-display));
+  height: calc(var(--mark-ratio) * var(--intro-display));
+  margin: 0 auto clamp(0.75rem, 2vh, 1.25rem);
+  filter: brightness(0);
+}
+
+.dark .intro__mark,
+.theme-blue .intro__mark {
+  filter: brightness(0) invert(1);
+}
+
+.intro__headline {
+  margin: 0 auto;
+  max-width: 20ch;
+  font-size: var(--intro-display); /* shared with the logo mark; grows to ~2570px */
+  line-height: 1.04;
+  font-weight: var(--font-weight-bold);
+  letter-spacing: -0.02em;
+  color: var(--color-icon-black);
+  text-align: center;
+  text-wrap: balance;
+}
+
+/* ---- The filmstrip ------------------------------------------------------ */
+
+/* Full-bleed out of the container, like .clients. */
+.intro__viewport {
+  width: 100vw;
+  margin-inline: calc(50% - 50vw);
+  margin-top: clamp(3rem, 8vh, 5.5rem); /* air under the headline */
+  overflow: hidden;
+  cursor: grab;
+  touch-action: pan-y; /* custom horizontal drag; keep vertical page scroll */
+  user-select: none;
+  -webkit-user-select: none;
+}
+.intro__viewport.is-dragging { cursor: grabbing; }
+
+.intro__track {
+  display: flex;
+  gap: clamp(1.5rem, 3vw, 3rem);
+  width: max-content;
+  /* headroom so the tilted cards never clip */
+  padding-block: clamp(1.5rem, 3vw, 2.5rem);
+  will-change: transform;
+}
+
+.intro__card {
+  flex: 0 0 auto;
+  width: clamp(10.5rem, 17vw, 26rem); /* keeps growing to ~2450px */
+  aspect-ratio: 4 / 5;
+  margin: 0;
+  border-radius: var(--radius-icon); /* same corner as the work + news media */
+  overflow: hidden;
+  rotate: var(--r, 0deg);
+  background: color-mix(in srgb, var(--color-icon-black) 6%, transparent);
+  will-change: rotate, transform;
+}
+/* alternating snapshot tilts (JS hands these to gsap transforms at init) */
+.intro__card:nth-child(4n + 1) { --r: -5deg; }
+.intro__card:nth-child(4n + 2) { --r: 3.5deg; }
+.intro__card:nth-child(4n + 3) { --r: -2.5deg; }
+.intro__card:nth-child(4n + 4) { --r: 5.5deg; }
+
+.intro__card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  pointer-events: none; /* drags hit the card, not the img */
+}
+
+/* DRAG badge — chases the cursor over the strip. */
+.intro__badge {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 60;
+  padding: 0.5rem 0.9rem;
+  border-radius: 9999px;
+  background: var(--color-icon-blue);
+  color: var(--color-white);
+  font-size: 0.72rem;
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  pointer-events: none;
+  opacity: 0;
+  scale: 0.6;
+  translate: -50% -50%;
+}
+
+/* ---- The band ----------------------------------------------------------- */
+
+/* Scrolls naturally — no pin. Only the "Our expertise" label locks: it is
+   sticky, so it holds its viewport position while the list scrolls up past
+   it, and js inks whichever item sits beside it (see the label rule below). */
+.intro__band {
   display: grid;
   grid-template-columns: 1fr;
-  gap: clamp(2rem, 4vw, 3.5rem);
+  gap: clamp(2.5rem, 5vw, 4rem);
+  margin-top: clamp(3rem, 8vh, 5.5rem);
+  align-items: start;
 }
 
-/* The two-column split starts at md (768px) — there's room for it well before
-   the desktop nav cutoff; below md the blocks stack. */
-@media (min-width: 768px) {
-  .intro__grid {
+/* Same 12 columns and gutter as .work__row, and the same 6+6 split as a
+   --split work row — so the expertise column lines up with the left tile and
+   the statement starts exactly on the right tile's edge (column 7). */
+@media (min-width: 900px) {
+  .intro__band {
     grid-template-columns: repeat(12, minmax(0, 1fr));
     column-gap: var(--grid-gutter);
-    row-gap: 0;
-    /* Align the small lede and the big statement on their FIRST-LINE baselines
-       (not their tops) so the two blocks start on the same line despite the very
-       different type sizes. */
-    align-items: baseline;
   }
-  /* Left column (lede + expertise) widens at the smaller desktop widths so the
-     lede's short-cap text keeps a comfortable line length instead of wrapping
-     into a skinny 3-col column; it steps back to the narrow 3-col only once the
-     container is wide enough for that to read well. Statement stays at cols 7–12. */
-  .intro__lede-col { grid-column: 1 / span 5; }
-  .intro__statement { grid-column: 7 / span 6; }
-}
-
-@media (min-width: 1280px) {
-  .intro__lede-col { grid-column: 1 / span 4; }
-}
-
-@media (min-width: 1536px) {
-  .intro__lede-col { grid-column: 1 / span 3; }
-}
-
-.intro__lede {
-  /* Same type treatment as .intro__label ("Our expertise"): sentence case,
-     regular weight, no tracking — only the colour differs (icon-black, as
-     requested; the label is icon-grey). */
-  font-size: var(--text-xs);
-  font-weight: var(--font-weight-normal);
-  line-height: 1.4;
-  color: var(--color-icon-black);
-  /* Width is governed by the .intro__lede-col grid span (fluid, per breakpoint). */
-}
-
-/* "Our expertise" list — sits below the lede in the left column (bottom-left),
-   each item prefixed with a "/". */
-.intro__expertise-col {
-  margin-top: clamp(2rem, 5vw, 4rem);
-}
-
-.intro__label {
-  display: block;
-  margin-bottom: var(--spacing-sm);
-  font-size: var(--text-xs);
-  color: var(--color-icon-grey);
-}
-
-.intro__expertise {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 0; /* items sit line-to-line via line-height (below), matching the lede */
-}
-
-.intro__expertise li {
-  font-size: var(--text-xs);
-  font-weight: var(--font-weight-semibold);
-  line-height: 1.4; /* same line rhythm as the lede above */
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--color-icon-black);
-}
-
-.intro__expertise li::before {
-  content: "/ ";
+  .intro__expertise { grid-column: 1 / span 6; }
+  .intro__prose { grid-column: 7 / span 6; }
 }
 
 .intro__statement {
-  /* Custom fluid value: big editorial lead. Keeps growing on wide screens (raised
-     cap) — ~37px @1440 → 64px by ~2460px — so it scales with the fluid container. */
-  font-size: clamp(1.5rem, 2.6vw, 4rem);
+  margin: 0;
+  font-size: clamp(1.4rem, 2.1vw, 3rem); /* keeps growing to ~2285px */
+  line-height: 1.2;
   font-weight: var(--font-weight-medium);
-  line-height: 1.28;
   letter-spacing: -0.01em;
   color: var(--color-icon-black);
   text-wrap: pretty;
 }
 
-.intro__statement .miller-text {
-  font-weight: var(--font-weight-semibold);
+.intro__about {
+  display: inline-block;
+  margin-top: clamp(1.5rem, 4vh, 2.5rem);
+  font-size: var(--text-xs);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-icon-black);
+  text-decoration: none;
+  transition: color var(--duration-fast) var(--ease-standard);
+}
+.intro__about::before { content: "/ "; }
+.intro__about:hover,
+.intro__about:focus-visible { color: var(--color-icon-blue); }
+
+/* ---- Expertise list (scroll-highlighted, sticky label) ------------------- */
+
+.intro__expertise {
+  display: flex;
+  gap: clamp(1.5rem, 3vw, 2.5rem);
+  /* top-aligned: the label starts level with the statement's opening line */
+  align-items: flex-start;
+}
+
+/* The label LOCKS while everything else scrolls naturally: sticky against the
+   viewport, it holds ~60% down the screen while the list slides up past it,
+   and js inks whichever item sits beside it. Its containing block is the
+   expertise row (list height), so it starts beside the first item, rides to
+   the last, then releases with the section. */
+.intro__expertise-label {
+  flex: none;
+  position: sticky;
+  top: 60vh;
+  font-size: clamp(1.4rem, 2.1vw, 3rem); /* keeps growing to ~2285px */
+  font-weight: var(--font-weight-medium);
+  letter-spacing: -0.01em;
+  line-height: 1.32;
+  color: var(--color-icon-black);
+}
+
+.intro__expertise-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.intro__expertise-list a {
+  position: relative;
+  display: inline-block;
+  font-size: clamp(1.4rem, 2.1vw, 3rem); /* keeps growing to ~2285px */
+  font-weight: var(--font-weight-medium);
+  letter-spacing: -0.01em;
+  line-height: 1.32;
+  color: color-mix(in srgb, var(--color-icon-black) 32%, transparent);
+  text-decoration: none;
+  transition:
+    color var(--duration-fast) var(--ease-standard),
+    translate var(--duration-normal) var(--ease-decelerate);
+}
+
+/* Scroll highlight inks the active item. Hover goes accent blue and plays in
+   sequence: the name slides right FIRST, then a "/" fades in just before it
+   (a word-space away — the transition-delay below waits out the slide). The
+   delay lives only on the hover state, so on exit the slash vanishes
+   instantly while the name slides back. */
+.intro__expertise-list a::before {
+  content: "/";
+  position: absolute;
+  left: -0.65em;
+  opacity: 0;
+  /* a real fade both ways — at --duration-fast it read as a hard pop */
+  transition: opacity 0.25s var(--ease-standard);
+}
+
+.intro__expertise-list a.is-active { color: var(--color-icon-black); }
+
+.intro__expertise-list a:hover,
+.intro__expertise-list a:focus-visible {
+  color: var(--color-icon-blue);
+  translate: 0.65em 0;
+}
+.intro__expertise-list a:hover::before,
+.intro__expertise-list a:focus-visible::before {
+  opacity: 1;
+  transition-delay: 0.15s; /* starts as the name is landing; fade-out has none */
+}
+
+/* no-JS: the first item reads inked */
+html:not(.js-animations) .intro__expertise-list li:first-child a {
+  color: var(--color-icon-black);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .intro__badge { display: none; }
+  .intro__expertise-list a,
+  .intro__expertise-list a::before { transition: none; }
+}
+
+/* ---- Word-cascade reveal primitive ([data-reveal-words]) ----------------
+   js/home-c.js wraps each word in a mask (.sw > .sw__i), indexes it with --w,
+   and adds .is-revealed on scroll-in; the words rise through their masks with
+   a per-word stagger. Hidden states are scoped under .js-animations, so no-JS
+   (and the DS demo, which doesn't load page JS) renders the text plainly. */
+.js-animations [data-reveal-words] .sw {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+  /* Enough headroom that descenders (g, y) and ascenders survive the clip at
+     the headline's tight line-height; the equal negative margin keeps line
+     spacing unchanged. */
+  padding-block: 0.22em;
+  margin-block: -0.22em;
+}
+.js-animations [data-reveal-words] .sw__i {
+  display: inline-block;
+  translate: 0 118%;
+  transition: translate 0.7s var(--ease-decelerate);
+  transition-delay: calc(var(--w, 0) * 55ms);
+}
+.js-animations [data-reveal-words].is-revealed .sw__i {
+  translate: 0 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .js-animations [data-reveal-words] .sw__i {
+    translate: 0 0;
+    transition: none;
+  }
 }
 
 /* ======================================================================
@@ -439,7 +673,76 @@
  * ==================================================================== */
 
 .work {
+  /* Top space matches the container's own side gutter, so the WORK heading sits
+     the same distance from the section's top edge as the tiles do from the
+     left and right edges. */
+  padding-top: var(--container-pad);
   padding-bottom: clamp(3rem, 8vw, 7rem);
+}
+
+/* ---- Display headings (WORK / MORE) ------------------------------------- */
+
+/* Plain display type in the shared caps voice (hero lockup, NEWS). No pin, no
+   fade — they scroll with the page and enter on the standard word cascade
+   ([data-reveal-words], same as every other headline). */
+.work__heading {
+  margin: 0 0 clamp(3rem, 7vw, 6rem);
+  text-align: center;
+  font-size: clamp(3rem, 7vw, 11rem);
+  font-weight: 800;
+  line-height: 0.9;
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  color: var(--color-icon-black);
+}
+
+/* MORE closes the section — same type, centred, one standard gap below the
+   last row. */
+.work__more-wrap {
+  margin: 0;
+  text-align: center;
+}
+
+/* Sentence case, so it takes the display-type tracking rather than the caps
+   token (--tracking-caps exists for uppercase settings only). */
+.work__more {
+  position: relative;
+  display: inline-block;
+  font-size: clamp(3rem, 7vw, 11rem);
+  font-weight: 800;
+  line-height: 0.9;
+  letter-spacing: -0.02em;
+  color: var(--color-icon-black);
+  text-decoration: none;
+  transition:
+    color var(--duration-fast) var(--ease-standard),
+    translate var(--duration-normal) var(--ease-decelerate);
+}
+
+/* Same slash hover as the NEWS more + the expertise links. */
+.work__more::before {
+  content: "/";
+  position: absolute;
+  left: -0.65em;
+  opacity: 0;
+  transition: opacity 0.25s var(--ease-standard);
+}
+
+.work__more:hover,
+.work__more:focus-visible {
+  color: var(--color-icon-blue);
+  translate: 0.65em 0;
+}
+
+.work__more:hover::before,
+.work__more:focus-visible::before {
+  opacity: 1;
+  transition-delay: 0.15s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .work__more,
+  .work__more::before { transition: none; }
 }
 
 .work__row {
@@ -447,6 +750,22 @@
   grid-template-columns: 1fr;
   gap: clamp(2rem, 5vw, 4rem) var(--grid-gutter);
   margin-bottom: clamp(3rem, 7vw, 6rem);
+}
+
+/* Tablet: split rows go two-up rather than stacking, on the same 12-column
+   structure the desktop layout uses (6 + 6). The per-tile aspect ratios stay
+   uniform here — at this width the mismatched 3/2 + 1/1 pairing of the desktop
+   layout would leave one tile stranded. */
+@media (min-width: 768px) and (max-width: 899px) {
+  .work__row {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: var(--grid-gutter);
+    align-items: start;
+  }
+  .work__row--split .work__item:first-child { grid-column: 1 / span 6; }
+  .work__row--split .work__item:last-child { grid-column: 7 / span 6; }
+  .work__item--wide { grid-column: 1 / -1; }
+  .work__row--split .work__figure { aspect-ratio: 4 / 3; }
 }
 
 /* Snap the work rows to the same 12 columns as the intro. Split rows are two
@@ -532,17 +851,19 @@
   margin-top: var(--spacing-md);
   display: flex;
   flex-direction: column;
-  gap: 0.15rem;
+  /* Reads like the title's own line rhythm — the client name sits one
+     "line" below rather than hugging the last title line. */
+  gap: 0.5rem;
 }
 
 .work__title {
   margin: 0;
-  /* Prominent work headline — ~26px @1440 → 40px on wide screens. */
-  font-size: clamp(1.5rem, 1.9vw, 2.5rem);
-  line-height: 1.15; /* tighter, since the larger title wraps to several lines */
-  font-weight: var(--font-weight-bold);
-  letter-spacing: var(--tracking-caps); /* the shared display-caps tracking rule */
-  text-transform: uppercase;
+  /* Same voice as the intro statement (size, weight, tracking, line-height) —
+     the tiles read as sentences, not display caps. */
+  font-size: clamp(1.4rem, 2.1vw, 3rem); /* keeps growing to ~2285px */
+  line-height: 1.2;
+  font-weight: var(--font-weight-medium);
+  letter-spacing: -0.01em;
   color: var(--color-icon-black);
   text-wrap: balance;
   /* Reserve room at the measure's end for the hover arrow below, so the text
@@ -593,14 +914,8 @@
 }
 
 .work__meta {
-  font-size: var(--text-xs);
+  font-size: clamp(1.0625rem, 1.1vw, 1.5rem); /* a step up from --text-xs */
   color: var(--color-icon-grey);
-}
-
-.work__more {
-  display: flex;
-  justify-content: center;
-  margin-top: clamp(1rem, 4vw, 3rem);
 }
 
 /* ======================================================================
@@ -664,7 +979,7 @@
   white-space: nowrap;
   /* Custom fluid value: oversized display marquee. Raised cap so it keeps growing
      on wide screens (~48px @1440 → 72px by ~2120px). */
-  font-size: clamp(1.5rem, 3.4vw, 4.5rem);
+  font-size: clamp(1.5rem, 3.4vw, 5.5rem); /* keeps growing to ~2590px */
   font-weight: var(--font-weight-medium);
   line-height: 1.3; /* enough leading that the italic serif descenders (Polytechnic's y, etc.) aren't clipped by the scroller's overflow:hidden */
   letter-spacing: -0.01em;
@@ -781,17 +1096,61 @@
   padding-inline: var(--container-pad);
 }
 
-.news__eyebrow {
-  font-size: var(--text-xs);
-  font-weight: var(--font-weight-bold);
-  letter-spacing: 0.1em;
+/* Masthead: NEWS and its MORE link both wear the display-caps voice shared
+   with the hero lockup and the WORK heading. */
+.news__heading,
+.news__more {
+  font-size: clamp(3rem, 7vw, 11rem); /* identical to .work__heading */
+  font-weight: 800;
+  line-height: 0.9;
+  letter-spacing: var(--tracking-caps);
   text-transform: uppercase;
-  color: var(--color-icon-grey);
+  color: var(--color-icon-black);
+}
+
+.news__heading {
+  margin: 0;
+}
+
+/* Same treatment as the work MORE: slides right, then a "/" fades in a
+   word-space before it, both in accent blue. */
+.news__more {
+  position: relative;
+  display: inline-block;
+  text-decoration: none;
+  transition:
+    color var(--duration-fast) var(--ease-standard),
+    translate var(--duration-normal) var(--ease-decelerate);
+}
+
+.news__more::before {
+  content: "/";
+  position: absolute;
+  left: -0.65em;
+  opacity: 0;
+  transition: opacity 0.25s var(--ease-standard);
+}
+
+.news__more:hover,
+.news__more:focus-visible {
+  color: var(--color-icon-blue);
+  translate: 0.65em 0;
+}
+
+.news__more:hover::before,
+.news__more:focus-visible::before {
+  opacity: 1;
+  transition-delay: 0.15s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .news__more,
+  .news__more::before { transition: none; }
 }
 
 .news__track {
   display: flex;
-  gap: clamp(1.25rem, 2.5vw, 2rem);
+  gap: var(--grid-gutter); /* same rhythm as the work grid */
   width: max-content;
   padding-inline: var(--container-pad);
   animation: news-x linear both;
@@ -808,9 +1167,19 @@
 
 .news__card {
   flex: 0 0 auto;
-  /* Narrower than the old 4:3 cards — square figures are taller, so keep the
-     card + meta + title within the pinned 100svh. */
-  width: clamp(17rem, 36vw, 32rem);
+  /* Sized off the SAME 12-column grid as the work tiles, so the cards keep
+     scaling with the browser instead of freezing at a rem cap: one card spans
+     4 columns (+ its 3 inner gutters). Two guards around it —
+       max(17rem, …) so the cards stay usable on phones, where 4 of 12 columns
+         would be tiny;
+       min(…, 100svh - …) because the figure is SQUARE, so width drives height:
+         the card + its meta/title + the masthead all have to fit the pinned
+         100svh, which binds on short/ultrawide screens. */
+  --news-col: calc((100vw - 2 * var(--container-pad) - 11 * var(--grid-gutter)) / 12);
+  width: min(
+    max(17rem, calc(4 * var(--news-col) + 3 * var(--grid-gutter))),
+    calc(100svh - 10rem - 9vw)
+  );
   display: block;
   text-decoration: none;
   color: inherit;

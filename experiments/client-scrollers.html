@@ -1,0 +1,566 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Experiment — Client scrollers</title>
+    <meta name="robots" content="noindex" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Kumbh+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://use.typekit.net/bhv7yrj.css" />
+    <link rel="stylesheet" href="../css/main.css" />
+
+    <!-- EXPERIMENT — deliberately self-contained. All styles live in this one
+         inline block (the production .clients component is NOT touched) until a
+         direction is approved; then the winner gets promoted into the system
+         properly. 01 mirrors what ships today so the variants can be judged
+         against it side by side. -->
+    <style>
+      /* ---- page chrome (matches the intro-statement experiment) ---- */
+      .exp-page {
+        background: var(--color-background);
+        color: var(--color-icon-black);
+      }
+
+      .exp-topbar {
+        position: fixed;
+        top: 0;
+        inset-inline: 0;
+        z-index: 100;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.7rem clamp(1rem, 3vw, 2.5rem);
+        font-size: 0.72rem;
+        font-weight: var(--font-weight-bold);
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        background: color-mix(in srgb, var(--color-background) 82%, transparent);
+        -webkit-backdrop-filter: blur(14px);
+        backdrop-filter: blur(14px);
+        border-bottom: 1px solid var(--color-border);
+      }
+      .exp-topbar a { color: var(--color-icon-black); text-decoration: none; }
+      .exp-topbar a:hover { color: var(--color-icon-blue); }
+      .exp-topbar__hint { color: var(--color-icon-grey); font-weight: var(--font-weight-normal); letter-spacing: 0.04em; text-transform: none; }
+
+      .exp-label {
+        display: flex;
+        align-items: baseline;
+        gap: 0.6rem;
+        padding: clamp(2.5rem, 6vw, 4.5rem) clamp(1rem, 3vw, 2.5rem) 0;
+        font-size: 0.72rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--color-icon-grey);
+      }
+      .exp-label b { color: var(--color-icon-blue); font-weight: var(--font-weight-bold); }
+      .exp-note {
+        margin: 0.5rem 0 0;
+        padding: 0 clamp(1rem, 3vw, 2.5rem);
+        max-width: 68ch;
+        font-size: var(--text-xs);
+        line-height: 1.5;
+        color: var(--color-icon-grey);
+      }
+
+      .exp-section {
+        position: relative;
+        padding-bottom: clamp(2.5rem, 6vw, 4.5rem);
+        border-bottom: 1px solid var(--color-border);
+      }
+
+      /* ==================================================================
+       * Shared marquee mechanics (identical to the production component):
+       * two abutting tracks translate by -100%; as the first exits the
+       * second fills it, so the loop is seamless. The middle row runs left,
+       * the top + bottom run the opposite way.
+       * ================================================================ */
+      .exp-clients {
+        position: relative;
+        width: 100%;
+        padding-block: clamp(3.5rem, 8vw, 7rem);
+        display: flex;
+        flex-direction: column;
+        gap: clamp(0.35rem, 0.9vw, 1rem);
+      }
+
+      /* Top + bottom rules, inset to the content margins. */
+      .exp-clients::before,
+      .exp-clients::after {
+        content: "";
+        position: absolute;
+        left: clamp(1rem, 3vw, 2.5rem);
+        right: clamp(1rem, 3vw, 2.5rem);
+        height: 1px;
+        background: var(--color-icon-black);
+      }
+      .exp-clients::before { top: 0; }
+      .exp-clients::after { bottom: 0; }
+
+      .exp-clients__scroller {
+        display: flex;
+        width: 100%;
+        overflow: hidden;
+      }
+
+      .exp-clients__track {
+        display: flex;
+        flex: 0 0 auto;
+        align-items: center;
+        gap: clamp(2rem, 4vw, 4rem);
+        margin: 0;
+        padding: 0 clamp(2rem, 4vw, 4rem) 0 0;
+        list-style: none;
+        animation: exp-clients-scroll 140s linear infinite; /* slower, more legible drift */
+      }
+      .exp-clients__scroller--reverse .exp-clients__track {
+        animation-direction: reverse;
+      }
+
+      @keyframes exp-clients-scroll {
+        to { transform: translateX(-100%); }
+      }
+
+      .exp-client {
+        flex: 0 0 auto;
+        white-space: nowrap;
+        color: var(--color-icon-black);
+      }
+
+      /* ---- 01 · Current (mixed serif/sans, sentence case) --------------
+         What ships today: oversized fluid display type, every second client
+         in Miller Text italic so the marquee alternates serif and sans. */
+      .exp-clients--current .exp-client {
+        font-size: clamp(1.5rem, 3.4vw, 5.5rem);
+        font-weight: var(--font-weight-medium);
+        line-height: 1.3; /* leading enough that italic descenders survive overflow:hidden */
+        letter-spacing: -0.01em;
+      }
+      .exp-clients--current .exp-client:nth-child(even) {
+        font-family: var(--font-serif);
+        font-style: italic;
+      }
+
+      /* ---- 02 · Uppercase (single voice, display caps) -----------------
+         All caps in the heavy Kumbh cut, on the site's shared display-caps
+         tracking token — the same voice as the hero lockup, the WORK
+         heading and the work meta. No serif alternation: one uniform band
+         of type, so the rhythm comes from the names themselves rather than
+         a typeface swap. Slightly tighter leading is safe here because
+         caps have no descenders to clip. */
+      .exp-clients--upper .exp-client {
+        font-size: clamp(1.35rem, 3vw, 4rem);
+        font-weight: var(--font-weight-bold);
+        line-height: 1.1;
+        letter-spacing: var(--tracking-caps);
+        text-transform: uppercase;
+      }
+
+      /* ---- 03 · Uppercase, outlined alternation ------------------------
+         Same caps voice as 02, but every second name is drawn as an outline
+         (transparent fill + a hairline stroke). Keeps the single-typeface
+         discipline while restoring the A-B-A-B rhythm the serif italic gave
+         the current version. -webkit-text-stroke is supported everywhere we
+         target; the fallback is simply solid type. */
+      .exp-clients--outline .exp-client {
+        font-size: clamp(1.35rem, 3vw, 4rem);
+        font-weight: var(--font-weight-bold);
+        line-height: 1.1;
+        letter-spacing: var(--tracking-caps);
+        text-transform: uppercase;
+      }
+      .exp-clients--outline .exp-client:nth-child(even) {
+        color: transparent;
+        -webkit-text-stroke: 1px var(--color-icon-black);
+      }
+
+      /* Pause control — WCAG 2.2.2 (Level A): auto-motion over 5s needs a
+         visible pause. One button per scroller section. */
+      .exp-clients__pause {
+        position: absolute;
+        right: clamp(1rem, 3vw, 2.5rem);
+        bottom: 0.75rem;
+        z-index: 1;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 2rem;
+        height: 2rem;
+        padding: 0;
+        border: 1px solid color-mix(in srgb, var(--color-icon-black) 30%, transparent);
+        border-radius: 9999px;
+        background: var(--color-background);
+        color: var(--color-icon-black);
+        cursor: pointer;
+        transition: border-color var(--duration-normal) var(--ease-standard);
+      }
+      .exp-clients__pause:hover { border-color: var(--color-icon-black); }
+      .exp-clients__pause-icon { width: 0.8rem; height: 0.8rem; display: block; }
+      .exp-clients__pause-icon--play { display: none; }
+      .exp-clients.is-paused .exp-clients__pause-icon--pause { display: none; }
+      .exp-clients.is-paused .exp-clients__pause-icon--play { display: block; }
+      .exp-clients.is-paused .exp-clients__track { animation-play-state: paused; }
+
+      @media (prefers-reduced-motion: reduce) {
+        .exp-clients__track { animation: none; }
+        .exp-clients__scroller { overflow-x: auto; }
+        .exp-clients__pause { display: none; }
+      }
+    </style>
+  </head>
+  <body class="exp-page">
+    <div class="exp-topbar">
+      <a href="../index.html">&larr; Design system</a>
+      <span class="exp-topbar__hint">Experiment — client scrollers. Markup inline until a direction is approved.</span>
+    </div>
+
+    <!-- ================= 01 · CURRENT ================= -->
+    <section class="exp-section" aria-label="Direction 01 — Current">
+      <p class="exp-label"><b>01</b> Current — mixed serif/sans, sentence case · SHIPPING TODAY</p>
+      <p class="exp-note">
+        The production component, for reference: oversized fluid display type with every second
+        client set in Miller Text italic, so the band alternates serif and sans as it travels.
+      </p>
+      <div class="exp-clients exp-clients--current" data-clients aria-label="Selected clients">
+        <div class="exp-clients__scroller exp-clients__scroller--reverse">
+          <ul class="exp-clients__track">
+            <li class="exp-client">Yarra Trams</li>
+            <li class="exp-client">Alcohol and Drug Foundation</li>
+            <li class="exp-client">KMD Brands</li>
+            <li class="exp-client">Allied Health Professions Australia</li>
+            <li class="exp-client">Schneider Electric</li>
+            <li class="exp-client">Anti-corruption Commission (IBAC)</li>
+            <li class="exp-client">Melbourne Polytechnic</li>
+            <li class="exp-client">Royal Life Saving</li>
+            <li class="exp-client">Meta</li>
+            <li class="exp-client">Australian Space Agency</li>
+            <li class="exp-client">Department of Finance</li>
+            <li class="exp-client">NDIS</li>
+          </ul>
+          <ul class="exp-clients__track" aria-hidden="true">
+            <li class="exp-client">Yarra Trams</li>
+            <li class="exp-client">Alcohol and Drug Foundation</li>
+            <li class="exp-client">KMD Brands</li>
+            <li class="exp-client">Allied Health Professions Australia</li>
+            <li class="exp-client">Schneider Electric</li>
+            <li class="exp-client">Anti-corruption Commission (IBAC)</li>
+            <li class="exp-client">Melbourne Polytechnic</li>
+            <li class="exp-client">Royal Life Saving</li>
+            <li class="exp-client">Meta</li>
+            <li class="exp-client">Australian Space Agency</li>
+            <li class="exp-client">Department of Finance</li>
+            <li class="exp-client">NDIS</li>
+          </ul>
+        </div>
+
+        <div class="exp-clients__scroller">
+          <ul class="exp-clients__track">
+            <li class="exp-client">Meta</li>
+            <li class="exp-client">Australian Space Agency</li>
+            <li class="exp-client">Department of Finance</li>
+            <li class="exp-client">NDIS</li>
+            <li class="exp-client">Yarra Trams</li>
+            <li class="exp-client">Alcohol and Drug Foundation</li>
+            <li class="exp-client">KMD Brands</li>
+            <li class="exp-client">Allied Health Professions Australia</li>
+            <li class="exp-client">Schneider Electric</li>
+            <li class="exp-client">Anti-corruption Commission (IBAC)</li>
+            <li class="exp-client">Melbourne Polytechnic</li>
+            <li class="exp-client">Royal Life Saving</li>
+          </ul>
+          <ul class="exp-clients__track" aria-hidden="true">
+            <li class="exp-client">Meta</li>
+            <li class="exp-client">Australian Space Agency</li>
+            <li class="exp-client">Department of Finance</li>
+            <li class="exp-client">NDIS</li>
+            <li class="exp-client">Yarra Trams</li>
+            <li class="exp-client">Alcohol and Drug Foundation</li>
+            <li class="exp-client">KMD Brands</li>
+            <li class="exp-client">Allied Health Professions Australia</li>
+            <li class="exp-client">Schneider Electric</li>
+            <li class="exp-client">Anti-corruption Commission (IBAC)</li>
+            <li class="exp-client">Melbourne Polytechnic</li>
+            <li class="exp-client">Royal Life Saving</li>
+          </ul>
+        </div>
+
+        <div class="exp-clients__scroller exp-clients__scroller--reverse">
+          <ul class="exp-clients__track">
+            <li class="exp-client">Schneider Electric</li>
+            <li class="exp-client">Anti-corruption Commission (IBAC)</li>
+            <li class="exp-client">Melbourne Polytechnic</li>
+            <li class="exp-client">Royal Life Saving</li>
+            <li class="exp-client">Meta</li>
+            <li class="exp-client">Australian Space Agency</li>
+            <li class="exp-client">Department of Finance</li>
+            <li class="exp-client">NDIS</li>
+            <li class="exp-client">Yarra Trams</li>
+            <li class="exp-client">Alcohol and Drug Foundation</li>
+            <li class="exp-client">KMD Brands</li>
+            <li class="exp-client">Allied Health Professions Australia</li>
+          </ul>
+          <ul class="exp-clients__track" aria-hidden="true">
+            <li class="exp-client">Schneider Electric</li>
+            <li class="exp-client">Anti-corruption Commission (IBAC)</li>
+            <li class="exp-client">Melbourne Polytechnic</li>
+            <li class="exp-client">Royal Life Saving</li>
+            <li class="exp-client">Meta</li>
+            <li class="exp-client">Australian Space Agency</li>
+            <li class="exp-client">Department of Finance</li>
+            <li class="exp-client">NDIS</li>
+            <li class="exp-client">Yarra Trams</li>
+            <li class="exp-client">Alcohol and Drug Foundation</li>
+            <li class="exp-client">KMD Brands</li>
+            <li class="exp-client">Allied Health Professions Australia</li>
+          </ul>
+        </div>
+
+        <button class="exp-clients__pause" type="button" aria-pressed="false" aria-label="Pause client name animation" data-clients-pause>
+          <svg class="exp-clients__pause-icon exp-clients__pause-icon--pause" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1" /><rect x="14" y="5" width="4" height="14" rx="1" /></svg>
+          <svg class="exp-clients__pause-icon exp-clients__pause-icon--play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z" /></svg>
+        </button>
+      </div>
+    </section>
+
+    <!-- ================= 02 · UPPERCASE ================= -->
+    <section class="exp-section" aria-label="Direction 02 — Uppercase">
+      <p class="exp-label"><b>02</b> Uppercase — one voice, display caps</p>
+      <p class="exp-note">
+        All caps in the heavy Kumbh cut on the shared display-caps tracking token — the same voice
+        as the hero lockup and the WORK heading. No serif alternation: one uniform band, so the
+        rhythm comes from the names themselves. Caps have no descenders, so the leading tightens
+        and the three rows sit closer together.
+      </p>
+      <div class="exp-clients exp-clients--upper" data-clients aria-label="Selected clients">
+        <div class="exp-clients__scroller exp-clients__scroller--reverse">
+          <ul class="exp-clients__track">
+            <li class="exp-client">Yarra Trams</li>
+            <li class="exp-client">Alcohol and Drug Foundation</li>
+            <li class="exp-client">KMD Brands</li>
+            <li class="exp-client">Allied Health Professions Australia</li>
+            <li class="exp-client">Schneider Electric</li>
+            <li class="exp-client">Anti-corruption Commission (IBAC)</li>
+            <li class="exp-client">Melbourne Polytechnic</li>
+            <li class="exp-client">Royal Life Saving</li>
+            <li class="exp-client">Meta</li>
+            <li class="exp-client">Australian Space Agency</li>
+            <li class="exp-client">Department of Finance</li>
+            <li class="exp-client">NDIS</li>
+          </ul>
+          <ul class="exp-clients__track" aria-hidden="true">
+            <li class="exp-client">Yarra Trams</li>
+            <li class="exp-client">Alcohol and Drug Foundation</li>
+            <li class="exp-client">KMD Brands</li>
+            <li class="exp-client">Allied Health Professions Australia</li>
+            <li class="exp-client">Schneider Electric</li>
+            <li class="exp-client">Anti-corruption Commission (IBAC)</li>
+            <li class="exp-client">Melbourne Polytechnic</li>
+            <li class="exp-client">Royal Life Saving</li>
+            <li class="exp-client">Meta</li>
+            <li class="exp-client">Australian Space Agency</li>
+            <li class="exp-client">Department of Finance</li>
+            <li class="exp-client">NDIS</li>
+          </ul>
+        </div>
+
+        <div class="exp-clients__scroller">
+          <ul class="exp-clients__track">
+            <li class="exp-client">Meta</li>
+            <li class="exp-client">Australian Space Agency</li>
+            <li class="exp-client">Department of Finance</li>
+            <li class="exp-client">NDIS</li>
+            <li class="exp-client">Yarra Trams</li>
+            <li class="exp-client">Alcohol and Drug Foundation</li>
+            <li class="exp-client">KMD Brands</li>
+            <li class="exp-client">Allied Health Professions Australia</li>
+            <li class="exp-client">Schneider Electric</li>
+            <li class="exp-client">Anti-corruption Commission (IBAC)</li>
+            <li class="exp-client">Melbourne Polytechnic</li>
+            <li class="exp-client">Royal Life Saving</li>
+          </ul>
+          <ul class="exp-clients__track" aria-hidden="true">
+            <li class="exp-client">Meta</li>
+            <li class="exp-client">Australian Space Agency</li>
+            <li class="exp-client">Department of Finance</li>
+            <li class="exp-client">NDIS</li>
+            <li class="exp-client">Yarra Trams</li>
+            <li class="exp-client">Alcohol and Drug Foundation</li>
+            <li class="exp-client">KMD Brands</li>
+            <li class="exp-client">Allied Health Professions Australia</li>
+            <li class="exp-client">Schneider Electric</li>
+            <li class="exp-client">Anti-corruption Commission (IBAC)</li>
+            <li class="exp-client">Melbourne Polytechnic</li>
+            <li class="exp-client">Royal Life Saving</li>
+          </ul>
+        </div>
+
+        <div class="exp-clients__scroller exp-clients__scroller--reverse">
+          <ul class="exp-clients__track">
+            <li class="exp-client">Schneider Electric</li>
+            <li class="exp-client">Anti-corruption Commission (IBAC)</li>
+            <li class="exp-client">Melbourne Polytechnic</li>
+            <li class="exp-client">Royal Life Saving</li>
+            <li class="exp-client">Meta</li>
+            <li class="exp-client">Australian Space Agency</li>
+            <li class="exp-client">Department of Finance</li>
+            <li class="exp-client">NDIS</li>
+            <li class="exp-client">Yarra Trams</li>
+            <li class="exp-client">Alcohol and Drug Foundation</li>
+            <li class="exp-client">KMD Brands</li>
+            <li class="exp-client">Allied Health Professions Australia</li>
+          </ul>
+          <ul class="exp-clients__track" aria-hidden="true">
+            <li class="exp-client">Schneider Electric</li>
+            <li class="exp-client">Anti-corruption Commission (IBAC)</li>
+            <li class="exp-client">Melbourne Polytechnic</li>
+            <li class="exp-client">Royal Life Saving</li>
+            <li class="exp-client">Meta</li>
+            <li class="exp-client">Australian Space Agency</li>
+            <li class="exp-client">Department of Finance</li>
+            <li class="exp-client">NDIS</li>
+            <li class="exp-client">Yarra Trams</li>
+            <li class="exp-client">Alcohol and Drug Foundation</li>
+            <li class="exp-client">KMD Brands</li>
+            <li class="exp-client">Allied Health Professions Australia</li>
+          </ul>
+        </div>
+
+        <button class="exp-clients__pause" type="button" aria-pressed="false" aria-label="Pause client name animation" data-clients-pause>
+          <svg class="exp-clients__pause-icon exp-clients__pause-icon--pause" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1" /><rect x="14" y="5" width="4" height="14" rx="1" /></svg>
+          <svg class="exp-clients__pause-icon exp-clients__pause-icon--play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z" /></svg>
+        </button>
+      </div>
+    </section>
+
+    <!-- ================= 03 · UPPERCASE OUTLINE ================= -->
+    <section class="exp-section" aria-label="Direction 03 — Uppercase outline">
+      <p class="exp-label"><b>03</b> Uppercase outline — caps with alternating stroke</p>
+      <p class="exp-note">
+        The same caps voice as 02, but every second name is drawn as an outline (transparent fill,
+        hairline stroke). Keeps the single-typeface discipline while restoring the A-B-A-B rhythm
+        the serif italic gives the current version.
+      </p>
+      <div class="exp-clients exp-clients--outline" data-clients aria-label="Selected clients">
+        <div class="exp-clients__scroller exp-clients__scroller--reverse">
+          <ul class="exp-clients__track">
+            <li class="exp-client">Yarra Trams</li>
+            <li class="exp-client">Alcohol and Drug Foundation</li>
+            <li class="exp-client">KMD Brands</li>
+            <li class="exp-client">Allied Health Professions Australia</li>
+            <li class="exp-client">Schneider Electric</li>
+            <li class="exp-client">Anti-corruption Commission (IBAC)</li>
+            <li class="exp-client">Melbourne Polytechnic</li>
+            <li class="exp-client">Royal Life Saving</li>
+            <li class="exp-client">Meta</li>
+            <li class="exp-client">Australian Space Agency</li>
+            <li class="exp-client">Department of Finance</li>
+            <li class="exp-client">NDIS</li>
+          </ul>
+          <ul class="exp-clients__track" aria-hidden="true">
+            <li class="exp-client">Yarra Trams</li>
+            <li class="exp-client">Alcohol and Drug Foundation</li>
+            <li class="exp-client">KMD Brands</li>
+            <li class="exp-client">Allied Health Professions Australia</li>
+            <li class="exp-client">Schneider Electric</li>
+            <li class="exp-client">Anti-corruption Commission (IBAC)</li>
+            <li class="exp-client">Melbourne Polytechnic</li>
+            <li class="exp-client">Royal Life Saving</li>
+            <li class="exp-client">Meta</li>
+            <li class="exp-client">Australian Space Agency</li>
+            <li class="exp-client">Department of Finance</li>
+            <li class="exp-client">NDIS</li>
+          </ul>
+        </div>
+
+        <div class="exp-clients__scroller">
+          <ul class="exp-clients__track">
+            <li class="exp-client">Meta</li>
+            <li class="exp-client">Australian Space Agency</li>
+            <li class="exp-client">Department of Finance</li>
+            <li class="exp-client">NDIS</li>
+            <li class="exp-client">Yarra Trams</li>
+            <li class="exp-client">Alcohol and Drug Foundation</li>
+            <li class="exp-client">KMD Brands</li>
+            <li class="exp-client">Allied Health Professions Australia</li>
+            <li class="exp-client">Schneider Electric</li>
+            <li class="exp-client">Anti-corruption Commission (IBAC)</li>
+            <li class="exp-client">Melbourne Polytechnic</li>
+            <li class="exp-client">Royal Life Saving</li>
+          </ul>
+          <ul class="exp-clients__track" aria-hidden="true">
+            <li class="exp-client">Meta</li>
+            <li class="exp-client">Australian Space Agency</li>
+            <li class="exp-client">Department of Finance</li>
+            <li class="exp-client">NDIS</li>
+            <li class="exp-client">Yarra Trams</li>
+            <li class="exp-client">Alcohol and Drug Foundation</li>
+            <li class="exp-client">KMD Brands</li>
+            <li class="exp-client">Allied Health Professions Australia</li>
+            <li class="exp-client">Schneider Electric</li>
+            <li class="exp-client">Anti-corruption Commission (IBAC)</li>
+            <li class="exp-client">Melbourne Polytechnic</li>
+            <li class="exp-client">Royal Life Saving</li>
+          </ul>
+        </div>
+
+        <div class="exp-clients__scroller exp-clients__scroller--reverse">
+          <ul class="exp-clients__track">
+            <li class="exp-client">Schneider Electric</li>
+            <li class="exp-client">Anti-corruption Commission (IBAC)</li>
+            <li class="exp-client">Melbourne Polytechnic</li>
+            <li class="exp-client">Royal Life Saving</li>
+            <li class="exp-client">Meta</li>
+            <li class="exp-client">Australian Space Agency</li>
+            <li class="exp-client">Department of Finance</li>
+            <li class="exp-client">NDIS</li>
+            <li class="exp-client">Yarra Trams</li>
+            <li class="exp-client">Alcohol and Drug Foundation</li>
+            <li class="exp-client">KMD Brands</li>
+            <li class="exp-client">Allied Health Professions Australia</li>
+          </ul>
+          <ul class="exp-clients__track" aria-hidden="true">
+            <li class="exp-client">Schneider Electric</li>
+            <li class="exp-client">Anti-corruption Commission (IBAC)</li>
+            <li class="exp-client">Melbourne Polytechnic</li>
+            <li class="exp-client">Royal Life Saving</li>
+            <li class="exp-client">Meta</li>
+            <li class="exp-client">Australian Space Agency</li>
+            <li class="exp-client">Department of Finance</li>
+            <li class="exp-client">NDIS</li>
+            <li class="exp-client">Yarra Trams</li>
+            <li class="exp-client">Alcohol and Drug Foundation</li>
+            <li class="exp-client">KMD Brands</li>
+            <li class="exp-client">Allied Health Professions Australia</li>
+          </ul>
+        </div>
+
+        <button class="exp-clients__pause" type="button" aria-pressed="false" aria-label="Pause client name animation" data-clients-pause>
+          <svg class="exp-clients__pause-icon exp-clients__pause-icon--pause" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1" /><rect x="14" y="5" width="4" height="14" rx="1" /></svg>
+          <svg class="exp-clients__pause-icon exp-clients__pause-icon--play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z" /></svg>
+        </button>
+      </div>
+    </section>
+
+    <script>
+      // Pause control per scroller (WCAG 2.2.2) — toggles .is-paused on the
+      // section, which pauses every track's animation, and keeps aria-pressed
+      // + the label in sync. Same behaviour as the production component.
+      (function () {
+        "use strict";
+        var buttons = Array.prototype.slice.call(document.querySelectorAll("[data-clients-pause]"));
+        buttons.forEach(function (btn) {
+          var host = btn.closest("[data-clients]");
+          if (!host) return;
+          btn.addEventListener("click", function () {
+            var paused = host.classList.toggle("is-paused");
+            btn.setAttribute("aria-pressed", paused ? "true" : "false");
+            btn.setAttribute("aria-label", paused ? "Play client name animation" : "Pause client name animation");
+          });
+        });
+      })();
+    </script>
+  </body>
+</html>
