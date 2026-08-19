@@ -343,7 +343,7 @@
 /* Client name — small, bottom-left, appears with the takeover. */
 .hero__client {
   position: absolute;
-  left: var(--container-pad);
+  left: var(--header-gutter); /* lines up with the fixed wordmark above it */
   bottom: clamp(1.1rem, 2.5vw, 2rem);
   z-index: 4;
   margin: 0;

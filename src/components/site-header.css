@@ -21,10 +21,22 @@
 /* Fixed, and fades out in place as you scroll (instead of scrolling off);
    the home glyph (desktop pill / mobile button) fades in to take its place.
    Fade rules are below the position media queries. */
+:root {
+  /* The header's own side gutter. The fixed wordmark sits on it, and anything
+     that should line up with the wordmark (e.g. the hero's client name) reads
+     the same token instead of re-deriving the number. NB this is deliberately
+     NOT --container-pad: the header hugs the edge tighter than the content
+     grid does. */
+  --header-gutter: 1.5rem;
+}
+@media (min-width: 768px)  { :root { --header-gutter: 2rem; } }
+@media (min-width: 1024px) { :root { --header-gutter: 2.5rem; } }
+@media (min-width: 1280px) { :root { --header-gutter: 3rem; } }
+
 .site-logo {
   position: fixed;
   top: 1rem; /* aligns with the mobile controls (also top: 1rem) */
-  left: 1.5rem;
+  left: var(--header-gutter);
   z-index: 10001;
   color: var(--color-foreground);
   display: inline-flex;
@@ -50,15 +62,12 @@
   will-change: translate;
 }
 
-@media (min-width: 768px) {
-  .site-logo { left: 2rem; }
-}
 @media (min-width: 1024px) {
-  .site-logo { top: 1.5rem; left: 2.5rem; }
+  .site-logo { top: 1.5rem; } /* left comes from --header-gutter */
   .site-logo__mark { height: 3.75rem; }
 }
 @media (min-width: 1280px) {
-  .site-logo { top: 2rem; left: 3rem; }
+  .site-logo { top: 2rem; }
   .site-logo__mark { height: 4.25rem; }
 }
 @media (min-width: 1536px) {
