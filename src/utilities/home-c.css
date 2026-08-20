@@ -145,13 +145,47 @@
  * ==================================================================== */
 
 .hero {
-  position: relative;
+  /* CURTAIN: the hero pins under the page (sticky at its own top) while every
+     later section rides up OVER it — and a scroll-driven scale recedes it as
+     the intro closes in. Compositor-sampled (animation-timeline), never a
+     scroll handler — see LESSONS.md. The old hero-position signals in JS (2b
+     header inversion, 2d theme handover) are re-anchored to the INTRO's
+     position, since a pinned hero never scrolls away. */
+  position: sticky;
+  top: 0;
+  z-index: 0;
   min-height: 100svh;
   overflow: hidden;
   /* Page ground (white in the light theme): the pile pops in against it, then
      the takeover covers it with the work. The header rides this — light theme
      over the white pile, inverted once the media takes over (see js 2b). */
   background: var(--color-background);
+}
+
+/* Everything after the hero is the curtain: above it in paint order, carrying
+   the page ground so the pinned hero can't show through between elements. */
+.page-home > :not(.hero) {
+  position: relative;
+  z-index: 1;
+  background: var(--color-background);
+}
+
+/* The recede: anchored to the top edge, so shrinking lifts the hero's bottom
+   edge away from the incoming intro — the gap closes fast and the intro reads
+   as arriving quickly. Scale-only (compositor); the surround it reveals is the
+   page ground, which the theme handover cross-fades blue→light underneath. */
+@keyframes hero-recede {
+  to { transform: scale(0.88); }
+}
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: scroll()) {
+    .hero {
+      transform-origin: 50% 0;
+      animation: hero-recede linear both;
+      animation-timeline: scroll(root);
+      animation-range: 0 100vh; /* done by one viewport of scroll */
+    }
+  }
 }
 
 /* ---- the pop-and-stack pile ---- */
@@ -163,18 +197,28 @@
   place-items: center; /* every card shares the centre cell */
 }
 .js-animations [data-hero].is-live .hero__stage {
+  /* Soft handover: the full-screen takeover card blur-fades into the reel's
+     identical first slide beneath it (k95's loader exit). One-shot, so the
+     full-screen blur cost is paid once. */
   opacity: 0;
-  transition: opacity 0.18s var(--ease-standard);
+  filter: blur(28px);
+  transition:
+    opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1),
+    filter 1.1s cubic-bezier(0.22, 1, 0.36, 1);
   pointer-events: none;
 }
 
 .hero__card {
   grid-area: 1 / 1; /* stacked — DOM order = pile order */
   margin: 0;
-  width: clamp(20rem, 32vw, 40rem); /* the pile reads big before the takeover */
-  aspect-ratio: 16 / 10;
+  /* Square. Bounded on BOTH axes — a 1:1 card is far taller than the old
+     16/10 at the same width, so the height arm (svh) keeps the pile inside
+     short viewports instead of overflowing the stage. */
+  width: clamp(16rem, min(30vw, 52svh), 36rem); /* the pile reads big before the takeover */
+  aspect-ratio: 1 / 1;
   border-radius: var(--radius-icon);
   overflow: hidden;
+  background: var(--color-shader-blue); /* ground while a frame's media is still arriving */
   will-change: transform, opacity;
 }
 /* the snapshot tilts each card settles into (echoes the intro strip) */
@@ -184,30 +228,64 @@
 .hero__card:nth-child(4) { --r: 4.5deg; }
 .hero__card:nth-child(5) { --r: -3deg; }
 .hero__card:nth-child(6) { --r: 2.5deg; }
+/* The LAST card is the one the takeover window continues from — it lands
+   STRAIGHT (no tilt-then-straighten beat). Positional, so it survives
+   reordering; after the nth-child list so source order wins. */
+.hero__card:last-child { --r: 0deg; }
 
 .js-animations [data-hero] .hero__card {
   opacity: 0;
   transform: scale(0.25) rotate(0deg); /* grows up from here */
 }
-/* pop: comes UP from small, overshooting just past the pile size… */
+/* open: one continuous eased growth to full size + tilt (k95-style) — no
+   overshoot; expo-out starts fast and lands long and soft. Opacity resolves
+   early so the size, not the fade, is the event. Opens OVERLAP via the JS
+   stagger, so the pile builds as a wave rather than discrete pops. */
 .js-animations [data-hero] .hero__card.is-pop {
   opacity: 1;
-  transform: scale(1.12) rotate(0deg);
+  transform: scale(1) rotate(var(--r, 0deg));
   transition:
-    opacity 0.1s ease-out,
-    transform 0.19s cubic-bezier(0.2, 1.6, 0.35, 1);
+    opacity 0.18s ease-out,
+    transform 0.68s cubic-bezier(0.16, 1, 0.3, 1);
 }
-/* …then settles onto the pile at full size, taking its tilt */
+/* same pose — kept as a state so the reduced-motion branch and any older
+   callers remain valid */
 .js-animations [data-hero] .hero__card.is-stacked {
   transform: scale(1) rotate(var(--r, 0deg));
-  transition: transform 0.2s var(--ease-decelerate);
 }
-/* …and the last card grows to swallow the viewport (js sets the cover scale
-   from the measured card + viewport ratio) */
-.js-animations [data-hero] .hero__card.is-takeover {
-  transform: scale(var(--cover-scale, 9)) rotate(0deg);
-  transition: transform 0.75s var(--ease-decelerate);
+/* The takeover is the REEL ITSELF, pre-scaled down into the card's mask and
+   then scaled back up as the mask expands — one element, one video, zero
+   swap. Uniform scale + clip reproduces object-fit: cover framing exactly
+   (both show the centred max slice), so at the hand-off moment the reel's
+   visible pixels are IDENTICAL to the card's, and during the morph the
+   framing continuously widens from the card slice to full bleed. JS computes
+   the start transform/inset from the card's hero-local offsets (transform-
+   independent) and time-syncs the reel video to the card's, which has been
+   playing since it landed on the pile. expo.inOut keeps the swallow's
+   temperament. z-3 lifts the reel over the stage; the lockup (also z-3 but
+   later in DOM) and the client label (z-4) stay above it. */
+/* During the morph the OUTER is the window (overflow hidden, transformed to
+   the card's rect) and the INNER counter-transforms so the media stays
+   undistorted — both written per-frame from ONE eased progress (GSAP), so
+   they can never drift apart. Transforms only: no clip-path animation, which
+   runs on the main thread and desynced against the compositor-driven scale
+   (the earlier jerk). */
+[data-hero].is-opening .hero__show {
+  z-index: 3;
+  overflow: hidden;
+  will-change: transform;
 }
+[data-hero].is-opening .hero__show-inner {
+  will-change: transform;
+}
+/* CSS fallback when GSAP is absent: transition both transforms with the same
+   curve. (The two ease independently here — a slight mid-flight breathing —
+   but this path only runs without GSAP.) */
+[data-hero].is-opening--css .hero__show,
+[data-hero].is-opening--css .hero__show-inner {
+  transition: transform 1s cubic-bezier(0.87, 0, 0.13, 1);
+}
+
 
 .hero__card img,
 .hero__card video {
@@ -222,6 +300,13 @@
   position: absolute;
   inset: 0;
   z-index: 1;
+  transform-origin: 0 0; /* morph maths assume a top-left origin */
+}
+
+.hero__show-inner {
+  position: absolute;
+  inset: 0;
+  transform-origin: 0 0;
 }
 
 .hero__slide {
@@ -295,7 +380,7 @@
   /* Same scale as the WORK / NEWS display headings through tablet, then the
      intro headline's slower curve on big screens. */
   font-size: clamp(3rem, min(7vw, clamp(6rem, 5.6vw, 9rem)), 9rem);
-  font-weight: 800;
+  font-weight: 900; /* Kumbh Sans Black. Size untouched — it is matched to the logo mark. */
   line-height: 0.8;
   letter-spacing: var(--tracking-caps);
   text-transform: uppercase;
@@ -343,23 +428,28 @@
 }
 
 /* The words wait below their masks and rise word-by-word on a 0.2s stagger the
-   moment the takeover completes (.is-live), then play OUT in reverse order once
-   you scroll past the hero (.is-exiting, set in js). Entry rides `transform`
-   and exit rides `translate` — separate properties, so the two never fight. */
+   moment the takeover completes (.is-live), then play OUT in the same order
+   (Make → What → Matters) once you scroll past the hero (.is-exiting, set in
+   js). Entry rides `transform` and exit rides `translate` — separate
+   properties, so the two never fight. */
 .js-animations [data-hero] .hero__word {
   transform: translateY(125%);
   transition:
     transform 0.62s var(--ease-decelerate) calc(var(--w, 0) * 0.2s),
-    translate 0.62s var(--ease-decelerate) calc((2 - var(--w, 0)) * 0.2s);
+    translate 0.62s var(--ease-decelerate) calc(var(--w, 0) * 0.2s);
 }
 .js-animations [data-hero].is-live .hero__word {
   transform: translateY(0);
 }
 .js-animations [data-hero].is-exiting .hero__word {
-  translate: 0 -125%;
+  /* 150%, not 125%: the mask box is padded taller than the word, and at -125%
+     the serif "Make" line's bottom edge still peeked inside the clip. */
+  translate: 0 -150%;
 }
 
-/* Client name — small, bottom-left, appears with the takeover. */
+/* Client name — small, bottom-left, appears with the takeover. On each reel
+   advance the JS swaps the inner span with a fast snap-fade (out, swap text,
+   in) — quieter than a masked rise at this size and position. */
 .hero__client {
   position: absolute;
   left: var(--header-gutter); /* lines up with the fixed wordmark above it */
@@ -378,11 +468,50 @@
 }
 [data-hero].is-live .hero__client { opacity: 1; }
 
+.hero__client-text {
+  transition: opacity 0.15s var(--ease-standard);
+}
+.hero__client-text.is-out {
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero__client-text,
+  .hero__client-text.is-out {
+    opacity: 1;
+    transition: none;
+  }
+}
+
+/* Build counter — [0]→[100] during the pile build, in the client name's exact
+   spot and voice; the two crossfade at .is-live (counter out, client in).
+   Ink follows the page ground (white on the blue open), since during the
+   build it sits on the page, not on media. */
+.hero__count {
+  position: absolute;
+  left: var(--header-gutter);
+  bottom: var(--space-sm);
+  z-index: 4;
+  margin: 0;
+  font-size: clamp(1.4rem, 2.1vw, 3rem);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-icon-black);
+  transition: opacity 0.3s var(--ease-standard);
+}
+[data-hero].is-live .hero__count { opacity: 0; }
+/* Only meaningful while the JS choreography runs. */
+html:not(.js-animations) .hero__count { display: none; }
+@media (prefers-reduced-motion: reduce) {
+  .hero__count { display: none; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .js-animations [data-hero] .hero__card,
   .js-animations [data-hero] .hero__card.is-pop,
-  .js-animations [data-hero] .hero__card.is-stacked,
-  .js-animations [data-hero] .hero__card.is-takeover {
+  .js-animations [data-hero] .hero__card.is-stacked {
     opacity: 1;
     transform: none;
     transition: none;
@@ -415,8 +544,9 @@
  * ==================================================================== */
 
 .intro {
-  padding-block: var(--space-2xl);
-  /* Tighter at the bottom than the top, so WORK arrives on screen sooner. */
+  /* Tight to the hero above (the curtain hands over quickly), and tighter
+     still at the bottom so WORK arrives on screen sooner. */
+  padding-top: var(--space-lg);
   padding-bottom: var(--space-md);
   /* One source of truth for the intro's display scale: the headline sets its
      font-size from this, and the logo-mark video takes a fixed FRACTION of it
@@ -479,8 +609,9 @@
 }
 
 .intro__card {
+  --intro-card-w: clamp(10.5rem, 17vw, 26rem);
   flex: 0 0 auto;
-  width: clamp(10.5rem, 17vw, 26rem); /* keeps growing to ~2450px */
+  width: var(--intro-card-w); /* keeps growing to ~2450px */
   aspect-ratio: 4 / 5;
   margin: 0;
   border-radius: var(--radius-icon); /* same corner as the work + news media */
@@ -501,6 +632,46 @@
   object-fit: cover;
   display: block;
   pointer-events: none; /* drags hit the card, not the img */
+}
+
+/* Fact card — a stat tile in the snapshot deck (design:
+   experiments/card-fact.png): shader-blue ground, trophy top-left, uppercase
+   statement, hairline rule + label at the foot. Every ratio is measured off
+   the 340px-wide mock and scales with the card width, so the tile tracks the
+   deck's fluid sizing at every viewport. */
+.intro__card--fact {
+  display: flex;
+  flex-direction: column;
+  padding: calc(var(--intro-card-w) * 0.094);
+  background: var(--color-shader-blue);
+  color: var(--color-white);
+}
+
+.intro__fact-icon {
+  /* align-self so the flex column's default `stretch` can't pull the svg to
+     full width — stretched, the glyph sat centred in a wide box (it reads as
+     "not left aligned"); at content width it hugs the card's left padding. */
+  align-self: flex-start;
+  height: calc(var(--intro-card-w) * 0.153);
+  width: auto;
+}
+
+.intro__fact-title {
+  margin: calc(var(--intro-card-w) * 0.082) 0 0;
+  font-size: calc(var(--intro-card-w) * 0.105);
+  line-height: 1.16;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-caps);
+}
+
+.intro__fact-label {
+  margin: auto 0 0; /* pins the rule + label to the foot */
+  padding-top: calc(var(--intro-card-w) * 0.082);
+  border-top: 1px solid var(--color-white);
+  font-size: calc(var(--intro-card-w) * 0.059);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: -0.01em;
 }
 
 /* DRAG badge — chases the cursor over the strip. */
@@ -708,8 +879,8 @@ html:not(.js-animations) .intro__expertise-list li:first-child a {
 .work__heading {
   margin: 0 0 var(--space-xl);
   text-align: center;
-  font-size: clamp(3rem, 7vw, 11rem);
-  font-weight: 800;
+  font-size: clamp(2.5rem, 6vw, 9rem);
+  font-weight: 900; /* Kumbh Sans Black — the heaviest cut; size eased back to suit */
   line-height: 0.9;
   letter-spacing: var(--tracking-caps);
   text-transform: uppercase;
@@ -728,8 +899,8 @@ html:not(.js-animations) .intro__expertise-list li:first-child a {
 .work__more {
   position: relative;
   display: inline-block;
-  font-size: clamp(3rem, 7vw, 11rem);
-  font-weight: 800;
+  font-size: calc(clamp(2.5rem, 6vw, 9rem) / 2); /* 50% of the WORK heading */
+  font-weight: 900;
   line-height: 0.9;
   letter-spacing: -0.02em;
   color: var(--color-icon-black);
@@ -1129,6 +1300,11 @@ html:not(.js-animations) .intro__expertise-list li:first-child a {
  * scroll-timeline is unsupported or under reduced motion. */
 .news {
   position: relative;
+  /* [Fix B] Height-aware masthead size. 7vw as designed, but never taller than
+     14% of the viewport height — on short viewports the heading gives up size
+     so the height-guarded cards (below) can take that space back. On normal
+     screens the min() resolves to the original clamp(), so nothing changes. */
+  --news-masthead: min(clamp(2.5rem, 6vw, 9rem), 14svh);
 }
 
 .news__pin {
@@ -1165,12 +1341,13 @@ html:not(.js-animations) .intro__expertise-list li:first-child a {
   padding-inline: var(--container-pad);
 }
 
-/* Masthead: NEWS and its MORE link both wear the display-caps voice shared
-   with the hero lockup and the WORK heading. */
+/* Masthead: NEWS and its More link share the display voice of the hero lockup
+   and the WORK heading. NEWS is uppercase; More is sentence case (see below),
+   mirroring the work section's heading + "All work" pairing. */
 .news__heading,
 .news__more {
-  font-size: clamp(3rem, 7vw, 11rem); /* identical to .work__heading */
-  font-weight: 800;
+  font-size: var(--news-masthead); /* = .work__heading's clamp, height-capped (Fix B) */
+  font-weight: 900; /* Kumbh Sans Black — the heaviest cut */
   line-height: 0.9;
   letter-spacing: var(--tracking-caps);
   text-transform: uppercase;
@@ -1179,6 +1356,15 @@ html:not(.js-animations) .intro__expertise-list li:first-child a {
 
 .news__heading {
   margin: 0;
+}
+
+/* Sentence case, so it takes the display-type tracking rather than the caps
+   token (--tracking-caps is for uppercase settings only) — identical
+   treatment to .work__more, including the half-heading size. */
+.news__more {
+  text-transform: none;
+  letter-spacing: -0.02em;
+  font-size: calc(var(--news-masthead) / 2); /* 50% of the NEWS heading */
 }
 
 /* Same treatment as the work MORE: slides right, then a "/" fades in a
@@ -1231,7 +1417,10 @@ html:not(.js-animations) .intro__expertise-list li:first-child a {
 }
 
 @keyframes news-x {
-  to { transform: translateX(calc(-100% + 100vw)); }
+  /* min() guard: if the track ever ends up narrower than the viewport,
+     -100% + 100vw computes POSITIVE (a rightward slide) — clamp at zero so
+     the sweep can never run backwards. */
+  to { transform: translateX(min(0px, calc(-100% + 100vw))); }
 }
 
 .news__card {
@@ -1247,8 +1436,11 @@ html:not(.js-animations) .intro__expertise-list li:first-child a {
   --news-col: calc((100vw - 2 * var(--container-pad) - 11 * var(--grid-gutter)) / 12);
   width: min(
     max(17rem, calc(4 * var(--news-col) + 3 * var(--grid-gutter))),
-    /* leaves room for the panel's top padding + masthead + gap + meta/title */
-    calc(100svh - 12rem - 16vw)
+    /* leaves room for the panel's top padding + masthead + gap + meta/title.
+       [Fix B] the reservation tracks the actual masthead footprint
+       (2.3 × var ≈ the old 16vw while the masthead is width-sized), so when
+       the height cap shrinks the heading, the cards get that space back. */
+    calc(100svh - 12rem - 2.3 * var(--news-masthead))
   );
   display: block;
   text-decoration: none;
@@ -1357,23 +1549,57 @@ html:not(.js-animations) .intro__expertise-list li:first-child a {
   font-weight: var(--font-weight-medium);
   line-height: 1.3;
   color: var(--color-icon-black);
-  text-wrap: pretty;
+  /* No text-wrap here: the base h1-h4 `balance` applies (typography.css) —
+     matching .work__title and avoiding pretty's single-word last lines. */
   padding-inline-end: 1.5em; /* room for the hover arrow, as on .work__title */
 }
 
-/* Fallback — no scroll-timeline support or reduced motion: a plain, swipeable
-   horizontal scroller (no pin, no coupled animation). */
+/* Fallback — one static presentation, three triggers:
+     1. no scroll-timeline support (the @supports block);
+     2. reduced motion;
+     3. [Fix A] viewports that can't host the pinned scene: the sticky is
+        100svh, so on short-and-landscape screens the height-guarded cards
+        shrink to thumbnails and the sweep distance approaches (or passes)
+        zero. Landscape-only on the height arm so portrait phones keep the
+        pin; the 2/1 arm catches wide-flat desktop windows above 780px.
+   A plain, swipeable horizontal scroller — no pin, no coupled animation —
+   and the cards return to their grid width, since they no longer have to
+   fit inside 100svh. */
 @supports not (animation-timeline: scroll()) {
   .news__pin { height: auto; }
-  .news__sticky { position: static; height: auto; overflow-x: auto; padding-block: var(--space-xl); }
-  .news__track { animation: none; scroll-snap-type: x proximity; }
-  .news__card { scroll-snap-align: start; }
+  .news__sticky { position: static; height: auto; padding-block: var(--space-xl); }
+  /* The TRACK is the scroller (width: auto fills the panel; the flex cards
+     overflow it) — the NEWS/MORE masthead above stays put while the cards
+     swipe. Snap lives here because the snap container must be the scroller. */
+  .news__track {
+    animation: none;
+    width: auto;
+    overflow-x: auto;
+    scroll-snap-type: x proximity;
+    /* Reaching either end must not fling the page (chained scroll) — hold, so
+       the user can swipe back. Snap positions honour the track's own
+       inline padding, or card 1 would rest flush against the edge. */
+    overscroll-behavior-x: contain;
+    scroll-padding-inline: var(--container-pad);
+  }
+  .news__card { scroll-snap-align: start; width: max(17rem, calc(4 * var(--news-col) + 3 * var(--grid-gutter))); }
 }
 
-@media (prefers-reduced-motion: reduce) {
+@media (prefers-reduced-motion: reduce), (max-height: 780px) and (min-aspect-ratio: 1/1), (min-aspect-ratio: 2/1) {
   .news__pin { height: auto; }
-  .news__sticky { position: static; height: auto; overflow-x: auto; padding-block: var(--space-xl); }
-  .news__track { animation: none; }
+  .news__sticky { position: static; height: auto; padding-block: var(--space-xl); }
+  .news__track {
+    animation: none;
+    width: auto;
+    overflow-x: auto;
+    scroll-snap-type: x proximity;
+    /* Reaching either end must not fling the page (chained scroll) — hold, so
+       the user can swipe back. Snap positions honour the track's own
+       inline padding, or card 1 would rest flush against the edge. */
+    overscroll-behavior-x: contain;
+    scroll-padding-inline: var(--container-pad);
+  }
+  .news__card { scroll-snap-align: start; width: max(17rem, calc(4 * var(--news-col) + 3 * var(--grid-gutter))); }
 }
 
 /* ======================================================================

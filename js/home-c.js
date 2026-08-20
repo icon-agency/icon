@@ -27,21 +27,82 @@
     } catch (e) {}
   }
 
-  // ---- 2. Hero — stack takeover -----------------------------------------
-  // The work pieces load in one by one: each POPS in at the viewport centre
-  // (only once its own media is displayable, raced against a timeout so one
-  // slow file can't stall the line), then shrinks onto the pile. After the
-  // last lands there's a 0.5s beat, then it scales up to cover the viewport
-  // and hands off to the reel: 3s per piece, 0.1s cross-fades, videos playing
-  // while active, stills on a CSS Ken Burns. .is-live lands exactly at the end
-  // of the takeover — it starts the lockup's word cascade, the scrim and the
-  // client name. Reduced motion: no choreography, just the reel.
+  // ---- 1b. News: a sideways gesture must never scroll the PAGE -----------
+  // A trackpad swipe is never purely horizontal — it carries an incidental
+  // deltaY. Lenis (and native scroll) read deltaY, so a sideways swipe over
+  // the news section scrolled the page vertically: in pinned mode that drove
+  // the sweep and then kept going past the section; in the short-viewport
+  // fallback it chained past the row's last card. One rule fixes both —
+  // if the gesture is horizontal-dominant we own it completely:
+  //   · fallback (track is a real scroller) → pan the row, clamped at its ends
+  //   · pinned (track is animation-driven)  → do nothing; the page holds still
+  // Vertical-dominant gestures fall through untouched, so ordinary scrolling
+  // (and the pin's own choreography) behaves exactly as before.
+  // Listener sits on the section and stops propagation, so Lenis's
+  // window-level handler never sees the event. CSS overscroll-behavior-x
+  // covers the equivalent touch case.
+  var newsSection = document.querySelector(".news");
+  var newsTrack = newsSection && newsSection.querySelector(".news__track");
+  if (newsTrack) {
+    var newsFallbackMq = window.matchMedia(
+      "(max-height: 780px) and (min-aspect-ratio: 1/1), (min-aspect-ratio: 2/1)"
+    );
+    var newsTimelineOk =
+      window.CSS && CSS.supports && CSS.supports("animation-timeline: scroll()");
+    var trackIsScroller = function () {
+      return !newsTimelineOk || reduce || newsFallbackMq.matches;
+    };
+    var syncNewsPrevent = function () {
+      if (trackIsScroller()) newsTrack.setAttribute("data-lenis-prevent-wheel", "");
+      else newsTrack.removeAttribute("data-lenis-prevent-wheel");
+    };
+    syncNewsPrevent();
+    if (newsFallbackMq.addEventListener) {
+      newsFallbackMq.addEventListener("change", syncNewsPrevent);
+    }
+
+    // Snap has to be suspended while WE drive scrollLeft: scroll snapping is
+    // re-applied after every programmatic scroll, so `proximity` yanked the row
+    // straight back to the nearest card and it never moved. Restore it once the
+    // gesture settles, which doubles as the snap-to-card landing.
+    var snapTimer;
+    newsSection.addEventListener(
+      "wheel",
+      function (e) {
+        if (Math.abs(e.deltaX) <= Math.abs(e.deltaY)) return; // vertical intent
+        e.preventDefault();
+        e.stopPropagation();
+        if (!trackIsScroller()) return; // pinned: swallow it, page holds still
+        newsTrack.style.scrollSnapType = "none";
+        newsTrack.scrollLeft += e.deltaX; // clamps at 0 / max — never chains out
+        clearTimeout(snapTimer);
+        snapTimer = setTimeout(function () {
+          newsTrack.style.scrollSnapType = "";
+        }, 140);
+      },
+      { passive: false }
+    );
+  }
+
+  // ---- 2. Hero — stack takeover (k95-timed build) ------------------------
+  // One continuous clock (k95.it's loader rhythm): media preloads in parallel
+  // (each raced against a timeout so one slow file can't stall the start),
+  // then every card opens on a fixed schedule — 680ms eased growth, next card
+  // starting 200ms in, so the pile builds as an overlapping wave. A counter
+  // ((0)→(100), bottom-left in the client name's spot) is the same clock made
+  // visible. Beat on the finished pile, then the last card swallows the
+  // viewport (1s expo.inOut) and hands off to the reel: 3s/6s per piece,
+  // 0.1s cross-fades, videos playing while active, stills on a CSS Ken Burns.
+  // .is-live lands at the takeover's end — lockup cascade, scrim, and the
+  // counter→client-name crossfade. Reduced motion: no choreography, no
+  // counter, just the reel.
   var hero = document.querySelector("[data-hero]");
   if (hero) {
     (function () {
       var cards = Array.prototype.slice.call(hero.querySelectorAll(".hero__card"));
       var slides = Array.prototype.slice.call(hero.querySelectorAll(".hero__slide"));
       var label = hero.querySelector("[data-client-label]");
+      var count = hero.querySelector("[data-boot-count]");
       // Stills get a glance; films get room to actually play a beat.
       var HOLD_IMAGE = 3000, HOLD_VIDEO = 6000, XFADE = 100;
       var holdFor = function (el) { return el.tagName === "VIDEO" ? HOLD_VIDEO : HOLD_IMAGE; };
@@ -66,6 +127,31 @@
         });
       };
 
+      // Label swap: a fast snap-fade — out, swap text, in (reduced motion /
+      // first set: instant).
+      var labelTimer = null;
+      var setLabel = function (text) {
+        if (!label) return;
+        var inner = label.firstElementChild;
+        if (!inner) {
+          inner = document.createElement("span");
+          inner.className = "hero__client-text";
+          label.appendChild(inner);
+        }
+        if (inner.textContent === text) return;
+        if (reduce || !inner.textContent) {
+          inner.textContent = text;
+          return;
+        }
+        if (labelTimer) clearTimeout(labelTimer);
+        inner.classList.add("is-out");
+        labelTimer = setTimeout(function () {
+          labelTimer = null;
+          inner.textContent = text;
+          inner.classList.remove("is-out"); // fade the new name straight in
+        }, 160); // just past the 0.15s fade-out
+      };
+
       var activate = function (i) {
         slides.forEach(function (s, j) {
           var on = i === j;
@@ -79,8 +165,19 @@
             }
           }
         });
-        if (label) label.textContent = slides[i].getAttribute("data-client");
+        setLabel(slides[i].getAttribute("data-client"));
       };
+
+      // Background tabs: the browser pauses muted videos in hidden tabs, so a
+      // page loaded in the background would surface with a frozen reel. On
+      // return, nudge the active slide back into playback.
+      document.addEventListener("visibilitychange", function () {
+        if (document.visibilityState !== "visible") return;
+        var active = hero.querySelector(".hero__slide.is-active");
+        if (active && active.tagName === "VIDEO" && active.paused) {
+          active.play().catch(function () {});
+        }
+      });
 
       // setTimeout chain, not setInterval: each slide holds for its own
       // duration, so a film can sit longer than a still.
@@ -102,68 +199,163 @@
         return;
       }
 
-      var seq = Promise.resolve();
-      cards.forEach(function (card) {
-        seq = seq
-          .then(function () { return mediaReady(card); })
-          .then(function () {
-            card.classList.add("is-pop");
-            return wait(190); // a quick punch in…
-          })
-          .then(function () {
-            card.classList.add("is-stacked"); // …then straight onto the pile
-            return wait(90);
-          });
-      });
-      seq
-        .then(function () { return wait(1100); }) // hold on the finished pile…
-        .then(function () {
-          var last = cards[cards.length - 1];
-          // uniform scale that covers the viewport from the card's laid-out size
-          var scale = Math.max(
-            window.innerWidth / last.offsetWidth,
-            window.innerHeight / last.offsetHeight
-          ) * 1.02;
-          last.style.setProperty("--cover-scale", scale);
-          last.classList.add("is-takeover");
-          return wait(750); // ride the takeover transition
-        })
-        .then(function () {
-          activate(slides.length - 1); // reel starts on the takeover piece
-          hero.classList.add("is-live"); // stage fades off; lockup rises
+      // Refresh mid-page: the browser restores the old scroll position, which
+      // would play the boot inside a receded, curtain-covered hero (it looks
+      // chopped). Two cases:
+      //  · restored less than half a viewport deep — the visitor was still at
+      //    the hero: turn restoration off, snap to top, run the show in full;
+      //  · deeper — they had moved on: skip the show and jump the hero to its
+      //    end state, keeping their place.
+      var restoredY = window.scrollY;
+      if (restoredY > 0) {
+        if (restoredY < window.innerHeight * 0.5) {
+          if ("scrollRestoration" in history) history.scrollRestoration = "manual";
+          window.scrollTo(0, 0);
+        } else {
+          cards.forEach(function (c) { c.classList.add("is-pop", "is-stacked"); });
+          hero.classList.add("is-live");
+          activate(slides.length - 1);
           loop(slides.length - 1);
-        });
+          return;
+        }
+      }
+
+      // Fixed rhythm (k95 values, scaled to our card count). The CSS owns the
+      // easing; this clock only schedules class-adds and drives the counter.
+      var DUR = 680;      // one card's open (matches the CSS transition)
+      var STAGGER = 200;  // next card starts this far in — opens overlap
+      var HOLD = 800;     // beat on the finished pile
+      var TAKEOVER = 1000; // matches the takeover transition in CSS
+      var animEnd = DUR + (cards.length - 1) * STAGGER;
+
+      if (count) count.textContent = "(0)";
+      Promise.all(cards.map(mediaReady)).then(function () {
+        var t0 = performance.now();
+        var added = 0;
+        var tick = function (now) {
+          var t = now - t0;
+          while (added < cards.length && t >= added * STAGGER) {
+            cards[added].classList.add("is-pop", "is-stacked");
+            // The LAST card is the one the reel continues from — its video
+            // plays on the pile so motion never stops across the hand-off.
+            if (added === cards.length - 1) {
+              var lastVid = cards[added].querySelector("video");
+              if (lastVid) lastVid.play().catch(function () {});
+            }
+            added += 1;
+          }
+          var p = Math.min(1, t / animEnd);
+          if (count) count.textContent = "(" + Math.round(p * 100) + ")";
+          if (p < 1) {
+            window.requestAnimationFrame(tick);
+            return;
+          }
+          // build done → beat → morph → reel
+          wait(HOLD)
+            .then(function () {
+              // THE MORPH — window + counter-transform, one clock.
+              // The outer (.hero__show, overflow hidden) is transformed onto
+              // the card's rectangle; the inner counter-transforms so the
+              // media stays undistorted and pixel-matched to the card at the
+              // start. Every frame writes BOTH transforms from one eased
+              // progress, so the mask cannot outrun the media — transforms
+              // only, no clip-path (main-thread) in the loop.
+              var last = cards[cards.length - 1];
+              var lastVid = last.querySelector("video");
+              var show = hero.querySelector(".hero__show");
+              var inner = show.querySelector(".hero__show-inner");
+              // Card rect in hero-local offsets (transform-independent).
+              var W = hero.clientWidth, H = hero.clientHeight;
+              var w = last.offsetWidth, h = last.offsetHeight;
+              var top = last.offsetTop, left = last.offsetLeft;
+              var sc = Math.max(w / W, h / H); // content scale at the card
+
+              activate(slides.length - 1);
+              // Continue the card's playback rather than restart: sync the
+              // reel video to wherever the card's copy has reached.
+              var reelVid = slides[slides.length - 1];
+              if (lastVid && reelVid.tagName === "VIDEO") {
+                try { reelVid.currentTime = lastVid.currentTime; } catch (e) {}
+              }
+
+              // e = eased progress 0→1. Window tweens card-rect → full bleed;
+              // content scale tweens sc → 1 about the window's centre; the
+              // inner transform is the exact algebraic remainder.
+              var apply = function (e) {
+                var ww = w + (W - w) * e, wh = h + (H - h) * e;
+                var wx = left * (1 - e), wy = top * (1 - e);
+                var sx = ww / W, sy = wh / H;
+                var c = sc + (1 - sc) * e;
+                var cx = wx + ww / 2 - (W * c) / 2;
+                var cy = wy + wh / 2 - (H * c) / 2;
+                show.style.transform =
+                  "translate(" + wx + "px," + wy + "px) scale(" + sx + "," + sy + ")";
+                inner.style.transform =
+                  "translate(" + (cx - wx) / sx + "px," + (cy - wy) / sy + "px)" +
+                  " scale(" + c / sx + "," + c / sy + ")";
+              };
+
+              hero.classList.add("is-opening");
+              show.style.borderRadius = "var(--radius-icon)";
+              apply(0);
+
+              return new Promise(function (resolve) {
+                var cleanup = function () {
+                  show.style.transform = "";
+                  inner.style.transform = "";
+                  show.style.borderRadius = "";
+                  resolve();
+                };
+                if (gsapOk) {
+                  var st = { p: 0 };
+                  window.gsap.to(st, {
+                    p: 1,
+                    duration: TAKEOVER / 1000,
+                    ease: "expo.inOut",
+                    onUpdate: function () { apply(st.p); },
+                    onComplete: cleanup
+                  });
+                } else {
+                  // No GSAP: same endpoints via CSS transitions.
+                  hero.classList.add("is-opening--css");
+                  void show.offsetHeight; // commit the start state
+                  apply(1);
+                  setTimeout(cleanup, TAKEOVER);
+                }
+              });
+            })
+            .then(function () {
+              hero.classList.add("is-live"); // lockup rises; stage retires beneath
+              loop(slides.length - 1);
+            });
+        };
+        window.requestAnimationFrame(tick);
+      });
     })();
   }
 
   // ---- 2b. Header inversion over the hero --------------------------------
-  // The hero opens on the PAGE ground (white in the light theme) while the
-  // pile builds, so the header must read in the normal theme there — it only
-  // flips to light-on-dark (.is-over-hero) once the takeover has covered the
-  // screen with media (.is-live on the hero). Two inputs, so both are folded
-  // into one sync: the hero must be behind the header AND live. The colour
-  // cross-fade is CSS (transitions on the header). Header height ≈ 80px.
+  // The hero opens on the PAGE ground while the pile builds, so the header
+  // reads in the normal theme there — it flips to light-on-dark
+  // (.is-over-hero) once the takeover has covered the screen (.is-live), and
+  // back once the intro curtain has ridden up past it. The hero is PINNED
+  // (sticky curtain), so "past the hero" is measured off the INTRO's top
+  // edge, not the hero's — a pinned hero never scrolls away. Class-toggle
+  // scroll listener (header.js pattern); the colour cross-fade is CSS.
   var siteHeader = document.querySelector(".site-header");
+  var introSec = document.querySelector(".intro");
   if (siteHeader && hero) {
-    var heroBehindHeader = hero.getBoundingClientRect().bottom > 80;
     var syncOverHero = function () {
+      var covered = introSec
+        ? introSec.getBoundingClientRect().top <= 80 // curtain has reached the header
+        : hero.getBoundingClientRect().bottom <= 80;
       siteHeader.classList.toggle(
         "is-over-hero",
-        heroBehindHeader && hero.classList.contains("is-live")
+        !covered && hero.classList.contains("is-live")
       );
     };
-    if (hasIO) {
-      var heroHeaderIO = new IntersectionObserver(function (entries) {
-        heroBehindHeader = entries[0].isIntersecting;
-        syncOverHero();
-      }, { rootMargin: "-80px 0px 0px 0px", threshold: 0 });
-      heroHeaderIO.observe(hero);
-    } else {
-      window.addEventListener("scroll", function () {
-        heroBehindHeader = hero.getBoundingClientRect().bottom > 80;
-        syncOverHero();
-      }, { passive: true });
-    }
+    window.addEventListener("scroll", syncOverHero, { passive: true });
+    window.addEventListener("resize", syncOverHero);
     // …and again the moment the takeover lands, since .is-live is the other input.
     if ("MutationObserver" in window) {
       new MutationObserver(syncOverHero).observe(hero, {
@@ -172,6 +364,33 @@
       });
     }
     syncOverHero();
+  }
+
+  // ---- 2d. Hero theme: blue at the top, light once you scroll on ---------
+  // The page opens on .theme-blue (set in the markup so it paints blue with no
+  // flash) and hands over to the light theme as the intro curtain takes the
+  // viewport. Anchored to the INTRO's top edge (the hero is pinned and never
+  // scrolls away): blue while the intro is still below the viewport's
+  // midpoint, light after — symmetric, so scrolling back returns the blue.
+  // The cross-fade is the universal theme transition (src/base/typography.css).
+  //
+  // Stands down if the visitor has explicitly picked a theme with the dev
+  // toggle (js/theme-toggle.js persists `icon-theme`), so that tool still wins.
+  if (hero && introSec) {
+    var themePinned = false;
+    try { themePinned = !!localStorage.getItem("icon-theme"); } catch (e) {}
+
+    if (!themePinned) {
+      var syncHeroTheme = function () {
+        document.documentElement.classList.toggle(
+          "theme-blue",
+          introSec.getBoundingClientRect().top > window.innerHeight * 0.75
+        );
+      };
+      window.addEventListener("scroll", syncHeroTheme, { passive: true });
+      window.addEventListener("resize", syncHeroTheme);
+      syncHeroTheme();
+    }
   }
 
   // ---- 2c. Headline exit — TRIGGERED (not scroll-scrubbed) ---------------
@@ -233,7 +452,12 @@
     wordEls.forEach(function (el) {
       var hasLinks = !!el.querySelector("a");
       if (!hasLinks) {
-        el.setAttribute("aria-label", el.textContent.replace(/\s+/g, " ").trim());
+        // Respect an authored aria-label (e.g. "More work" on a link whose
+        // visible text is just "More") — only shim one from the text when
+        // the markup didn't provide its own.
+        if (!el.hasAttribute("aria-label")) {
+          el.setAttribute("aria-label", el.textContent.replace(/\s+/g, " ").trim());
+        }
       }
       var idx = 0;
       var walk = function (node) {

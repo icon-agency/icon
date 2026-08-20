@@ -10,8 +10,18 @@
     font-size: var(--text-base);
     line-height: var(--line-height-normal);
     -webkit-font-smoothing: antialiased;
-    /* Smooth dark/light surface swap (the home page flips theme on scroll). */
-    transition-property: color, background-color;
+  }
+
+  /* Theme flips (light ⇄ dark ⇄ blue, and the home hero's blue→light scroll
+     handover) cross-fade rather than snap: every element eases its ink,
+     surface, and border between palettes. An element that declares its own
+     `transition` overrides this wholesale (unlayered component CSS beats
+     @layer base) and keeps its existing behaviour. Colour-only — no motion —
+     so it needs no reduced-motion guard. */
+  *,
+  *::before,
+  *::after {
+    transition-property: color, background-color, border-color;
     transition-timing-function: var(--ease-standard);
     transition-duration: var(--duration-normal);
   }
