@@ -475,14 +475,16 @@
       /* client name — small, bottom-left, appears with the takeover */
       .exp-stack__client {
         position: absolute;
-        left: clamp(1.25rem, 3vw, 2.5rem);
-        bottom: clamp(1.1rem, 2.5vw, 2rem);
-        z-index: 3;
+        /* lines up with the fixed wordmark, as on the homepage */
+        left: var(--header-gutter);
+        bottom: clamp(1.25rem, 2vw, 2.875rem);
+        z-index: 4;
         margin: 0;
-        font-size: 0.78rem;
-        font-weight: var(--font-weight-bold);
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
+        /* same voice as the intro statement + "Our expertise" label */
+        font-size: clamp(1.4rem, 2.1vw, 3rem);
+        font-weight: var(--font-weight-medium);
+        letter-spacing: -0.01em;
+        line-height: 1.2;
         color: var(--color-white);
         text-shadow: 0 1px 12px rgb(0 0 0 / 0.35);
         opacity: 0;
@@ -552,7 +554,7 @@
 
     <!-- ================= 02 · STACK TAKEOVER ================= -->
     <section class="exp-section" aria-label="Direction 02 — Stack takeover">
-      <p class="exp-label"><b>02</b> Stack takeover — work pops in, piles up, goes full-screen · APPROVED, promoted to the homepage</p>
+      <p class="exp-label"><b>02</b> Stack takeover — SHIPPING ON THE HOMEPAGE · this page is the safe copy to edit</p>
       <p class="exp-note">
         The homepage's five work pieces load in one by one: each pops in at the viewport centre,
         then quickly shrinks onto a small snapshot pile (the intro strip&rsquo;s tilt language).
@@ -562,6 +564,12 @@
         begins underneath: 3 seconds per piece with a 0.1s cross-fade, videos playing, stills on
         a subtle Ken Burns, and the client name small in the bottom-left. Starts when the
         section scrolls into view.
+      </p>
+      <p class="exp-note">
+        <b>This is a faithful duplicate of the live homepage hero</b>, kept here as a back-up and
+        as the place to try changes safely &mdash; everything is namespaced <code>exp-</code> and
+        inline, so nothing here can affect production. Once a change is approved it gets ported
+        across to <code>.hero</code> in <code>home-c.css</code> / <code>home-c.js</code>.
       </p>
 
       <div class="exp-stack" data-stack>

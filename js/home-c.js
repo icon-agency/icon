@@ -479,7 +479,7 @@
     if (!gsapOk || reduce) return;
 
     var GROUPS = [
-      { cards: ".news__card", within: ".news", max: 7 },
+      { cards: ".news__card", within: ".news", max: 3.5 },
       { cards: ".work__item", within: ".work", max: 2.5 }
     ];
 
@@ -535,6 +535,68 @@
       }
     });
   })();
+
+  // ---- 3f. Card cursor tilt (work + news) -------------------------------
+  // Feeds the frame's --mx/--my (-1..1 across the card) from the pointer, so
+  // the CSS can lean the mask a couple of degrees toward the cursor while the
+  // mask itself draws in. Values are written on the ITEM and inherit down, and
+  // are reset on leave so the frame settles flat. rAF-coalesced; pointer
+  // devices only, and skipped under reduced motion.
+  if (!reduce && window.matchMedia("(hover: hover)").matches) {
+    Array.prototype.slice.call(document.querySelectorAll(".work__item, .news__card")).forEach(function (item) {
+      var raf = 0, mx = 0, my = 0;
+      var apply = function () {
+        raf = 0;
+        item.style.setProperty("--mx", mx.toFixed(3));
+        item.style.setProperty("--my", my.toFixed(3));
+      };
+      item.addEventListener("pointermove", function (e) {
+        var r = item.getBoundingClientRect();
+        if (!r.width || !r.height) return;
+        // -1 at the left/top edge, +1 at the right/bottom
+        mx = ((e.clientX - r.left) / r.width) * 2 - 1;
+        my = ((e.clientY - r.top) / r.height) * 2 - 1;
+        if (!raf) raf = requestAnimationFrame(apply);
+      }, { passive: true });
+      item.addEventListener("pointerleave", function () {
+        if (raf) { cancelAnimationFrame(raf); raf = 0; }
+        mx = my = 0;
+        apply();
+      });
+    });
+  }
+
+  // ---- 3g. Latest: horizontal input drives the pinned sweep -------------
+  // The track's sideways sweep is a CSS view timeline hung off the pin, i.e.
+  // it advances with VERTICAL scroll. A trackpad swipe (or shift+wheel) sends
+  // deltaX, which the page would otherwise ignore — `.page-home` clips
+  // overflow-x, so there is nothing to scroll sideways. Rather than animate
+  // the track from a second source (which would fight the timeline and drift
+  // out of sync), horizontal delta is folded into the VERTICAL scroll: the one
+  // timeline still owns the sweep, and both gestures feel identical.
+  // Active whenever any part of the panel is ON SCREEN — not just once the pin
+  // is fully engaged. Gating on "fully pinned" meant the gesture died while the
+  // cards were still in view on the way in and out, which reads as broken.
+  // Never when the reduced-motion/small-screen fallback has made the track
+  // natively scrollable.
+  var newsSticky = document.querySelector(".news__sticky");
+  if (newsSticky) {
+    window.addEventListener("wheel", function (e) {
+      // leave vertical-dominant gestures completely alone
+      if (Math.abs(e.deltaX) <= Math.abs(e.deltaY)) return;
+      // the fallback turns the track into a real scroller — let it do its job
+      if (window.getComputedStyle(newsSticky).position !== "sticky") return;
+      var r = newsSticky.getBoundingClientRect();
+      if (r.bottom <= 0 || r.top >= window.innerHeight) return; // panel off screen
+      e.preventDefault();
+      if (lenis && typeof lenis.scrollTo === "function") {
+        // feed Lenis its own target so the two never disagree about position
+        lenis.scrollTo(lenis.targetScroll + e.deltaX, { immediate: true });
+      } else {
+        window.scrollBy(0, e.deltaX);
+      }
+    }, { passive: false });
+  }
 
   // ---- 4. SplitText line-mask text reveals -------------------------------
   var texts = Array.prototype.slice.call(document.querySelectorAll("[data-reveal-text]"));
