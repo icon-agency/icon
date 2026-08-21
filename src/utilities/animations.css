@@ -24,6 +24,58 @@
   transform: none;
 }
 
+/* ---- Masked line rise ---------------------------------------------------- */
+
+/* The hero lockup's gesture, packaged: each line waits below its own mask and
+   rises on a stagger, rather than the whole block fading up as one. Used by
+   the two "News & Insights" mastheads (the homepage rail and the /news h1) so
+   they announce the section the way the hero announces the site.
+ *
+ * Rides the standard [data-animate] host for its trigger — put both on the
+ * same element. The host's own fade is cancelled below: two gestures on one
+ * element read as a stutter, and the mask is the one doing the work.
+ *
+ * The footer's LET'S TALK does the same thing with its own classes because it
+ * hangs off .is-revealed (which re-arms every time the panel is entered)
+ * rather than [data-animate] (which fires once). Same values, different clock.
+ */
+.reveal-lines__line {
+  display: block;
+  overflow: hidden;
+  /* room for ascenders/descenders the tight display leading would clip,
+     taken straight back off so the lockup does not open up */
+  padding-block: 0.14em;
+  margin-block: -0.14em;
+}
+
+.reveal-lines__word {
+  display: block;
+  will-change: transform;
+}
+
+/* the host's fade would double the gesture */
+.js-animations [data-animate].reveal-lines {
+  opacity: 1;
+  transform: none;
+  transition: none;
+}
+
+.js-animations [data-animate] .reveal-lines__word {
+  transform: translateY(125%);
+  transition: transform 0.62s var(--ease-decelerate) calc(var(--w, 0) * 0.2s);
+}
+
+.js-animations [data-animate].is-visible .reveal-lines__word {
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .js-animations [data-animate] .reveal-lines__word {
+    transform: none;
+    transition: none;
+  }
+}
+
 /* ---- Marquee + decorative keyframes ------------------------------------- */
 
 @keyframes grain {

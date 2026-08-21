@@ -453,7 +453,10 @@
         <div class="news__inner">
           <div class="news__head">
             <div class="news__rail">
-                <h2 class="news__heading">News<br />&amp; Insights</h2>
+                <h2 class="news__heading reveal-lines" data-animate>
+                <span class="reveal-lines__line"><span class="reveal-lines__word" style="--w: 0">News</span></span>
+                <span class="reveal-lines__line"><span class="reveal-lines__word" style="--w: 1">&amp; Insights</span></span>
+              </h2>
               </div>
             <a class="news__more" href="/news" aria-label="More news">More</a>
           </div>
@@ -513,7 +516,13 @@
     <footer class="site-footer">
       <h2 class="site-footer__cta">
         <a class="site-footer__cta-link" href="/contact">
-          <span class="site-footer__talk">Let&rsquo;s talk</span>
+          <!-- Split per word only so each can rise out of its own mask; the
+               space between the spans is real, so the link still reads
+               "Let's talk Get in touch". -->
+          <span class="site-footer__talk"
+            ><span class="site-footer__talk-line"><span class="site-footer__talk-word" style="--w: 0">Let&rsquo;s</span></span>
+            <span class="site-footer__talk-line"><span class="site-footer__talk-word" style="--w: 1">talk</span></span
+          ></span>
           <span class="site-footer__touch">Get in touch</span>
         </a>
       </h2>
