@@ -34,6 +34,18 @@
   color: var(--color-icon-black);
 }
 
+/* Display variant — the site's caps masthead voice (the WORK/NEWS section
+   headings and the footer CTA): Kumbh 900 caps on --tracking-caps. The base
+   heading above keeps the mixed-case serif-accent voice for pages that still
+   use it (/work). */
+.page-header__heading--display {
+  font-size: clamp(2.5rem, 6vw, 9rem);
+  font-weight: 900;
+  line-height: 0.9;
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+}
+
 .page-header__cta {
   margin-top: var(--spacing-2xl);
 }

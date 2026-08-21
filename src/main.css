@@ -54,6 +54,8 @@
 @import "./components/pull-quote.css";
 @import "./components/more-work.css";
 @import "./components/site-footer.css";
+@import "./components/news-card.css";
+@import "./components/news-list.css";
 
 /* Page-specific overrides — keep tiny */
 @import "./utilities/home-page.css";

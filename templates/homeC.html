@@ -458,35 +458,35 @@
 
           <ul class="news__list" role="list">
             <li>
-              <a class="news__card" href="/news/article" aria-label="ICON and Butterfly Foundation partner in new campaign to help Australians rethink negative self body talk">
-                <figure class="news__figure media-reveal" data-reveal-img>
-                  <img class="news__img" loading="lazy" src="../assets/News/Butterfly_BodyKind.jpg" alt="ICON and Butterfly Foundation BodyKind campaign" />
+              <a class="news-card" href="/news/article" aria-label="ICON and Butterfly Foundation partner in new campaign to help Australians rethink negative self body talk">
+                <figure class="news-card__figure media-reveal" data-reveal-img>
+                  <img class="news-card__img" loading="lazy" src="../assets/News/Butterfly_BodyKind.jpg" alt="Three campaign talent standing together in a photography studio" />
                 </figure>
-                <div class="news__body">
-                  <h3 class="news__title">ICON and Butterfly Foundation partner in new campaign to help Australians rethink negative self body talk</h3>
-                  <span class="news__meta">Insights / <time datetime="2026-08-09">9 Aug 2026</time></span>
+                <div class="news-card__body">
+                  <h3 class="news-card__title">ICON and Butterfly Foundation partner in new campaign to help Australians rethink negative self body talk</h3>
+                  <span class="news-card__meta">Insights / <time datetime="2026-08-09">9 Aug 2026</time></span>
                 </div>
               </a>
             </li>
             <li>
-              <a class="news__card" href="/news/article" aria-label="ICON launches new wellbeing agency website for veterans and families">
-                <figure class="news__figure media-reveal" data-reveal-img>
-                  <img class="news__img" loading="lazy" src="../assets/News/Tile-DVA-Wellbeing.png" alt="Wellbeing website" />
+              <a class="news-card" href="/news/article" aria-label="ICON launches new wellbeing agency website for veterans and families">
+                <figure class="news-card__figure media-reveal" data-reveal-img>
+                  <img class="news-card__img" loading="lazy" src="../assets/News/Tile-DVA-Wellbeing.png" alt="Homepage of the Veteran and Family Wellbeing Agency site on desktop and mobile" />
                 </figure>
-                <div class="news__body">
-                  <h3 class="news__title">ICON launches new wellbeing agency website for veterans and families</h3>
-                  <span class="news__meta">Insights / <time datetime="2026-06-30">30 Jun 2026</time></span>
+                <div class="news-card__body">
+                  <h3 class="news-card__title">ICON launches new wellbeing agency website for veterans and families</h3>
+                  <span class="news-card__meta">Insights / <time datetime="2026-06-30">30 Jun 2026</time></span>
                 </div>
               </a>
             </li>
             <li>
-              <a class="news__card" href="/news/article" aria-label="ICON helps eSafety expose the tactics behind sextortion scams">
-                <figure class="news__figure media-reveal" data-reveal-img>
-                  <img class="news__img" loading="lazy" src="../assets/News/tile-sextortion-campaign.jpg" alt="AI generated woman saying &quot;I'm not real. I'm here to blackmail you.&quot;" />
+              <a class="news-card" href="/news/article" aria-label="ICON helps eSafety expose the tactics behind sextortion scams">
+                <figure class="news-card__figure media-reveal" data-reveal-img>
+                  <img class="news-card__img" loading="lazy" src="../assets/News/tile-sextortion-campaign.jpg" alt="Still from the campaign film: an AI-generated woman captioned I'm not real, I'm here to blackmail you" />
                 </figure>
-                <div class="news__body">
-                  <h3 class="news__title">ICON helps eSafety expose the tactics behind sextortion scams</h3>
-                  <span class="news__meta">Insights / <time datetime="2026-06-29">29 Jun 2026</time></span>
+                <div class="news-card__body">
+                  <h3 class="news-card__title">ICON helps eSafety expose the tactics behind sextortion scams</h3>
+                  <span class="news-card__meta">Insights / <time datetime="2026-06-29">29 Jun 2026</time></span>
                 </div>
               </a>
             </li>
@@ -596,6 +596,26 @@
         </ul>
         <p class="site-footer__ack">ICON recognises the First Peoples of this nation and their ongoing connection to culture and country. We acknowledge First Nations Peoples as the Traditional Owners, Custodians and Lore Keepers of the world&rsquo;s oldest living culture and pay respects to their Elders past, present and emerging.</p>
       </div>
+
+      <!-- The brand lockup closes every page: the ICON logo at full width, with
+           the hero's banner films playing inside it (see site-footer.css — the
+           mark is a mask over a fill layer, so its contents are swappable).
+           One clean string for assistive tech; the mark itself is decorative.
+
+           preload="none" is deliberate: these are the hero's files, so on the
+           homepage they are already cached, but on every other template they
+           would be a multi-megabyte download for a footer decoration. Nothing
+           is fetched until js/site-footer.js starts playback, which it only
+           does once the panel is on screen. -->
+      <p class="site-footer__lockup">
+        <span class="sr-only">ICON</span>
+        <span class="site-footer__lockup-line" aria-hidden="true">
+          <span class="site-footer__logo">
+            <video class="site-footer__slide is-current" src="../assets/Banner/NWMPHN.mp4" muted playsinline loop preload="none"></video>
+            <video class="site-footer__slide" src="../assets/Banner/banner-vid-nike-mara.mp4" muted playsinline loop preload="none"></video>
+          </span>
+        </span>
+      </p>
     </footer>
 
     <!-- GSAP core + SplitText (line-mask text reveals). SplitText is free in
@@ -611,5 +631,6 @@
     <script src="../js/header.js"></script>
     <script src="../js/reveal.js"></script>
     <script src="../js/home-c.js"></script>
+    <script src="../js/site-footer.js"></script>
   </body>
 </html>

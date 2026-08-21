@@ -186,6 +186,7 @@
         position: absolute;
         inset: 0;
         transform-style: preserve-3d;
+        --rule: var(--rule-on-color); /* brand panel: the on-colour hairline */
         --D: 170cqw;               /* how deep the box runs */
         --E: calc(100cqw / 7);     /* row pitch, the ~7:1 strip ratio */
       }
@@ -225,7 +226,7 @@
         display: flex;
         align-items: center;
         overflow: hidden;
-        border-block-end: 1px solid color-mix(in srgb, var(--color-white) 14%, transparent);
+        border-block-end: 1px solid var(--rule);
       }
       .exp-tb__run {
         display: inline-flex;
@@ -268,7 +269,7 @@
         position: relative;
         display: block;
         border-block-end: 0;
-        border-inline-end: 1px solid color-mix(in srgb, var(--color-white) 14%, transparent);
+        border-inline-end: 1px solid var(--rule);
       }
       .exp-tb__panel--left .exp-tb__run,
       .exp-tb__panel--right .exp-tb__run {

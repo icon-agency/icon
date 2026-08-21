@@ -27,6 +27,11 @@
 .filter-bar__chip {
   flex-shrink: 0;
   padding: var(--spacing-2xs) var(--spacing-sm);
+  /* WCAG 2.5.8 floor: 10px micro-caps + 2xs padding lands ~20px tall, under
+     the checklist's hard 24px minimum. Centre the label in the taller box. */
+  min-height: 24px;
+  display: inline-flex;
+  align-items: center;
   border-radius: var(--radius-sm);
   font-size: 10px; /* Custom value: v0 chip label is a fixed 10px micro-caps */
   font-weight: var(--font-weight-bold);
