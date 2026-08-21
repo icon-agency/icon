@@ -117,3 +117,21 @@ goes wrong.
   `clip-path`/`transform` reveal on a CHILD (here the `<img>`/`<video>` inside
   `.homec-reveal`), so the frame keeps its full box for the observer.
   (`src/utilities/home-c.css`, `js/home-c.js`.)
+
+- **Lightning CSS drops one of `translate` / `transform` when a rule sets
+  both.** The footer logo's entrance was authored as `translate: 0 110%` for the
+  rise plus `transform: perspective(1400px) rotateX(-52deg)` for the swivel —
+  separate properties precisely so they compose rather than overwrite. The
+  source was correct and the un-minified behaviour was correct; the BUILT
+  `css/main.css` carried only the rotate. The rise vanished, silently, with no
+  warning and no build error, so the logo unfolded on the spot instead of
+  swivelling up. Rules that set `translate` alone are untouched (the footer's
+  block fade-ups still work) — it is specifically the pairing the optimiser
+  tries to merge. Fix: when an element needs both, write ONE `transform` with
+  the functions in order (`perspective() translateY() rotateX()`), and reserve
+  the separate properties for cases where two different agents own them (JS
+  writing `rotate` while CSS animates `transform`, as the news cards do).
+  Verify by grepping the BUILT file, not the source — `grep -o
+  '\.selector{[^}]*}' css/main.css` — because this class of bug only exists
+  after minification. (Same engine as the `--minify` shorthand hazard above.)
+  (`src/components/site-footer.css`.)

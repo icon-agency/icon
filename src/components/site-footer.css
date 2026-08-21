@@ -130,6 +130,30 @@
   text-transform: uppercase;
 }
 
+/* The hero's lockup treatment, word by word: each word waits below a mask and
+   rises on a stagger. Same recipe as [data-hero] .hero__word — 125% below,
+   --ease-decelerate, indexed off --w set in the markup — so the page opens and
+   closes with the same gesture.
+
+   inline-block, not block: both words share one line here, unlike the hero's
+   stacked three. The whitespace between the spans in the markup is the real
+   word space, so the link's accessible name is unchanged and no aria juggling
+   is needed. */
+.site-footer__talk-line {
+  display: inline-block;
+  overflow: hidden;
+  /* room for the apostrophe above the cap line and the mask's own rounding;
+     taken straight back off so the lockup does not open up */
+  padding-block: 0.14em;
+  margin-block: -0.14em;
+  vertical-align: bottom;
+}
+
+.site-footer__talk-word {
+  display: block;
+  will-change: transform;
+}
+
 .site-footer__touch {
   display: block;
   margin-top: var(--space-sm);
@@ -543,15 +567,36 @@
 .js-animations .site-footer__body { --reveal-delay: 90ms; }
 .js-animations .site-footer__base { --reveal-delay: 180ms; }
 
-/* The logo rises out of its mask as one piece, last — after the blocks above
-   have settled. */
+/* The lockup words rise on the hero's clock. */
+.js-animations .site-footer__talk-word {
+  transform: translateY(125%);
+  transition: transform 0.62s var(--ease-decelerate) calc(var(--w, 0) * 0.2s);
+}
+
+.js-animations .site-footer.is-revealed .site-footer__talk-word {
+  transform: translateY(0);
+}
+
+/* The logo SWIVELS up out of its mask rather than sliding: hinged on its own
+   bottom edge, it unfolds toward the reader as it rises. The perspective lives
+   in the transform function, not as a property on the parent — .site-footer__
+   lockup already carries the velocity skew, and a parent transform would
+   flatten a perspective declared up there.
+
+   Rise and swivel are ONE transform, not `translate` plus `transform`. The
+   separate properties would compose correctly in the browser, but Lightning
+   CSS merges the two when a rule sets both and drops one on the way — the
+   build shipped the rotate without the rise, silently. See LESSONS.md; it is
+   the same class of hazard as the mask shorthands. */
 .js-animations .site-footer__logo {
-  translate: 0 110%;
+  transform: perspective(1400px) translateY(110%) rotateX(-52deg);
+  transform-origin: 50% 100%;
+  will-change: transform;
 }
 
 .js-animations .site-footer.is-revealed .site-footer__logo {
-  translate: 0 0;
-  transition: translate 0.9s var(--ease-decelerate) 240ms;
+  transform: perspective(1400px) translateY(0) rotateX(0deg);
+  transition: transform 1.05s var(--ease-decelerate) 240ms;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -566,9 +611,11 @@
   .js-animations .site-footer__cta,
   .js-animations .site-footer__body,
   .js-animations .site-footer__base,
-  .js-animations .site-footer__logo {
+  .js-animations .site-footer__logo,
+  .js-animations .site-footer__talk-word {
     opacity: 1;
     translate: 0 0;
+    transform: none;
     transition: none;
   }
 }

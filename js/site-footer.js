@@ -1,7 +1,9 @@
 /* site-footer.js — the global footer's motion. One IIFE, two concerns:
  *
- * 1. LOAD REVEAL — adds .is-revealed the first time the panel enters the
- *    viewport; CSS owns the staggered fade-up and the lockup's word rise.
+ * 1. REVEAL — toggles .is-revealed as the panel enters and leaves the
+ *    viewport, so the footer replays every time you come back to it rather
+ *    than firing once for the life of the page. CSS owns the staggered
+ *    fade-up, the LET'S TALK word rise and the logo's swivel.
  *    Without JS (or without IntersectionObserver) the footer is simply
  *    visible: the hidden state lives behind .js-animations, exactly as
  *    reveal.css and tagline.css do it.
@@ -36,24 +38,36 @@
 
   var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  /* ---- 1. load reveal ---------------------------------------------------- */
+  /* ---- 1. reveal, every time -------------------------------------------- */
 
   if (reduce || !("IntersectionObserver" in window)) {
     footer.classList.add("is-revealed");
   } else {
-    var io = new IntersectionObserver(
+    // Deliberately NOT unobserved after the first hit: the class tracks
+    // whether the panel is on screen, so leaving and coming back replays the
+    // whole reveal.
+    //
+    // Two observers, with two different boundaries, on purpose. Arming is
+    // generous — a sliver of the panel is enough, since it is taller than most
+    // viewports and waiting for a percentage of it would fire late or never.
+    // Disarming waits until the panel is a further 40% of the viewport clear.
+    // Because the disarm boundary sits strictly outside the arm boundary, a
+    // scroll that rests on the threshold cannot flicker the footer on and off;
+    // with one shared boundary a single pixel of jitter would re-trigger
+    // everything.
+    new IntersectionObserver(
       function (entries) {
-        entries.forEach(function (e) {
-          if (!e.isIntersecting) return;
-          e.target.classList.add("is-revealed");
-          io.unobserve(e.target);
-        });
+        if (entries[0].isIntersecting) footer.classList.add("is-revealed");
       },
-      // a sliver is enough: the panel is taller than most viewports, so
-      // waiting for a percentage of it would fire late or never
       { rootMargin: "0px 0px -10% 0px" }
-    );
-    io.observe(footer);
+    ).observe(footer);
+
+    new IntersectionObserver(
+      function (entries) {
+        if (!entries[0].isIntersecting) footer.classList.remove("is-revealed");
+      },
+      { rootMargin: "40% 0px 40% 0px" }
+    ).observe(footer);
   }
 
   /* ---- 2. the films in the mark ------------------------------------------ */
