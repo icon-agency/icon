@@ -1,6 +1,6 @@
 /* home-c.css — PAGE layer for the CANONICAL homepage (templates/homeC.html).
  * Editorial homepage: full-bleed hero, intro statement, asymmetric work grid,
- * tri-row client marquee, pinned news scroller. Imported LAST.
+ * tri-row client marquee, news editorial stack. Imported LAST.
  *
  * Block names here are the site's public API (promoted from the old homec-*
  * prototype namespace): .hero, .intro, .work, .clients, .news, .arrow-link,
@@ -1326,6 +1326,7 @@ html:not(.js-animations) .intro__expertise-list li:first-child a {
   }
 }
 
+
 /* ---- left rail: NEWS top, More bottom ----------------------------------- */
 
 .news__head {
@@ -1334,6 +1335,19 @@ html:not(.js-animations) .intro__expertise-list li:first-child a {
   justify-content: space-between;
   align-items: flex-start;
   gap: var(--space-md);
+}
+/* Below the split the rail is a full-width auto-height box, so its
+   space-between has no free space to distribute: More would land directly
+   under the masthead and ABOVE every row, inverting the mock's rail
+   relationship and making the CTA read as a subheading. Lay it out as a row
+   instead — NEWS left, More right, on one baseline. */
+@media (max-width: 1023.98px) {
+  .news__head {
+    flex-direction: row;
+    align-items: baseline;
+    justify-content: space-between;
+    width: 100%;
+  }
 }
 
 .news__heading {
@@ -1403,15 +1417,19 @@ html:not(.js-animations) .intro__expertise-list li:first-child a {
 
 .news__card {
   display: grid;
-  /* tile | text — the mock's 390:425 at 1920 */
-  grid-template-columns: minmax(0, 390fr) minmax(0, 425fr);
+  grid-template-columns: 1fr;
   gap: var(--space-sm);
   text-decoration: none;
   color: inherit;
 }
 
-@media (max-width: 639px) {
-  .news__card { grid-template-columns: 1fr; }
+/* tile | text — the mock's 390:425 at 1920. Mobile-first per
+   docs/frontend-rules.md, and on the sm breakpoint (640) rather than a
+   max-width:639 query, which is false at fractional widths / browser zoom. */
+@media (min-width: 640px) {
+  .news__card {
+    grid-template-columns: minmax(0, 390fr) minmax(0, 425fr);
+  }
 }
 
 .news__figure {
@@ -1506,6 +1524,14 @@ html:not(.js-animations) .intro__expertise-list li:first-child a {
   gap: var(--space-sm);
 }
 
+/* Below the two-column split the tile is ~47% of the FULL container rather
+   than of half of it, so it towers over a short headline and space-between
+   strands the date ~280px under the title. Cluster the text at the top there;
+   the meta-on-the-tile's-baseline relationship is a desktop composition. */
+@media (max-width: 1023.98px) {
+  .news__body { justify-content: flex-start; }
+}
+
 .news__title {
   margin: 0;
   font-size: clamp(1.25rem, 1.5vw, 2rem);
@@ -1513,6 +1539,17 @@ html:not(.js-animations) .intro__expertise-list li:first-child a {
   line-height: 1.3;
   color: var(--color-icon-black);
   padding-inline-end: 1.5em; /* room for the hover arrow, as on .work__title */
+
+  /* The row's height is max(tile, text): the figure's aspect-ratio stops it
+     stretching, so a text column taller than the tile grows the ROW instead —
+     dropping the meta below the tile's baseline and making the pitch ragged.
+     That breaks on CONTENT, not viewport, so real editor headlines would
+     surface it in Drupal rather than here. Budget the title to five lines and
+     ellipsize beyond. */
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 5;
+  overflow: hidden;
 }
 
 /* Category / date, in the same voice as the work cards' client name. */

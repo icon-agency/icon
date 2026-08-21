@@ -32,7 +32,7 @@
   /* The homepage's shared type voices, named once so a retune is a one-line
      edit here (the same literals live on their home components in
      src/utilities/home-c.css — display caps on .work__heading, the mid voice
-     on .hero__client, the meta voice on .news__date). */
+     on .hero__client, the meta voice on .news__meta). */
   --footer-voice-caps: clamp(2.5rem, 6vw, 9rem);
   --footer-voice-mid: clamp(1.4rem, 2.1vw, 3rem);
   --footer-voice-meta: clamp(1.0625rem, 1.1vw, 1.5rem);

@@ -634,19 +634,24 @@
 
   // ---- 3e. Scroll-velocity card lean ------------------------------------
   // The same fluid tilt as the intro strip's drag lean, but driven by SCROLL
-  // SPEED instead of pointer speed: the cards lean into the movement and
-  // straighten as the scroll settles. Applied to the Latest track (whose
-  // horizontal sweep is a CSS scroll-timeline on the TRACK, so owning rotation
-  // on the CARDS keeps the two from fighting) and to the work tiles. The work
-  // tiles get a much smaller cap: they are half the grid wide, so the same
-  // angle would swing their corners into the neighbouring tile.
+  // SPEED instead of pointer speed: cards lean into the movement and
+  // straighten as the scroll settles. Applied to the news rows and the work
+  // tiles, both capped low for the same reason — each is about half the
+  // container wide (at 1920: work tile ~858px, news row ~849px), so a bigger
+  // angle swings their corners into the neighbour and visibly rotates the
+  // headline and meta along with the media. (The news cap used to be 3.5,
+  // set when a news card was a ~558px tile inside the horizontal track; the
+  // editorial stack made the row half the container, so it matches work now.)
+  // NB the news row also carries view-timeline-name: --news-card, so the
+  // rotation written here lands on the very element anchoring the image
+  // parallax — a second reason to keep the angle small.
   // One shared velocity sampler + one ticker drives every group.
   // Skipped under reduced motion / without gsap.
   (function () {
     if (!gsapOk || reduce) return;
 
     var GROUPS = [
-      { cards: ".news__card", within: ".news", max: 3.5 },
+      { cards: ".news__card", within: ".news", max: 2.5 },
       { cards: ".work__item", within: ".work", max: 2.5 }
     ];
 
