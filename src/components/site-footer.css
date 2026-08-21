@@ -399,13 +399,15 @@
  * Longhand mask properties on purpose — the minifier mangles multi-part mask
  * shorthands (see LESSONS.md on Lightning CSS), and -webkit- first. */
 .site-footer__lockup {
-  /* Custom value: the mock sets the lockup a touch tighter than the body
-     gutter (61px of 1920) so it reads as the page's baseline rather than
-     another column. Break out of the footer's padding, then re-inset. */
-  --lockup-gutter: clamp(0.75rem, 2.66vw, 3.2rem);
+  /* Squares up with the column above it: same left and right edge as the
+     blurb, the office rows, the socials and the acknowledgement, i.e. the
+     panel's own --container-pad and nothing else. The type lockup this
+     replaced DID break out to a tighter gutter, because its mock set the
+     words wider than the body; footer2.png aligns the logo to the content
+     instead, and a mark that overhangs the column by a few px only reads as
+     a mistake. */
+  margin-block: var(--space-xl) 0;
 
-  margin: var(--space-xl) calc(var(--container-pad) * -1) 0;
-  padding-inline: var(--lockup-gutter);
   /* Cancel the panel's bottom padding and re-set it from the mock, where the
      logo sits 49px above the edge at 1920 — tight to the bottom by design. */
   margin-bottom: calc(var(--space-lg) * -1);

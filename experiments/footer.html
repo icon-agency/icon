@@ -1053,12 +1053,11 @@
          Longhand mask properties on purpose — the minifier mangles multi-part mask
          shorthands (LESSONS.md), and -webkit- first. */
       .exp-footer02__lockup {
-        /* the mock sets the logo a touch tighter than the body gutter, exactly as
-           01 sets its type: 61px of 1920 */
-        --exp-footer02-lockup-gutter: clamp(0.75rem, 2.66vw, 3.2rem);
-
-        margin: var(--space-xl) calc(var(--container-pad) * -1) 0;
-        padding-inline: var(--exp-footer02-lockup-gutter);
+        /* squares up with the column above it — same left and right edge as the
+           blurb, the office rows, the socials and the acknowledgement. 01's type
+           broke out to a tighter gutter because its mock set the words wider than
+           the body; footer2.png aligns the logo to the content instead. */
+        margin-block: var(--space-xl) 0;
         /* cancel the panel's bottom padding and re-set it from the mock: the logo
            sits 49px above the edge at 1920, tight like 01's baseline */
         margin-bottom: calc(var(--space-lg) * -1);
