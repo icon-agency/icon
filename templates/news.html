@@ -165,29 +165,25 @@
            filter chips (real links — a Drupal Views exposed filter honours
            them server-side; js/news.js enhances in place). Drupal: Views page over `news` nodes,
            field_news_list_category exposed filter. -->
-      <div class="page-header">
-        <div class="page-header__inner">
-          <h1 class="page-header__heading page-header__heading--display" data-animate>
-            News &amp; Insights
-          </h1>
+      <div class="page-header page-header--row">
+        <h1 class="page-header__heading page-header__heading--display" data-animate>
+          News<br />&amp; Insights
+        </h1>
+
+        <div class="page-header__aside">
+          <div class="page-header__filters">
+            <div class="filter-bar filter-bar--checklist" role="group" aria-label="Filter news by category">
+              <a class="filter-bar__chip is-active" href="/news" data-filter="all" aria-current="true">All</a>
+              <a class="filter-bar__chip" href="/news?category=agency" data-filter="agency">Agency</a>
+              <a class="filter-bar__chip" href="/news?category=our-work" data-filter="our-work">Our work</a>
+              <a class="filter-bar__chip" href="/news?category=awards" data-filter="awards">Awards</a>
+              <a class="filter-bar__chip" href="/news?category=insights" data-filter="insights">Insights</a>
+            </div>
+          </div>
+
           <!-- data-subscribe is a shared hook (also the mobile menu + footer);
                the behaviour ships with the newsletter slice — inert here. -->
-          <button class="more-link more-link--button page-header__cta" type="button" data-subscribe>
-            Subscribe now
-            <span class="more-link__arrow" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
-            </span>
-          </button>
-        </div>
-
-        <div class="page-header__filters scrollbar-hide">
-          <div class="filter-bar" role="group" aria-label="Filter news by category">
-            <a class="filter-bar__chip is-active" href="/news" data-filter="all" aria-current="true">All</a>
-            <a class="filter-bar__chip" href="/news?category=agency" data-filter="agency">Agency</a>
-            <a class="filter-bar__chip" href="/news?category=our-work" data-filter="our-work">Our work</a>
-            <a class="filter-bar__chip" href="/news?category=awards" data-filter="awards">Awards</a>
-            <a class="filter-bar__chip" href="/news?category=insights" data-filter="insights">Insights</a>
-          </div>
+          <button class="page-header__subscribe" type="button" data-subscribe>Subscribe</button>
         </div>
       </div>
 

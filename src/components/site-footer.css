@@ -38,7 +38,7 @@
 
   --footer-voice-caps: clamp(2.5rem, 6vw, 9rem);
   --footer-voice-mid: var(--voice-mid); /* the shared mid voice */
-  --footer-voice-meta: clamp(1.0625rem, 1.1vw, 1.5rem);
+  --footer-voice-meta: var(--voice-meta); /* the shared meta voice */
 
   /* The x-origin of an office panel: the summary's icon column plus its gap,
      so an open address starts exactly under its city name. Built from the

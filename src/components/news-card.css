@@ -237,7 +237,7 @@
 /* Category / date, in the same voice as the work cards' client name. */
 .news-card__meta {
   display: block;
-  font-size: clamp(1.0625rem, 1.1vw, 1.5rem);
+  font-size: var(--voice-meta);
   color: var(--color-icon-grey);
 }
 
