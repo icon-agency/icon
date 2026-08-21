@@ -651,7 +651,7 @@
     if (!gsapOk || reduce) return;
 
     var GROUPS = [
-      { cards: ".news__card", within: ".news", max: 2.5 },
+      { cards: ".news-card", within: ".news", max: 2.5 },
       { cards: ".work__item", within: ".work", max: 2.5 }
     ];
 
@@ -715,7 +715,7 @@
   // are reset on leave so the frame settles flat. rAF-coalesced; pointer
   // devices only, and skipped under reduced motion.
   if (!reduce && window.matchMedia("(hover: hover)").matches) {
-    Array.prototype.slice.call(document.querySelectorAll(".work__item, .news__card")).forEach(function (item) {
+    Array.prototype.slice.call(document.querySelectorAll(".work__item, .news-card")).forEach(function (item) {
       var raf = 0, mx = 0, my = 0;
       var apply = function () {
         raf = 0;

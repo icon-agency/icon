@@ -32,10 +32,22 @@
   /* The homepage's shared type voices, named once so a retune is a one-line
      edit here (the same literals live on their home components in
      src/utilities/home-c.css — display caps on .work__heading, the mid voice
-     on .hero__client, the meta voice on .news__meta). */
+     on .hero__client, the meta voice on .news-card__meta). */
+  /* near-black panel: dividers take the on-colour hairline */
+  --rule: var(--rule-on-color);
+
   --footer-voice-caps: clamp(2.5rem, 6vw, 9rem);
-  --footer-voice-mid: clamp(1.4rem, 2.1vw, 3rem);
+  --footer-voice-mid: var(--voice-mid); /* the shared mid voice */
   --footer-voice-meta: clamp(1.0625rem, 1.1vw, 1.5rem);
+
+  /* The x-origin of an office panel: the summary's icon column plus its gap,
+     so an open address starts exactly under its city name. Built from the
+     SAME two values the summary is (the icon is a 1em square of the mid
+     voice, the gap is --space-xs), which is the point of naming it — the
+     panel can't drift from the row it hangs off. It must not be expressed in
+     em: the panel renders at the meta voice, so a local 1em is barely half
+     the icon's width, and the addresses sat ~19px left of their cities. */
+  --footer-office-indent: calc(var(--footer-voice-mid) + var(--space-xs));
 
   /* Outside <main> for the contentinfo landmark, so it must carry its own
      stacking guard: the hero curtain is a positioned sticky at z-0, and an
@@ -67,9 +79,13 @@
   --footer-inset-scale: 0.916;
 }
 
+/* Animates the `scale` PROPERTY, not `transform: scale()`, so the panel's
+   grow and the scroll-velocity skew below can run at once — two animations
+   cannot share `transform`, but scale/rotate/translate are independent
+   properties that compose with it. transform-origin governs all of them. */
 @keyframes footer-grow {
-  from { transform: scale(var(--footer-inset-scale)); }
-  to { transform: scale(1); }
+  from { scale: var(--footer-inset-scale); }
+  to { scale: 1; }
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -186,11 +202,11 @@
 }
 
 .site-footer__office-item {
-  border-top: 1px solid var(--footer-hairline);
+  border-top: 1px solid var(--rule);
 }
 
 .site-footer__office-item:last-child {
-  border-bottom: 1px solid var(--footer-hairline);
+  border-bottom: 1px solid var(--rule);
 }
 
 .site-footer__office-summary {
@@ -207,10 +223,15 @@
 }
 
 .site-footer__office-icon {
+  /* A 1em SQUARE, not `width: auto`: the icon column's width is what the open
+     panel indents by, so it has to be a known quantity rather than whatever
+     aspect ratio the artwork happens to have. Non-square art letterboxes
+     inside the box (preserveAspectRatio's default) instead of moving the
+     column. --footer-voice-mid sets the em, which is what
+     --footer-office-indent above is written against. */
+  width: 1em;
   height: 1em;
-  width: auto;
   flex: 0 0 auto;
-  /* the client-label voice sets the em */
   font-size: var(--footer-voice-mid);
 }
 
@@ -277,8 +298,9 @@
 }
 
 .site-footer__office-details {
-  /* align the panel text with the city name (icon column + gap) */
-  padding: 0 0 var(--space-sm) calc(1em + var(--space-xs));
+  /* starts under the city name — see --footer-office-indent */
+  padding: 0 0 var(--space-sm);
+  padding-inline-start: var(--footer-office-indent);
   font-size: var(--footer-voice-meta);
   font-style: normal; /* address element */
   line-height: var(--line-height-normal);
@@ -354,6 +376,197 @@
   }
 
   .site-footer__office::details-content {
+    transition: none;
+  }
+}
+
+/* ==========================================================================
+ * The brand lockup — the ICON logo, full width, last thing on the page
+ * (design: experiments/footer2.png)
+ * ======================================================================== */
+
+/* The logo is painted as a MASKED BOX, not an <img>: assets/brand/logo-dark.svg
+ * is the dark-on-light artwork and this panel is near-black, so its shape is
+ * taken as an alpha mask and the colour comes from --footer-ink underneath.
+ * (The same recipe the news card's hover arrow uses to tint a glyph from a
+ * token.) The SVG masks cleanly because it has no background rect — its root
+ * is fill="none" and the only rendered paths are the four wordmark letterforms
+ * plus the raised mark, so the alpha silhouette IS the logo.
+ *
+ * Painting it as a mask over a fill layer is also what lets the films play
+ * inside it further down: the mark and its contents are separate concerns.
+ *
+ * Longhand mask properties on purpose — the minifier mangles multi-part mask
+ * shorthands (see LESSONS.md on Lightning CSS), and -webkit- first. */
+.site-footer__lockup {
+  /* Custom value: the mock sets the lockup a touch tighter than the body
+     gutter (61px of 1920) so it reads as the page's baseline rather than
+     another column. Break out of the footer's padding, then re-inset. */
+  --lockup-gutter: clamp(0.75rem, 2.66vw, 3.2rem);
+
+  margin: var(--space-xl) calc(var(--container-pad) * -1) 0;
+  padding-inline: var(--lockup-gutter);
+  /* Cancel the panel's bottom padding and re-set it from the mock, where the
+     logo sits 49px above the edge at 1920 — tight to the bottom by design. */
+  margin-bottom: calc(var(--space-lg) * -1);
+  padding-bottom: clamp(0.6rem, 2.55vw, 3rem);
+}
+
+/* The mask the logo rises out of. */
+.site-footer__lockup-line {
+  display: block;
+  overflow: hidden;
+}
+
+/* ALWAYS FULL WIDTH at every viewport, with no breakpoints and nothing to
+   measure: aspect-ratio is the SVG's own viewBox, so a 100% width yields
+   exactly the artwork's height and `mask-size: 100% 100%` is an exact fit by
+   construction. */
+.site-footer__logo {
+  display: block;
+  width: 100%;
+  aspect-ratio: 213 / 69;
+  background: var(--footer-ink);
+  -webkit-mask-image: url("../assets/brand/logo-dark.svg");
+  mask-image: url("../assets/brand/logo-dark.svg");
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+}
+
+/* The mask IS the design here, so say what happens without it rather than
+   letting a bare white box paint across the panel. */
+@supports not ((-webkit-mask-image: url("#")) or (mask-image: url("#"))) {
+  .site-footer__logo {
+    background: none;
+  }
+}
+
+/* ---- the films inside the mark ------------------------------------------
+ * The hero's banner films, clipped to the letterforms. js/site-footer.js
+ * cross-fades them and — this is the important part — only ever lets one
+ * decode, and only while the panel is actually on screen.
+ *
+ * The counters of the C and O are the only openings big enough to read
+ * footage in; everything else is stroke, so this reads as texture and motion
+ * rather than as a window. Slow, simple shots hold up best. */
+.site-footer__logo {
+  position: relative;
+  overflow: hidden;
+}
+
+.site-footer__slide {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  /* LEGIBILITY FLOOR. Raw footage reads well on bright frames and vanishes on
+     dark ones: dark film inside the letterforms leaves nothing to separate
+     the wordmark from a near-black panel. The brightness lift clears mid-dark
+     frames, and holding the slide under full opacity lets the white
+     --footer-ink fill behind it set a minimum no frame can go under. */
+  filter: brightness(1.35) contrast(0.92);
+  /* The hero cuts between slides in 100ms. Inside letterform counters a cut
+     that fast reads as a glitch rather than an edit, so the footer fades —
+     still quick enough to feel like one image changing, not two dissolving. */
+  transition: opacity 0.6s var(--ease-standard);
+}
+
+.site-footer__slide.is-current {
+  opacity: 0.85; /* the floor above: 15% of the white fill always shows */
+}
+
+/* Without mask support the films would paint as a full-bleed rectangle across
+   the panel — far worse than no effect at all. */
+@supports not ((-webkit-mask-image: url("#")) or (mask-image: url("#"))) {
+  .site-footer__slide {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-footer__slide {
+    transition: none;
+  }
+}
+
+/* ---- load + scroll motion ------------------------------------------------
+ * js/site-footer.js adds .is-revealed when the panel first enters the
+ * viewport, and writes --footer-skew (degrees) from scroll velocity every
+ * frame while there is motion to settle.
+ *
+ * Everything below is gated on .js-animations — without JS the footer renders
+ * fully visible and unskewed, which is the no-JS baseline the rest of the
+ * site uses (see components/reveal.css and tagline.css). */
+
+/* The velocity shear. Each block shears about its own centre, and the lockup
+   leans harder than the text above it — it is the piece meant to read as
+   motion. `transform` is free here because the panel's grow animates `scale`. */
+.site-footer__cta,
+.site-footer__body,
+.site-footer__base,
+.site-footer__lockup {
+  transform: skewY(calc(var(--footer-skew, 0deg) * var(--skew-factor, 1)));
+}
+
+.site-footer__lockup {
+  --skew-factor: 1.5;
+}
+
+/* Load reveal: the blocks fade up in reading order, then the lockup's words
+   rise out of the mask last — the page's closing line, delivered word by
+   word like the hero's opening one. */
+.js-animations .site-footer__cta,
+.js-animations .site-footer__body,
+.js-animations .site-footer__base {
+  opacity: 0;
+  translate: 0 1.25rem;
+}
+
+.js-animations .site-footer.is-revealed .site-footer__cta,
+.js-animations .site-footer.is-revealed .site-footer__body,
+.js-animations .site-footer.is-revealed .site-footer__base {
+  opacity: 1;
+  translate: 0 0;
+  transition:
+    opacity var(--duration-slow) var(--ease-standard) var(--reveal-delay, 0ms),
+    translate var(--duration-slow) var(--ease-decelerate) var(--reveal-delay, 0ms);
+}
+
+.js-animations .site-footer__body { --reveal-delay: 90ms; }
+.js-animations .site-footer__base { --reveal-delay: 180ms; }
+
+/* The logo rises out of its mask as one piece, last — after the blocks above
+   have settled. */
+.js-animations .site-footer__logo {
+  translate: 0 110%;
+}
+
+.js-animations .site-footer.is-revealed .site-footer__logo {
+  translate: 0 0;
+  transition: translate 0.9s var(--ease-decelerate) 240ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* no shear, no rise, no fade — everything simply present */
+  .site-footer__cta,
+  .site-footer__body,
+  .site-footer__base,
+  .site-footer__lockup {
+    transform: none;
+  }
+
+  .js-animations .site-footer__cta,
+  .js-animations .site-footer__body,
+  .js-animations .site-footer__base,
+  .js-animations .site-footer__logo {
+    opacity: 1;
+    translate: 0 0;
     transition: none;
   }
 }

@@ -1,0 +1,1890 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Experiment — Site footer</title>
+    <meta name="robots" content="noindex" />
+
+    <!-- Same flag the templates set: the reveal states below are gated on it,
+         so without JS the footer renders fully visible rather than blank. -->
+    <script>
+      document.documentElement.classList.add("js-animations");
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Kumbh+Sans:wght@400..900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://use.typekit.net/bhv7yrj.css" />
+    <link rel="stylesheet" href="../css/main.css" />
+
+    <!-- EXPERIMENT — site footer directions.
+         01 is the footer as it ships TODAY, captured whole: an inlined,
+         exp-footer01-prefixed copy of src/components/site-footer.css, its
+         markup, and js/site-footer.js. Frozen on purpose — it is the record
+         of the current direction, so it must NOT track production once the
+         next one lands (the house pattern from the news + clients
+         experiments).
+
+         References to GLOBAL design tokens are left pointing at production on
+         purpose: --footer-bg/ink/muted, --color-*, --space-*, --rule-on-color,
+         --duration-*, --ease-*, --tracking-caps, --radius-icon and the type
+         voices all still resolve from css/main.css, so a retune of the design
+         system shows up here as it would anywhere. Only what the BLOCK owns is
+         prefixed and frozen.
+
+         Each variant carries its own --container-pad: in production the value
+         comes from `.page-home + .site-footer` (src/utilities/home-c.css), an
+         adjacent-sibling rule that has no meaning on this page. -->
+    <style>
+      /* ---- page chrome (matches the client-scrollers experiment) ---- */
+      .exp-page {
+        background: var(--color-background);
+        color: var(--color-icon-black);
+      }
+
+      .exp-topbar {
+        position: fixed;
+        top: 0;
+        inset-inline: 0;
+        z-index: 100;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.7rem clamp(1rem, 3vw, 2.5rem);
+        font-size: 0.72rem;
+        font-weight: var(--font-weight-bold);
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        background: color-mix(in srgb, var(--color-background) 82%, transparent);
+        -webkit-backdrop-filter: blur(14px);
+        backdrop-filter: blur(14px);
+        border-bottom: 1px solid var(--color-border);
+      }
+      .exp-topbar a { color: var(--color-icon-black); text-decoration: none; }
+      .exp-topbar a:hover { color: var(--color-icon-blue); }
+      .exp-topbar__hint { color: var(--color-icon-grey); font-weight: var(--font-weight-normal); letter-spacing: 0.04em; text-transform: none; }
+
+      .exp-label {
+        display: flex;
+        align-items: baseline;
+        gap: 0.6rem;
+        padding: clamp(2.5rem, 6vw, 4.5rem) clamp(1rem, 3vw, 2.5rem) 0;
+        font-size: 0.72rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--color-icon-grey);
+      }
+      .exp-label b { color: var(--color-icon-blue); font-weight: var(--font-weight-bold); }
+      .exp-note {
+        margin: 0.5rem 0 0;
+        padding: 0 clamp(1rem, 3vw, 2.5rem);
+        max-width: 68ch;
+        font-size: var(--text-xs);
+        line-height: 1.5;
+        color: var(--color-icon-grey);
+      }
+
+      .exp-section {
+        position: relative;
+        padding-bottom: clamp(2.5rem, 6vw, 4.5rem);
+        border-bottom: 1px solid var(--color-border);
+      }
+
+      /* The topbar is fixed; the first label needs to clear it. */
+      .exp-section:first-of-type .exp-label { padding-top: clamp(4rem, 8vw, 6rem); }
+
+      /* A variant's wrapper stands in for the page it normally follows. */
+      .exp-footer-host {
+        /* what `.page-home + .site-footer` hands the live footer */
+        --container-pad: clamp(1.5rem, 4.2vw, 7.5rem);
+      }
+
+      /* ==================================================================
+         01 · ARCHIVED — the type lockup, frozen.
+         A verbatim copy of the production .site-footer rules, with every
+         class, keyframe and block-owned custom property prefixed
+         exp-footer01 so it can never collide with the live component.
+         ================================================================== */
+      /* site-footer.css — the global footer (design: experiments/Footer.png).
+       *
+       * A fixed near-black panel — deliberately NOT theme-flipping ink (the
+       * --footer-* tokens in theme/colors.css are constant across light/dark/blue,
+       * which is also why none of this uses --color-icon-black: that token inverts
+       * per theme and would turn the panel white in dark mode).
+       *
+       * Structure: centred LET'S TALK / Get in touch CTA (the footer's h2) →
+       * newsletter blurb + Subscribe on the left, an accordion of the four offices
+       * on the right → social links + Acknowledgement of Country across the base.
+       *
+       * The offices are native <details>/<summary> — fully functional with zero JS,
+       * so the Drupal Twig stays a pure template with no behaviour to port. The
+       * open/close animation is the CSS-only ::details-content + interpolate-size
+       * path (Chrome/Edge/Safari); browsers without it snap open, which is this
+       * project's accepted degradation. No aria-expanded / role / tabindex on
+       * summary — the UA owns disclosure semantics.
+       *
+       * Type rides the homepage voices: the CTA heading is the display-caps
+       * masthead clamp (WORK/NEWS); "Get in touch", the blurb, Subscribe, city
+       * names and socials all share the client-label voice (hero__client); the
+       * Indigenous place names and panel meta take the news-date voice; the
+       * Acknowledgement takes the same at normal line-height.
+       *
+       * Drupal: theme REGION (footer), not a paragraph type — one SDC `site-footer`
+       * with menu/newsletter/offices props; offices are a content entity or a
+       * settings tray. The deferred WebGL shader island would mount on
+       * .exp-footer01 as an enhancement; the flat --footer-bg is the no-JS ground.
+       */
+
+      .exp-footer01 {
+        /* The homepage's shared type voices, named once so a retune is a one-line
+           edit here (the same literals live on their home components in
+           src/utilities/home-c.css — display caps on .work__heading, the mid voice
+           on .hero__client, the meta voice on .news-card__meta). */
+        /* near-black panel: dividers take the on-colour hairline */
+        --rule: var(--rule-on-color);
+
+        --exp-footer01-voice-caps: clamp(2.5rem, 6vw, 9rem);
+        --exp-footer01-voice-mid: var(--voice-mid); /* the shared mid voice */
+        --exp-footer01-voice-meta: clamp(1.0625rem, 1.1vw, 1.5rem);
+
+        /* The x-origin of an office panel: the summary's icon column plus its gap,
+           so an open address starts exactly under its city name. Built from the
+           SAME two values the summary is (the icon is a 1em square of the mid
+           voice, the gap is --space-xs), which is the point of naming it — the
+           panel can't drift from the row it hangs off. It must not be expressed in
+           em: the panel renders at the meta voice, so a local 1em is barely half
+           the icon's width, and the addresses sat ~19px left of their cities. */
+        --exp-footer01-office-indent: calc(var(--exp-footer01-voice-mid) + var(--space-xs));
+
+        /* Outside <main> for the contentinfo landmark, so it must carry its own
+           stacking guard: the hero curtain is a positioned sticky at z-0, and an
+           unpositioned footer would paint beneath it. */
+        position: relative;
+        z-index: 1;
+        background: var(--footer-bg);
+        color: var(--footer-ink);
+        padding: var(--space-2xl) var(--container-pad) var(--space-lg);
+      }
+
+      /* Scroll-driven grow — the inverse of the hero's recede, and built the same
+         way: a compositor-sampled scroll timeline, never a scroll handler
+         (docs/animation.md rule 2). The panel arrives inset by the page gutter on
+         both sides and expands to full bleed as you scroll into it.
+
+         Uniform scale, so the CONTENT shrinks with the panel rather than reflowing
+         to a narrower measure. --container-pad's fluid term is 4.2vw, so insetting
+         by it on each side is exactly 1 - 2(0.042) = 0.916; the ratio drifts a
+         little where the clamp bottoms out (<~570px) or caps (>~2860px), which is
+         invisible at this scale. Anchored at the bottom edge so the panel stays
+         flush with the document end and grows upward — no gap can open beneath it.
+
+         A NAMED timeline is unnecessary here: nothing in the footer's ancestor
+         chain is a scroll container (body is overflow-x: clip, which clips without
+         becoming one — see LESSONS.md), so view() resolves to the document root.
+         Verified moving, not frozen. */
+      .exp-footer01 {
+        --exp-footer01-inset-scale: 0.916;
+      }
+
+      /* Animates the `scale` PROPERTY, not `transform: scale()`, so the panel's
+         grow and the scroll-velocity skew below can run at once — two animations
+         cannot share `transform`, but scale/rotate/translate are independent
+         properties that compose with it. transform-origin governs all of them. */
+      @keyframes exp-footer01-grow {
+        from { scale: var(--exp-footer01-inset-scale); }
+        to { scale: 1; }
+      }
+
+      @media (prefers-reduced-motion: no-preference) {
+        @supports (animation-timeline: view()) {
+          .exp-footer01 {
+            transform-origin: 50% 100%;
+            animation: exp-footer01-grow linear both;
+            animation-timeline: view();
+            /* quick: done within ~45vh of scrolling, not over the panel's height */
+            animation-range: entry 0% entry 45vh;
+          }
+        }
+      }
+
+      /* The global focus ring is --color-icon-blue — invisible on near-black.
+         Colour-only override (the checklist's sanctioned exception); ring shape
+         stays the reset.css single source of truth. */
+      .exp-footer01 :focus-visible {
+        outline-color: var(--footer-ink);
+      }
+
+      /* ---- CTA ----------------------------------------------------------------- */
+
+      .exp-footer01__cta {
+        margin: 0 0 var(--space-xl);
+        text-align: center;
+      }
+
+      .exp-footer01__cta-link {
+        display: inline-block;
+        text-decoration: none;
+        color: inherit;
+      }
+
+      .exp-footer01__talk {
+        display: block;
+        /* the shared display-caps voice (WORK / NEWS mastheads) */
+        font-size: var(--exp-footer01-voice-caps);
+        font-weight: 900;
+        line-height: 0.9;
+        letter-spacing: var(--tracking-caps);
+        text-transform: uppercase;
+      }
+
+      .exp-footer01__touch {
+        display: block;
+        margin-top: var(--space-sm);
+        /* client-label voice — the footer's single mid voice, as designed */
+        font-size: var(--exp-footer01-voice-mid);
+        font-weight: var(--font-weight-medium);
+        letter-spacing: -0.01em;
+        line-height: 1.2;
+        color: var(--footer-muted);
+      }
+
+      /* colour eases via the universal theme transition (typography.css) */
+      .exp-footer01__cta-link:hover .exp-footer01__touch,
+      .exp-footer01__cta-link:focus-visible .exp-footer01__touch {
+        color: var(--footer-ink);
+      }
+
+      /* ---- body: newsletter | offices ----------------------------------------- */
+
+      .exp-footer01__body {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: var(--space-lg) var(--space-md);
+      }
+
+      @media (min-width: 1024px) {
+        .exp-footer01__body {
+          /* the design splits at the half-line: blurb left, offices right */
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+
+      .exp-footer01__blurb {
+        margin: 0 0 var(--space-md);
+        max-width: 20ch;
+        font-size: var(--exp-footer01-voice-mid);
+        font-weight: var(--font-weight-medium);
+        letter-spacing: -0.01em;
+        line-height: 1.2;
+      }
+
+      /* Subscribe — same element + hook as the mobile menu's control, so one
+         future behaviour serves both. */
+      .exp-footer01__subscribe {
+        padding: 0;
+        border: 0;
+        background: none;
+        cursor: pointer;
+        font-family: inherit;
+        font-size: var(--exp-footer01-voice-mid);
+        font-weight: var(--font-weight-medium);
+        letter-spacing: -0.01em;
+        line-height: 1.2;
+        color: var(--footer-muted);
+      }
+
+      .exp-footer01__subscribe:hover,
+      .exp-footer01__subscribe:focus-visible {
+        color: var(--footer-ink);
+      }
+
+      /* ---- offices accordion --------------------------------------------------- */
+
+      .exp-footer01__offices {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        /* scope the keyword-size interpolation to the accordion only */
+        interpolate-size: allow-keywords;
+      }
+
+      .exp-footer01__office-item {
+        border-top: 1px solid var(--rule);
+      }
+
+      .exp-footer01__office-item:last-child {
+        border-bottom: 1px solid var(--rule);
+      }
+
+      .exp-footer01__office-summary {
+        display: flex;
+        align-items: center;
+        gap: var(--space-xs);
+        padding-block: var(--space-sm);
+        cursor: pointer;
+        list-style: none; /* no UA disclosure triangle; the +/× is the affordance */
+      }
+
+      .exp-footer01__office-summary::-webkit-details-marker {
+        display: none;
+      }
+
+      .exp-footer01__office-icon {
+        /* A 1em SQUARE, not `width: auto`: the icon column's width is what the open
+           panel indents by, so it has to be a known quantity rather than whatever
+           aspect ratio the artwork happens to have. Non-square art letterboxes
+           inside the box (preserveAspectRatio's default) instead of moving the
+           column. --exp-footer01-voice-mid sets the em, which is what
+           --exp-footer01-office-indent above is written against. */
+        width: 1em;
+        height: 1em;
+        flex: 0 0 auto;
+        font-size: var(--exp-footer01-voice-mid);
+      }
+
+      .exp-footer01__office-city {
+        font-size: var(--exp-footer01-voice-mid);
+        font-weight: var(--font-weight-medium);
+        letter-spacing: -0.01em;
+        line-height: 1.2;
+      }
+
+      .exp-footer01__office-place {
+        margin-left: auto;
+        /* news-date / work-meta voice */
+        font-size: var(--exp-footer01-voice-meta);
+        color: var(--footer-muted);
+      }
+
+      /* the +/× toggle — two hairline bars, rotating to × when open */
+      .exp-footer01__office-toggle {
+        position: relative;
+        flex: 0 0 auto;
+        width: 1em;
+        height: 1em;
+        font-size: var(--exp-footer01-voice-mid);
+        transition: rotate var(--duration-normal) var(--ease-standard);
+      }
+
+      .exp-footer01__office-toggle::before,
+      .exp-footer01__office-toggle::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 100%;
+        height: 2px;
+        background: currentColor;
+        translate: -50% -50%;
+      }
+
+      .exp-footer01__office-toggle::after {
+        rotate: 90deg;
+      }
+
+      .exp-footer01__office[open] .exp-footer01__office-toggle {
+        rotate: 45deg;
+      }
+
+      /* panel: CSS-only open/close (::details-content + interpolate-size).
+         overflow-y clip, not hidden — hidden would mint a scroll container for
+         Lenis to fight (see LESSONS.md on overflow promoting scrollers). */
+      .exp-footer01__office::details-content {
+        opacity: 0;
+        block-size: 0;
+        overflow-y: clip;
+        transition:
+          content-visibility var(--duration-normal) allow-discrete,
+          opacity var(--duration-normal) var(--ease-standard),
+          block-size var(--duration-normal) var(--ease-standard);
+      }
+
+      .exp-footer01__office[open]::details-content {
+        opacity: 1;
+        block-size: auto;
+      }
+
+      .exp-footer01__office-details {
+        /* starts under the city name — see --exp-footer01-office-indent */
+        padding: 0 0 var(--space-sm);
+        padding-inline-start: var(--exp-footer01-office-indent);
+        font-size: var(--exp-footer01-voice-meta);
+        font-style: normal; /* address element */
+        line-height: var(--line-height-normal);
+      }
+
+      .exp-footer01__office-details p {
+        margin: 0;
+      }
+
+      .exp-footer01__office-details a {
+        color: var(--footer-muted);
+        text-decoration: none;
+      }
+
+      .exp-footer01__office-details a:hover,
+      .exp-footer01__office-details a:focus-visible {
+        color: var(--footer-ink);
+      }
+
+      .exp-footer01__office-contact {
+        margin-top: var(--space-2xs);
+      }
+
+      /* ---- base row: socials + acknowledgement --------------------------------- */
+
+      .exp-footer01__base {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: var(--space-md);
+        align-items: end;
+        margin-top: var(--space-xl);
+      }
+
+      @media (min-width: 1024px) {
+        .exp-footer01__base {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+
+      .exp-footer01__social {
+        display: flex;
+        gap: var(--space-md);
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      .exp-footer01__social-link {
+        font-size: var(--exp-footer01-voice-mid);
+        font-weight: var(--font-weight-medium);
+        letter-spacing: -0.01em;
+        line-height: 1.2;
+        color: var(--footer-muted);
+        text-decoration: none;
+      }
+
+      .exp-footer01__social-link:hover,
+      .exp-footer01__social-link:focus-visible {
+        color: var(--footer-ink);
+      }
+
+      .exp-footer01__ack {
+        margin: 0;
+        font-size: var(--exp-footer01-voice-meta);
+        line-height: var(--line-height-normal);
+      }
+
+      /* ---- reduced motion ------------------------------------------------------ */
+
+      @media (prefers-reduced-motion: reduce) {
+        .exp-footer01__office-toggle {
+          transition: none;
+        }
+
+        .exp-footer01__office::details-content {
+          transition: none;
+        }
+      }
+
+      /* ==========================================================================
+       * The brand lockup — "Make what matters", full width, last thing on the page
+       * (design: experiments/Footer.png)
+       * ======================================================================== */
+
+      /* It is the SAME typographic lockup as the hero (utilities/home-c.css): Miller
+         Text italic for "Make", Kumbh Sans Black caps for "WHAT MATTERS", on one
+         shared baseline instead of the hero's three stacked lines. The serif is
+         scaled by the identical 1.06 factor — the italic reads smaller at the same
+         nominal size — so the two lockups are the same voice in two arrangements.
+
+         ALWAYS FULL WIDTH, at every viewport, with no breakpoints: the string is
+         fixed, so its width is a fixed multiple of the font-size, and dividing the
+         line box by that multiple inverts the relationship. --exp-footer01-lockup-em-width is
+         that multiple, MEASURED in the browser with the real webfonts (see below),
+         which is why cqw and not vw: cqw is the element's own content box, so the
+         gutter, the page's scrollbar and any future container all stay accounted
+         for automatically. */
+      .exp-footer01__lockup {
+        /* Custom value: 10.765 = the rendered inline size of "Make what matters",
+           in ems of the sans, as this lockup sets it (Miller Text italic at 1.06 for
+           "Make", Kumbh Sans 900 caps with --tracking-caps for the rest, two word
+           spaces). MEASURED in-browser with both webfonts loaded, not derived — it
+           is a property of these two faces and changes only if the faces, the
+           weights, the tracking or the string change. NB when re-measuring, cancel
+           the panel's exp-footer01-grow animation first: it scales the whole footer, so
+           getBoundingClientRect reports visual pixels while font-size reports
+           layout pixels, and the ratio silently lands ~9% short. */
+        --exp-footer01-lockup-em-width: 10.765;
+
+        /* Custom value: the mock sets the lockup a touch tighter than the body
+           gutter (51px of 1920 = 2.66vw) so it reads as the page's baseline rather
+           than another column. Break out of the footer's padding, then re-inset. */
+        --exp-footer01-lockup-gutter: clamp(0.75rem, 2.66vw, 3.2rem);
+
+        container-type: inline-size; /* the line sizes off THIS box's content width */
+        margin: var(--space-xl) calc(var(--container-pad) * -1) 0;
+        padding-inline: var(--exp-footer01-lockup-gutter);
+      }
+
+      /* The mask the words rise out of. overflow:hidden makes this a scroll
+         container — harmless here (nothing inside uses a view() timeline), but per
+         LESSONS.md worth saying out loud. The vertical padding keeps the tight
+         0.8 leading from clipping the italic's ascender, and equal negative margins
+         take the space back so the lockup still sits flush. */
+      .exp-footer01__lockup-line {
+        display: block;
+        overflow: hidden;
+        padding-block: 0.2em;
+        /* Top: cancel the padding. Bottom: cancel it AND pull a further 0.35em, so
+           the caps' baseline lands 0.25em above the panel's edge — the mock sets
+           the lockup tight to the bottom (43px under a 171px line at 1920), and the
+           footer's own padding-bottom is far looser than that. In em, so the
+           relationship holds at every size the type takes. */
+        margin-block: -0.2em calc(-0.2em - 0.35em);
+        white-space: nowrap; /* one line always — the fit-to-width depends on it */
+        font-size: calc(100cqw / var(--exp-footer01-lockup-em-width));
+        font-weight: 900; /* Kumbh Sans Black, as the hero lockup */
+        line-height: 0.8;
+        letter-spacing: var(--tracking-caps);
+        text-transform: uppercase;
+      }
+
+      /* inline-block so the words can be transformed individually; the whitespace
+         between the spans in the markup is the real word space. */
+      .exp-footer01__lockup-word {
+        display: inline-block;
+      }
+
+      /* The serif italic reads smaller at the same nominal size, so it is scaled up
+         by the same factor the hero uses. */
+      .exp-footer01__lockup-word--serif {
+        font-family: var(--font-serif);
+        font-style: italic;
+        font-weight: var(--font-weight-medium);
+        font-size: calc(1em * 1.06);
+        letter-spacing: 0;
+        text-transform: none;
+      }
+
+      /* ---- load + scroll motion ------------------------------------------------
+       * js/site-footer.js adds .is-revealed when the panel first enters the
+       * viewport, and writes --exp-footer01-skew (degrees) from scroll velocity every
+       * frame while there is motion to settle.
+       *
+       * Everything below is gated on .js-animations — without JS the footer renders
+       * fully visible and unskewed, which is the no-JS baseline the rest of the
+       * site uses (see components/reveal.css and tagline.css). */
+
+      /* The velocity shear. Each block shears about its own centre, and the lockup
+         leans harder than the text above it — it is the piece meant to read as
+         motion. `transform` is free here because the panel's grow animates `scale`. */
+      .exp-footer01__cta,
+      .exp-footer01__body,
+      .exp-footer01__base,
+      .exp-footer01__lockup {
+        transform: skewY(calc(var(--exp-footer01-skew, 0deg) * var(--exp-footer01-skew-factor, 1)));
+      }
+
+      .exp-footer01__lockup {
+        --exp-footer01-skew-factor: 1.5;
+      }
+
+      /* Load reveal: the blocks fade up in reading order, then the lockup's words
+         rise out of the mask last — the page's closing line, delivered word by
+         word like the hero's opening one. */
+      .js-animations .exp-footer01__cta,
+      .js-animations .exp-footer01__body,
+      .js-animations .exp-footer01__base {
+        opacity: 0;
+        translate: 0 1.25rem;
+      }
+
+      .js-animations .exp-footer01.is-revealed .exp-footer01__cta,
+      .js-animations .exp-footer01.is-revealed .exp-footer01__body,
+      .js-animations .exp-footer01.is-revealed .exp-footer01__base {
+        opacity: 1;
+        translate: 0 0;
+        transition:
+          opacity var(--duration-slow) var(--ease-standard) var(--exp-footer01-reveal-delay, 0ms),
+          translate var(--duration-slow) var(--ease-decelerate) var(--exp-footer01-reveal-delay, 0ms);
+      }
+
+      .js-animations .exp-footer01__body { --exp-footer01-reveal-delay: 90ms; }
+      .js-animations .exp-footer01__base { --exp-footer01-reveal-delay: 180ms; }
+
+      /* 140%, not 100%: the mask carries 0.2em of padding it cannot clip inside, so
+         a word parked at exactly its own height would still show a sliver of itself
+         below the line. --w is the word's index, set in the markup. */
+      .js-animations .exp-footer01__lockup-word {
+        translate: 0 140%;
+      }
+
+      .js-animations .exp-footer01.is-revealed .exp-footer01__lockup-word {
+        translate: 0 0;
+        transition: translate 0.9s var(--ease-decelerate)
+          calc(240ms + var(--w, 0) * 90ms);
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        /* no shear, no rise, no fade — everything simply present */
+        .exp-footer01__cta,
+        .exp-footer01__body,
+        .exp-footer01__base,
+        .exp-footer01__lockup {
+          transform: none;
+        }
+
+        .js-animations .exp-footer01__cta,
+        .js-animations .exp-footer01__body,
+        .js-animations .exp-footer01__base,
+        .js-animations .exp-footer01__lockup-word {
+          opacity: 1;
+          translate: 0 0;
+          transition: none;
+        }
+      }
+      /* ==================================================================
+         02 · NEW — the ICON logo in place of the words.
+         Everything else is the current footer, copied and prefixed
+         exp-footer02: same CTA, newsletter, office accordion, socials,
+         acknowledgement, same grow / reveal / shear. Only the closing lockup
+         changes (design: experiments/footer2.png).
+         ================================================================== */
+      /* site-footer.css — the global footer (design: experiments/Footer.png).
+       *
+       * A fixed near-black panel — deliberately NOT theme-flipping ink (the
+       * --footer-* tokens in theme/colors.css are constant across light/dark/blue,
+       * which is also why none of this uses --color-icon-black: that token inverts
+       * per theme and would turn the panel white in dark mode).
+       *
+       * Structure: centred LET'S TALK / Get in touch CTA (the footer's h2) →
+       * newsletter blurb + Subscribe on the left, an accordion of the four offices
+       * on the right → social links + Acknowledgement of Country across the base.
+       *
+       * The offices are native <details>/<summary> — fully functional with zero JS,
+       * so the Drupal Twig stays a pure template with no behaviour to port. The
+       * open/close animation is the CSS-only ::details-content + interpolate-size
+       * path (Chrome/Edge/Safari); browsers without it snap open, which is this
+       * project's accepted degradation. No aria-expanded / role / tabindex on
+       * summary — the UA owns disclosure semantics.
+       *
+       * Type rides the homepage voices: the CTA heading is the display-caps
+       * masthead clamp (WORK/NEWS); "Get in touch", the blurb, Subscribe, city
+       * names and socials all share the client-label voice (hero__client); the
+       * Indigenous place names and panel meta take the news-date voice; the
+       * Acknowledgement takes the same at normal line-height.
+       *
+       * Drupal: theme REGION (footer), not a paragraph type — one SDC `site-footer`
+       * with menu/newsletter/offices props; offices are a content entity or a
+       * settings tray. The deferred WebGL shader island would mount on
+       * .exp-footer02 as an enhancement; the flat --footer-bg is the no-JS ground.
+       */
+
+      .exp-footer02 {
+        /* The homepage's shared type voices, named once so a retune is a one-line
+           edit here (the same literals live on their home components in
+           src/utilities/home-c.css — display caps on .work__heading, the mid voice
+           on .hero__client, the meta voice on .news-card__meta). */
+        /* near-black panel: dividers take the on-colour hairline */
+        --rule: var(--rule-on-color);
+
+        --exp-footer02-voice-caps: clamp(2.5rem, 6vw, 9rem);
+        --exp-footer02-voice-mid: var(--voice-mid); /* the shared mid voice */
+        --exp-footer02-voice-meta: clamp(1.0625rem, 1.1vw, 1.5rem);
+
+        /* The x-origin of an office panel: the summary's icon column plus its gap,
+           so an open address starts exactly under its city name. Built from the
+           SAME two values the summary is (the icon is a 1em square of the mid
+           voice, the gap is --space-xs), which is the point of naming it — the
+           panel can't drift from the row it hangs off. It must not be expressed in
+           em: the panel renders at the meta voice, so a local 1em is barely half
+           the icon's width, and the addresses sat ~19px left of their cities. */
+        --exp-footer02-office-indent: calc(var(--exp-footer02-voice-mid) + var(--space-xs));
+
+        /* Outside <main> for the contentinfo landmark, so it must carry its own
+           stacking guard: the hero curtain is a positioned sticky at z-0, and an
+           unpositioned footer would paint beneath it. */
+        position: relative;
+        z-index: 1;
+        background: var(--footer-bg);
+        color: var(--footer-ink);
+        padding: var(--space-2xl) var(--container-pad) var(--space-lg);
+      }
+
+      /* Scroll-driven grow — the inverse of the hero's recede, and built the same
+         way: a compositor-sampled scroll timeline, never a scroll handler
+         (docs/animation.md rule 2). The panel arrives inset by the page gutter on
+         both sides and expands to full bleed as you scroll into it.
+
+         Uniform scale, so the CONTENT shrinks with the panel rather than reflowing
+         to a narrower measure. --container-pad's fluid term is 4.2vw, so insetting
+         by it on each side is exactly 1 - 2(0.042) = 0.916; the ratio drifts a
+         little where the clamp bottoms out (<~570px) or caps (>~2860px), which is
+         invisible at this scale. Anchored at the bottom edge so the panel stays
+         flush with the document end and grows upward — no gap can open beneath it.
+
+         A NAMED timeline is unnecessary here: nothing in the footer's ancestor
+         chain is a scroll container (body is overflow-x: clip, which clips without
+         becoming one — see LESSONS.md), so view() resolves to the document root.
+         Verified moving, not frozen. */
+      .exp-footer02 {
+        --exp-footer02-inset-scale: 0.916;
+      }
+
+      /* Animates the `scale` PROPERTY, not `transform: scale()`, so the panel's
+         grow and the scroll-velocity skew below can run at once — two animations
+         cannot share `transform`, but scale/rotate/translate are independent
+         properties that compose with it. transform-origin governs all of them. */
+      @keyframes exp-footer02-grow {
+        from { scale: var(--exp-footer02-inset-scale); }
+        to { scale: 1; }
+      }
+
+      @media (prefers-reduced-motion: no-preference) {
+        @supports (animation-timeline: view()) {
+          .exp-footer02 {
+            transform-origin: 50% 100%;
+            animation: exp-footer02-grow linear both;
+            animation-timeline: view();
+            /* quick: done within ~45vh of scrolling, not over the panel's height */
+            animation-range: entry 0% entry 45vh;
+          }
+        }
+      }
+
+      /* The global focus ring is --color-icon-blue — invisible on near-black.
+         Colour-only override (the checklist's sanctioned exception); ring shape
+         stays the reset.css single source of truth. */
+      .exp-footer02 :focus-visible {
+        outline-color: var(--footer-ink);
+      }
+
+      /* ---- CTA ----------------------------------------------------------------- */
+
+      .exp-footer02__cta {
+        margin: 0 0 var(--space-xl);
+        text-align: center;
+      }
+
+      .exp-footer02__cta-link {
+        display: inline-block;
+        text-decoration: none;
+        color: inherit;
+      }
+
+      .exp-footer02__talk {
+        display: block;
+        /* the shared display-caps voice (WORK / NEWS mastheads) */
+        font-size: var(--exp-footer02-voice-caps);
+        font-weight: 900;
+        line-height: 0.9;
+        letter-spacing: var(--tracking-caps);
+        text-transform: uppercase;
+      }
+
+      .exp-footer02__touch {
+        display: block;
+        margin-top: var(--space-sm);
+        /* client-label voice — the footer's single mid voice, as designed */
+        font-size: var(--exp-footer02-voice-mid);
+        font-weight: var(--font-weight-medium);
+        letter-spacing: -0.01em;
+        line-height: 1.2;
+        color: var(--footer-muted);
+      }
+
+      /* colour eases via the universal theme transition (typography.css) */
+      .exp-footer02__cta-link:hover .exp-footer02__touch,
+      .exp-footer02__cta-link:focus-visible .exp-footer02__touch {
+        color: var(--footer-ink);
+      }
+
+      /* ---- body: newsletter | offices ----------------------------------------- */
+
+      .exp-footer02__body {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: var(--space-lg) var(--space-md);
+      }
+
+      @media (min-width: 1024px) {
+        .exp-footer02__body {
+          /* the design splits at the half-line: blurb left, offices right */
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+
+      .exp-footer02__blurb {
+        margin: 0 0 var(--space-md);
+        max-width: 20ch;
+        font-size: var(--exp-footer02-voice-mid);
+        font-weight: var(--font-weight-medium);
+        letter-spacing: -0.01em;
+        line-height: 1.2;
+      }
+
+      /* Subscribe — same element + hook as the mobile menu's control, so one
+         future behaviour serves both. */
+      .exp-footer02__subscribe {
+        padding: 0;
+        border: 0;
+        background: none;
+        cursor: pointer;
+        font-family: inherit;
+        font-size: var(--exp-footer02-voice-mid);
+        font-weight: var(--font-weight-medium);
+        letter-spacing: -0.01em;
+        line-height: 1.2;
+        color: var(--footer-muted);
+      }
+
+      .exp-footer02__subscribe:hover,
+      .exp-footer02__subscribe:focus-visible {
+        color: var(--footer-ink);
+      }
+
+      /* ---- offices accordion --------------------------------------------------- */
+
+      .exp-footer02__offices {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        /* scope the keyword-size interpolation to the accordion only */
+        interpolate-size: allow-keywords;
+      }
+
+      .exp-footer02__office-item {
+        border-top: 1px solid var(--rule);
+      }
+
+      .exp-footer02__office-item:last-child {
+        border-bottom: 1px solid var(--rule);
+      }
+
+      .exp-footer02__office-summary {
+        display: flex;
+        align-items: center;
+        gap: var(--space-xs);
+        padding-block: var(--space-sm);
+        cursor: pointer;
+        list-style: none; /* no UA disclosure triangle; the +/× is the affordance */
+      }
+
+      .exp-footer02__office-summary::-webkit-details-marker {
+        display: none;
+      }
+
+      .exp-footer02__office-icon {
+        /* A 1em SQUARE, not `width: auto`: the icon column's width is what the open
+           panel indents by, so it has to be a known quantity rather than whatever
+           aspect ratio the artwork happens to have. Non-square art letterboxes
+           inside the box (preserveAspectRatio's default) instead of moving the
+           column. --exp-footer02-voice-mid sets the em, which is what
+           --exp-footer02-office-indent above is written against. */
+        width: 1em;
+        height: 1em;
+        flex: 0 0 auto;
+        font-size: var(--exp-footer02-voice-mid);
+      }
+
+      .exp-footer02__office-city {
+        font-size: var(--exp-footer02-voice-mid);
+        font-weight: var(--font-weight-medium);
+        letter-spacing: -0.01em;
+        line-height: 1.2;
+      }
+
+      .exp-footer02__office-place {
+        margin-left: auto;
+        /* news-date / work-meta voice */
+        font-size: var(--exp-footer02-voice-meta);
+        color: var(--footer-muted);
+      }
+
+      /* the +/× toggle — two hairline bars, rotating to × when open */
+      .exp-footer02__office-toggle {
+        position: relative;
+        flex: 0 0 auto;
+        width: 1em;
+        height: 1em;
+        font-size: var(--exp-footer02-voice-mid);
+        transition: rotate var(--duration-normal) var(--ease-standard);
+      }
+
+      .exp-footer02__office-toggle::before,
+      .exp-footer02__office-toggle::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 100%;
+        height: 2px;
+        background: currentColor;
+        translate: -50% -50%;
+      }
+
+      .exp-footer02__office-toggle::after {
+        rotate: 90deg;
+      }
+
+      .exp-footer02__office[open] .exp-footer02__office-toggle {
+        rotate: 45deg;
+      }
+
+      /* panel: CSS-only open/close (::details-content + interpolate-size).
+         overflow-y clip, not hidden — hidden would mint a scroll container for
+         Lenis to fight (see LESSONS.md on overflow promoting scrollers). */
+      .exp-footer02__office::details-content {
+        opacity: 0;
+        block-size: 0;
+        overflow-y: clip;
+        transition:
+          content-visibility var(--duration-normal) allow-discrete,
+          opacity var(--duration-normal) var(--ease-standard),
+          block-size var(--duration-normal) var(--ease-standard);
+      }
+
+      .exp-footer02__office[open]::details-content {
+        opacity: 1;
+        block-size: auto;
+      }
+
+      .exp-footer02__office-details {
+        /* starts under the city name — see --exp-footer02-office-indent */
+        padding: 0 0 var(--space-sm);
+        padding-inline-start: var(--exp-footer02-office-indent);
+        font-size: var(--exp-footer02-voice-meta);
+        font-style: normal; /* address element */
+        line-height: var(--line-height-normal);
+      }
+
+      .exp-footer02__office-details p {
+        margin: 0;
+      }
+
+      .exp-footer02__office-details a {
+        color: var(--footer-muted);
+        text-decoration: none;
+      }
+
+      .exp-footer02__office-details a:hover,
+      .exp-footer02__office-details a:focus-visible {
+        color: var(--footer-ink);
+      }
+
+      .exp-footer02__office-contact {
+        margin-top: var(--space-2xs);
+      }
+
+      /* ---- base row: socials + acknowledgement --------------------------------- */
+
+      .exp-footer02__base {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: var(--space-md);
+        align-items: end;
+        margin-top: var(--space-xl);
+      }
+
+      @media (min-width: 1024px) {
+        .exp-footer02__base {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+
+      .exp-footer02__social {
+        display: flex;
+        gap: var(--space-md);
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      .exp-footer02__social-link {
+        font-size: var(--exp-footer02-voice-mid);
+        font-weight: var(--font-weight-medium);
+        letter-spacing: -0.01em;
+        line-height: 1.2;
+        color: var(--footer-muted);
+        text-decoration: none;
+      }
+
+      .exp-footer02__social-link:hover,
+      .exp-footer02__social-link:focus-visible {
+        color: var(--footer-ink);
+      }
+
+      .exp-footer02__ack {
+        margin: 0;
+        font-size: var(--exp-footer02-voice-meta);
+        line-height: var(--line-height-normal);
+      }
+
+      /* ---- reduced motion ------------------------------------------------------ */
+
+      @media (prefers-reduced-motion: reduce) {
+        .exp-footer02__office-toggle {
+          transition: none;
+        }
+
+        .exp-footer02__office::details-content {
+          transition: none;
+        }
+      }
+
+      /* ==========================================================================
+       * The brand lockup — the ICON logo, full width (design: experiments/footer2.png)
+       * ======================================================================== */
+
+      /* Same slot, same full-width rule as 01's "Make what matters"; only what
+         fills it changes. The logo is painted as a MASKED BOX rather than an <img>:
+         assets/brand/logo-dark.svg is the dark-on-light artwork, and this panel is
+         near-black, so the shape is taken as an alpha mask and the colour comes
+         from --footer-ink underneath. (The same recipe the news card's hover arrow
+         uses to tint a glyph from a token.) It also means the fill is just a layer
+         — which is what makes variant 03 possible: put video there instead.
+
+         The SVG masks cleanly because it has no background rect: its root is
+         fill="none" and the only rendered paths are the four wordmark letterforms
+         plus the raised mark, so the alpha silhouette IS the logo.
+
+         Longhand mask properties on purpose — the minifier mangles multi-part mask
+         shorthands (LESSONS.md), and -webkit- first. */
+      .exp-footer02__lockup {
+        /* the mock sets the logo a touch tighter than the body gutter, exactly as
+           01 sets its type: 61px of 1920 */
+        --exp-footer02-lockup-gutter: clamp(0.75rem, 2.66vw, 3.2rem);
+
+        margin: var(--space-xl) calc(var(--container-pad) * -1) 0;
+        padding-inline: var(--exp-footer02-lockup-gutter);
+        /* cancel the panel's bottom padding and re-set it from the mock: the logo
+           sits 49px above the edge at 1920, tight like 01's baseline */
+        margin-bottom: calc(var(--space-lg) * -1);
+        padding-bottom: clamp(0.6rem, 2.55vw, 3rem);
+      }
+
+      /* The mask box. aspect-ratio is the SVG's own viewBox, so a 100% width gives
+         exactly the artwork's height and `mask-size: 100% 100%` is an exact fit at
+         every viewport — the same "always full width, no breakpoints" behaviour as
+         01, but geometric rather than measured. */
+      .exp-footer02__logo {
+        display: block;
+        width: 100%;
+        aspect-ratio: 213 / 69;
+        background: var(--footer-ink);
+        -webkit-mask-image: url("../assets/brand/logo-dark.svg");
+        mask-image: url("../assets/brand/logo-dark.svg");
+        -webkit-mask-size: 100% 100%;
+        mask-size: 100% 100%;
+        -webkit-mask-repeat: no-repeat;
+        mask-repeat: no-repeat;
+        -webkit-mask-position: center;
+        mask-position: center;
+      }
+
+      /* The mask is the whole design here, so say what happens without it rather
+         than letting a bare box paint: no mask, no fill. */
+      @supports not ((-webkit-mask-image: url("#")) or (mask-image: url("#"))) {
+        .exp-footer02__logo {
+          background: none;
+        }
+      }
+
+      /* The rise, as 01 does it for its words — one shape instead of three. */
+      .exp-footer02__lockup-line {
+        display: block;
+        overflow: hidden;
+      }
+
+      /* ---- load + scroll motion ------------------------------------------------
+       * js/site-footer.js adds .is-revealed when the panel first enters the
+       * viewport, and writes --exp-footer02-skew (degrees) from scroll velocity every
+       * frame while there is motion to settle.
+       *
+       * Everything below is gated on .js-animations — without JS the footer renders
+       * fully visible and unskewed, which is the no-JS baseline the rest of the
+       * site uses (see components/reveal.css and tagline.css). */
+
+      /* The velocity shear. Each block shears about its own centre, and the lockup
+         leans harder than the text above it — it is the piece meant to read as
+         motion. `transform` is free here because the panel's grow animates `scale`. */
+      .exp-footer02__cta,
+      .exp-footer02__body,
+      .exp-footer02__base,
+      .exp-footer02__lockup {
+        transform: skewY(calc(var(--exp-footer02-skew, 0deg) * var(--exp-footer02-skew-factor, 1)));
+      }
+
+      .exp-footer02__lockup {
+        --exp-footer02-skew-factor: 1.5;
+      }
+
+      /* Load reveal: the blocks fade up in reading order, then the lockup's words
+         rise out of the mask last — the page's closing line, delivered word by
+         word like the hero's opening one. */
+      .js-animations .exp-footer02__cta,
+      .js-animations .exp-footer02__body,
+      .js-animations .exp-footer02__base {
+        opacity: 0;
+        translate: 0 1.25rem;
+      }
+
+      .js-animations .exp-footer02.is-revealed .exp-footer02__cta,
+      .js-animations .exp-footer02.is-revealed .exp-footer02__body,
+      .js-animations .exp-footer02.is-revealed .exp-footer02__base {
+        opacity: 1;
+        translate: 0 0;
+        transition:
+          opacity var(--duration-slow) var(--ease-standard) var(--exp-footer02-reveal-delay, 0ms),
+          translate var(--duration-slow) var(--ease-decelerate) var(--exp-footer02-reveal-delay, 0ms);
+      }
+
+      .js-animations .exp-footer02__body { --exp-footer02-reveal-delay: 90ms; }
+      .js-animations .exp-footer02__base { --exp-footer02-reveal-delay: 180ms; }
+
+      /* The logo rises out of its mask as one piece, on the same clock the words
+         used — last in, after the blocks above have settled. */
+      .js-animations .exp-footer02__logo {
+        translate: 0 110%;
+      }
+
+      .js-animations .exp-footer02.is-revealed .exp-footer02__logo {
+        translate: 0 0;
+        transition: translate 0.9s var(--ease-decelerate) 240ms;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        /* no shear, no rise, no fade — everything simply present */
+        .exp-footer02__cta,
+        .exp-footer02__body,
+        .exp-footer02__base,
+        .exp-footer02__lockup {
+          transform: none;
+        }
+
+        .js-animations .exp-footer02__cta,
+        .js-animations .exp-footer02__body,
+        .js-animations .exp-footer02__base,
+        .js-animations .exp-footer02__logo {
+          opacity: 1;
+          translate: 0 0;
+          transition: none;
+        }
+      }
+
+      /* ==================================================================
+         03 · THE SAME LOGO, WITH THE HERO SLIDES PLAYING INSIDE IT.
+         Deliberately NOT a third copy of the footer: 03 renders the very same
+         .exp-footer02 block and only adds a modifier, because the question it
+         answers is solely "what fills the mask". Keeping them one component
+         is also the honest answer — the swap really is that small.
+         ================================================================== */
+
+      /* The fill layer becomes a stage. The mask is unchanged, so the media is
+         clipped to the letterforms; --footer-ink stays as the backdrop so a
+         slide that has not loaded (or a still frame under reduced motion)
+         reads as the flat logo rather than a hole. */
+      .exp-footer02--media .exp-footer02__logo {
+        position: relative;
+        overflow: hidden;
+      }
+
+      /* LEGIBILITY FLOOR. The pure effect — raw footage, nothing on top —
+         reads beautifully on the bright slides and disappears on the dark
+         ones: against a near-black panel, dark film inside the letterforms
+         leaves no wordmark at all. Two cheap guards, and the logo survives
+         any footage that might be dropped in later:
+           - a brightness lift, so mid-dark frames clear the panel;
+           - the slide stops short of full opacity, letting the white
+             --footer-ink fill behind it set a minimum luminance no frame can
+             go under.
+         Set --exp-footer02-media-opacity to 1 and drop the filter to see the
+         unguarded version. */
+      .exp-footer02--media {
+        --exp-footer02-media-opacity: 0.85;
+      }
+
+      .exp-footer02__slide {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        opacity: 0;
+        filter: brightness(1.35) contrast(0.92);
+        /* The hero cuts between slides in 100ms. Inside letterform counters
+           this small a cut reads as a glitch rather than an edit, so the
+           footer fades — still quick enough to feel like one image changing,
+           not two images dissolving. */
+        transition: opacity 0.6s var(--ease-standard);
+      }
+
+      .exp-footer02__slide.is-current {
+        opacity: var(--exp-footer02-media-opacity);
+      }
+
+      /* Without mask support the media would paint as a full-bleed rectangle
+         across the panel — far worse than no effect. Drop it and keep the
+         flat logo. */
+      @supports not ((-webkit-mask-image: url("#")) or (mask-image: url("#"))) {
+        .exp-footer02--media .exp-footer02__slide { display: none; }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .exp-footer02__slide { transition: none; }
+      }
+    </style>
+  </head>
+
+  <body class="exp-page">
+    <div class="exp-topbar">
+      <a href="../index.html">&larr; Design system</a>
+      <span class="exp-topbar__hint">Experiment — site footer. 01 is the archived type lockup; 03 is what ships today.</span>
+    </div>
+
+    <!-- ================= 01 · CURRENT ================= -->
+    <section class="exp-section" aria-label="Direction 01 — the current footer">
+      <p class="exp-label"><b>01</b> Type lockup &middot; ARCHIVED</p>
+      <p class="exp-note">
+        The previous direction, frozen — the footer as it stood before the logo replaced the
+        words, kept so the change has something to be measured against. Styles, markup and behaviour are inlined copies (prefixed
+        <code>exp-footer01</code>) rather than the live component, so this stays a true record
+        after production moves on. Everything is here: the centred LET&rsquo;S TALK CTA, the
+        newsletter column, the four-office <code>&lt;details&gt;</code> accordion (CSS-only, no
+        JS), the socials and Acknowledgement of Country, and the full-width
+        &ldquo;Make what matters&rdquo; lockup. Motion too &mdash; the panel grows from the page
+        gutter to full bleed on a scroll timeline, the blocks fade up in reading order and the
+        lockup&rsquo;s words rise out of their mask on a stagger, and scroll velocity shears the
+        whole thing (the lockup 1.5&times; harder than the text above it). Scroll into it to see
+        the reveal; scroll fast to see the shear.
+      </p>
+
+      <div class="exp-footer-host">
+        <footer class="exp-footer01">
+              <h2 class="exp-footer01__cta">
+                <a class="exp-footer01__cta-link" href="/contact">
+                  <span class="exp-footer01__talk">Let&rsquo;s talk</span>
+                  <span class="exp-footer01__touch">Get in touch</span>
+                </a>
+              </h2>
+
+              <div class="exp-footer01__body">
+                <div class="exp-footer01__newsletter">
+                  <p class="exp-footer01__blurb">Join our newsletter for industry insights, news and our latest work</p>
+                  <button class="exp-footer01__subscribe" type="button" data-subscribe>Subscribe</button>
+                </div>
+
+                <div class="exp-footer01__locations">
+                  <h3 class="sr-only">Our offices</h3>
+                  <ul class="exp-footer01__offices" role="list">
+                    <li class="exp-footer01__office-item">
+                      <details class="exp-footer01__office">
+                        <summary class="exp-footer01__office-summary">
+                          <!-- footer-melbourne-icon.tsx, inlined; fill follows currentColor -->
+                          <svg class="exp-footer01__office-icon" viewBox="0 0 278 278" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M243.62,97.25l-7.01-60.45h-15.78l-3.63-22.98L60.7.06l-4.26,36.74h-15.06l-7.01,60.45h14.37l25.68,180.69h129.15l25.68-180.69h14.37ZM52.08,48.8h15.06l4.15-35.77,135.53,11.92,3.76,23.85h15.35l4.23,36.45H47.85l4.23-36.45ZM193.16,265.94h-108.32l-23.98-168.69h156.27l-23.98,168.69Z" /></svg>
+                          <span class="exp-footer01__office-city">Melbourne</span>
+                          <span class="exp-footer01__office-place">Naarm</span>
+                          <span class="exp-footer01__office-toggle" aria-hidden="true"></span>
+                        </summary>
+                        <address class="exp-footer01__office-details">
+                          <p>Suite 1, Level 2<br />132 Gwynne Street<br />Cremorne VIC 3121 Australia</p>
+                          <p class="exp-footer01__office-contact">Phone <a href="tel:+61396424107">03 9642 4107</a><br /><a href="mailto:melbourne@iconagency.com.au">melbourne@iconagency.com.au</a></p>
+                        </address>
+                      </details>
+                    </li>
+                    <li class="exp-footer01__office-item">
+                      <details class="exp-footer01__office">
+                        <summary class="exp-footer01__office-summary">
+                          <!-- footer-sydney-icon.tsx, inlined; fill follows currentColor -->
+                          <svg class="exp-footer01__office-icon" viewBox="0 0 278 278" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M230.52,104.99h-19.73v-53.65h-65.79V0h-12v51.34h-65.79v53.65h-19.73l14.24,100.92h31.04v72.1h92.47v-72.1h31.05l14.24-100.92ZM79.21,63.34h119.59v41.65h-119.59v-41.65ZM216.71,116.99l-4.58,32.44H65.87l-4.58-32.44h155.41ZM173.23,266h-68.47v-60.1h68.47v60.1ZM72.15,193.9l-4.58-32.47h142.87l-4.58,32.47H72.15Z" /></svg>
+                          <span class="exp-footer01__office-city">Sydney</span>
+                          <span class="exp-footer01__office-place">Gadigal</span>
+                          <span class="exp-footer01__office-toggle" aria-hidden="true"></span>
+                        </summary>
+                        <address class="exp-footer01__office-details">
+                          <p>Suite 5, Level 6<br />2&ndash;12 Foveaux Street<br />Surry Hills NSW 2010 Australia</p>
+                          <p class="exp-footer01__office-contact">Phone <a href="tel:+61261852860">02 6185 2860</a><br /><a href="mailto:sydney@iconagency.com.au">sydney@iconagency.com.au</a></p>
+                        </address>
+                      </details>
+                    </li>
+                    <li class="exp-footer01__office-item">
+                      <details class="exp-footer01__office">
+                        <summary class="exp-footer01__office-summary">
+                          <!-- footer-brisbane-icon.tsx, inlined; fill follows currentColor -->
+                          <svg class="exp-footer01__office-icon" viewBox="0 0 278 278" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M270.05,73.68c-2.07-7.73-7.03-14.19-13.95-18.19-6.93-4-15-5.06-22.73-2.99-3.9,1.04-7.48,2.82-10.64,5.28l-.49.4c-12.77,10.25-27.24,17.58-43,21.81-35.31,9.46-72.99,1.86-103.88-20.82-1.17-1.76-2.5-3.42-4.03-4.94-2.28-2.28-4.82-4.14-7.52-5.58,3.12-6.12,5.43-13.44,6.62-21.18,1.5-9.78,1.11-19.5-1.1-27.37l-11.55,3.24c1.76,6.27,2.04,14.19.79,22.32-1.13,7.36-3.4,14.15-6.45,19.42-9.22-.97-18.78,2.06-25.82,9.1-2.45,2.45-4.47,5.26-6,8.37-.67,1.36-1.25,2.78-1.72,4.21-11.27,28.9-14.45,59.74-9.21,89.2,5.41,30.41,19.61,57.81,41.05,79.25,23.92,23.93,54.79,38.62,89.25,42.49l.49.06c.98.09,1.95.14,2.92.14,7.93,0,15.53-3.12,21.19-8.78,11.71-11.71,11.68-30.79-.06-42.52-2.86-2.87-6.21-5.09-9.93-6.61l-.59-.23c-6.38-2.49-12.46-5.49-18.23-8.98,10.98,2.58,22.09,3.86,33.2,3.86,20.38,0,40.76-4.31,60.27-12.87l.44-.19c8.16-3.73,14.16-10.83,16.48-19.49,4.27-15.95-5.23-32.41-21.18-36.68-3.9-1.04-7.89-1.29-11.85-.74l-.62.1c-.36.05-.71.1-1.07.15,21.12-10.42,39.52-25.91,54.09-45.73l.29-.39c5.2-7.31,6.85-16.46,4.53-25.12ZM149.82,231.13c2.21.91,4.21,2.24,5.92,3.96,7.06,7.06,7.09,18.53.06,25.56-3.81,3.81-9.09,5.7-14.43,5.18l-.35-.04c-31.73-3.57-60.13-17.07-82.11-39.05-19.7-19.7-32.74-44.89-37.72-72.87-4.87-27.35-1.88-56.01,8.63-82.9l.13-.36c.3-.93.67-1.85,1.1-2.73.95-1.93,2.21-3.68,3.73-5.2,3.85-3.85,8.91-5.77,13.98-5.77s10.2,1.95,14.09,5.83c1.16,1.16,2.15,2.44,2.98,3.81l-.25.32c.24.19.49.36.74.55,2.1,3.92,2.86,8.49,2.05,12.99l-.05.3c-3.91,21.79-2.84,44.17,3.09,64.71,5.72,19.8,15.59,37.36,29.32,52.29l-.05.09c.08.04.16.08.23.12,1.19,1.28,2.39,2.56,3.64,3.8,12.8,12.8,27.86,22.64,44.76,29.24l.5.19ZM214.03,156.63l.52-.08c2.35-.32,4.71-.16,7.03.46,9.56,2.56,15.25,12.42,12.69,21.98-1.39,5.19-4.99,9.45-9.92,11.7l-.23.1c-29.08,12.75-60.21,15.27-90.03,7.28-8.92-2.39-17.57-5.71-25.77-9.87-23.78-26.67-34.21-62.36-29.09-99.67,6.81,12.37,15.33,23.62,25.24,33.18,16.1,15.52,35.1,26.3,56.49,32.03,17.38,4.65,35.23,5.63,53.07,2.88ZM255.72,91.88l-.15.2c-18.81,25.58-44.51,43.33-74.32,51.32-1.76.47-3.52.9-5.27,1.29-3.99-.64-7.96-1.48-11.91-2.54-32.37-8.67-58.9-30.32-75.02-60.57,29.25,14.65,62.1,18.35,93.3,9.99,17.38-4.66,33.33-12.75,47.39-24.03l.41-.34c1.88-1.45,4-2.5,6.32-3.12,4.63-1.24,9.47-.6,13.62,1.79,4.15,2.4,7.12,6.27,8.36,10.9,1.39,5.19.4,10.68-2.75,15.09Z" /></svg>
+                          <span class="exp-footer01__office-city">Brisbane</span>
+                          <span class="exp-footer01__office-place">Meanjin</span>
+                          <span class="exp-footer01__office-toggle" aria-hidden="true"></span>
+                        </summary>
+                        <address class="exp-footer01__office-details">
+                          <p>25 King Street<br />Bowen Hills<br />Brisbane QLD 4006 Australia</p>
+                          <p class="exp-footer01__office-contact">Phone <a href="tel:+61731556528">07 3155 6528</a><br /><a href="mailto:brisbane@iconagency.com.au">brisbane@iconagency.com.au</a></p>
+                        </address>
+                      </details>
+                    </li>
+                    <li class="exp-footer01__office-item">
+                      <details class="exp-footer01__office">
+                        <summary class="exp-footer01__office-summary">
+                          <!-- footer-fiji-icon.tsx, inlined; fill follows currentColor -->
+                          <svg class="exp-footer01__office-icon" viewBox="0 0 278 278" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M100.58,251.4C45.12,251.4,0,206.28,0,150.82,0,82.33,55.73,26.6,124.22,26.6c84.79,0,153.78,68.98,153.78,153.78v6h-97.46c-7.71,37.08-40.63,65.02-79.96,65.02ZM124.22,38.6c-61.88,0-112.22,50.34-112.22,112.22,0,48.84,39.74,88.58,88.58,88.58,38.41,0,69.66-31.25,69.66-69.66,0-30.07-24.46-54.53-54.53-54.53-23.39,0-42.42,19.03-42.42,42.42,0,18.05,14.69,32.74,32.74,32.74,13.78,0,24.99-11.21,24.99-24.99h12c0,20.4-16.59,36.99-36.99,36.99-24.67,0-44.74-20.07-44.74-44.74,0-30.01,24.41-54.42,54.42-54.42,36.68,0,66.53,29.84,66.53,66.53,0,1.56-.04,3.1-.13,4.64h83.76c-3.15-75.41-65.48-135.78-141.65-135.78Z" /></svg>
+                          <span class="exp-footer01__office-city">Fiji</span>
+                          <span class="exp-footer01__office-place">Suva</span>
+                          <span class="exp-footer01__office-toggle" aria-hidden="true"></span>
+                        </summary>
+                        <address class="exp-footer01__office-details">
+                          <p>Suva Business Center<br />177&ndash;181 Victoria Parade<br />Suva, Fiji</p>
+                          <p class="exp-footer01__office-contact"><a href="mailto:fiji@iconagency.com.au">fiji@iconagency.com.au</a></p>
+                        </address>
+                      </details>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+
+              <div class="exp-footer01__base">
+                <ul class="exp-footer01__social" role="list">
+                  <li><a class="exp-footer01__social-link" href="https://www.linkedin.com/company/iconagency" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
+                  <li><a class="exp-footer01__social-link" href="https://www.instagram.com/iconagency" target="_blank" rel="noopener noreferrer">Instagram</a></li>
+                </ul>
+                <p class="exp-footer01__ack">ICON recognises the First Peoples of this nation and their ongoing connection to culture and country. We acknowledge First Nations Peoples as the Traditional Owners, Custodians and Lore Keepers of the world&rsquo;s oldest living culture and pay respects to their Elders past, present and emerging.</p>
+              </div>
+
+              <!-- The brand lockup closes every page: "Make what matters" set to the
+                   full width at any viewport (see exp-footer01.css). One clean string
+                   for assistive tech; the visible copy is split into words only so
+                   they can rise out of the mask on a stagger. -->
+              <p class="exp-footer01__lockup">
+                <span class="sr-only">Make what matters</span>
+                <span class="exp-footer01__lockup-line" aria-hidden="true">
+                  <span class="exp-footer01__lockup-word exp-footer01__lockup-word--serif" style="--w: 0">Make</span>
+                  <span class="exp-footer01__lockup-word" style="--w: 1">what</span>
+                  <span class="exp-footer01__lockup-word" style="--w: 2">matters</span>
+                </span>
+              </p>
+            </footer>
+      </div>
+    </section>
+
+    <!-- ================= 02 · LOGO ================= -->
+    <section class="exp-section" aria-label="Direction 02 — the logo lockup">
+      <p class="exp-label"><b>02</b> Logo lockup, no film &middot; ALTERNATE</p>
+      <p class="exp-note">
+        The same footer as 01 &mdash; CTA, newsletter, office accordion, socials, acknowledgement,
+        and the same grow, reveal and scroll-shear &mdash; with the ICON logo closing the page
+        instead of &ldquo;Make what matters&rdquo; (<code>experiments/footer2.png</code>). The mark
+        is painted as a <em>masked box</em> rather than an <code>&lt;img&gt;</code>: the artwork is
+        dark-on-light, this panel is near-black, so its shape is taken as an alpha mask and the
+        colour comes from <code>--footer-ink</code> underneath. Full width at any viewport comes
+        free here &mdash; the box carries the SVG&rsquo;s own 213:69 aspect ratio, so it is exact
+        geometry rather than a measured constant. The logo rises out of its mask on the same clock
+        the three words used.
+      </p>
+
+      <div class="exp-footer-host">
+        <footer class="exp-footer02">
+              <h2 class="exp-footer02__cta">
+                <a class="exp-footer02__cta-link" href="/contact">
+                  <span class="exp-footer02__talk">Let&rsquo;s talk</span>
+                  <span class="exp-footer02__touch">Get in touch</span>
+                </a>
+              </h2>
+
+              <div class="exp-footer02__body">
+                <div class="exp-footer02__newsletter">
+                  <p class="exp-footer02__blurb">Join our newsletter for industry insights, news and our latest work</p>
+                  <button class="exp-footer02__subscribe" type="button" data-subscribe>Subscribe</button>
+                </div>
+
+                <div class="exp-footer02__locations">
+                  <h3 class="sr-only">Our offices</h3>
+                  <ul class="exp-footer02__offices" role="list">
+                    <li class="exp-footer02__office-item">
+                      <details class="exp-footer02__office">
+                        <summary class="exp-footer02__office-summary">
+                          <!-- footer-melbourne-icon.tsx, inlined; fill follows currentColor -->
+                          <svg class="exp-footer02__office-icon" viewBox="0 0 278 278" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M243.62,97.25l-7.01-60.45h-15.78l-3.63-22.98L60.7.06l-4.26,36.74h-15.06l-7.01,60.45h14.37l25.68,180.69h129.15l25.68-180.69h14.37ZM52.08,48.8h15.06l4.15-35.77,135.53,11.92,3.76,23.85h15.35l4.23,36.45H47.85l4.23-36.45ZM193.16,265.94h-108.32l-23.98-168.69h156.27l-23.98,168.69Z" /></svg>
+                          <span class="exp-footer02__office-city">Melbourne</span>
+                          <span class="exp-footer02__office-place">Naarm</span>
+                          <span class="exp-footer02__office-toggle" aria-hidden="true"></span>
+                        </summary>
+                        <address class="exp-footer02__office-details">
+                          <p>Suite 1, Level 2<br />132 Gwynne Street<br />Cremorne VIC 3121 Australia</p>
+                          <p class="exp-footer02__office-contact">Phone <a href="tel:+61396424107">03 9642 4107</a><br /><a href="mailto:melbourne@iconagency.com.au">melbourne@iconagency.com.au</a></p>
+                        </address>
+                      </details>
+                    </li>
+                    <li class="exp-footer02__office-item">
+                      <details class="exp-footer02__office">
+                        <summary class="exp-footer02__office-summary">
+                          <!-- footer-sydney-icon.tsx, inlined; fill follows currentColor -->
+                          <svg class="exp-footer02__office-icon" viewBox="0 0 278 278" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M230.52,104.99h-19.73v-53.65h-65.79V0h-12v51.34h-65.79v53.65h-19.73l14.24,100.92h31.04v72.1h92.47v-72.1h31.05l14.24-100.92ZM79.21,63.34h119.59v41.65h-119.59v-41.65ZM216.71,116.99l-4.58,32.44H65.87l-4.58-32.44h155.41ZM173.23,266h-68.47v-60.1h68.47v60.1ZM72.15,193.9l-4.58-32.47h142.87l-4.58,32.47H72.15Z" /></svg>
+                          <span class="exp-footer02__office-city">Sydney</span>
+                          <span class="exp-footer02__office-place">Gadigal</span>
+                          <span class="exp-footer02__office-toggle" aria-hidden="true"></span>
+                        </summary>
+                        <address class="exp-footer02__office-details">
+                          <p>Suite 5, Level 6<br />2&ndash;12 Foveaux Street<br />Surry Hills NSW 2010 Australia</p>
+                          <p class="exp-footer02__office-contact">Phone <a href="tel:+61261852860">02 6185 2860</a><br /><a href="mailto:sydney@iconagency.com.au">sydney@iconagency.com.au</a></p>
+                        </address>
+                      </details>
+                    </li>
+                    <li class="exp-footer02__office-item">
+                      <details class="exp-footer02__office">
+                        <summary class="exp-footer02__office-summary">
+                          <!-- footer-brisbane-icon.tsx, inlined; fill follows currentColor -->
+                          <svg class="exp-footer02__office-icon" viewBox="0 0 278 278" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M270.05,73.68c-2.07-7.73-7.03-14.19-13.95-18.19-6.93-4-15-5.06-22.73-2.99-3.9,1.04-7.48,2.82-10.64,5.28l-.49.4c-12.77,10.25-27.24,17.58-43,21.81-35.31,9.46-72.99,1.86-103.88-20.82-1.17-1.76-2.5-3.42-4.03-4.94-2.28-2.28-4.82-4.14-7.52-5.58,3.12-6.12,5.43-13.44,6.62-21.18,1.5-9.78,1.11-19.5-1.1-27.37l-11.55,3.24c1.76,6.27,2.04,14.19.79,22.32-1.13,7.36-3.4,14.15-6.45,19.42-9.22-.97-18.78,2.06-25.82,9.1-2.45,2.45-4.47,5.26-6,8.37-.67,1.36-1.25,2.78-1.72,4.21-11.27,28.9-14.45,59.74-9.21,89.2,5.41,30.41,19.61,57.81,41.05,79.25,23.92,23.93,54.79,38.62,89.25,42.49l.49.06c.98.09,1.95.14,2.92.14,7.93,0,15.53-3.12,21.19-8.78,11.71-11.71,11.68-30.79-.06-42.52-2.86-2.87-6.21-5.09-9.93-6.61l-.59-.23c-6.38-2.49-12.46-5.49-18.23-8.98,10.98,2.58,22.09,3.86,33.2,3.86,20.38,0,40.76-4.31,60.27-12.87l.44-.19c8.16-3.73,14.16-10.83,16.48-19.49,4.27-15.95-5.23-32.41-21.18-36.68-3.9-1.04-7.89-1.29-11.85-.74l-.62.1c-.36.05-.71.1-1.07.15,21.12-10.42,39.52-25.91,54.09-45.73l.29-.39c5.2-7.31,6.85-16.46,4.53-25.12ZM149.82,231.13c2.21.91,4.21,2.24,5.92,3.96,7.06,7.06,7.09,18.53.06,25.56-3.81,3.81-9.09,5.7-14.43,5.18l-.35-.04c-31.73-3.57-60.13-17.07-82.11-39.05-19.7-19.7-32.74-44.89-37.72-72.87-4.87-27.35-1.88-56.01,8.63-82.9l.13-.36c.3-.93.67-1.85,1.1-2.73.95-1.93,2.21-3.68,3.73-5.2,3.85-3.85,8.91-5.77,13.98-5.77s10.2,1.95,14.09,5.83c1.16,1.16,2.15,2.44,2.98,3.81l-.25.32c.24.19.49.36.74.55,2.1,3.92,2.86,8.49,2.05,12.99l-.05.3c-3.91,21.79-2.84,44.17,3.09,64.71,5.72,19.8,15.59,37.36,29.32,52.29l-.05.09c.08.04.16.08.23.12,1.19,1.28,2.39,2.56,3.64,3.8,12.8,12.8,27.86,22.64,44.76,29.24l.5.19ZM214.03,156.63l.52-.08c2.35-.32,4.71-.16,7.03.46,9.56,2.56,15.25,12.42,12.69,21.98-1.39,5.19-4.99,9.45-9.92,11.7l-.23.1c-29.08,12.75-60.21,15.27-90.03,7.28-8.92-2.39-17.57-5.71-25.77-9.87-23.78-26.67-34.21-62.36-29.09-99.67,6.81,12.37,15.33,23.62,25.24,33.18,16.1,15.52,35.1,26.3,56.49,32.03,17.38,4.65,35.23,5.63,53.07,2.88ZM255.72,91.88l-.15.2c-18.81,25.58-44.51,43.33-74.32,51.32-1.76.47-3.52.9-5.27,1.29-3.99-.64-7.96-1.48-11.91-2.54-32.37-8.67-58.9-30.32-75.02-60.57,29.25,14.65,62.1,18.35,93.3,9.99,17.38-4.66,33.33-12.75,47.39-24.03l.41-.34c1.88-1.45,4-2.5,6.32-3.12,4.63-1.24,9.47-.6,13.62,1.79,4.15,2.4,7.12,6.27,8.36,10.9,1.39,5.19.4,10.68-2.75,15.09Z" /></svg>
+                          <span class="exp-footer02__office-city">Brisbane</span>
+                          <span class="exp-footer02__office-place">Meanjin</span>
+                          <span class="exp-footer02__office-toggle" aria-hidden="true"></span>
+                        </summary>
+                        <address class="exp-footer02__office-details">
+                          <p>25 King Street<br />Bowen Hills<br />Brisbane QLD 4006 Australia</p>
+                          <p class="exp-footer02__office-contact">Phone <a href="tel:+61731556528">07 3155 6528</a><br /><a href="mailto:brisbane@iconagency.com.au">brisbane@iconagency.com.au</a></p>
+                        </address>
+                      </details>
+                    </li>
+                    <li class="exp-footer02__office-item">
+                      <details class="exp-footer02__office">
+                        <summary class="exp-footer02__office-summary">
+                          <!-- footer-fiji-icon.tsx, inlined; fill follows currentColor -->
+                          <svg class="exp-footer02__office-icon" viewBox="0 0 278 278" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M100.58,251.4C45.12,251.4,0,206.28,0,150.82,0,82.33,55.73,26.6,124.22,26.6c84.79,0,153.78,68.98,153.78,153.78v6h-97.46c-7.71,37.08-40.63,65.02-79.96,65.02ZM124.22,38.6c-61.88,0-112.22,50.34-112.22,112.22,0,48.84,39.74,88.58,88.58,88.58,38.41,0,69.66-31.25,69.66-69.66,0-30.07-24.46-54.53-54.53-54.53-23.39,0-42.42,19.03-42.42,42.42,0,18.05,14.69,32.74,32.74,32.74,13.78,0,24.99-11.21,24.99-24.99h12c0,20.4-16.59,36.99-36.99,36.99-24.67,0-44.74-20.07-44.74-44.74,0-30.01,24.41-54.42,54.42-54.42,36.68,0,66.53,29.84,66.53,66.53,0,1.56-.04,3.1-.13,4.64h83.76c-3.15-75.41-65.48-135.78-141.65-135.78Z" /></svg>
+                          <span class="exp-footer02__office-city">Fiji</span>
+                          <span class="exp-footer02__office-place">Suva</span>
+                          <span class="exp-footer02__office-toggle" aria-hidden="true"></span>
+                        </summary>
+                        <address class="exp-footer02__office-details">
+                          <p>Suva Business Center<br />177&ndash;181 Victoria Parade<br />Suva, Fiji</p>
+                          <p class="exp-footer02__office-contact"><a href="mailto:fiji@iconagency.com.au">fiji@iconagency.com.au</a></p>
+                        </address>
+                      </details>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+
+              <div class="exp-footer02__base">
+                <ul class="exp-footer02__social" role="list">
+                  <li><a class="exp-footer02__social-link" href="https://www.linkedin.com/company/iconagency" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
+                  <li><a class="exp-footer02__social-link" href="https://www.instagram.com/iconagency" target="_blank" rel="noopener noreferrer">Instagram</a></li>
+                </ul>
+                <p class="exp-footer02__ack">ICON recognises the First Peoples of this nation and their ongoing connection to culture and country. We acknowledge First Nations Peoples as the Traditional Owners, Custodians and Lore Keepers of the world&rsquo;s oldest living culture and pay respects to their Elders past, present and emerging.</p>
+              </div>
+
+              <!-- The brand lockup closes every page — here the ICON logo rather than
+                   the words. The mark is a masked box, not an <img>, so the shape can
+                   be filled with anything (variant 03 fills it with film). One clean
+                   string for assistive tech; the box itself is decorative. -->
+              <p class="exp-footer02__lockup">
+                <span class="sr-only">ICON</span>
+                <span class="exp-footer02__lockup-line" aria-hidden="true">
+                  <span class="exp-footer02__logo"></span>
+                </span>
+              </p>
+            </footer>
+      </div>
+    </section>
+
+    <!-- ================= 03 · LOGO AS A WINDOW ================= -->
+    <section class="exp-section" aria-label="Direction 03 — hero slides masked into the logo">
+      <p class="exp-label"><b>03</b> Films inside the logo &middot; SHIPPING TODAY</p>
+      <p class="exp-note">
+        Yes &mdash; and this is it running. Identical to 02 in every respect; the only change is
+        what sits behind the mask. Instead of a flat <code>--footer-ink</code> fill, the hero&rsquo;s
+        banner films stack inside the box and cross-fade, clipped to the letterforms. Because 02 already
+        paints the logo as a mask over a fill layer, the whole difference is a modifier class
+        &mdash; which is why 03 is not a third copy of the footer. Watch the counters of the
+        <b>C</b> and <b>O</b>: they are the only openings big enough to read footage in, and they
+        are what decides whether this reads as a window or as noise. One real catch, and it is
+        not a technical one &mdash; raw footage reads well on the bright slides and vanishes on
+        the dark ones, because dark film inside the letterforms leaves nothing to separate the
+        wordmark from a near-black panel. So this carries a small legibility floor: a brightness
+        lift, plus the slide held just under full opacity so the white fill behind it sets a
+        minimum no frame can go under. Both are one line each in the styles above if you would
+        rather see it unguarded. Videos idle while the panel is off screen, and reduced motion holds a first frame.
+      </p>
+
+      <div class="exp-footer-host">
+        <footer class="exp-footer02 exp-footer02--media">
+              <h2 class="exp-footer02__cta">
+                <a class="exp-footer02__cta-link" href="/contact">
+                  <span class="exp-footer02__talk">Let&rsquo;s talk</span>
+                  <span class="exp-footer02__touch">Get in touch</span>
+                </a>
+              </h2>
+
+              <div class="exp-footer02__body">
+                <div class="exp-footer02__newsletter">
+                  <p class="exp-footer02__blurb">Join our newsletter for industry insights, news and our latest work</p>
+                  <button class="exp-footer02__subscribe" type="button" data-subscribe>Subscribe</button>
+                </div>
+
+                <div class="exp-footer02__locations">
+                  <h3 class="sr-only">Our offices</h3>
+                  <ul class="exp-footer02__offices" role="list">
+                    <li class="exp-footer02__office-item">
+                      <details class="exp-footer02__office">
+                        <summary class="exp-footer02__office-summary">
+                          <!-- footer-melbourne-icon.tsx, inlined; fill follows currentColor -->
+                          <svg class="exp-footer02__office-icon" viewBox="0 0 278 278" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M243.62,97.25l-7.01-60.45h-15.78l-3.63-22.98L60.7.06l-4.26,36.74h-15.06l-7.01,60.45h14.37l25.68,180.69h129.15l25.68-180.69h14.37ZM52.08,48.8h15.06l4.15-35.77,135.53,11.92,3.76,23.85h15.35l4.23,36.45H47.85l4.23-36.45ZM193.16,265.94h-108.32l-23.98-168.69h156.27l-23.98,168.69Z" /></svg>
+                          <span class="exp-footer02__office-city">Melbourne</span>
+                          <span class="exp-footer02__office-place">Naarm</span>
+                          <span class="exp-footer02__office-toggle" aria-hidden="true"></span>
+                        </summary>
+                        <address class="exp-footer02__office-details">
+                          <p>Suite 1, Level 2<br />132 Gwynne Street<br />Cremorne VIC 3121 Australia</p>
+                          <p class="exp-footer02__office-contact">Phone <a href="tel:+61396424107">03 9642 4107</a><br /><a href="mailto:melbourne@iconagency.com.au">melbourne@iconagency.com.au</a></p>
+                        </address>
+                      </details>
+                    </li>
+                    <li class="exp-footer02__office-item">
+                      <details class="exp-footer02__office">
+                        <summary class="exp-footer02__office-summary">
+                          <!-- footer-sydney-icon.tsx, inlined; fill follows currentColor -->
+                          <svg class="exp-footer02__office-icon" viewBox="0 0 278 278" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M230.52,104.99h-19.73v-53.65h-65.79V0h-12v51.34h-65.79v53.65h-19.73l14.24,100.92h31.04v72.1h92.47v-72.1h31.05l14.24-100.92ZM79.21,63.34h119.59v41.65h-119.59v-41.65ZM216.71,116.99l-4.58,32.44H65.87l-4.58-32.44h155.41ZM173.23,266h-68.47v-60.1h68.47v60.1ZM72.15,193.9l-4.58-32.47h142.87l-4.58,32.47H72.15Z" /></svg>
+                          <span class="exp-footer02__office-city">Sydney</span>
+                          <span class="exp-footer02__office-place">Gadigal</span>
+                          <span class="exp-footer02__office-toggle" aria-hidden="true"></span>
+                        </summary>
+                        <address class="exp-footer02__office-details">
+                          <p>Suite 5, Level 6<br />2&ndash;12 Foveaux Street<br />Surry Hills NSW 2010 Australia</p>
+                          <p class="exp-footer02__office-contact">Phone <a href="tel:+61261852860">02 6185 2860</a><br /><a href="mailto:sydney@iconagency.com.au">sydney@iconagency.com.au</a></p>
+                        </address>
+                      </details>
+                    </li>
+                    <li class="exp-footer02__office-item">
+                      <details class="exp-footer02__office">
+                        <summary class="exp-footer02__office-summary">
+                          <!-- footer-brisbane-icon.tsx, inlined; fill follows currentColor -->
+                          <svg class="exp-footer02__office-icon" viewBox="0 0 278 278" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M270.05,73.68c-2.07-7.73-7.03-14.19-13.95-18.19-6.93-4-15-5.06-22.73-2.99-3.9,1.04-7.48,2.82-10.64,5.28l-.49.4c-12.77,10.25-27.24,17.58-43,21.81-35.31,9.46-72.99,1.86-103.88-20.82-1.17-1.76-2.5-3.42-4.03-4.94-2.28-2.28-4.82-4.14-7.52-5.58,3.12-6.12,5.43-13.44,6.62-21.18,1.5-9.78,1.11-19.5-1.1-27.37l-11.55,3.24c1.76,6.27,2.04,14.19.79,22.32-1.13,7.36-3.4,14.15-6.45,19.42-9.22-.97-18.78,2.06-25.82,9.1-2.45,2.45-4.47,5.26-6,8.37-.67,1.36-1.25,2.78-1.72,4.21-11.27,28.9-14.45,59.74-9.21,89.2,5.41,30.41,19.61,57.81,41.05,79.25,23.92,23.93,54.79,38.62,89.25,42.49l.49.06c.98.09,1.95.14,2.92.14,7.93,0,15.53-3.12,21.19-8.78,11.71-11.71,11.68-30.79-.06-42.52-2.86-2.87-6.21-5.09-9.93-6.61l-.59-.23c-6.38-2.49-12.46-5.49-18.23-8.98,10.98,2.58,22.09,3.86,33.2,3.86,20.38,0,40.76-4.31,60.27-12.87l.44-.19c8.16-3.73,14.16-10.83,16.48-19.49,4.27-15.95-5.23-32.41-21.18-36.68-3.9-1.04-7.89-1.29-11.85-.74l-.62.1c-.36.05-.71.1-1.07.15,21.12-10.42,39.52-25.91,54.09-45.73l.29-.39c5.2-7.31,6.85-16.46,4.53-25.12ZM149.82,231.13c2.21.91,4.21,2.24,5.92,3.96,7.06,7.06,7.09,18.53.06,25.56-3.81,3.81-9.09,5.7-14.43,5.18l-.35-.04c-31.73-3.57-60.13-17.07-82.11-39.05-19.7-19.7-32.74-44.89-37.72-72.87-4.87-27.35-1.88-56.01,8.63-82.9l.13-.36c.3-.93.67-1.85,1.1-2.73.95-1.93,2.21-3.68,3.73-5.2,3.85-3.85,8.91-5.77,13.98-5.77s10.2,1.95,14.09,5.83c1.16,1.16,2.15,2.44,2.98,3.81l-.25.32c.24.19.49.36.74.55,2.1,3.92,2.86,8.49,2.05,12.99l-.05.3c-3.91,21.79-2.84,44.17,3.09,64.71,5.72,19.8,15.59,37.36,29.32,52.29l-.05.09c.08.04.16.08.23.12,1.19,1.28,2.39,2.56,3.64,3.8,12.8,12.8,27.86,22.64,44.76,29.24l.5.19ZM214.03,156.63l.52-.08c2.35-.32,4.71-.16,7.03.46,9.56,2.56,15.25,12.42,12.69,21.98-1.39,5.19-4.99,9.45-9.92,11.7l-.23.1c-29.08,12.75-60.21,15.27-90.03,7.28-8.92-2.39-17.57-5.71-25.77-9.87-23.78-26.67-34.21-62.36-29.09-99.67,6.81,12.37,15.33,23.62,25.24,33.18,16.1,15.52,35.1,26.3,56.49,32.03,17.38,4.65,35.23,5.63,53.07,2.88ZM255.72,91.88l-.15.2c-18.81,25.58-44.51,43.33-74.32,51.32-1.76.47-3.52.9-5.27,1.29-3.99-.64-7.96-1.48-11.91-2.54-32.37-8.67-58.9-30.32-75.02-60.57,29.25,14.65,62.1,18.35,93.3,9.99,17.38-4.66,33.33-12.75,47.39-24.03l.41-.34c1.88-1.45,4-2.5,6.32-3.12,4.63-1.24,9.47-.6,13.62,1.79,4.15,2.4,7.12,6.27,8.36,10.9,1.39,5.19.4,10.68-2.75,15.09Z" /></svg>
+                          <span class="exp-footer02__office-city">Brisbane</span>
+                          <span class="exp-footer02__office-place">Meanjin</span>
+                          <span class="exp-footer02__office-toggle" aria-hidden="true"></span>
+                        </summary>
+                        <address class="exp-footer02__office-details">
+                          <p>25 King Street<br />Bowen Hills<br />Brisbane QLD 4006 Australia</p>
+                          <p class="exp-footer02__office-contact">Phone <a href="tel:+61731556528">07 3155 6528</a><br /><a href="mailto:brisbane@iconagency.com.au">brisbane@iconagency.com.au</a></p>
+                        </address>
+                      </details>
+                    </li>
+                    <li class="exp-footer02__office-item">
+                      <details class="exp-footer02__office">
+                        <summary class="exp-footer02__office-summary">
+                          <!-- footer-fiji-icon.tsx, inlined; fill follows currentColor -->
+                          <svg class="exp-footer02__office-icon" viewBox="0 0 278 278" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M100.58,251.4C45.12,251.4,0,206.28,0,150.82,0,82.33,55.73,26.6,124.22,26.6c84.79,0,153.78,68.98,153.78,153.78v6h-97.46c-7.71,37.08-40.63,65.02-79.96,65.02ZM124.22,38.6c-61.88,0-112.22,50.34-112.22,112.22,0,48.84,39.74,88.58,88.58,88.58,38.41,0,69.66-31.25,69.66-69.66,0-30.07-24.46-54.53-54.53-54.53-23.39,0-42.42,19.03-42.42,42.42,0,18.05,14.69,32.74,32.74,32.74,13.78,0,24.99-11.21,24.99-24.99h12c0,20.4-16.59,36.99-36.99,36.99-24.67,0-44.74-20.07-44.74-44.74,0-30.01,24.41-54.42,54.42-54.42,36.68,0,66.53,29.84,66.53,66.53,0,1.56-.04,3.1-.13,4.64h83.76c-3.15-75.41-65.48-135.78-141.65-135.78Z" /></svg>
+                          <span class="exp-footer02__office-city">Fiji</span>
+                          <span class="exp-footer02__office-place">Suva</span>
+                          <span class="exp-footer02__office-toggle" aria-hidden="true"></span>
+                        </summary>
+                        <address class="exp-footer02__office-details">
+                          <p>Suva Business Center<br />177&ndash;181 Victoria Parade<br />Suva, Fiji</p>
+                          <p class="exp-footer02__office-contact"><a href="mailto:fiji@iconagency.com.au">fiji@iconagency.com.au</a></p>
+                        </address>
+                      </details>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+
+              <div class="exp-footer02__base">
+                <ul class="exp-footer02__social" role="list">
+                  <li><a class="exp-footer02__social-link" href="https://www.linkedin.com/company/iconagency" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
+                  <li><a class="exp-footer02__social-link" href="https://www.instagram.com/iconagency" target="_blank" rel="noopener noreferrer">Instagram</a></li>
+                </ul>
+                <p class="exp-footer02__ack">ICON recognises the First Peoples of this nation and their ongoing connection to culture and country. We acknowledge First Nations Peoples as the Traditional Owners, Custodians and Lore Keepers of the world&rsquo;s oldest living culture and pay respects to their Elders past, present and emerging.</p>
+              </div>
+
+              <!-- The brand lockup closes every page — here the ICON logo rather than
+                   the words. The mark is a masked box, not an <img>, so the shape can
+                   be filled with anything (variant 03 fills it with film). One clean
+                   string for assistive tech; the box itself is decorative. -->
+              <p class="exp-footer02__lockup">
+                <span class="sr-only">ICON</span>
+                <span class="exp-footer02__lockup-line" aria-hidden="true">
+                  <span class="exp-footer02__logo">
+                    <video class="exp-footer02__slide is-current" src="../assets/Banner/NWMPHN.mp4" muted playsinline loop preload="auto"></video>
+                    <video class="exp-footer02__slide" src="../assets/Banner/banner-vid-nike-mara.mp4" muted playsinline loop preload="auto"></video>
+                  </span>
+                </span>
+              </p>
+            </footer>
+      </div>
+    </section>
+
+    <!-- Next variants land here, each in its own .exp-section with an
+         .exp-label / .exp-note pair and its own exp-footerNN-prefixed styles. -->
+
+    <script>
+      /* 01's behaviour, inlined and bound to the prefixed block — the frozen
+         twin of js/site-footer.js. A later variant brings its own. */
+      /* site-footer.js — the global footer's motion. One IIFE, two concerns:
+       *
+       * 1. LOAD REVEAL — adds .is-revealed the first time the panel enters the
+       *    viewport; CSS owns the staggered fade-up and the lockup's word rise.
+       *    Without JS (or without IntersectionObserver) the footer is simply
+       *    visible: the hidden state lives behind .js-animations, exactly as
+       *    reveal.css and tagline.css do it.
+       *
+       * 2. SCROLL-VELOCITY SKEW — samples scroll speed and writes ONE custom
+       *    property, --footer-skew, on the footer per frame; the blocks inside
+       *    shear by it (the lockup harder than the rest). Velocity is not
+       *    expressible as a CSS scroll timeline — those are position-driven — so
+       *    this is the one part that must be scripted.
+       *
+       * Why its own file rather than a section of home-c.js: the footer is global
+       * and ships on pages that never load the homepage bundle (and have no GSAP),
+       * so its behaviour has to travel with it. The velocity sampler below is
+       * deliberately the same shape as the one in news.js — if a third consumer
+       * appears, that is the moment to lift it into a shared primitive rather than
+       * copy it again.
+       *
+       * Drupal: Drupal.behaviors.iconFooter, attached via the `icon/site-footer`
+       * library alongside the footer region template.
+       */
+      (function () {
+        "use strict";
+
+        var footer = document.querySelector(".exp-footer01");
+        if (!footer) return;
+
+        var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+        /* ---- 1. load reveal ---------------------------------------------------- */
+
+        if (reduce || !("IntersectionObserver" in window)) {
+          footer.classList.add("is-revealed");
+        } else {
+          var io = new IntersectionObserver(
+            function (entries) {
+              entries.forEach(function (e) {
+                if (!e.isIntersecting) return;
+                e.target.classList.add("is-revealed");
+                io.unobserve(e.target);
+              });
+            },
+            // a sliver is enough: the panel is taller than most viewports, so
+            // waiting for a percentage of it would fire late or never
+            { rootMargin: "0px 0px -10% 0px" }
+          );
+          io.observe(footer);
+        }
+
+        /* ---- 2. scroll-velocity skew ------------------------------------------- */
+
+        if (reduce) return;
+
+        var MAX = 1.8; // deg — past ~2 the shear stops reading as motion and starts
+                       // reading as a broken layout, and the lockup multiplies it
+        var VEL_AT_MAX = 2600; // scroll px/s that reaches the full shear
+        var clamp = function (v, lo, hi) { return v < lo ? lo : v > hi ? hi : v; };
+
+        // idle the whole thing while the footer is off screen
+        var inView = !("IntersectionObserver" in window);
+        if (!inView) {
+          new IntersectionObserver(function (entries) {
+            inView = entries[0].isIntersecting;
+          }, { rootMargin: "20% 0px" }).observe(footer);
+        }
+
+        var lastY = window.scrollY, lastT = performance.now();
+        var vel = 0, cur = 0, raf = 0, prevT = 0;
+
+        var tick = function (now) {
+          raf = 0;
+          var dt = Math.min(0.05, (now - (prevT || now)) / 1000);
+          prevT = now;
+          // decay: the scroll event stops firing, so nothing else zeroes this
+          vel *= Math.pow(0.86, dt * 60);
+          if (Math.abs(vel) < 20) vel = 0;
+          var target = inView ? clamp((vel / VEL_AT_MAX) * MAX, -MAX, MAX) : 0;
+          cur += (target - cur) * Math.min(1, dt * 7);
+          if (Math.abs(cur) < 0.01 && !vel) cur = 0;
+          footer.style.setProperty("--exp-footer01-skew", cur.toFixed(3) + "deg");
+          if (vel || Math.abs(cur) > 0.005) raf = requestAnimationFrame(tick);
+          else prevT = 0; // settled — the loop stops until the next scroll
+        };
+
+        window.addEventListener("scroll", function () {
+          var now = performance.now();
+          var dt = (now - lastT) / 1000;
+          if (dt > 0) vel = clamp((window.scrollY - lastY) / dt, -12000, 12000);
+          lastY = window.scrollY;
+          lastT = now;
+          if (!raf) raf = requestAnimationFrame(tick);
+        }, { passive: true });
+      })();
+    </script>
+
+    <script>
+      /* 02 + 03 share one behaviour script, because they are one component.
+         The panel motion is the frozen twin of js/site-footer.js again, run
+         over every .exp-footer02 on the page. */
+      /* site-footer.js — the global footer's motion. One IIFE, two concerns:
+       *
+       * 1. LOAD REVEAL — adds .is-revealed the first time the panel enters the
+       *    viewport; CSS owns the staggered fade-up and the lockup's word rise.
+       *    Without JS (or without IntersectionObserver) the footer is simply
+       *    visible: the hidden state lives behind .js-animations, exactly as
+       *    reveal.css and tagline.css do it.
+       *
+       * 2. SCROLL-VELOCITY SKEW — samples scroll speed and writes ONE custom
+       *    property, --footer-skew, on the footer per frame; the blocks inside
+       *    shear by it (the lockup harder than the rest). Velocity is not
+       *    expressible as a CSS scroll timeline — those are position-driven — so
+       *    this is the one part that must be scripted.
+       *
+       * Why its own file rather than a section of home-c.js: the footer is global
+       * and ships on pages that never load the homepage bundle (and have no GSAP),
+       * so its behaviour has to travel with it. The velocity sampler below is
+       * deliberately the same shape as the one in news.js — if a third consumer
+       * appears, that is the moment to lift it into a shared primitive rather than
+       * copy it again.
+       *
+       * Drupal: Drupal.behaviors.iconFooter, attached via the `icon/site-footer`
+       * library alongside the footer region template.
+       */
+      (function () {
+        "use strict";
+
+        var footers = [].slice.call(document.querySelectorAll(".exp-footer02"));
+        if (!footers.length) return;
+
+        footers.forEach(function (footer) {
+        var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+        /* ---- 1. load reveal ---------------------------------------------------- */
+
+        if (reduce || !("IntersectionObserver" in window)) {
+          footer.classList.add("is-revealed");
+        } else {
+          var io = new IntersectionObserver(
+            function (entries) {
+              entries.forEach(function (e) {
+                if (!e.isIntersecting) return;
+                e.target.classList.add("is-revealed");
+                io.unobserve(e.target);
+              });
+            },
+            // a sliver is enough: the panel is taller than most viewports, so
+            // waiting for a percentage of it would fire late or never
+            { rootMargin: "0px 0px -10% 0px" }
+          );
+          io.observe(footer);
+        }
+
+        /* ---- 2. scroll-velocity skew ------------------------------------------- */
+
+        if (reduce) return;
+
+        var MAX = 1.8; // deg — past ~2 the shear stops reading as motion and starts
+                       // reading as a broken layout, and the lockup multiplies it
+        var VEL_AT_MAX = 2600; // scroll px/s that reaches the full shear
+        var clamp = function (v, lo, hi) { return v < lo ? lo : v > hi ? hi : v; };
+
+        // idle the whole thing while the footer is off screen
+        var inView = !("IntersectionObserver" in window);
+        if (!inView) {
+          new IntersectionObserver(function (entries) {
+            inView = entries[0].isIntersecting;
+          }, { rootMargin: "20% 0px" }).observe(footer);
+        }
+
+        var lastY = window.scrollY, lastT = performance.now();
+        var vel = 0, cur = 0, raf = 0, prevT = 0;
+
+        var tick = function (now) {
+          raf = 0;
+          var dt = Math.min(0.05, (now - (prevT || now)) / 1000);
+          prevT = now;
+          // decay: the scroll event stops firing, so nothing else zeroes this
+          vel *= Math.pow(0.86, dt * 60);
+          if (Math.abs(vel) < 20) vel = 0;
+          var target = inView ? clamp((vel / VEL_AT_MAX) * MAX, -MAX, MAX) : 0;
+          cur += (target - cur) * Math.min(1, dt * 7);
+          if (Math.abs(cur) < 0.01 && !vel) cur = 0;
+          footer.style.setProperty("--exp-footer02-skew", cur.toFixed(3) + "deg");
+          if (vel || Math.abs(cur) > 0.005) raf = requestAnimationFrame(tick);
+          else prevT = 0; // settled — the loop stops until the next scroll
+        };
+
+        window.addEventListener("scroll", function () {
+          var now = performance.now();
+          var dt = (now - lastT) / 1000;
+          if (dt > 0) vel = clamp((window.scrollY - lastY) / dt, -12000, 12000);
+          lastY = window.scrollY;
+          lastT = now;
+          if (!raf) raf = requestAnimationFrame(tick);
+        }, { passive: true });
+        });
+      })();
+    </script>
+
+    <script>
+      /* 03 only: cross-fade the hero slides behind the logo mask.
+         Videos are the expensive part, so they are only ever playing while
+         the panel is actually on screen — a masked, composited video that
+         nobody can see is pure battery. */
+      (function () {
+        "use strict";
+        var stage = document.querySelector(".exp-footer02--media .exp-footer02__logo");
+        if (!stage) return;
+        var slides = [].slice.call(stage.querySelectorAll(".exp-footer02__slide"));
+        if (slides.length < 2) return;
+
+        var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        // The hero's own video hold (js/home-c.js: HOLD_VIDEO = 6000), so the
+        // same footage keeps the same pace in both places. A setTimeout chain
+        // rather than setInterval, also as the hero does it — a slide that
+        // stalls should delay the next one, not have it fire underneath.
+        var HOLD = 6000;
+        var i = 0, timer = 0, live = false;
+
+        function show(el) {
+          el.classList.add("is-current");
+          // every appearance starts clean rather than resuming mid-loop
+          try { el.currentTime = 0; } catch (e) {}
+          if (reduce) return; // reduced motion holds the first frame
+          var p = el.play();
+          if (p && p.catch) p.catch(function () {}); // autoplay policy: ignore
+        }
+
+        function step() {
+          var prev = slides[i];
+          i = (i + 1) % slides.length;
+          prev.classList.remove("is-current");
+          prev.pause();
+          show(slides[i]);
+          timer = setTimeout(step, HOLD);
+        }
+
+        function start() {
+          if (live) return;
+          live = true;
+          show(slides[i]);
+          if (!reduce) timer = setTimeout(step, HOLD);
+        }
+
+        function stop() {
+          live = false;
+          clearTimeout(timer);
+          timer = 0;
+          slides.forEach(function (v) { v.pause(); });
+        }
+
+        if ("IntersectionObserver" in window) {
+          new IntersectionObserver(function (entries) {
+            entries[0].isIntersecting ? start() : stop();
+          }, { rootMargin: "10% 0px" }).observe(stage);
+        } else {
+          start();
+        }
+
+        // a backgrounded tab should not keep decoding video
+        document.addEventListener("visibilitychange", function () {
+          if (document.hidden) stop();
+        });
+      })();
+    </script>
+  </body>
+</html>

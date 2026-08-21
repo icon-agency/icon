@@ -1,0 +1,143 @@
+/* news-list.css — the /news listing GRID: two stories per line, a hairline
+ * above the first pair and between every group of two (design:
+ * experiments/rough-news-mockup.png).
+ *
+ * The cards themselves are the SHARED components/news-card.css — the same
+ * component the homepage news section renders, so hovers, parallax, tilt and
+ * type are identical by construction rather than by copy. This file owns only
+ * what is particular to the listing: how the cards are paired, ruled and
+ * filtered.
+ *
+ * The pair rules can't cross a grid gap (a border spans only its own item),
+ * so the container has NO gaps: the column gutter lives INSIDE the items —
+ * half each side, assigned with `of :not([hidden])` so filtering re-forms
+ * the pairs correctly — and every item's border-top joins into one unbroken
+ * full-width line.
+ *
+ * Filtering (js/news.js) sets `hidden` on the <li>.
+ *
+ * Drupal: node view of `news` teasers — the <ul> is a Views unformatted list,
+ * data-category comes from field_news_list_category (list_string). SDC
+ * `news-list`; single appearance (the earlier list/grid variants were cut). */
+
+.news-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  /* NO gaps — see the header note; rhythm comes from the items' padding */
+  gap: 0;
+  margin: 0;
+  padding: 0 clamp(1rem, 3vw, 3rem); /* self-pads, like .work-grid */
+  list-style: none;
+}
+
+@media (min-width: 768px) {
+  .news-list { grid-template-columns: repeat(2, 1fr); }
+}
+
+.news-list__item {
+  border-top: 1px solid var(--rule);
+  padding-block: var(--space-md);
+}
+
+.news-list__item[hidden] {
+  display: none; /* grid items need the explicit rule */
+}
+
+/* the column gutter, inside the items. `of :not([hidden])` counts only
+   VISIBLE items, so left/right stay correct when filtering reflows pairs. */
+@media (min-width: 768px) {
+  .news-list__item:nth-child(odd of .news-list__item:not([hidden])) {
+    padding-right: calc(var(--space-md) / 2);
+  }
+  .news-list__item:nth-child(even of .news-list__item:not([hidden])) {
+    padding-left: calc(var(--space-md) / 2);
+  }
+}
+
+/* An ODD number of visible stories leaves the last row half-populated, and
+   because each rule is its own item's border-top it would stop dead at the
+   list's midpoint — a stub. Two of the four filters (Agency and Insights, 3
+   stories each) hit this. Carry the line across the empty column with a
+   pseudo-element rather than spanning the item itself, which would stretch
+   the CARD to full width too.
+
+   `nth-last-child(1 of ...)` is "last VISIBLE item", the same `of S` trick the
+   gutters use, so it re-evaluates as filtering changes what is on screen. */
+@media (min-width: 768px) {
+  .news-list__item:nth-child(odd of .news-list__item:not([hidden])):nth-last-child(
+      1 of .news-list__item:not([hidden])
+    ) {
+    position: relative;
+  }
+
+  .news-list__item:nth-child(odd of .news-list__item:not([hidden])):nth-last-child(
+      1 of .news-list__item:not([hidden])
+    )::after {
+    content: "";
+    position: absolute;
+    /* the containing block is the padding box, so -1px lands on the border */
+    top: -1px;
+    left: 100%;
+    width: 100%; /* the empty column is the same 1fr */
+    border-top: 1px solid var(--rule);
+  }
+}
+
+/* Scroll-velocity lean — the homepage card behaviour, ported without GSAP:
+   js/news.js writes ONE --nl-lean on the list per frame and every card
+   inherits it. The hook lives here, not in the component: on the homepage
+   GSAP drives the same effect with inline transforms instead. The separate
+   `rotate` property composes with the figure's own cursor tilt. */
+.news-list__item .news-card {
+  rotate: var(--nl-lean, 0deg);
+}
+
+/* ---- fluid filter swap (View Transitions) --------------------------------
+   js/news.js gives every card (and filter chip) a unique
+   view-transition-name and runs the filter's DOM change inside
+   document.startViewTransition(). The browser then animates BETWEEN the two
+   layouts: surviving cards glide to their new pair positions (the default
+   group animation morphs transform + size — exactly what the nth-child
+   gutter/hairline reflow needs), while cards with a snapshot on only one
+   side get the enter/exit keyframes below.
+
+   These ::view-transition-* pseudos live on the root element, but scoping
+   them here keeps the choreography beside the component that owns it — the
+   news listing is the only page running view transitions. Reduced motion
+   needs no rules here: news.js never starts a transition in that case. */
+
+/* the page itself must not crossfade — only the named participants move */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+}
+
+/* the glide: give the position/size morph the site's pace and easing */
+::view-transition-group(*) {
+  animation-duration: var(--duration-slow);
+  animation-timing-function: var(--ease-standard);
+}
+
+@keyframes nl-vt-enter {
+  from {
+    opacity: 0;
+    transform: translateY(1.25rem) scale(0.98);
+  }
+}
+
+@keyframes nl-vt-exit {
+  to {
+    opacity: 0;
+    transform: translateY(0.75rem) scale(0.98);
+  }
+}
+
+/* :only-child = no counterpart on the other side, i.e. a pure entry or a
+   pure exit rather than a survivor morphing between positions */
+::view-transition-new(*):only-child {
+  animation: nl-vt-enter var(--duration-slow) var(--ease-decelerate) both;
+}
+
+::view-transition-old(*):only-child {
+  animation: nl-vt-exit var(--duration-normal) var(--ease-accelerate) both;
+}

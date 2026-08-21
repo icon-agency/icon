@@ -1,0 +1,255 @@
+/* news-card.css — ONE news story card, shared by the homepage news section
+ * and the /news listing. Promoted out of the homepage page layer
+ * (utilities/home-c.css) the moment a second page needed it, so the two can
+ * never drift: same anatomy, same hovers, same parallax, same JS hooks.
+ *
+ * Anatomy: square tile on the left, text to its right with the title at the
+ * TOP and the meta on the tile's BASELINE; the split is the mock's 390:425.
+ *
+ * Sized by CONTAINER, not viewport — that is what lets one component serve
+ * both hosts honestly. The homepage gives a card the full container width;
+ * /news gives it half of one. A viewport query would have to guess which,
+ * and the same 1024px would mean a 938px card on one page and a 650px card
+ * on the other. The card asks its own box instead: below the threshold it
+ * stacks, above it splits and the meta drops to the tile's baseline.
+ *
+ * The threshold is 26rem (416px), set by the tightest box this card is ever
+ * asked to split in: the homepage's news rail halves its own column at
+ * min-width:1024px, dropping the host <li> to ~452px — and to ~445px once a
+ * classic scrollbar takes its 15px. Anything above that stacks the homepage
+ * cards through the whole 1024–1230px band, where they have always sat side
+ * by side. 26rem clears the scrollbar case with room to spare; picking a
+ * value just under 452 would have flipped the layout on any machine that
+ * reserves gutter for a scrollbar.
+ *
+ * The card's PARENT is the query container, whatever that parent turns out
+ * to be (declared here via :has, so the component carries its own contract
+ * and neither list has to know). Deliberately not `li:has(...)`: in Drupal a
+ * Views row wraps each teaser in <article>, and a selector keyed to <li>
+ * would silently stop matching, no container would be established, and every
+ * @container rule below would go dead — leaving the card stacked at every
+ * width with nothing to indicate why. Matching on "the direct parent, of any
+ * kind" survives that. Still an admitted wart for the SDC port: it is the one
+ * rule this component sets outside its own root.
+ *
+ * Heading level is the page's call — /news uses h2 (it is the page's list),
+ * the homepage h3 (it sits under the section's h2). Nothing here depends on
+ * the tag.
+ *
+ * JS hooks (js/home-c.js 3f / js/news.js): --mx/--my written on the card by
+ * the cursor-tilt sampler; .media-reveal + [data-reveal-img] on the figure.
+ *
+ * Drupal: SDC `news-card`, the teaser view mode of a `news` node. */
+
+/* The card's own box is the breakpoint, which is why this sits on the PARENT
+   and not the card: an element cannot query itself. */
+:has(> .news-card) {
+  container-type: inline-size;
+}
+
+.news-card {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-sm);
+  text-decoration: none;
+  color: inherit;
+}
+
+/* tile | text */
+@container (min-width: 26rem) {
+  .news-card {
+    grid-template-columns: minmax(0, 390fr) minmax(0, 425fr);
+  }
+}
+
+/* The split now rides a three-feature chain — :has() -> container-type ->
+   @container — and if any link is missing the card would stack at EVERY
+   width, silently. Fall back to the viewport rule this component replaced
+   (the homepage's old `@media (min-width: 640px)`), which is wrong only in
+   the narrow band the container query exists to get right. Guarding novel CSS
+   this way is the same discipline as the @supports around the scroll-driven
+   parallax below. */
+@supports not (container-type: inline-size) {
+  @media (min-width: 640px) {
+    .news-card {
+      grid-template-columns: minmax(0, 390fr) minmax(0, 425fr);
+    }
+
+    .news-card__body {
+      justify-content: space-between;
+    }
+  }
+}
+
+/* ---- the tile ------------------------------------------------------------ */
+
+.news-card__figure {
+  position: relative; /* positioning context for the overscanned img */
+  margin: 0;
+  border-radius: var(--radius-icon);
+  overflow: hidden;
+  aspect-ratio: 1 / 1;
+
+  /* the mask draws in and the frame takes a very subtle cursor-following
+     tilt. --mx/--my are set on the CARD by js and inherit — deliberately not
+     declared here, or they would shadow it. */
+  --mask-inset: 0%;
+  clip-path: inset(var(--mask-inset) round var(--radius-icon));
+  transform: perspective(900px)
+    rotateX(calc(var(--my, 0) * -2.2deg))
+    rotateY(calc(var(--mx, 0) * 2.2deg));
+  transition:
+    clip-path 0.4s var(--ease-decelerate),
+    transform 0.25s var(--ease-decelerate);
+}
+
+/* Pointer devices only — on touch, :hover sticks after a tap. */
+@media (hover: hover) {
+  .news-card:hover .news-card__figure,
+  .news-card:focus-visible .news-card__figure {
+    --mask-inset: 1.6%;
+  }
+  /* lift the media a touch so the card reads as "live" under the cursor */
+  .news-card:hover .news-card__img,
+  .news-card:focus-visible .news-card__img {
+    filter: brightness(1.08);
+  }
+}
+
+/* Slightly oversized on both axes — just enough overscan (3% a side) to cover
+   the parallax drift below without exposing an edge. */
+.news-card__img {
+  position: absolute;
+  top: -3%;
+  left: -3%;
+  width: 106%;
+  max-width: none; /* override preflight's img{max-width:100%} so 106% applies */
+  height: 106%;
+  object-fit: cover;
+  display: block;
+  transition: filter 0.35s var(--ease-standard);
+}
+
+/* Vertical drift as the card travels up through the viewport.
+
+   NAMED timeline, not a bare view(): the image's nearest ancestor is
+   .news-card__figure, whose `overflow: hidden` makes it a scroll container,
+   so view() would resolve its scrollport to that non-scrolling frame and pin
+   the animation at 50% — dead still. Declaring view-timeline-name on the CARD
+   (which has no overflow) and pointing the image at it is the fix LESSONS.md
+   records for the work + news media. */
+.news-card {
+  view-timeline-name: --news-card;
+  view-timeline-axis: block;
+}
+
+@keyframes news-img-y {
+  from { transform: translateY(-2%); }
+  to { transform: translateY(2%); }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .news-card__img {
+      animation: news-img-y linear both;
+      animation-timeline: --news-card;
+      animation-range: cover 0% cover 100%;
+    }
+  }
+}
+
+/* ---- text column: title at the top, meta on the tile's baseline ---------- */
+
+.news-card__body {
+  display: flex;
+  flex-direction: column;
+  /* stacked: cluster the text under the tile. Split: the tile towers over the
+     text, so the meta goes to its baseline — see the container note above. */
+  justify-content: flex-start;
+  gap: var(--space-sm);
+}
+
+@container (min-width: 26rem) {
+  .news-card__body { justify-content: space-between; }
+}
+
+.news-card__title {
+  margin: 0;
+  font-size: clamp(1.25rem, 1.5vw, 2rem);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.3;
+  color: var(--color-icon-black);
+  padding-inline-end: 1.5em; /* room for the hover arrow */
+
+  /* The row's height is max(tile, text): the figure's aspect-ratio stops it
+     stretching, so a text column taller than the tile grows the ROW instead —
+     dropping the meta below the tile's baseline and making the pitch ragged.
+     That breaks on CONTENT, not viewport, so real editor headlines would
+     surface it in Drupal rather than here. Budget the title to five lines and
+     ellipsize beyond.
+
+     Known trade-off (WCAG 1.4.12): the longest headline shipping today fills
+     exactly five lines, so a reader applying the text-spacing overrides loses
+     its tail visually. The full string stays in the DOM — the accessible name
+     and any find-in-page still see it — and the alternative, letting the row
+     grow, breaks the meta-on-the-baseline pitch this clamp exists to hold. */
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 5;
+  overflow: hidden;
+}
+
+/* Hover arrow — text-height (1em), icon blue, flows inline after the title's
+   last word (it always occupies its space, so nothing reflows on hover; it
+   just fades + slides in). Colour comes from the token via a masked box,
+   keeping the glyph identical to the arrow-link's. Longhand mask properties
+   on purpose: the minifier mangles multi-part mask shorthands (see LESSONS.md
+   on Lightning CSS), and -webkit- first. */
+.news-card__title::after {
+  content: "";
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  margin-left: 0.35em;
+  vertical-align: -0.1em;
+  background-color: var(--color-icon-blue);
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12h14'/%3E%3Cpath d='m12 5 7 7-7 7'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12h14'/%3E%3Cpath d='m12 5 7 7-7 7'/%3E%3C/svg%3E");
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  opacity: 0;
+  translate: -0.25em 0;
+  transition:
+    opacity var(--duration-normal) var(--ease-standard),
+    translate var(--duration-normal) var(--ease-decelerate);
+}
+
+.news-card:hover .news-card__title::after,
+.news-card:focus-visible .news-card__title::after {
+  opacity: 1;
+  translate: 0 0;
+}
+
+/* Category / date, in the same voice as the work cards' client name. */
+.news-card__meta {
+  display: block;
+  font-size: clamp(1.0625rem, 1.1vw, 1.5rem);
+  color: var(--color-icon-grey);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .news-card__figure {
+    clip-path: none;
+    transform: none;
+    transition: none;
+  }
+
+  .news-card__title::after {
+    transition: none;
+    translate: 0 0;
+  }
+}

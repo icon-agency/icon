@@ -42,6 +42,16 @@
   --card-title: clamp(0.9rem, 1.5vw, 1.5rem);
   --card-subtitle: clamp(0.875rem, 0.85vw, 1.25rem);
 
+  /* THE mid voice — the site's one "sentence" size, sitting between the
+     display caps and the meta line. Worn by the hero's client label and
+     counter, the intro statement, the expertise label and its links, the work
+     tile titles, both section "More" links, and the footer's blurb /
+     Subscribe / city names / socials. Every one of those carried the same
+     literal, so naming it makes a retune one edit and stops the roles
+     drifting apart. Keeps growing to a ~2285px viewport, then caps at 3rem.
+     Its companions: medium weight, -0.01em tracking, 1.2 line-height. */
+  --voice-mid: clamp(1.4rem, 2.1vw, 3rem);
+
   /* Weights */
   --font-weight-normal: 400;
   --font-weight-medium: 500;
