@@ -1,0 +1,475 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Experiment — Text intro</title>
+    <meta name="robots" content="noindex" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Kumbh+Sans:wght@400..900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://use.typekit.net/bhv7yrj.css" />
+    <link rel="stylesheet" href="../css/main.css" />
+
+    <!-- EXPERIMENT — kinetic 3D text.
+
+         Two directions for a display-type intro built entirely from one
+         line, MAKE WHAT MATTERS, on the brand-blue ground:
+
+         01 · ROTATING TEXT LATTICE
+         One text strip (proportion ~7:1) repeated as an L-shaped column —
+         a wall facing the viewer, plus strips folded 90 degrees at its base
+         receding into depth. Columns repeat on a fixed pitch, alternate
+         columns turned -90 degrees in-plane so their ribbons run vertically:
+         a woven, Escher-ish lattice of a single sentence. A very long lens
+         flattens the projection toward isometric, and the whole scene turns
+         rotateY(+t) rotateX(-t) — CSS interpolates each rotate function's
+         angle linearly, which gives the coupled tumble for free. Wheel over
+         the stage nudges t through an outer wrapper.
+
+         02 · KINETIC TEXT BOX
+         Four planes hinged on the stage's edges and folded 90 degrees into
+         the screen — the inside of a box seen from its open end, under a
+         short lens for a real perspective plunge. Every face carries the
+         same seven depth bands, so the hairlines ring the box continuously;
+         band height and type size both follow one depth ramp, so the rows
+         stay tight at every depth and the type converges with the geometry.
+         Floor and ceiling rows run across and slide sideways; wall rows are
+         rotated 90 degrees and slide along the walls. A settled lockup sits
+         on the far face at the vanishing point.
+
+         Both are CSS 3D on real DOM text — crisp at any size, no glyph
+         atlas, no WebGL. Reduced motion: 01 holds a fixed mid-tumble frame,
+         02 stills every marquee. -->
+    <style>
+      /* ---- page chrome (matches the other experiments) ---- */
+      .exp-page { background: var(--color-background); color: var(--color-icon-black); }
+      .exp-topbar {
+        position: fixed; top: 0; inset-inline: 0; z-index: 100;
+        display: flex; align-items: center; justify-content: space-between;
+        padding: 0.7rem clamp(1rem, 3vw, 2.5rem);
+        font-size: 0.72rem; font-weight: var(--font-weight-bold);
+        letter-spacing: 0.08em; text-transform: uppercase;
+        background: color-mix(in srgb, var(--color-background) 82%, transparent);
+        -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
+        border-bottom: 1px solid var(--color-border);
+      }
+      .exp-topbar a { color: var(--color-icon-black); text-decoration: none; }
+      .exp-topbar a:hover { color: var(--color-icon-blue); }
+      .exp-topbar__hint { color: var(--color-icon-grey); font-weight: var(--font-weight-normal); letter-spacing: 0.04em; text-transform: none; }
+      .exp-label {
+        display: flex; align-items: baseline; gap: 0.6rem;
+        padding: clamp(4rem, 8vw, 6rem) clamp(1rem, 3vw, 2.5rem) 0;
+        font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase;
+        color: var(--color-icon-grey);
+      }
+      .exp-label b { color: var(--color-icon-blue); font-weight: var(--font-weight-bold); }
+      .exp-note {
+        margin: 0.5rem 0 0; padding: 0 clamp(1rem, 3vw, 2.5rem);
+        max-width: 68ch; font-size: var(--text-xs); line-height: 1.5;
+        color: var(--color-icon-grey);
+      }
+      .exp-note code { font-size: 0.92em; }
+      .exp-section { position: relative; padding-bottom: clamp(2.5rem, 6vw, 4.5rem); border-bottom: 1px solid var(--color-border); }
+
+      /* ---- the stage ---------------------------------------------------- */
+      .exp-tl {
+        position: relative;
+        margin: clamp(1.5rem, 3vw, 2.5rem) clamp(1rem, 3vw, 2.5rem) 0;
+        height: min(82svh, 60rem);
+        border-radius: var(--radius-icon);
+        overflow: hidden;
+        background: var(--color-icon-blue);
+        color: var(--color-white);
+        container-type: size;
+        /* near-orthographic: a very long lens flattens the projection
+           toward isometric */
+        perspective: 300cqw;
+        perspective-origin: 50% 50%;
+      }
+
+      /* scene units: the strip proportion is ~7:1 — one strip is the stage
+         width wide and a seventh of that tall */
+      .exp-tl__world {
+        --W: 100cqw;              /* strip length */
+        --E: calc(100cqw / 7);    /* strip height = fold pitch */
+        position: absolute;
+        inset: 0;
+        transform-style: preserve-3d;
+        /* wheel nudge lives here, composing with the tumble below */
+        transform: rotateY(var(--twist, 0deg)) rotateX(calc(var(--twist, 0deg) * -1));
+      }
+
+      /* the endless tumble: rotateY(+θ) · rotateX(−θ) — CSS interpolates the
+         two function angles linearly, which gives the coupling for free. A
+         full 360 so the loop needs no wrap symmetry; ~42s per quarter-turn. */
+      .exp-tl__spin {
+        position: absolute;
+        inset: 0;
+        transform-style: preserve-3d;
+        animation: exp-tl-tumble 168s linear infinite;
+        will-change: transform;
+      }
+      @keyframes exp-tl-tumble {
+        from { transform: rotateY(0deg) rotateX(0deg); }
+        to   { transform: rotateY(360deg) rotateX(-360deg); }
+      }
+
+      /* a column: an L of text — one WALL facing the viewer, plus strips
+         folded 90° at the wall's base receding into depth. */
+      .exp-tl__col {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: var(--W);
+        height: var(--E);
+        margin: calc(var(--E) / -2) 0 0 calc(var(--W) / -2);
+        transform-style: preserve-3d;
+        /* per-column placement (set inline): x/y in strip pitches + optional
+           -90° in-plane rotation for the vertical ribbons */
+        transform:
+          translate3d(calc(var(--cx, 0) * var(--E)), calc(var(--cy, 0) * var(--E)), calc(var(--cz, 0) * var(--E)))
+          rotateZ(var(--cr, 0deg));
+      }
+
+      .exp-tl__strip {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        overflow: hidden;
+        background: var(--color-icon-blue);
+        transform-style: preserve-3d;
+      }
+      /* the folded returns: fold line = the wall's BASE (bottom edge);
+         rotateX(-90°) about it lays each strip flat running back; each
+         successive strip one pitch deeper */
+      .exp-tl__strip--fold {
+        transform-origin: 50% 100%;
+        transform: translateY(var(--E)) rotateX(90deg) translateY(calc(var(--k, 1) * var(--E) * -1));
+      }
+
+      /* the text itself: one line, display voice, sized to the strip */
+      .exp-tl__txt {
+        white-space: nowrap;
+        font-size: calc(var(--E) * 0.74);
+        line-height: 1;
+        font-weight: 900;
+        letter-spacing: var(--tracking-caps);
+        text-transform: uppercase;
+        padding-left: 0.1em;
+      }
+
+
+      /* ================== 02 · KINETIC TEXT BOX ======================== */
+      /* Four panels — ceiling, floor, left, right — hinged on the stage's
+         edges and folded 90° into the screen: the inside of a box, seen from
+         the open end, under a REAL perspective camera this time (a short
+         lens, unlike 01's near-ortho). Every panel carries marquee rows of
+         the one line; directions and speeds alternate per row, which is what
+         makes it read as kinetic rather than a single conveyor. */
+      .exp-tb {
+        position: relative;
+        margin: clamp(1.5rem, 3vw, 2.5rem) clamp(1rem, 3vw, 2.5rem) 0;
+        height: min(82svh, 60rem);
+        border-radius: var(--radius-icon);
+        overflow: hidden;
+        background: var(--color-icon-blue);
+        color: var(--color-white);
+        container-type: size;
+        /* short lens = deep box */
+        perspective: 95cqw;
+        perspective-origin: 50% 50%;
+      }
+      .exp-tb__room {
+        position: absolute;
+        inset: 0;
+        transform-style: preserve-3d;
+        --D: 170cqw;               /* how deep the box runs */
+        --E: calc(100cqw / 7);     /* row pitch, the ~7:1 strip ratio */
+      }
+      .exp-tb__panel {
+        position: absolute;
+        display: flex;
+        flex-direction: column;
+        background: var(--color-icon-blue);
+      }
+      /* ceiling + floor: full stage width, D deep, hinged top/bottom edge.
+         Rows run ACROSS the stage and slide sideways — road markings. */
+      .exp-tb__panel--ceiling,
+      .exp-tb__panel--floor {
+        left: 0;
+        width: 100cqw;
+        height: var(--D);
+      }
+      .exp-tb__panel--ceiling { top: 0; transform-origin: 50% 0; transform: rotateX(-90deg); }
+      .exp-tb__panel--floor { bottom: 0; transform-origin: 50% 100%; transform: rotateX(90deg); flex-direction: column-reverse; }
+      /* side walls: full stage height, D long, hinged left/right edge.
+         Rows run INTO the depth and slide in/out of the box. */
+      .exp-tb__panel--left,
+      .exp-tb__panel--right {
+        top: 0;
+        width: var(--D);
+        height: 100cqh;
+      }
+      .exp-tb__panel--left { left: 0; transform-origin: 0 50%; transform: rotateY(90deg); }
+      .exp-tb__panel--right { right: 0; transform-origin: 100% 50%; transform: rotateY(-90deg); }
+
+      .exp-tb__row {
+        /* band size set inline: every panel shares the same 7 depth
+           fractions, so the hairlines ring the box continuously and the
+           side bands MATCH the top/bottom bands at every depth */
+        flex: 0 0 auto;
+        min-height: 0;
+        display: flex;
+        align-items: center;
+        overflow: hidden;
+        border-block-end: 1px solid color-mix(in srgb, var(--color-white) 14%, transparent);
+      }
+      .exp-tb__run {
+        display: inline-flex;
+        white-space: nowrap;
+        /* depth-scaled AND band-tight: each band's height is its share of
+           the depth ramp and the glyphs fill 88% of it — near-touching rows,
+           biggest at the open end, converging inward. DOM order = depth
+           order on every panel (the floor stacks column-reverse so its
+           first row is also the near one). */
+        font-size: var(--fs, calc(var(--E) * 0.6));
+        line-height: 1;
+        font-weight: 900;
+        letter-spacing: var(--tracking-caps);
+        text-transform: uppercase;
+        animation: exp-tb-slide var(--d, 38s) linear infinite var(--dir, normal);
+        will-change: transform;
+      }
+      .exp-tb__run > span { padding-right: 0.35em; }
+      @keyframes exp-tb-slide {
+        to { transform: translate3d(-50%, 0, 0); }
+      }
+
+      /* side walls: the text is ROTATED 90° — vertical lines stacked along
+         the depth, sliding up/down the wall. The rows become columns
+         (flex-direction: row on the panel), and the 90° lives on the
+         `rotate` property so it composes with the marquee's animated
+         `transform` instead of being overwritten by it. */
+      .exp-tb__panel--left {
+        flex-direction: row;
+      }
+      /* the right wall's hinge (near edge) is on its RIGHT — the band order
+         reverses so the biggest band sits at the stage edge, same reason the
+         floor stacks column-reverse. Declared HERE, after the shared wall
+         block, so source order can't hand it back to plain row. */
+      .exp-tb__panel--right {
+        flex-direction: row-reverse;
+      }
+      .exp-tb__panel--left .exp-tb__row,
+      .exp-tb__panel--right .exp-tb__row {
+        position: relative;
+        display: block;
+        border-block-end: 0;
+        border-inline-end: 1px solid color-mix(in srgb, var(--color-white) 14%, transparent);
+      }
+      .exp-tb__panel--left .exp-tb__run,
+      .exp-tb__panel--right .exp-tb__run {
+        position: absolute;
+        top: 0;
+        /* centre the rotated line in its column: after rotate(90deg) about
+           the top-left corner the line box extends left of the origin by its
+           own height */
+        left: calc(50% + var(--fs, 1em) * 0.5);
+        rotate: 90deg;
+        transform-origin: 0 0;
+      }
+
+      /* the far end: a solid face with one small settled lockup at the
+         vanishing point */
+      .exp-tb__back {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        background: var(--color-icon-blue);
+        transform: translateZ(calc(var(--D) * -1));
+        font-size: 10cqw;
+        line-height: 0.92;
+        font-weight: 900;
+        letter-spacing: var(--tracking-caps);
+        text-transform: uppercase;
+      }
+      .exp-tb__back span { display: block; }
+
+      @media (prefers-reduced-motion: reduce) {
+        .exp-tb__run { animation: none; }
+      }
+
+      /* reduced motion: hold a mid-tumble frame — the lattice reads as a
+         still composition, nothing travels */
+      @media (prefers-reduced-motion: reduce) {
+        .exp-tl__spin { animation: none; transform: rotateY(38deg) rotateX(-38deg); }
+        .exp-tl__world { transform: none; }
+      }
+    </style>
+  </head>
+  <body class="exp-page">
+    <div class="exp-topbar">
+      <a href="../index.html">&larr; Design system</a>
+      <span class="exp-topbar__hint">Experiment — kinetic 3D text. Two directions, one line of copy.</span>
+    </div>
+
+    <!-- ================= 01 · ROTATING TEXT LATTICE ================= -->
+    <section class="exp-section" aria-label="Direction 01 — Rotating text lattice">
+      <p class="exp-label"><b>01</b> Rotating text lattice</p>
+      <p class="exp-note">
+        One text strip (~7:1) repeated as an L-shaped column: a wall facing the viewer plus
+        strips folded 90&deg; at its base receding into depth. Columns repeat on a fixed pitch,
+        alternate ones turned &minus;90&deg; in-plane so their ribbons run vertically — a woven
+        lattice of a single sentence. A very long lens flattens the projection toward isometric,
+        and the scene turns <code>rotateY(+&theta;)&nbsp;rotateX(&minus;&theta;)</code> for a
+        coupled tumble; wheel over the stage nudges &theta;. Brand-blue world, white display caps.
+      </p>
+
+      <div class="exp-tl" data-tl>
+        <h2 class="sr-only">Make what matters</h2>
+        <div class="exp-tl__world" data-tl-world aria-hidden="true">
+          <div class="exp-tl__spin">
+
+            <!-- A-columns: horizontal ribbons + folded returns -->
+            <div class="exp-tl__col" style="--cx: 0; --cy: -2.4">
+              <div class="exp-tl__strip"><span class="exp-tl__txt">Make What Matters Make What Matters Make What Matters</span></div>
+              <div class="exp-tl__strip exp-tl__strip--fold" style="--k: 1"><span class="exp-tl__txt">Make What Matters Make What Matters Make What Matters</span></div>
+              <div class="exp-tl__strip exp-tl__strip--fold" style="--k: 2"><span class="exp-tl__txt">Make What Matters Make What Matters Make What Matters</span></div>
+              <div class="exp-tl__strip exp-tl__strip--fold" style="--k: 3"><span class="exp-tl__txt">Make What Matters Make What Matters Make What Matters</span></div>
+            </div>
+
+            <div class="exp-tl__col" style="--cx: 0; --cy: 0.6">
+              <div class="exp-tl__strip"><span class="exp-tl__txt">Make What Matters Make What Matters Make What Matters</span></div>
+              <div class="exp-tl__strip exp-tl__strip--fold" style="--k: 1"><span class="exp-tl__txt">Make What Matters Make What Matters Make What Matters</span></div>
+              <div class="exp-tl__strip exp-tl__strip--fold" style="--k: 2"><span class="exp-tl__txt">Make What Matters Make What Matters Make What Matters</span></div>
+              <div class="exp-tl__strip exp-tl__strip--fold" style="--k: 3"><span class="exp-tl__txt">Make What Matters Make What Matters Make What Matters</span></div>
+            </div>
+
+            <div class="exp-tl__col" style="--cx: 0; --cy: 3.6">
+              <div class="exp-tl__strip"><span class="exp-tl__txt">Make What Matters Make What Matters Make What Matters</span></div>
+              <div class="exp-tl__strip exp-tl__strip--fold" style="--k: 1"><span class="exp-tl__txt">Make What Matters Make What Matters Make What Matters</span></div>
+              <div class="exp-tl__strip exp-tl__strip--fold" style="--k: 2"><span class="exp-tl__txt">Make What Matters Make What Matters Make What Matters</span></div>
+            </div>
+
+            <!-- B-columns: the same L turned -90° in-plane — vertical ribbons -->
+            <div class="exp-tl__col" style="--cx: -2.6; --cy: 0; --cr: -90deg; --cz: 0.5">
+              <div class="exp-tl__strip"><span class="exp-tl__txt">Make What Matters Make What Matters Make What Matters</span></div>
+              <div class="exp-tl__strip exp-tl__strip--fold" style="--k: 1"><span class="exp-tl__txt">Make What Matters Make What Matters Make What Matters</span></div>
+              <div class="exp-tl__strip exp-tl__strip--fold" style="--k: 2"><span class="exp-tl__txt">Make What Matters Make What Matters Make What Matters</span></div>
+            </div>
+
+            <div class="exp-tl__col" style="--cx: 2.6; --cy: 0; --cr: -90deg; --cz: -0.75">
+              <div class="exp-tl__strip"><span class="exp-tl__txt">Make What Matters Make What Matters Make What Matters</span></div>
+              <div class="exp-tl__strip exp-tl__strip--fold" style="--k: 1"><span class="exp-tl__txt">Make What Matters Make What Matters Make What Matters</span></div>
+              <div class="exp-tl__strip exp-tl__strip--fold" style="--k: 2"><span class="exp-tl__txt">Make What Matters Make What Matters Make What Matters</span></div>
+            </div>
+
+            <!-- depth layer behind -->
+            <div class="exp-tl__col" style="--cx: 0; --cy: -1; --cz: -2.2">
+              <div class="exp-tl__strip"><span class="exp-tl__txt">Make What Matters Make What Matters Make What Matters</span></div>
+              <div class="exp-tl__strip exp-tl__strip--fold" style="--k: 1"><span class="exp-tl__txt">Make What Matters Make What Matters Make What Matters</span></div>
+            </div>
+
+            <div class="exp-tl__col" style="--cx: 0; --cy: 2; --cz: -2.2; --cr: -90deg">
+              <div class="exp-tl__strip"><span class="exp-tl__txt">Make What Matters Make What Matters Make What Matters</span></div>
+              <div class="exp-tl__strip exp-tl__strip--fold" style="--k: 1"><span class="exp-tl__txt">Make What Matters Make What Matters Make What Matters</span></div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ================= 02 · KINETIC TEXT BOX ================= -->
+    <section class="exp-section" aria-label="Direction 02 — Kinetic text box">
+      <p class="exp-label"><b>02</b> Kinetic text box</p>
+      <p class="exp-note">
+        Four planes hinged on the stage&rsquo;s edges and folded 90&deg; into the screen — the
+        inside of a box seen from its open end, under a short lens for a real perspective plunge.
+        All four faces share the same seven depth bands, so the hairlines ring the box
+        continuously; band height and type size follow one depth ramp, keeping the rows tight at
+        every depth while the type converges with the geometry. Floor and ceiling rows run across
+        and slide sideways, wall rows are rotated 90&deg; and slide along the walls, with
+        directions and speeds alternating per row. A settled lockup sits on the far face at the
+        vanishing point.
+      </p>
+
+      <div class="exp-tb">
+        <h2 class="sr-only">Make what matters</h2>
+        <div class="exp-tb__room" aria-hidden="true">
+            <div class="exp-tb__panel exp-tb__panel--ceiling">
+              <div class="exp-tb__row" style="--z: 0; height: 21.30%; --fs: calc(var(--D) * 0.1874); --d: 34s"><span class="exp-tb__run" aria-hidden="true"><span>Make What Matters Make What Matters</span><span>Make What Matters Make What Matters</span></span></div>
+              <div class="exp-tb__row" style="--z: 1; height: 18.96%; --fs: calc(var(--D) * 0.1669); --d: 41s; --dir: reverse"><span class="exp-tb__run" aria-hidden="true"><span>Make What Matters Make What Matters</span><span>Make What Matters Make What Matters</span></span></div>
+              <div class="exp-tb__row" style="--z: 2; height: 16.62%; --fs: calc(var(--D) * 0.1463); --d: 48s"><span class="exp-tb__run" aria-hidden="true"><span>Make What Matters Make What Matters</span><span>Make What Matters Make What Matters</span></span></div>
+              <div class="exp-tb__row" style="--z: 3; height: 14.29%; --fs: calc(var(--D) * 0.1257); --d: 55s; --dir: reverse"><span class="exp-tb__run" aria-hidden="true"><span>Make What Matters Make What Matters</span><span>Make What Matters Make What Matters</span></span></div>
+              <div class="exp-tb__row" style="--z: 4; height: 11.95%; --fs: calc(var(--D) * 0.1051); --d: 34s"><span class="exp-tb__run" aria-hidden="true"><span>Make What Matters Make What Matters</span><span>Make What Matters Make What Matters</span></span></div>
+              <div class="exp-tb__row" style="--z: 5; height: 9.61%; --fs: calc(var(--D) * 0.0846); --d: 41s; --dir: reverse"><span class="exp-tb__run" aria-hidden="true"><span>Make What Matters Make What Matters</span><span>Make What Matters Make What Matters</span></span></div>
+              <div class="exp-tb__row" style="--z: 6; height: 7.27%; --fs: calc(var(--D) * 0.0640); --d: 48s"><span class="exp-tb__run" aria-hidden="true"><span>Make What Matters Make What Matters Make What Matters</span><span>Make What Matters Make What Matters Make What Matters</span></span></div>
+            </div>
+            <div class="exp-tb__panel exp-tb__panel--floor">
+              <div class="exp-tb__row" style="--z: 0; height: 21.30%; --fs: calc(var(--D) * 0.1874); --d: 40s"><span class="exp-tb__run" aria-hidden="true"><span>Make What Matters Make What Matters</span><span>Make What Matters Make What Matters</span></span></div>
+              <div class="exp-tb__row" style="--z: 1; height: 18.96%; --fs: calc(var(--D) * 0.1669); --d: 47s; --dir: reverse"><span class="exp-tb__run" aria-hidden="true"><span>Make What Matters Make What Matters</span><span>Make What Matters Make What Matters</span></span></div>
+              <div class="exp-tb__row" style="--z: 2; height: 16.62%; --fs: calc(var(--D) * 0.1463); --d: 54s"><span class="exp-tb__run" aria-hidden="true"><span>Make What Matters Make What Matters</span><span>Make What Matters Make What Matters</span></span></div>
+              <div class="exp-tb__row" style="--z: 3; height: 14.29%; --fs: calc(var(--D) * 0.1257); --d: 61s; --dir: reverse"><span class="exp-tb__run" aria-hidden="true"><span>Make What Matters Make What Matters</span><span>Make What Matters Make What Matters</span></span></div>
+              <div class="exp-tb__row" style="--z: 4; height: 11.95%; --fs: calc(var(--D) * 0.1051); --d: 40s"><span class="exp-tb__run" aria-hidden="true"><span>Make What Matters Make What Matters</span><span>Make What Matters Make What Matters</span></span></div>
+              <div class="exp-tb__row" style="--z: 5; height: 9.61%; --fs: calc(var(--D) * 0.0846); --d: 47s; --dir: reverse"><span class="exp-tb__run" aria-hidden="true"><span>Make What Matters Make What Matters</span><span>Make What Matters Make What Matters</span></span></div>
+              <div class="exp-tb__row" style="--z: 6; height: 7.27%; --fs: calc(var(--D) * 0.0640); --d: 54s"><span class="exp-tb__run" aria-hidden="true"><span>Make What Matters Make What Matters Make What Matters</span><span>Make What Matters Make What Matters Make What Matters</span></span></div>
+            </div>
+            <div class="exp-tb__panel exp-tb__panel--left">
+              <div class="exp-tb__row" style="--z: 0; width: 21.30%; --fs: calc(var(--D) * 0.1874); --d: 38s"><span class="exp-tb__run" aria-hidden="true"><span>Make What Matters Make What Matters</span><span>Make What Matters Make What Matters</span></span></div>
+              <div class="exp-tb__row" style="--z: 1; width: 18.96%; --fs: calc(var(--D) * 0.1669); --d: 45s; --dir: reverse"><span class="exp-tb__run" aria-hidden="true"><span>Make What Matters Make What Matters</span><span>Make What Matters Make What Matters</span></span></div>
+              <div class="exp-tb__row" style="--z: 2; width: 16.62%; --fs: calc(var(--D) * 0.1463); --d: 52s"><span class="exp-tb__run" aria-hidden="true"><span>Make What Matters Make What Matters</span><span>Make What Matters Make What Matters</span></span></div>
+              <div class="exp-tb__row" style="--z: 3; width: 14.29%; --fs: calc(var(--D) * 0.1257); --d: 59s; --dir: reverse"><span class="exp-tb__run" aria-hidden="true"><span>Make What Matters Make What Matters</span><span>Make What Matters Make What Matters</span></span></div>
+              <div class="exp-tb__row" style="--z: 4; width: 11.95%; --fs: calc(var(--D) * 0.1051); --d: 38s"><span class="exp-tb__run" aria-hidden="true"><span>Make What Matters Make What Matters</span><span>Make What Matters Make What Matters</span></span></div>
+              <div class="exp-tb__row" style="--z: 5; width: 9.61%; --fs: calc(var(--D) * 0.0846); --d: 45s; --dir: reverse"><span class="exp-tb__run" aria-hidden="true"><span>Make What Matters Make What Matters</span><span>Make What Matters Make What Matters</span></span></div>
+              <div class="exp-tb__row" style="--z: 6; width: 7.27%; --fs: calc(var(--D) * 0.0640); --d: 52s"><span class="exp-tb__run" aria-hidden="true"><span>Make What Matters Make What Matters Make What Matters</span><span>Make What Matters Make What Matters Make What Matters</span></span></div>
+            </div>
+            <div class="exp-tb__panel exp-tb__panel--right">
+              <div class="exp-tb__row" style="--z: 0; width: 21.30%; --fs: calc(var(--D) * 0.1874); --d: 44s"><span class="exp-tb__run" aria-hidden="true"><span>Make What Matters Make What Matters</span><span>Make What Matters Make What Matters</span></span></div>
+              <div class="exp-tb__row" style="--z: 1; width: 18.96%; --fs: calc(var(--D) * 0.1669); --d: 51s; --dir: reverse"><span class="exp-tb__run" aria-hidden="true"><span>Make What Matters Make What Matters</span><span>Make What Matters Make What Matters</span></span></div>
+              <div class="exp-tb__row" style="--z: 2; width: 16.62%; --fs: calc(var(--D) * 0.1463); --d: 58s"><span class="exp-tb__run" aria-hidden="true"><span>Make What Matters Make What Matters</span><span>Make What Matters Make What Matters</span></span></div>
+              <div class="exp-tb__row" style="--z: 3; width: 14.29%; --fs: calc(var(--D) * 0.1257); --d: 65s; --dir: reverse"><span class="exp-tb__run" aria-hidden="true"><span>Make What Matters Make What Matters</span><span>Make What Matters Make What Matters</span></span></div>
+              <div class="exp-tb__row" style="--z: 4; width: 11.95%; --fs: calc(var(--D) * 0.1051); --d: 44s"><span class="exp-tb__run" aria-hidden="true"><span>Make What Matters Make What Matters</span><span>Make What Matters Make What Matters</span></span></div>
+              <div class="exp-tb__row" style="--z: 5; width: 9.61%; --fs: calc(var(--D) * 0.0846); --d: 51s; --dir: reverse"><span class="exp-tb__run" aria-hidden="true"><span>Make What Matters Make What Matters</span><span>Make What Matters Make What Matters</span></span></div>
+              <div class="exp-tb__row" style="--z: 6; width: 7.27%; --fs: calc(var(--D) * 0.0640); --d: 58s"><span class="exp-tb__run" aria-hidden="true"><span>Make What Matters Make What Matters Make What Matters</span><span>Make What Matters Make What Matters Make What Matters</span></span></div>
+            </div>
+          <div class="exp-tb__back"><p><span>Make</span><span>What</span><span>Matters</span></p></div>
+        </div>
+      </div>
+    </section>
+
+    <script>
+      /* Wheel coupling — a wheel over the stage nudges a --twist on the
+       * outer wrapper (the keyframe tumble rides an inner one, so the two
+       * compose). Damped so it settles.
+       * Reduced motion: no coupling — the lattice is a still frame. */
+      (function () {
+        "use strict";
+        if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+        var stage = document.querySelector("[data-tl]");
+        var world = document.querySelector("[data-tl-world]");
+        if (!stage || !world) return;
+        var target = 0, cur = 0, raf = null;
+        function loop() {
+          cur += (target - cur) * 0.08;
+          if (Math.abs(target - cur) < 0.01) cur = target;
+          world.style.setProperty("--twist", cur.toFixed(3) + "deg");
+          if (cur !== target) { raf = requestAnimationFrame(loop); } else { raf = null; }
+        }
+        stage.addEventListener("wheel", function (e) {
+          if (Math.abs(e.deltaY) <= Math.abs(e.deltaX)) return;
+          e.preventDefault(); /* the stage owns vertical wheel while hovered */
+          target += e.deltaY * 0.05; /* scroll-to-angle fraction */
+          if (!raf) raf = requestAnimationFrame(loop);
+        }, { passive: false });
+      })();
+    </script>
+  </body>
+</html>

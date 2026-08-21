@@ -47,6 +47,43 @@
   padding: var(--space-2xl) var(--container-pad) var(--space-lg);
 }
 
+/* Scroll-driven grow — the inverse of the hero's recede, and built the same
+   way: a compositor-sampled scroll timeline, never a scroll handler
+   (docs/animation.md rule 2). The panel arrives inset by the page gutter on
+   both sides and expands to full bleed as you scroll into it.
+   
+   Uniform scale, so the CONTENT shrinks with the panel rather than reflowing
+   to a narrower measure. --container-pad's fluid term is 4.2vw, so insetting
+   by it on each side is exactly 1 - 2(0.042) = 0.916; the ratio drifts a
+   little where the clamp bottoms out (<~570px) or caps (>~2860px), which is
+   invisible at this scale. Anchored at the bottom edge so the panel stays
+   flush with the document end and grows upward — no gap can open beneath it.
+
+   A NAMED timeline is unnecessary here: nothing in the footer's ancestor
+   chain is a scroll container (body is overflow-x: clip, which clips without
+   becoming one — see LESSONS.md), so view() resolves to the document root.
+   Verified moving, not frozen. */
+.site-footer {
+  --footer-inset-scale: 0.916;
+}
+
+@keyframes footer-grow {
+  from { transform: scale(var(--footer-inset-scale)); }
+  to { transform: scale(1); }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .site-footer {
+      transform-origin: 50% 100%;
+      animation: footer-grow linear both;
+      animation-timeline: view();
+      /* quick: done within ~45vh of scrolling, not over the panel's height */
+      animation-range: entry 0% entry 45vh;
+    }
+  }
+}
+
 /* The global focus ring is --color-icon-blue — invisible on near-black.
    Colour-only override (the checklist's sanctioned exception); ring shape
    stays the reset.css single source of truth. */
