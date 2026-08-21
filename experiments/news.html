@@ -1,0 +1,546 @@
+<!doctype html>
+<html lang="en" class="js-animations">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Experiment — News section</title>
+    <meta name="robots" content="noindex" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Kumbh+Sans:wght@400..900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://use.typekit.net/bhv7yrj.css" />
+    <link rel="stylesheet" href="../css/main.css" />
+
+    <!-- EXPERIMENT — news section directions.
+         01 is the ARCHIVED pinned horizontal scroller: its styles are an
+         inlined, exp-news01-prefixed copy of the production rules as they
+         stood before the editorial stack replaced them, so the record stays
+         frozen no matter what production does next (the house pattern from
+         the clients experiment).
+         02 is the editorial stack, and renders the LIVE .news component — it
+         is what ships today, so pointing at production is what keeps it
+         honest.
+
+         Each variant sits in its own `.page-home` wrapper: --container-pad and
+         --grid-gutter are declared on that class (the card widths are measured
+         off the 12-col grid), so without it the cards mis-size. The fluid
+         --space-* ramp is global (src/theme/spacing.css) and needs no
+         wrapper. -->
+    <style>
+      /* ---- page chrome (matches the client-scrollers experiment) ---- */
+      .exp-page {
+        background: var(--color-background);
+        color: var(--color-icon-black);
+      }
+
+      .exp-topbar {
+        position: fixed;
+        top: 0;
+        inset-inline: 0;
+        z-index: 100;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.7rem clamp(1rem, 3vw, 2.5rem);
+        font-size: 0.72rem;
+        font-weight: var(--font-weight-bold);
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        background: color-mix(in srgb, var(--color-background) 82%, transparent);
+        -webkit-backdrop-filter: blur(14px);
+        backdrop-filter: blur(14px);
+        border-bottom: 1px solid var(--color-border);
+      }
+      .exp-topbar a { color: var(--color-icon-black); text-decoration: none; }
+      .exp-topbar a:hover { color: var(--color-icon-blue); }
+      .exp-topbar__hint { color: var(--color-icon-grey); font-weight: var(--font-weight-normal); letter-spacing: 0.04em; text-transform: none; }
+
+      .exp-label {
+        display: flex;
+        align-items: baseline;
+        gap: 0.6rem;
+        padding: clamp(2.5rem, 6vw, 4.5rem) clamp(1rem, 3vw, 2.5rem) 0;
+        font-size: 0.72rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--color-icon-grey);
+      }
+      .exp-label b { color: var(--color-icon-blue); font-weight: var(--font-weight-bold); }
+      .exp-note {
+        margin: 0.5rem 0 0;
+        padding: 0 clamp(1rem, 3vw, 2.5rem);
+        max-width: 68ch;
+        font-size: var(--text-xs);
+        line-height: 1.5;
+        color: var(--color-icon-grey);
+      }
+
+      .exp-section {
+        position: relative;
+        padding-bottom: clamp(2.5rem, 6vw, 4.5rem);
+        border-bottom: 1px solid var(--color-border);
+      }
+
+      /* The topbar is fixed; the first label needs to clear it. */
+      .exp-section:first-of-type .exp-label { padding-top: clamp(4rem, 8vw, 6rem); }
+
+      /* ==================================================================
+         01 · ARCHIVED — the pinned horizontal scroller.
+         A verbatim copy of the production .news rules as they stood before
+         the editorial stack replaced them, with every class, custom property
+         and keyframe prefixed exp-news01 so it can never collide with the
+         live component. Frozen on purpose: this is the record of what the
+         previous direction actually did, so it must NOT track production.
+         ================================================================== */
+      /* Pinned horizontal-scroll section (zypsy/zetta-joule style). The tall .pin
+       * wrapper hosts a block scroll-timeline; while its sticky child is pinned to the
+       * viewport, the card track translates horizontally in lockstep with the vertical
+       * scroll. Once the track finishes, the pin releases and vertical scroll resumes.
+       * Pure CSS — no ScrollTrigger. Degrades to a native horizontal swipe where
+       * scroll-timeline is unsupported or under reduced motion. */
+      .exp-news01 {
+        position: relative;
+        /* [Fix B] Height-aware masthead size. 7vw as designed, but never taller than
+           14% of the viewport height — on short viewports the heading gives up size
+           so the height-guarded cards (below) can take that space back. On normal
+           screens the min() resolves to the original clamp(), so nothing changes. */
+        --exp-news01-masthead: min(clamp(2.5rem, 6vw, 9rem), 14svh);
+      }
+
+      .exp-news01__pin {
+        height: 250vh; /* pinned-scroll distance: 4 cards → a bit more travel so the horizontal sweep isn't rushed */
+        /* A VIEW timeline (the pin need not be a scroll container). The track animates
+           over the `contain` phase — exactly while the sticky child covers the
+           viewport, i.e. while it is pinned. */
+        view-timeline-name: --exp-news01-pin;
+        view-timeline-axis: block;
+      }
+
+      .exp-news01__sticky {
+        position: sticky;
+        top: 0;
+        height: 100svh;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        /* Anchored to the TOP, not centred. Centring made the space above the
+           masthead whatever was left over from 100svh — so it ballooned on tall
+           narrow screens (small cards, lots of slack) and collapsed on wide ones
+           (big cards, none). Now it is one ramp step, matching every other section
+           boundary; any slack falls at the bottom where it reads as breathing room. */
+        justify-content: flex-start;
+        padding-top: var(--space-xl);
+        gap: var(--space-sm);
+        border-top: 1px solid var(--color-border);
+      }
+
+      .exp-news01__head {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        padding-inline: var(--container-pad);
+      }
+
+      /* Masthead: NEWS and its More link share the display voice of the hero lockup
+         and the WORK heading. NEWS is uppercase; More is sentence case (see below),
+         mirroring the work section's heading + "All work" pairing. */
+      .exp-news01__heading,
+      .exp-news01__more {
+        font-size: var(--exp-news01-masthead); /* = .work__heading's clamp, height-capped (Fix B) */
+        font-weight: 900; /* Kumbh Sans Black — the heaviest cut */
+        line-height: 0.9;
+        letter-spacing: var(--tracking-caps);
+        text-transform: uppercase;
+        color: var(--color-icon-black);
+      }
+
+      .exp-news01__heading {
+        margin: 0;
+      }
+
+      /* Sentence case, so it takes the display-type tracking rather than the caps
+         token (--tracking-caps is for uppercase settings only) — identical
+         treatment to .work__more, including the half-heading size. */
+      .exp-news01__more {
+        text-transform: none;
+        letter-spacing: -0.02em;
+        font-size: calc(var(--exp-news01-masthead) / 2); /* 50% of the NEWS heading */
+      }
+
+      /* Same treatment as the work MORE: slides right, then a "/" fades in a
+         word-space before it, both in accent blue. */
+      .exp-news01__more {
+        position: relative;
+        display: inline-block;
+        text-decoration: none;
+        transition:
+          color var(--duration-fast) var(--ease-standard),
+          translate var(--duration-normal) var(--ease-decelerate);
+      }
+
+      .exp-news01__more::before {
+        content: "/";
+        position: absolute;
+        left: -0.65em;
+        opacity: 0;
+        transition: opacity 0.25s var(--ease-standard);
+      }
+
+      .exp-news01__more:hover,
+      .exp-news01__more:focus-visible {
+        color: var(--color-icon-blue);
+        translate: 0.65em 0;
+      }
+
+      .exp-news01__more:hover::before,
+      .exp-news01__more:focus-visible::before {
+        opacity: 1;
+        transition-delay: 0.15s;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .exp-news01__more,
+        .exp-news01__more::before { transition: none; }
+      }
+
+      .exp-news01__track {
+        display: flex;
+        gap: var(--grid-gutter); /* same rhythm as the work grid */
+        width: max-content;
+        padding-inline: var(--container-pad);
+        animation: exp-news01-x linear both;
+        animation-timeline: --exp-news01-pin;
+        /* Bleed the sweep ~14% into the entry/exit phases so it blends with the last
+           bit of vertical scroll-in and the first bit of scroll-out — a fluid handoff
+           rather than a hard vertical→horizontal→vertical stop. */
+        animation-range: contain -14% contain 114%;
+      }
+
+      @keyframes exp-news01-x {
+        /* min() guard: if the track ever ends up narrower than the viewport,
+           -100% + 100vw computes POSITIVE (a rightward slide) — clamp at zero so
+           the sweep can never run backwards. */
+        to { transform: translateX(min(0px, calc(-100% + 100vw))); }
+      }
+
+      .exp-news01__card {
+        flex: 0 0 auto;
+        /* Sized off the SAME 12-column grid as the work tiles, so the cards keep
+           scaling with the browser instead of freezing at a rem cap: one card spans
+           4 columns (+ its 3 inner gutters). Two guards around it —
+             max(17rem, …) so the cards stay usable on phones, where 4 of 12 columns
+               would be tiny;
+             min(…, 100svh - …) because the figure is SQUARE, so width drives height:
+               the card + its meta/title + the masthead all have to fit the pinned
+               100svh, which binds on short/ultrawide screens. */
+        --exp-news01-col: calc((100vw - 2 * var(--container-pad) - 11 * var(--grid-gutter)) / 12);
+        width: min(
+          max(17rem, calc(4 * var(--exp-news01-col) + 3 * var(--grid-gutter))),
+          /* leaves room for the panel's top padding + masthead + gap + meta/title.
+             [Fix B] the reservation tracks the actual masthead footprint
+             (2.3 × var ≈ the old 16vw while the masthead is width-sized), so when
+             the height cap shrinks the heading, the cards get that space back. */
+          calc(100svh - 12rem - 2.3 * var(--exp-news01-masthead))
+        );
+        display: block;
+        text-decoration: none;
+        color: inherit;
+      }
+
+      .exp-news01__figure {
+        position: relative;
+        margin: 0 0 var(--spacing-md);
+        border-radius: var(--radius-icon);
+        overflow: hidden;
+        aspect-ratio: 1 / 1;
+
+        /* Same hover as the work frame: the mask draws in and the frame takes a very
+           subtle cursor-following tilt. --mx/--my are set on the CARD by js and
+           inherit — deliberately not declared here, or they would shadow it. */
+        --mask-inset: 0%;
+        clip-path: inset(var(--mask-inset) round var(--radius-icon));
+        transform: perspective(900px)
+          rotateX(calc(var(--my, 0) * -2.2deg))
+          rotateY(calc(var(--mx, 0) * 2.2deg));
+        transition:
+          clip-path 0.4s var(--ease-decelerate),
+          transform 0.25s var(--ease-decelerate);
+      }
+
+      .exp-news01__img {
+        transition: filter 0.35s var(--ease-standard);
+      }
+
+      @media (hover: hover) {
+        .exp-news01__card:hover .exp-news01__figure,
+        .exp-news01__card:focus-visible .exp-news01__figure {
+          --mask-inset: 1.6%;
+        }
+        .exp-news01__card:hover .exp-news01__img,
+        .exp-news01__card:focus-visible .exp-news01__img {
+          filter: brightness(1.08);
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .exp-news01__figure {
+          clip-path: none;
+          transform: none;
+          transition: none;
+        }
+      }
+
+      /* Slightly oversized on both axes — just enough overscan (3% a side) to cover the
+         small parallax drift below without exposing an edge. Kept small so the square
+         source sits close to its natural size with minimal crop. */
+      .exp-news01__img {
+        position: absolute;
+        top: -3%;
+        left: -3%;
+        width: 106%;
+        max-width: none; /* override preflight's img{max-width:100%} so 106% applies */
+        height: 106%;
+        object-fit: cover;
+        display: block;
+      }
+
+      /* Parallax split across the two scroll directions:
+         - HORIZONTAL drift (±2%) tracks the HORIZONTAL scroll — the pinned track's
+           sweep, i.e. --exp-news01-pin's `contain` (pinned) phase. On the `translate` property.
+         - VERTICAL drift (±0.75%) tracks the VERTICAL scroll — the section's travel up
+           through the viewport, i.e. --exp-news01-pin's full `cover` phase. On `transform`.
+         Separate properties (translate vs transform) so the two compose without fighting,
+         and each carries its own timeline range. Both also compose with the reveal's
+         `scale`/`clip-path`/`opacity` (.media-reveal, matching the work images). */
+      @keyframes exp-news01-img-x {
+        from { translate: -2% 0; }
+        to { translate: 2% 0; }
+      }
+      @keyframes exp-news01-img-y {
+        from { transform: translateY(-0.75%); }
+        to { transform: translateY(0.75%); }
+      }
+
+      @media (prefers-reduced-motion: no-preference) {
+        @supports (animation-timeline: view()) {
+          .exp-news01__img {
+            animation:
+              exp-news01-img-x linear both,
+              exp-news01-img-y linear both;
+            animation-timeline: --exp-news01-pin, --exp-news01-pin;
+            animation-range: contain -14% contain 114%, cover 0% cover 100%;
+          }
+        }
+      }
+
+      /* Category + date row above the title. */
+      /* The date sits UNDER the title, in the same voice as the work cards' client
+         name — one line below, on the same rhythm as .work__caption's gap. */
+      .exp-news01__date {
+        display: block;
+        margin-top: 0.5rem;
+        font-size: clamp(1.0625rem, 1.1vw, 1.5rem); /* matches .work__meta */
+        color: var(--color-icon-grey);
+      }
+
+      .exp-news01__title {
+        margin: 0;
+        font-size: clamp(1.25rem, 1.5vw, 2rem);
+        font-weight: var(--font-weight-medium);
+        line-height: 1.3;
+        color: var(--color-icon-black);
+        /* No text-wrap here: the base h1-h4 `balance` applies (typography.css) —
+           matching .work__title and avoiding pretty's single-word last lines. */
+        padding-inline-end: 1.5em; /* room for the hover arrow, as on .work__title */
+      }
+
+      /* Fallback — one static presentation, three triggers:
+           1. no scroll-timeline support (the @supports block);
+           2. reduced motion;
+           3. [Fix A] viewports that can't host the pinned scene: the sticky is
+              100svh, so on short-and-landscape screens the height-guarded cards
+              shrink to thumbnails and the sweep distance approaches (or passes)
+              zero. Landscape-only on the height arm so portrait phones keep the
+              pin; the 2/1 arm catches wide-flat desktop windows above 780px.
+         A plain, swipeable horizontal scroller — no pin, no coupled animation —
+         and the cards return to their grid width, since they no longer have to
+         fit inside 100svh. */
+      @supports not (animation-timeline: scroll()) {
+        .exp-news01__pin { height: auto; }
+        .exp-news01__sticky { position: static; height: auto; padding-block: var(--space-xl); }
+        /* The TRACK is the scroller (width: auto fills the panel; the flex cards
+           overflow it) — the NEWS/MORE masthead above stays put while the cards
+           swipe. Snap lives here because the snap container must be the scroller. */
+        .exp-news01__track {
+          animation: none;
+          width: auto;
+          overflow-x: auto;
+          scroll-snap-type: x proximity;
+          /* Reaching either end must not fling the page (chained scroll) — hold, so
+             the user can swipe back. Snap positions honour the track's own
+             inline padding, or card 1 would rest flush against the edge. */
+          overscroll-behavior-x: contain;
+          scroll-padding-inline: var(--container-pad);
+        }
+        .exp-news01__card { scroll-snap-align: start; width: max(17rem, calc(4 * var(--exp-news01-col) + 3 * var(--grid-gutter))); }
+      }
+
+      @media (prefers-reduced-motion: reduce), (max-height: 780px) and (min-aspect-ratio: 1/1), (min-aspect-ratio: 2/1) {
+        .exp-news01__pin { height: auto; }
+        .exp-news01__sticky { position: static; height: auto; padding-block: var(--space-xl); }
+        .exp-news01__track {
+          animation: none;
+          width: auto;
+          overflow-x: auto;
+          scroll-snap-type: x proximity;
+          /* Reaching either end must not fling the page (chained scroll) — hold, so
+             the user can swipe back. Snap positions honour the track's own
+             inline padding, or card 1 would rest flush against the edge. */
+          overscroll-behavior-x: contain;
+          scroll-padding-inline: var(--container-pad);
+        }
+        .exp-news01__card { scroll-snap-align: start; width: max(17rem, calc(4 * var(--exp-news01-col) + 3 * var(--grid-gutter))); }
+      }
+
+    </style>
+  </head>
+  <body class="exp-page">
+    <div class="exp-topbar">
+      <a href="../index.html">&larr; Design system</a>
+      <span class="exp-topbar__hint">Experiment — news section. 01 is the archived pinned scroller; 02 is what ships today.</span>
+    </div>
+
+    <!-- ================= 01 · CURRENT ================= -->
+    <section class="exp-section" aria-label="Direction 01 — Current">
+      <p class="exp-label"><b>01</b> Pinned horizontal scroller · ARCHIVED</p>
+      <p class="exp-note">
+        The previous direction, frozen. Styles are an inlined copy (prefixed <code>exp-news01</code>) so this stays a true record even though production has moved on. A tall <code>.news__pin</code> hosts a block
+        <code>view-timeline</code>; while its sticky child covers the viewport the card track
+        translates sideways in lockstep with vertical scroll, then the pin releases. Pure CSS —
+        no ScrollTrigger. Each image carries a split-axis parallax (horizontal drift tracks the
+        pinned sweep, vertical drift tracks the section&rsquo;s travel). Below ~780px tall in
+        landscape — or under reduced motion, or without scroll-timeline support — the pin is
+        dropped entirely for a native swipe row, because the height-guarded cards would otherwise
+        shrink to thumbnails and the sweep distance can invert. Sideways gestures never chain
+        into page scroll (<code>js/home-c.js</code>).
+      </p>
+
+      <!-- .page-home carries --container-pad + --grid-gutter, which size the cards. -->
+      <div class="page-home">
+        <section class="exp-news01" aria-label="Latest news">
+          <div class="exp-news01__pin">
+            <div class="exp-news01__sticky">
+              <div class="exp-news01__head">
+                <h2 class="exp-news01__heading">News</h2>
+                <a class="exp-news01__more" href="/news" aria-label="More news">More</a>
+              </div>
+              <div class="exp-news01__track scrollbar-hide">
+              <a class="exp-news01__card" href="/news/article" aria-label="ICON and Butterfly Foundation partner in new campaign to help Australians rethink negative self body talk">
+                <figure class="exp-news01__figure media-reveal" data-reveal-img>
+                  <img class="exp-news01__img" loading="lazy" src="../assets/News/Butterfly_BodyKind.jpg" alt="ICON and Butterfly Foundation BodyKind campaign" />
+                </figure>
+                <h3 class="exp-news01__title">ICON and Butterfly Foundation partner in new campaign to help Australians rethink negative self body talk</h3>
+                <time class="exp-news01__date">Aug 09 2026</time>
+              </a>
+              <a class="exp-news01__card" href="/news/article" aria-label="ICON launches new wellbeing agency website for veterans and families">
+                <figure class="exp-news01__figure media-reveal" data-reveal-img>
+                  <img class="exp-news01__img" loading="lazy" src="../assets/News/Tile-DVA-Wellbeing.png" alt="Wellbeing website" />
+                </figure>
+                <h3 class="exp-news01__title">ICON launches new wellbeing agency website for veterans and families</h3>
+                <time class="exp-news01__date">Jun 30 2026</time>
+              </a>
+              <a class="exp-news01__card" href="/news/article" aria-label="ICON helps eSafety expose the tactics behind sextortion scams">
+                <figure class="exp-news01__figure media-reveal" data-reveal-img>
+                  <img class="exp-news01__img" loading="lazy" src="../assets/News/tile-sextortion-campaign.jpg" alt="AI generated woman saying &quot;I'm not real. I'm here to blackmail you.&quot;" />
+                </figure>
+                <h3 class="exp-news01__title">ICON helps eSafety expose the tactics behind sextortion scams</h3>
+                <time class="exp-news01__date">Jun 29 2026</time>
+              </a>
+              <a class="exp-news01__card" href="/news/article" aria-label="Why integrated communications help government services earn trust and drive action">
+                <figure class="exp-news01__figure media-reveal" data-reveal-img>
+                  <img class="exp-news01__img" loading="lazy" src="../assets/News/how-to-deliver-a-successful-government-campaign.png" alt="How to deliver a successful government campaign" />
+                </figure>
+                <h3 class="exp-news01__title">Why integrated communications help government services earn trust and drive action</h3>
+                <time class="exp-news01__date">Jun 25 2026</time>
+              </a>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <!-- ================= 02 · EDITORIAL STACK ================= -->
+    <section class="exp-section" aria-label="Direction 02 — Editorial stack">
+      <p class="exp-label"><b>02</b> Editorial stack · SHIPPING TODAY</p>
+      <p class="exp-note">
+        Three rows in normal flow: a square media tile beside a text column whose title sits at the
+        top and whose category/date sits on the tile&rsquo;s baseline, with the NEWS masthead and the
+        More link pinned to the top and bottom of a left rail. No pin, no scroll-timeline sweep and
+        no swipe fallback &mdash; ordinary vertical scrolling, so all of that machinery was deleted
+        rather than left dormant. The images keep a single-axis parallax on a <code>view()</code>
+        timeline, and the cursor-tilt hover carries over from the work tiles.
+      </p>
+      <div class="page-home">
+        <section class="news u-container" aria-label="Latest news (direction 02)">
+          <div class="news__inner">
+            <div class="news__head">
+              <h2 class="news__heading">News</h2>
+              <a class="news__more" href="/news" aria-label="More news">More</a>
+            </div>
+            <ul class="news__list" role="list">
+              <li>
+                <a class="news__card" href="/news/article" aria-label="ICON and Butterfly Foundation partner in new campaign to help Australians rethink negative self body talk">
+                  <figure class="news__figure media-reveal" data-reveal-img>
+                    <img class="news__img" loading="lazy" src="../assets/News/Butterfly_BodyKind.jpg" alt="ICON and Butterfly Foundation BodyKind campaign" />
+                  </figure>
+                  <div class="news__body">
+                    <h3 class="news__title">ICON and Butterfly Foundation partner in new campaign to help Australians rethink negative self body talk</h3>
+                    <span class="news__meta">Insights / <time datetime="2026-08-09">Aug 09 2026</time></span>
+                  </div>
+                </a>
+              </li>
+              <li>
+                <a class="news__card" href="/news/article" aria-label="ICON launches new wellbeing agency website for veterans and families">
+                  <figure class="news__figure media-reveal" data-reveal-img>
+                    <img class="news__img" loading="lazy" src="../assets/News/Tile-DVA-Wellbeing.png" alt="Wellbeing website" />
+                  </figure>
+                  <div class="news__body">
+                    <h3 class="news__title">ICON launches new wellbeing agency website for veterans and families</h3>
+                    <span class="news__meta">Insights / <time datetime="2026-06-30">Jun 30 2026</time></span>
+                  </div>
+                </a>
+              </li>
+              <li>
+                <a class="news__card" href="/news/article" aria-label="ICON helps eSafety expose the tactics behind sextortion scams">
+                  <figure class="news__figure media-reveal" data-reveal-img>
+                    <img class="news__img" loading="lazy" src="../assets/News/tile-sextortion-campaign.jpg" alt="AI generated woman" />
+                  </figure>
+                  <div class="news__body">
+                    <h3 class="news__title">ICON helps eSafety expose the tactics behind sextortion scams</h3>
+                    <span class="news__meta">Insights / <time datetime="2026-06-29">Jun 29 2026</time></span>
+                  </div>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <!-- ================= 03+ · NEW DIRECTIONS ================= -->
+    <!-- Next variants land here, each in its own .exp-section with an
+         .exp-label / .exp-note pair and inline exp-news-* styles. -->
+
+    <!-- Lenis provides the momentum scroll the pinned sweep is tuned against, so
+         the timing here matches the real page. GSAP core + SplitText are loaded
+         because home-c.js registers SplitText at boot; every one of its other
+         blocks (hero, intro strip, clients) is element-guarded and no-ops on a
+         page that doesn't contain them. -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js"></script>
+    <script src="../js/home-c.js"></script>
+  </body>
+</html>

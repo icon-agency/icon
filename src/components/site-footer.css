@@ -1,0 +1,322 @@
+/* site-footer.css — the global footer (design: experiments/Footer.png).
+ *
+ * A fixed near-black panel — deliberately NOT theme-flipping ink (the
+ * --footer-* tokens in theme/colors.css are constant across light/dark/blue,
+ * which is also why none of this uses --color-icon-black: that token inverts
+ * per theme and would turn the panel white in dark mode).
+ *
+ * Structure: centred LET'S TALK / Get in touch CTA (the footer's h2) →
+ * newsletter blurb + Subscribe on the left, an accordion of the four offices
+ * on the right → social links + Acknowledgement of Country across the base.
+ *
+ * The offices are native <details>/<summary> — fully functional with zero JS,
+ * so the Drupal Twig stays a pure template with no behaviour to port. The
+ * open/close animation is the CSS-only ::details-content + interpolate-size
+ * path (Chrome/Edge/Safari); browsers without it snap open, which is this
+ * project's accepted degradation. No aria-expanded / role / tabindex on
+ * summary — the UA owns disclosure semantics.
+ *
+ * Type rides the homepage voices: the CTA heading is the display-caps
+ * masthead clamp (WORK/NEWS); "Get in touch", the blurb, Subscribe, city
+ * names and socials all share the client-label voice (hero__client); the
+ * Indigenous place names and panel meta take the news-date voice; the
+ * Acknowledgement takes the same at normal line-height.
+ *
+ * Drupal: theme REGION (footer), not a paragraph type — one SDC `site-footer`
+ * with menu/newsletter/offices props; offices are a content entity or a
+ * settings tray. The deferred WebGL shader island would mount on
+ * .site-footer as an enhancement; the flat --footer-bg is the no-JS ground.
+ */
+
+.site-footer {
+  /* The homepage's shared type voices, named once so a retune is a one-line
+     edit here (the same literals live on their home components in
+     src/utilities/home-c.css — display caps on .work__heading, the mid voice
+     on .hero__client, the meta voice on .news__date). */
+  --footer-voice-caps: clamp(2.5rem, 6vw, 9rem);
+  --footer-voice-mid: clamp(1.4rem, 2.1vw, 3rem);
+  --footer-voice-meta: clamp(1.0625rem, 1.1vw, 1.5rem);
+
+  /* Outside <main> for the contentinfo landmark, so it must carry its own
+     stacking guard: the hero curtain is a positioned sticky at z-0, and an
+     unpositioned footer would paint beneath it. */
+  position: relative;
+  z-index: 1;
+  background: var(--footer-bg);
+  color: var(--footer-ink);
+  padding: var(--space-2xl) var(--container-pad) var(--space-lg);
+}
+
+/* The global focus ring is --color-icon-blue — invisible on near-black.
+   Colour-only override (the checklist's sanctioned exception); ring shape
+   stays the reset.css single source of truth. */
+.site-footer :focus-visible {
+  outline-color: var(--footer-ink);
+}
+
+/* ---- CTA ----------------------------------------------------------------- */
+
+.site-footer__cta {
+  margin: 0 0 var(--space-xl);
+  text-align: center;
+}
+
+.site-footer__cta-link {
+  display: inline-block;
+  text-decoration: none;
+  color: inherit;
+}
+
+.site-footer__talk {
+  display: block;
+  /* the shared display-caps voice (WORK / NEWS mastheads) */
+  font-size: var(--footer-voice-caps);
+  font-weight: 900;
+  line-height: 0.9;
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+}
+
+.site-footer__touch {
+  display: block;
+  margin-top: var(--space-sm);
+  /* client-label voice — the footer's single mid voice, as designed */
+  font-size: var(--footer-voice-mid);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+  color: var(--footer-muted);
+}
+
+/* colour eases via the universal theme transition (typography.css) */
+.site-footer__cta-link:hover .site-footer__touch,
+.site-footer__cta-link:focus-visible .site-footer__touch {
+  color: var(--footer-ink);
+}
+
+/* ---- body: newsletter | offices ----------------------------------------- */
+
+.site-footer__body {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-lg) var(--space-md);
+}
+
+@media (min-width: 1024px) {
+  .site-footer__body {
+    /* the design splits at the half-line: blurb left, offices right */
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.site-footer__blurb {
+  margin: 0 0 var(--space-md);
+  max-width: 20ch;
+  font-size: var(--footer-voice-mid);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+}
+
+/* Subscribe — same element + hook as the mobile menu's control, so one
+   future behaviour serves both. */
+.site-footer__subscribe {
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: var(--footer-voice-mid);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+  color: var(--footer-muted);
+}
+
+.site-footer__subscribe:hover,
+.site-footer__subscribe:focus-visible {
+  color: var(--footer-ink);
+}
+
+/* ---- offices accordion --------------------------------------------------- */
+
+.site-footer__offices {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  /* scope the keyword-size interpolation to the accordion only */
+  interpolate-size: allow-keywords;
+}
+
+.site-footer__office-item {
+  border-top: 1px solid var(--footer-hairline);
+}
+
+.site-footer__office-item:last-child {
+  border-bottom: 1px solid var(--footer-hairline);
+}
+
+.site-footer__office-summary {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  padding-block: var(--space-sm);
+  cursor: pointer;
+  list-style: none; /* no UA disclosure triangle; the +/× is the affordance */
+}
+
+.site-footer__office-summary::-webkit-details-marker {
+  display: none;
+}
+
+.site-footer__office-icon {
+  height: 1em;
+  width: auto;
+  flex: 0 0 auto;
+  /* the client-label voice sets the em */
+  font-size: var(--footer-voice-mid);
+}
+
+.site-footer__office-city {
+  font-size: var(--footer-voice-mid);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+}
+
+.site-footer__office-place {
+  margin-left: auto;
+  /* news-date / work-meta voice */
+  font-size: var(--footer-voice-meta);
+  color: var(--footer-muted);
+}
+
+/* the +/× toggle — two hairline bars, rotating to × when open */
+.site-footer__office-toggle {
+  position: relative;
+  flex: 0 0 auto;
+  width: 1em;
+  height: 1em;
+  font-size: var(--footer-voice-mid);
+  transition: rotate var(--duration-normal) var(--ease-standard);
+}
+
+.site-footer__office-toggle::before,
+.site-footer__office-toggle::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: 2px;
+  background: currentColor;
+  translate: -50% -50%;
+}
+
+.site-footer__office-toggle::after {
+  rotate: 90deg;
+}
+
+.site-footer__office[open] .site-footer__office-toggle {
+  rotate: 45deg;
+}
+
+/* panel: CSS-only open/close (::details-content + interpolate-size).
+   overflow-y clip, not hidden — hidden would mint a scroll container for
+   Lenis to fight (see LESSONS.md on overflow promoting scrollers). */
+.site-footer__office::details-content {
+  opacity: 0;
+  block-size: 0;
+  overflow-y: clip;
+  transition:
+    content-visibility var(--duration-normal) allow-discrete,
+    opacity var(--duration-normal) var(--ease-standard),
+    block-size var(--duration-normal) var(--ease-standard);
+}
+
+.site-footer__office[open]::details-content {
+  opacity: 1;
+  block-size: auto;
+}
+
+.site-footer__office-details {
+  /* align the panel text with the city name (icon column + gap) */
+  padding: 0 0 var(--space-sm) calc(1em + var(--space-xs));
+  font-size: var(--footer-voice-meta);
+  font-style: normal; /* address element */
+  line-height: var(--line-height-normal);
+}
+
+.site-footer__office-details p {
+  margin: 0;
+}
+
+.site-footer__office-details a {
+  color: var(--footer-muted);
+  text-decoration: none;
+}
+
+.site-footer__office-details a:hover,
+.site-footer__office-details a:focus-visible {
+  color: var(--footer-ink);
+}
+
+.site-footer__office-contact {
+  margin-top: var(--space-2xs);
+}
+
+/* ---- base row: socials + acknowledgement --------------------------------- */
+
+.site-footer__base {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-md);
+  align-items: end;
+  margin-top: var(--space-xl);
+}
+
+@media (min-width: 1024px) {
+  .site-footer__base {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.site-footer__social {
+  display: flex;
+  gap: var(--space-md);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.site-footer__social-link {
+  font-size: var(--footer-voice-mid);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+  color: var(--footer-muted);
+  text-decoration: none;
+}
+
+.site-footer__social-link:hover,
+.site-footer__social-link:focus-visible {
+  color: var(--footer-ink);
+}
+
+.site-footer__ack {
+  margin: 0;
+  font-size: var(--footer-voice-meta);
+  line-height: var(--line-height-normal);
+}
+
+/* ---- reduced motion ------------------------------------------------------ */
+
+@media (prefers-reduced-motion: reduce) {
+  .site-footer__office-toggle {
+    transition: none;
+  }
+
+  .site-footer__office::details-content {
+    transition: none;
+  }
+}

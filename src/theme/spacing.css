@@ -25,6 +25,24 @@
   --space-section: clamp(4rem, 8vw, 12rem);
   --space-section-sm: clamp(2rem, 5vw, 6rem);
 
+  /* ONE fluid spacing ramp. Every margin/padding/gap picks a step from this
+     instead of inventing its own clamp — previously there were ~18 ad-hoc
+     slopes (10vw, 8vw, 7vw, 5vw, 3vw…), several measured in vh (so they
+     collapsed on wide-short screens), and nearly all frozen by ~1400px while
+     the type kept growing to ~2300px. That mismatch is why the rhythm fell
+     apart on big monitors. These share a slope family and all reach their cap
+     at ~2300px, so space and type grow together. Global (:root) because the
+     footer consumes it from OUTSIDE <main>, where a page-scoped ramp can't
+     reach — an undefined var() there silently invalidates whole shorthands. */
+  --space-3xs: clamp(0.25rem, 0.4vw, 0.575rem);
+  --space-2xs: clamp(0.5rem, 0.8vw, 1.15rem);
+  --space-xs: clamp(0.75rem, 1.2vw, 1.725rem);
+  --space-sm: clamp(1.25rem, 2vw, 2.875rem);
+  --space-md: clamp(2rem, 3.2vw, 4.6rem);
+  --space-lg: clamp(2.75rem, 5vw, 7.2rem);
+  --space-xl: clamp(3.5rem, 7vw, 10rem);
+  --space-2xl: clamp(4.5rem, 9vw, 13rem);
+
   /* Layout container. */
   --container-max: 90rem; /* 1440px — refine per design during rebuild */
   --container-pad: clamp(1.5rem, 4vw, 4rem);

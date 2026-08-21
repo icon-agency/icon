@@ -60,7 +60,8 @@
 }
 
 .dark {
-  /* Dark background matches the footer (#1e1e1e) for seamless transitions. */
+  /* Near-black page ground for the dark theme. (The global footer is darker
+     still and fixed across themes — see the --footer-* block below.) */
   --background: #1e1e1e;
   --foreground: oklch(0.985 0 0);
   --card: oklch(0.145 0 0);
@@ -180,4 +181,15 @@
   --color-black: #000;
   --color-brand-blue: #0000ff; /* fixed ICON blue — does NOT invert in dark (unlike --icon-blue); used by the work reveal swipe + promo card */
   --color-shader-blue: #142cfe; /* mobile-menu / footer shader primary */
+}
+
+/* Footer — a fixed near-black panel, identical in every theme (the footer
+   never theme-flips, which is why it does NOT read --icon-black: that token
+   inverts per theme). Values measured off experiments/Footer.png: the muted
+   ink and hairline are white at reduced alpha over the #0d0d0d ground. */
+:root {
+  --footer-bg: #0d0d0d;
+  --footer-ink: #ffffff;
+  --footer-muted: rgb(255 255 255 / 0.55);
+  --footer-hairline: rgb(255 255 255 / 0.5);
 }
