@@ -27,63 +27,6 @@
     } catch (e) {}
   }
 
-  // ---- 1b. News: a sideways gesture must never scroll the PAGE -----------
-  // A trackpad swipe is never purely horizontal — it carries an incidental
-  // deltaY. Lenis (and native scroll) read deltaY, so a sideways swipe over
-  // the news section scrolled the page vertically: in pinned mode that drove
-  // the sweep and then kept going past the section; in the short-viewport
-  // fallback it chained past the row's last card. One rule fixes both —
-  // if the gesture is horizontal-dominant we own it completely:
-  //   · fallback (track is a real scroller) → pan the row, clamped at its ends
-  //   · pinned (track is animation-driven)  → do nothing; the page holds still
-  // Vertical-dominant gestures fall through untouched, so ordinary scrolling
-  // (and the pin's own choreography) behaves exactly as before.
-  // Listener sits on the section and stops propagation, so Lenis's
-  // window-level handler never sees the event. CSS overscroll-behavior-x
-  // covers the equivalent touch case.
-  var newsSection = document.querySelector(".news");
-  var newsTrack = newsSection && newsSection.querySelector(".news__track");
-  if (newsTrack) {
-    var newsFallbackMq = window.matchMedia(
-      "(max-height: 780px) and (min-aspect-ratio: 1/1), (min-aspect-ratio: 2/1)"
-    );
-    var newsTimelineOk =
-      window.CSS && CSS.supports && CSS.supports("animation-timeline: scroll()");
-    var trackIsScroller = function () {
-      return !newsTimelineOk || reduce || newsFallbackMq.matches;
-    };
-    var syncNewsPrevent = function () {
-      if (trackIsScroller()) newsTrack.setAttribute("data-lenis-prevent-wheel", "");
-      else newsTrack.removeAttribute("data-lenis-prevent-wheel");
-    };
-    syncNewsPrevent();
-    if (newsFallbackMq.addEventListener) {
-      newsFallbackMq.addEventListener("change", syncNewsPrevent);
-    }
-
-    // Snap has to be suspended while WE drive scrollLeft: scroll snapping is
-    // re-applied after every programmatic scroll, so `proximity` yanked the row
-    // straight back to the nearest card and it never moved. Restore it once the
-    // gesture settles, which doubles as the snap-to-card landing.
-    var snapTimer;
-    newsSection.addEventListener(
-      "wheel",
-      function (e) {
-        if (Math.abs(e.deltaX) <= Math.abs(e.deltaY)) return; // vertical intent
-        e.preventDefault();
-        e.stopPropagation();
-        if (!trackIsScroller()) return; // pinned: swallow it, page holds still
-        newsTrack.style.scrollSnapType = "none";
-        newsTrack.scrollLeft += e.deltaX; // clamps at 0 / max — never chains out
-        clearTimeout(snapTimer);
-        snapTimer = setTimeout(function () {
-          newsTrack.style.scrollSnapType = "";
-        }, 140);
-      },
-      { passive: false }
-    );
-  }
-
   // ---- 2. Hero — stack takeover (k95-timed build) ------------------------
   // One continuous clock (k95.it's loader rhythm): media preloads in parallel
   // (each raced against a timeout so one slow file can't stall the start),
@@ -691,19 +634,24 @@
 
   // ---- 3e. Scroll-velocity card lean ------------------------------------
   // The same fluid tilt as the intro strip's drag lean, but driven by SCROLL
-  // SPEED instead of pointer speed: the cards lean into the movement and
-  // straighten as the scroll settles. Applied to the Latest track (whose
-  // horizontal sweep is a CSS scroll-timeline on the TRACK, so owning rotation
-  // on the CARDS keeps the two from fighting) and to the work tiles. The work
-  // tiles get a much smaller cap: they are half the grid wide, so the same
-  // angle would swing their corners into the neighbouring tile.
+  // SPEED instead of pointer speed: cards lean into the movement and
+  // straighten as the scroll settles. Applied to the news rows and the work
+  // tiles, both capped low for the same reason — each is about half the
+  // container wide (at 1920: work tile ~858px, news row ~849px), so a bigger
+  // angle swings their corners into the neighbour and visibly rotates the
+  // headline and meta along with the media. (The news cap used to be 3.5,
+  // set when a news card was a ~558px tile inside the horizontal track; the
+  // editorial stack made the row half the container, so it matches work now.)
+  // NB the news row also carries view-timeline-name: --news-card, so the
+  // rotation written here lands on the very element anchoring the image
+  // parallax — a second reason to keep the angle small.
   // One shared velocity sampler + one ticker drives every group.
   // Skipped under reduced motion / without gsap.
   (function () {
     if (!gsapOk || reduce) return;
 
     var GROUPS = [
-      { cards: ".news__card", within: ".news", max: 3.5 },
+      { cards: ".news__card", within: ".news", max: 2.5 },
       { cards: ".work__item", within: ".work", max: 2.5 }
     ];
 
@@ -788,38 +736,6 @@
         apply();
       });
     });
-  }
-
-  // ---- 3g. Latest: horizontal input drives the pinned sweep -------------
-  // The track's sideways sweep is a CSS view timeline hung off the pin, i.e.
-  // it advances with VERTICAL scroll. A trackpad swipe (or shift+wheel) sends
-  // deltaX, which the page would otherwise ignore — `.page-home` clips
-  // overflow-x, so there is nothing to scroll sideways. Rather than animate
-  // the track from a second source (which would fight the timeline and drift
-  // out of sync), horizontal delta is folded into the VERTICAL scroll: the one
-  // timeline still owns the sweep, and both gestures feel identical.
-  // Active whenever any part of the panel is ON SCREEN — not just once the pin
-  // is fully engaged. Gating on "fully pinned" meant the gesture died while the
-  // cards were still in view on the way in and out, which reads as broken.
-  // Never when the reduced-motion/small-screen fallback has made the track
-  // natively scrollable.
-  var newsSticky = document.querySelector(".news__sticky");
-  if (newsSticky) {
-    window.addEventListener("wheel", function (e) {
-      // leave vertical-dominant gestures completely alone
-      if (Math.abs(e.deltaX) <= Math.abs(e.deltaY)) return;
-      // the fallback turns the track into a real scroller — let it do its job
-      if (window.getComputedStyle(newsSticky).position !== "sticky") return;
-      var r = newsSticky.getBoundingClientRect();
-      if (r.bottom <= 0 || r.top >= window.innerHeight) return; // panel off screen
-      e.preventDefault();
-      if (lenis && typeof lenis.scrollTo === "function") {
-        // feed Lenis its own target so the two never disagree about position
-        lenis.scrollTo(lenis.targetScroll + e.deltaX, { immediate: true });
-      } else {
-        window.scrollBy(0, e.deltaX);
-      }
-    }, { passive: false });
   }
 
   // ---- 4. SplitText line-mask text reveals -------------------------------

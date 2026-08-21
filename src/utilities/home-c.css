@@ -1,6 +1,6 @@
 /* home-c.css — PAGE layer for the CANONICAL homepage (templates/homeC.html).
  * Editorial homepage: full-bleed hero, intro statement, asymmetric work grid,
- * tri-row client marquee, pinned news scroller. Imported LAST.
+ * tri-row client marquee, news editorial stack. Imported LAST.
  *
  * Block names here are the site's public API (promoted from the old homec-*
  * prototype namespace): .hero, .intro, .work, .clients, .news, .arrow-link,
@@ -93,7 +93,7 @@
      type keeps growing past the global desktop caps (below + on the display
      rules) — so the whole composition scales together on wide screens rather
      than stranding a fixed-width block in a widening empty field. */
-  --container-pad: clamp(1.5rem, 4.2vw, 7.5rem); /* ~60px @1440 → 120px cap (matches theonecentre) */
+  /* --container-pad is declared once for .page-home AND the footer below. */
 
   /* Shared 12-column grid gutter (clamp) — intro + work snap to the same columns
      and gutters inside .u-container, so section edges line up down the page. */
@@ -104,25 +104,23 @@
      ~1700px because their vw term is weak), then grow to a higher ceiling by
      ~2100-2350px. Nothing shrinks vs the global tokens — only the top extends.
      Big display type (statement, clients) is grown on its own rules below. */
-  /* ONE fluid spacing ramp. Every margin/padding/gap on the page picks a step
-     from this instead of inventing its own clamp — previously there were ~18
-     ad-hoc slopes (10vw, 8vw, 7vw, 5vw, 3vw…), several measured in vh (so they
-     collapsed on wide-short screens), and nearly all frozen by ~1400px while
-     the type kept growing to ~2300px. That mismatch is why the rhythm fell
-     apart on big monitors. These share a slope family and all reach their cap
-     at ~2300px, so space and type now grow together. */
-  --space-3xs: clamp(0.25rem, 0.4vw, 0.575rem);
-  --space-2xs: clamp(0.5rem, 0.8vw, 1.15rem);
-  --space-xs: clamp(0.75rem, 1.2vw, 1.725rem);
-  --space-sm: clamp(1.25rem, 2vw, 2.875rem);
-  --space-md: clamp(2rem, 3.2vw, 4.6rem);
-  --space-lg: clamp(2.75rem, 5vw, 7.2rem);
-  --space-xl: clamp(3.5rem, 7vw, 10rem);
-  --space-2xl: clamp(4.5rem, 9vw, 13rem);
+  /* The fluid --space-* ramp now lives in src/theme/spacing.css (:root), so
+     the footer outside <main> can read it too. */
 
   --text-xs: clamp(0.9375rem, 0.9vw, 1.3rem);  /* 15px → 20.8px — bumped from 12px: lede, expertise list, work meta, news eyebrow, more-link all read a touch larger */
   --text-sm: clamp(0.875rem, 0.9vw, 1.25rem);  /* 14px → 20px  */
   --text-lg: clamp(1.125rem, 1.25vw, 1.6rem);  /* 18px → 25.6px */
+}
+
+/* Declared for both: the global footer sits OUTSIDE <main> (contentinfo
+   landmark) and is a true adjacent sibling, so it can't inherit .page-home's
+   wider gutter — sharing one rule keeps the footer's edges tracking the page
+   content instead of silently stranding on the narrower global default.
+   A plain selector list, NOT :is() — that would raise specificity enough to
+   clobber the footer's own background. */
+.page-home,
+.page-home + .site-footer {
+  --container-pad: clamp(1.5rem, 4.2vw, 7.5rem); /* ~60px @1440 → 120px cap (matches theonecentre) */
 }
 
 /* Drop the 90rem cap on Home C sections — they run edge-to-edge, held in only by
@@ -1292,92 +1290,95 @@ html:not(.js-animations) .intro__expertise-list li:first-child a {
  * News — three-card grid
  * ==================================================================== */
 
-/* Pinned horizontal-scroll section (zypsy/zetta-joule style). The tall .pin
- * wrapper hosts a block scroll-timeline; while its sticky child is pinned to the
- * viewport, the card track translates horizontally in lockstep with the vertical
- * scroll. Once the track finishes, the pin releases and vertical scroll resumes.
- * Pure CSS — no ScrollTrigger. Degrades to a native horizontal swipe where
- * scroll-timeline is unsupported or under reduced motion. */
+/* News — editorial stack (design: experiments/News.png).
+ *
+ * Replaces the pinned horizontal scroller (archived as direction 01 in
+ * experiments/news.html). Three rows in normal flow: a square media tile and a
+ * text column whose title sits at the top and whose meta sits on the tile's
+ * baseline, with the NEWS masthead and the More link pinned to the top and
+ * bottom of a left rail. No pin, no scroll-timeline sweep, no swipe fallback —
+ * ordinary vertical scrolling, which is why all of that machinery is gone
+ * rather than left dormant.
+ *
+ * Proportions are the mock's, expressed against the shared 12-column grid so
+ * the section keeps tracking the rest of the page: at 1920 the mock's rail is
+ * ~49vw, the tile 390px and the text column 425px.
+ */
 .news {
   position: relative;
-  /* [Fix B] Height-aware masthead size. 7vw as designed, but never taller than
-     14% of the viewport height — on short viewports the heading gives up size
-     so the height-guarded cards (below) can take that space back. On normal
-     screens the min() resolves to the original clamp(), so nothing changes. */
-  --news-masthead: min(clamp(2.5rem, 6vw, 9rem), 14svh);
+  padding-block: var(--space-xl);
+  /* The shared display-caps voice (WORK heading, footer LET'S TALK). The old
+     pinned version capped this at 14svh so the masthead + cards fit one
+     viewport; nothing is pinned now, so the plain clamp applies. */
+  --news-masthead: clamp(2.5rem, 6vw, 9rem);
 }
 
-.news__pin {
-  height: 250vh; /* pinned-scroll distance: 4 cards → a bit more travel so the horizontal sweep isn't rushed */
-  /* A VIEW timeline (the pin need not be a scroll container). The track animates
-     over the `contain` phase — exactly while the sticky child covers the
-     viewport, i.e. while it is pinned. */
-  view-timeline-name: --news-pin;
-  view-timeline-axis: block;
+.news__inner {
+  display: grid;
+  gap: var(--space-lg) var(--space-md);
+  grid-template-columns: 1fr;
 }
 
-.news__sticky {
-  position: sticky;
-  top: 0;
-  height: 100svh;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  /* Anchored to the TOP, not centred. Centring made the space above the
-     masthead whatever was left over from 100svh — so it ballooned on tall
-     narrow screens (small cards, lots of slack) and collapsed on wide ones
-     (big cards, none). Now it is one ramp step, matching every other section
-     boundary; any slack falls at the bottom where it reads as breathing room. */
-  justify-content: flex-start;
-  padding-top: var(--space-xl);
-  gap: var(--space-sm);
-  border-top: 1px solid var(--color-border);
+@media (min-width: 1024px) {
+  .news__inner {
+    /* rail | list — the mock's ~52:48 split */
+    grid-template-columns: 1fr 1fr;
+  }
 }
+
+
+/* ---- left rail: NEWS top, More bottom ----------------------------------- */
 
 .news__head {
   display: flex;
-  align-items: baseline;
+  flex-direction: column;
   justify-content: space-between;
-  padding-inline: var(--container-pad);
+  align-items: flex-start;
+  gap: var(--space-md);
+}
+/* Below the split the rail is a full-width auto-height box, so its
+   space-between has no free space to distribute: More would land directly
+   under the masthead and ABOVE every row, inverting the mock's rail
+   relationship and making the CTA read as a subheading. Lay it out as a row
+   instead — NEWS left, More right, on one baseline. */
+@media (max-width: 1023.98px) {
+  .news__head {
+    flex-direction: row;
+    align-items: baseline;
+    justify-content: space-between;
+    width: 100%;
+  }
 }
 
-/* Masthead: NEWS and its More link share the display voice of the hero lockup
-   and the WORK heading. NEWS is uppercase; More is sentence case (see below),
-   mirroring the work section's heading + "All work" pairing. */
-.news__heading,
-.news__more {
-  font-size: var(--news-masthead); /* = .work__heading's clamp, height-capped (Fix B) */
-  font-weight: 900; /* Kumbh Sans Black — the heaviest cut */
+.news__heading {
+  margin: 0;
+  font-size: var(--news-masthead);
+  font-weight: 900;
   line-height: 0.9;
   letter-spacing: var(--tracking-caps);
   text-transform: uppercase;
   color: var(--color-icon-black);
 }
 
-.news__heading {
-  margin: 0;
-}
-
 /* Sentence case, so it takes the display-type tracking rather than the caps
    token (--tracking-caps is for uppercase settings only) — identical
    treatment to .work__more, including the half-heading size. */
 .news__more {
-  text-transform: none;
-  letter-spacing: -0.02em;
-  font-size: calc(var(--news-masthead) / 2); /* 50% of the NEWS heading */
-}
-
-/* Same treatment as the work MORE: slides right, then a "/" fades in a
-   word-space before it, both in accent blue. */
-.news__more {
   position: relative;
   display: inline-block;
+  font-size: calc(var(--news-masthead) / 2);
+  font-weight: 900;
+  line-height: 0.9;
+  letter-spacing: -0.02em;
+  color: var(--color-icon-black);
   text-decoration: none;
   transition:
     color var(--duration-fast) var(--ease-standard),
     translate var(--duration-normal) var(--ease-decelerate);
 }
 
+/* Same treatment as the work MORE: slides right, then a "/" fades in a
+   word-space before it, both in accent blue. */
 .news__more::before {
   content: "/";
   position: absolute;
@@ -1403,53 +1404,37 @@ html:not(.js-animations) .intro__expertise-list li:first-child a {
   .news__more::before { transition: none; }
 }
 
-.news__track {
-  display: flex;
-  gap: var(--grid-gutter); /* same rhythm as the work grid */
-  width: max-content;
-  padding-inline: var(--container-pad);
-  animation: news-x linear both;
-  animation-timeline: --news-pin;
-  /* Bleed the sweep ~14% into the entry/exit phases so it blends with the last
-     bit of vertical scroll-in and the first bit of scroll-out — a fluid handoff
-     rather than a hard vertical→horizontal→vertical stop. */
-  animation-range: contain -14% contain 114%;
-}
+/* ---- the list ------------------------------------------------------------ */
 
-@keyframes news-x {
-  /* min() guard: if the track ever ends up narrower than the viewport,
-     -100% + 100vw computes POSITIVE (a rightward slide) — clamp at zero so
-     the sweep can never run backwards. */
-  to { transform: translateX(min(0px, calc(-100% + 100vw))); }
+.news__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
 .news__card {
-  flex: 0 0 auto;
-  /* Sized off the SAME 12-column grid as the work tiles, so the cards keep
-     scaling with the browser instead of freezing at a rem cap: one card spans
-     4 columns (+ its 3 inner gutters). Two guards around it —
-       max(17rem, …) so the cards stay usable on phones, where 4 of 12 columns
-         would be tiny;
-       min(…, 100svh - …) because the figure is SQUARE, so width drives height:
-         the card + its meta/title + the masthead all have to fit the pinned
-         100svh, which binds on short/ultrawide screens. */
-  --news-col: calc((100vw - 2 * var(--container-pad) - 11 * var(--grid-gutter)) / 12);
-  width: min(
-    max(17rem, calc(4 * var(--news-col) + 3 * var(--grid-gutter))),
-    /* leaves room for the panel's top padding + masthead + gap + meta/title.
-       [Fix B] the reservation tracks the actual masthead footprint
-       (2.3 × var ≈ the old 16vw while the masthead is width-sized), so when
-       the height cap shrinks the heading, the cards get that space back. */
-    calc(100svh - 12rem - 2.3 * var(--news-masthead))
-  );
-  display: block;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-sm);
   text-decoration: none;
   color: inherit;
 }
 
+/* tile | text — the mock's 390:425 at 1920. Mobile-first per
+   docs/frontend-rules.md, and on the sm breakpoint (640) rather than a
+   max-width:639 query, which is false at fractional widths / browser zoom. */
+@media (min-width: 640px) {
+  .news__card {
+    grid-template-columns: minmax(0, 390fr) minmax(0, 425fr);
+  }
+}
+
 .news__figure {
   position: relative;
-  margin: 0 0 var(--spacing-md);
+  margin: 0;
   border-radius: var(--radius-icon);
   overflow: hidden;
   aspect-ratio: 1 / 1;
@@ -1465,10 +1450,6 @@ html:not(.js-animations) .intro__expertise-list li:first-child a {
   transition:
     clip-path 0.4s var(--ease-decelerate),
     transform 0.25s var(--ease-decelerate);
-}
-
-.news__img {
-  transition: filter 0.35s var(--ease-standard);
 }
 
 @media (hover: hover) {
@@ -1490,9 +1471,8 @@ html:not(.js-animations) .intro__expertise-list li:first-child a {
   }
 }
 
-/* Slightly oversized on both axes — just enough overscan (3% a side) to cover the
-   small parallax drift below without exposing an edge. Kept small so the square
-   source sits close to its natural size with minimal crop. */
+/* Slightly oversized on both axes — just enough overscan (3% a side) to cover
+   the parallax drift below without exposing an edge. */
 .news__img {
   position: absolute;
   top: -3%;
@@ -1502,45 +1482,54 @@ html:not(.js-animations) .intro__expertise-list li:first-child a {
   height: 106%;
   object-fit: cover;
   display: block;
+  transition: filter 0.35s var(--ease-standard);
 }
 
-/* Parallax split across the two scroll directions:
-   - HORIZONTAL drift (±2%) tracks the HORIZONTAL scroll — the pinned track's
-     sweep, i.e. --news-pin's `contain` (pinned) phase. On the `translate` property.
-   - VERTICAL drift (±0.75%) tracks the VERTICAL scroll — the section's travel up
-     through the viewport, i.e. --news-pin's full `cover` phase. On `transform`.
-   Separate properties (translate vs transform) so the two compose without fighting,
-   and each carries its own timeline range. Both also compose with the reveal's
-   `scale`/`clip-path`/`opacity` (.media-reveal, matching the work images). */
-@keyframes news-img-x {
-  from { translate: -2% 0; }
-  to { translate: 2% 0; }
+/* Vertical drift as the card travels up through the viewport. The old
+   split-axis version had a horizontal component tied to the pinned sweep,
+   which no longer exists.
+
+   NAMED timeline, not a bare view(): the image's nearest ancestor is
+   .news__figure, whose `overflow: hidden` makes it a scroll container, so
+   view() would resolve its scrollport to that non-scrolling frame and pin the
+   animation at 50% — dead still. Declaring view-timeline-name on the CARD
+   (which has no overflow) and pointing the image at it is the same fix
+   LESSONS.md records for the work + news media. */
+.news__card {
+  view-timeline-name: --news-card;
+  view-timeline-axis: block;
 }
+
 @keyframes news-img-y {
-  from { transform: translateY(-0.75%); }
-  to { transform: translateY(0.75%); }
+  from { transform: translateY(-2%); }
+  to { transform: translateY(2%); }
 }
 
 @media (prefers-reduced-motion: no-preference) {
   @supports (animation-timeline: view()) {
     .news__img {
-      animation:
-        news-img-x linear both,
-        news-img-y linear both;
-      animation-timeline: --news-pin, --news-pin;
-      animation-range: contain -14% contain 114%, cover 0% cover 100%;
+      animation: news-img-y linear both;
+      animation-timeline: --news-card;
+      animation-range: cover 0% cover 100%;
     }
   }
 }
 
-/* Category + date row above the title. */
-/* The date sits UNDER the title, in the same voice as the work cards' client
-   name — one line below, on the same rhythm as .work__caption's gap. */
-.news__date {
-  display: block;
-  margin-top: 0.5rem;
-  font-size: clamp(1.0625rem, 1.1vw, 1.5rem); /* matches .work__meta */
-  color: var(--color-icon-grey);
+/* ---- text column: title at the top, meta on the tile's baseline ---------- */
+
+.news__body {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: var(--space-sm);
+}
+
+/* Below the two-column split the tile is ~47% of the FULL container rather
+   than of half of it, so it towers over a short headline and space-between
+   strands the date ~280px under the title. Cluster the text at the top there;
+   the meta-on-the-tile's-baseline relationship is a desktop composition. */
+@media (max-width: 1023.98px) {
+  .news__body { justify-content: flex-start; }
 }
 
 .news__title {
@@ -1549,58 +1538,27 @@ html:not(.js-animations) .intro__expertise-list li:first-child a {
   font-weight: var(--font-weight-medium);
   line-height: 1.3;
   color: var(--color-icon-black);
-  /* No text-wrap here: the base h1-h4 `balance` applies (typography.css) —
-     matching .work__title and avoiding pretty's single-word last lines. */
   padding-inline-end: 1.5em; /* room for the hover arrow, as on .work__title */
+
+  /* The row's height is max(tile, text): the figure's aspect-ratio stops it
+     stretching, so a text column taller than the tile grows the ROW instead —
+     dropping the meta below the tile's baseline and making the pitch ragged.
+     That breaks on CONTENT, not viewport, so real editor headlines would
+     surface it in Drupal rather than here. Budget the title to five lines and
+     ellipsize beyond. */
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 5;
+  overflow: hidden;
 }
 
-/* Fallback — one static presentation, three triggers:
-     1. no scroll-timeline support (the @supports block);
-     2. reduced motion;
-     3. [Fix A] viewports that can't host the pinned scene: the sticky is
-        100svh, so on short-and-landscape screens the height-guarded cards
-        shrink to thumbnails and the sweep distance approaches (or passes)
-        zero. Landscape-only on the height arm so portrait phones keep the
-        pin; the 2/1 arm catches wide-flat desktop windows above 780px.
-   A plain, swipeable horizontal scroller — no pin, no coupled animation —
-   and the cards return to their grid width, since they no longer have to
-   fit inside 100svh. */
-@supports not (animation-timeline: scroll()) {
-  .news__pin { height: auto; }
-  .news__sticky { position: static; height: auto; padding-block: var(--space-xl); }
-  /* The TRACK is the scroller (width: auto fills the panel; the flex cards
-     overflow it) — the NEWS/MORE masthead above stays put while the cards
-     swipe. Snap lives here because the snap container must be the scroller. */
-  .news__track {
-    animation: none;
-    width: auto;
-    overflow-x: auto;
-    scroll-snap-type: x proximity;
-    /* Reaching either end must not fling the page (chained scroll) — hold, so
-       the user can swipe back. Snap positions honour the track's own
-       inline padding, or card 1 would rest flush against the edge. */
-    overscroll-behavior-x: contain;
-    scroll-padding-inline: var(--container-pad);
-  }
-  .news__card { scroll-snap-align: start; width: max(17rem, calc(4 * var(--news-col) + 3 * var(--grid-gutter))); }
+/* Category / date, in the same voice as the work cards' client name. */
+.news__meta {
+  display: block;
+  font-size: clamp(1.0625rem, 1.1vw, 1.5rem);
+  color: var(--color-icon-grey);
 }
 
-@media (prefers-reduced-motion: reduce), (max-height: 780px) and (min-aspect-ratio: 1/1), (min-aspect-ratio: 2/1) {
-  .news__pin { height: auto; }
-  .news__sticky { position: static; height: auto; padding-block: var(--space-xl); }
-  .news__track {
-    animation: none;
-    width: auto;
-    overflow-x: auto;
-    scroll-snap-type: x proximity;
-    /* Reaching either end must not fling the page (chained scroll) — hold, so
-       the user can swipe back. Snap positions honour the track's own
-       inline padding, or card 1 would rest flush against the edge. */
-    overscroll-behavior-x: contain;
-    scroll-padding-inline: var(--container-pad);
-  }
-  .news__card { scroll-snap-align: start; width: max(17rem, calc(4 * var(--news-col) + 3 * var(--grid-gutter))); }
-}
 
 /* ======================================================================
  * Shared: the "more" pill link + section rhythm
