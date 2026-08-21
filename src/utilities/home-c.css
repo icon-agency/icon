@@ -1147,7 +1147,7 @@ html:not(.js-animations) .intro__expertise-list li:first-child a {
 }
 
 .work__meta {
-  font-size: clamp(1.0625rem, 1.1vw, 1.5rem); /* a step up from --text-xs */
+  font-size: var(--voice-meta);
   color: var(--color-icon-grey);
 }
 
@@ -1348,6 +1348,35 @@ html:not(.js-animations) .intro__expertise-list li:first-child a {
     align-items: baseline;
     justify-content: space-between;
     width: 100%;
+  }
+}
+
+/* The box the sticky masthead travels inside. It exists purely to be SHORTER
+   than the rail: a sticky element is constrained by its containing block, and
+   neither flex nor grid narrows that to the item's own track — the parent's
+   content box is what counts. Left as a direct child of .news__head, the
+   heading could slide all the way to the rail's bottom edge and come to rest
+   on top of More. Growing this to fill everything above More gives it a run
+   that stops short of the link. */
+.news__rail {
+  flex: 1 1 auto;
+  align-self: stretch;
+  min-width: 0;
+}
+
+/* The masthead rides the rail: it pins while the stories scroll past it, then
+   releases when the rail runs out. Only above 1024 — that is where the rail
+   becomes its own column with the height to travel in; below it the head is a
+   short full-width row and there is nothing to stick to.
+
+   No named timeline or JS needed, and nothing in the chain (.news,
+   .news__inner, .news__head, .news__rail) sets overflow, so it resolves
+   against the viewport. 6rem clears the nav pill, which ends at 1rem +
+   --header-control (3.5rem), with room to spare. */
+@media (min-width: 1024px) {
+  .news__heading {
+    position: sticky;
+    top: 6rem;
   }
 }
 

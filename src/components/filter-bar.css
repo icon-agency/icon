@@ -55,3 +55,84 @@
   color: var(--color-primary-foreground);
   background: var(--color-primary);
 }
+
+/* ==========================================================================
+ * --checklist: the /news filter grid (design: experiments/news-header-filters.png)
+ * ========================================================================
+ * Two columns of labelled squares instead of a scrolling row of pills. "All"
+ * takes the first row on its own, then the four categories fill a 2x2 below.
+ *
+ * The squares are a decorative ::before, and the chips stay <a> links marked
+ * with aria-current — the same single-select, server-side-honoured filter the
+ * pills are. They read as checkboxes but they are not multi-select, so no
+ * checkbox semantics are exposed: an assistive tech user gets the link list
+ * and the current item, which is the truth of what the control does.
+ */
+
+.filter-bar--checklist {
+  display: grid;
+  /* Custom value: the mock's two label columns sit 208px apart at 1724 wide;
+     the gap collapses long before the layout stacks at 1024. */
+  grid-template-columns: auto auto;
+  justify-content: start;
+  column-gap: clamp(1.5rem, 7vw, 8rem);
+  /* Tight: the labels should read as one stacked list, not five separate
+     lines. Any looser and the two columns stop scanning as a pair. */
+  row-gap: clamp(0.15rem, 0.35vw, 0.4rem);
+  padding-inline: 0;
+}
+
+/* "All" heads the list on its own line, as in the mock. justify-self keeps it
+   from stretching across the span it occupies — without it the chip's box (and
+   so its click target) would cover the gap and the whole second column, and
+   clicking empty space would select All. */
+.filter-bar--checklist .filter-bar__chip:first-child {
+  grid-column: 1 / -1;
+  justify-self: start;
+}
+
+.filter-bar--checklist .filter-bar__chip {
+  /* unset the pill recipe — everything here is different */
+  padding: 0;
+  border-radius: 0;
+  background: none;
+  gap: 0.55em;
+  font-size: var(--voice-meta);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: -0.01em;
+  text-transform: none;
+  color: var(--color-icon-black);
+}
+
+.filter-bar--checklist .filter-bar__chip:hover,
+.filter-bar--checklist .filter-bar__chip:focus-visible {
+  background: none;
+  color: var(--color-icon-blue);
+}
+
+/* the square. Custom value: 0.68em is the mock's 13px box against its ~19px
+   label, so the two scale together rather than needing a second clamp. */
+.filter-bar--checklist .filter-bar__chip::before {
+  content: "";
+  flex: 0 0 auto;
+  width: 0.68em;
+  height: 0.68em;
+  border-radius: 0.15em;
+  /* the mock's #EDEEF5 — derived from the brand blue rather than hard-coded,
+     so a re-theme carries it */
+  background: color-mix(in srgb, var(--color-icon-blue) 7%, var(--color-white));
+  transition: background var(--duration-normal) var(--ease-standard);
+}
+
+.filter-bar--checklist .filter-bar__chip.is-active {
+  color: var(--color-icon-black);
+  background: none;
+}
+
+.filter-bar--checklist .filter-bar__chip.is-active::before {
+  background: var(--color-icon-blue);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .filter-bar--checklist .filter-bar__chip::before { transition: none; }
+}

@@ -52,6 +52,12 @@
      Its companions: medium weight, -0.01em tracking, 1.2 line-height. */
   --voice-mid: clamp(1.4rem, 2.1vw, 3rem);
 
+  /* The meta voice — the quiet line under the mid one: card categories and
+     dates, work meta, the footer's place names and acknowledgement, the news
+     filter labels. A step up from --text-xs, and the same literal was already
+     repeated across four files. */
+  --voice-meta: clamp(1.0625rem, 1.1vw, 1.5rem);
+
   /* Weights */
   --font-weight-normal: 400;
   --font-weight-medium: 500;

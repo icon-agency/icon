@@ -58,3 +58,93 @@
   margin-bottom: var(--spacing-md);
   overflow-x: auto;
 }
+
+/* ==========================================================================
+ * --row: the /news masthead (design: experiments/news-header-filters.png)
+ * ========================================================================
+ * A three-part row instead of the centred stack /work uses — heading left,
+ * the filter checklist in the middle, Subscribe hard right — all sitting on
+ * one baseline. The heading wears --display, the same 900 caps the homepage
+ * news masthead does, so the two pages announce the section identically.
+ *
+ * A modifier rather than a rewrite because /work still renders the centred
+ * arrangement from the same component, and both are live.
+ */
+
+.page-header--row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-md);
+  padding-bottom: var(--space-md);
+  /* No rule of its own. The mock draws one hairline between the header and
+     the first row of cards, and .news-list already draws exactly that — as
+     the first item's border-top, inset to the page gutter. A border here
+     landed on the very same y AND ran full-bleed (the border box is the whole
+     page width; only the PADDING is inset), so the two superimposed into one
+     heavy line that overshot the margin at both ends. */
+}
+
+/* The split is a straight half: the mock starts the filter column at 52% of
+   the page and runs Subscribe to the right gutter. */
+@media (min-width: 1024px) {
+  .page-header--row {
+    grid-template-columns: 1fr 1fr;
+    /* Heading baseline, last filter row and Subscribe all land together in
+       the mock; bottom-aligning the boxes is what puts them there. */
+    align-items: end;
+  }
+}
+
+
+/* filters + Subscribe, pushed to the two ends of the right half */
+.page-header__aside {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-md);
+}
+
+@media (min-width: 1024px) {
+  .page-header__aside {
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--space-md);
+  }
+}
+
+/* The base block bleeds its filter row to the page edges and lets it scroll
+   sideways; in this arrangement the checklist wraps instead, so neither is
+   wanted. */
+.page-header--row .page-header__filters {
+  margin-inline: 0;
+  margin-bottom: 0;
+  overflow-x: visible;
+}
+
+/* Subscribe as an underlined word rather than the filled pill /work uses. */
+.page-header__subscribe {
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: var(--voice-mid);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+  color: var(--color-icon-black);
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+  text-decoration-thickness: from-font;
+  transition: color var(--duration-normal) var(--ease-standard);
+}
+
+.page-header__subscribe:hover,
+.page-header__subscribe:focus-visible {
+  color: var(--color-icon-blue);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-header__subscribe { transition: none; }
+}
