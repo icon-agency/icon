@@ -58,6 +58,33 @@
      repeated across four files. */
   --voice-meta: clamp(1.0625rem, 1.1vw, 1.5rem);
 
+  /* THE DISPLAY VOICE — the big caps mastheads (NEWS & INSIGHTS, WORK, the
+     footer's LET'S TALK) and the /news page heading.
+     
+     Sized to the ICON WORDMARK, not to the viewport. It follows the logo's own
+     stepped ladder in site-header.css rather than a vw curve, because the logo
+     does not scale fluidly and a fluid heading beside a stepped mark only
+     matches at one width.
+     
+     The 1.0914 converts logo BOX height to font size so the two CAP HEIGHTS
+     agree, which is what the eye compares: the wordmark's cap is 0.8154 of its
+     SVG box (the "I" runs y 12.73→68.99 of a 69 viewBox) and Kumbh Sans 900's
+     cap is 0.7471 of its em — both measured, not estimated. 0.8154 / 0.7471.
+     
+     Keep --logo-h in step with .site-logo__mark if that ladder ever moves. */
+  --logo-h: 3.5rem;
+  /* ...capped on the narrowest screens, where matching the wordmark is worth
+     less than the words fitting. "& INSIGHTS" is the longest masthead line at
+     ~5.5em, and at 375px it came to 336px in a 327px column — one word wide,
+     so it wrapped and the masthead grew a fourth line. 15vw keeps the longest
+     line inside the column with a little headroom, and because the cap is a
+     min() it stops biting at about 407px, above which the logo match resumes
+     untouched. */
+  --voice-display: min(calc(var(--logo-h) * 1.0914), 15vw);
+  /* tight: these are stacked two-line mastheads, and at cap-height parity with
+     the wordmark the old 0.9 left them looking like separate lines */
+  --voice-display-lh: 0.82;
+
   /* Weights */
   --font-weight-normal: 400;
   --font-weight-medium: 500;
@@ -83,3 +110,8 @@
      at label sizes hurts legibility. */
   --tracking-caps: -0.015em;
 }
+
+/* mirrors .site-logo__mark's steps — same breakpoints, same values */
+@media (min-width: 1024px) { :root { --logo-h: 3.75rem; } }
+@media (min-width: 1280px) { :root { --logo-h: 4.25rem; } }
+@media (min-width: 1536px) { :root { --logo-h: 4.5rem; } }

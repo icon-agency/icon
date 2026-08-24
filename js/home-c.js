@@ -53,20 +53,62 @@
 
       var wait = function (ms) { return new Promise(function (r) { setTimeout(r, ms); }); };
 
-      var mediaReady = function (card) {
+      // A REAL load gate. The kinetic-text box is the loading screen now, so
+      // this has to mean "this media can actually be shown", not "something
+      // arrived". Each element is gated on its own, and every promise fails
+      // OPEN on error — a 404 must not hold the page.
+      //
+      // img.decode() rather than .complete: complete is true for a failed
+      // image, true for an empty src, and true BEFORE the bitmap is decoded,
+      // so popping on it can still flash. decode() is the honest signal.
+      //
+      // For video, readyState >= 3 (HAVE_FUTURE_DATA) is "can start playing".
+      // The last card is the one the morph hands to the reel, so it is held to
+      // a harder test: enough BUFFERED to cover the pile beat plus the whole
+      // morph without stalling. canplaythrough would be the obvious choice and
+      // is deliberately not used — it is the browser's estimate from measured
+      // download rate, not a fact about what is in the buffer.
+      var mediaReady = function (el, deep) {
+        var m = el.tagName === "IMG" || el.tagName === "VIDEO"
+          ? el : el.querySelector("img, video");
         return new Promise(function (res) {
-          var m = card.querySelector("img, video");
           if (!m) return res();
+          var done = function () { res(); };
           if (m.tagName === "IMG") {
-            if (m.complete) return res();
-            m.addEventListener("load", res, { once: true });
-            m.addEventListener("error", res, { once: true });
-          } else {
-            if (m.readyState >= 2) return res();
-            m.addEventListener("loadeddata", res, { once: true });
-            m.addEventListener("error", res, { once: true });
+            if (m.decode) return m.decode().then(done, done);
+            if (m.complete) return done();
+            m.addEventListener("load", done, { once: true });
+            m.addEventListener("error", done, { once: true });
+            return;
           }
-          setTimeout(res, 1500); // never let one file stall the line
+          // readyState >= 3 is HAVE_FUTURE_DATA ("can start playing"); >= 4 is
+          // HAVE_ENOUGH_DATA, the browser's own "can play through without
+          // stalling". The deep ones — the last card and the reel slide it
+          // hands to — hold out for 4.
+          //
+          // An earlier version asked for a buffered range covering the beat
+          // plus the morph instead, on the theory that a measured fact beats
+          // the browser's estimate. It does not work: browsers deliberately
+          // STOP buffering a paused video after a second or two, so the range
+          // never grew and the gate sat there until MAX_WAIT fired at 8s —
+          // traced at 9.5s for a fully cached file. readyState is the signal
+          // that actually moves for media nobody is playing yet.
+          var enough = function () { return m.readyState >= (deep ? 4 : 3); };
+          if (enough()) return done();
+          var onTick = function () { if (enough()) { cleanup(); done(); } };
+          var cleanup = function () {
+            m.removeEventListener("progress", onTick);
+            m.removeEventListener("canplay", onTick);
+            m.removeEventListener("canplaythrough", onTick);
+            m.removeEventListener("loadeddata", onTick);
+            m.removeEventListener("error", fail);
+          };
+          var fail = function () { cleanup(); done(); };
+          m.addEventListener("progress", onTick);
+          m.addEventListener("canplay", onTick);
+          m.addEventListener("canplaythrough", onTick);
+          m.addEventListener("loadeddata", onTick);
+          m.addEventListener("error", fail, { once: true });
         });
       };
 
@@ -137,8 +179,13 @@
       if (reduce) {
         cards.forEach(function (c) { c.classList.add("is-pop", "is-stacked"); });
         hero.classList.add("is-live");
-        activate(0);
-        loop(0);
+        // Gated, same as the full path: activating an unloaded 6MB video
+        // showed an empty reel until it painted. (Pre-existing; the loading
+        // screen work just made the double standard obvious.)
+        mediaReady(slides[0]).then(function () {
+          activate(0);
+          loop(0);
+        });
         return;
       }
 
@@ -163,32 +210,128 @@
         }
       }
 
-      // Fixed rhythm (k95 values, scaled to our card count). The CSS owns the
-      // easing; this clock only schedules class-adds and drives the counter.
-      var DUR = 680;      // one card's open (matches the CSS transition)
-      var STAGGER = 200;  // next card starts this far in — opens overlap
+      // The rhythm. k95's values, slowed ~35% now that the pops play over the
+      // kinetic-text loading screen rather than a bare panel — the pile reads
+      // as deliberate at this pace instead of snapping shut.
+      var DUR = 920;      // one card's open (matches the CSS transition)
+      var STAGGER = 270;  // next card starts this far in — opens overlap
       var HOLD = 800;     // beat on the finished pile
       var TAKEOVER = 1000; // matches the takeover transition in CSS
-      var animEnd = DUR + (cards.length - 1) * STAGGER;
 
+      // The box gets a clear beat on its own before anything pops over it, and
+      // the whole show runs even off a warm cache — that is the point of it.
+      var MIN_TEXT = 1400;
+      // ...and nobody waits forever. This cap carries the whole "no skip
+      // button" decision: past it the cards pop regardless of what has
+      // loaded, so the worst-case hold is ~5.5s of kinetic text before the
+      // show proceeds. A card whose media never arrived degrades to its blue
+      // ground rather than a hole (.hero__card paints --color-shader-blue).
+      var MAX_WAIT = 5500;
+
+      // T0 is the frame the copy actually started moving on, published by
+      // js/hero-loader.js. Falling back to now() covers reduced motion and any
+      // path where the box was never built.
+      var T0 = window.__heroLoaderT0 || performance.now();
+      var capAt = T0 + MAX_WAIT;
+
+      // Gate each card on its own media, and the LAST REEL SLIDE too. That
+      // last one matters more than it looks: the morph lifts .hero__show to
+      // z-index 3, so from its first frame the visible pixels are the reel's,
+      // not the card's — and .hero__show has no background of its own. An
+      // unpainted reel would animate a white rectangle across the viewport.
+      var lastCard = cards.length - 1;
+      var ready = cards.map(function () { return false; });
+      var settle = function (i) {
+        return function () { ready[i] = true; bumpCount(); };
+      };
+      cards.forEach(function (c, i) {
+        var p = mediaReady(c, i === lastCard);
+        p.then(settle(i));
+      });
+      var reelReady = false;
+      mediaReady(slides[slides.length - 1], true).then(function () {
+        reelReady = true;
+        bumpCount();
+      });
+
+      // THE COUNTER IS REAL NOW. It was a fake clock driven off the animation's
+      // own progress; with load genuinely gating the show, it reports what has
+      // actually arrived. It moves unevenly, the way real loaders do.
+      var totalGates = cards.length + 1;
+      var loadPct = 0;
+      var bumpCount = function () {
+        var done = ready.filter(Boolean).length + (reelReady ? 1 : 0);
+        loadPct = Math.max(loadPct, Math.round((done / totalGates) * 100));
+      };
       if (count) count.textContent = "(0)";
-      Promise.all(cards.map(mediaReady)).then(function () {
-        var t0 = performance.now();
+
+      // Escape skips, from the first frame. Deliberately NO visible control:
+      // the hard MAX_WAIT cap above keeps the worst case short enough that a
+      // button would outlast its usefulness — that cap carries the WCAG 2.2.2
+      // obligation the button used to. Escape stays as the keyboard courtesy.
+      // The same jump the deep-scroll restore takes: pile present, takeover
+      // already done, reel running. .is-live is what tears the box down.
+      var forceReveal = function () {
+        cards.forEach(function (c) { c.classList.add("is-pop", "is-stacked"); });
+        hero.classList.add("is-live");
+        activate(slides.length - 1);
+        loop(slides.length - 1);
+      };
+      var skipped = false;
+      var skip = function () {
+        // Both guards matter. `skipped` stops a double-tap; `is-live` stops
+        // Escape AFTER the show has finished normally — the listener is still
+        // attached then, and forceReveal() would start a second reel loop
+        // running alongside the first, double-advancing the slides forever.
+        if (skipped || hero.classList.contains("is-live")) return;
+        skipped = true;
+        forceReveal();
+      };
+      var onKey = function (e) { if (e.key === "Escape") skip(); };
+      document.addEventListener("keydown", onKey);
+      // picked up by the is-live observer below, so the listener dies with
+      // the loading screen no matter which path ended it
+      window.__heroCleanup = function () {
+        document.removeEventListener("keydown", onKey);
+      };
+
+      (function () {
+        var t0 = null;
         var added = 0;
+        var nextSlot = 0;
         var tick = function (now) {
-          var t = now - t0;
-          while (added < cards.length && t >= added * STAGGER) {
-            cards[added].classList.add("is-pop", "is-stacked");
-            // The LAST card is the one the reel continues from — its video
-            // plays on the pile so motion never stops across the hand-off.
-            if (added === cards.length - 1) {
-              var lastVid = cards[added].querySelector("video");
-              if (lastVid) lastVid.play().catch(function () {});
+          if (skipped) return;
+          // The pile holds until the box has had its beat, then each card
+          // waits for its OWN media — but never jumps its slot. Readiness can
+          // only ever DELAY a card, never advance it past the one in front:
+          // .hero__card is grid-area 1/1 with paint order = DOM order, so a
+          // late card 2 materialising under an already-present card 4 reads as
+          // a rendering glitch, and the tilts are positional (:nth-child) so
+          // reordering would move the takeover's geometry too.
+          var elapsed = now - T0;
+          if (elapsed >= MIN_TEXT) {
+            while (added < cards.length) {
+              var due = now >= nextSlot;
+              var canPop = ready[added] || now >= capAt;
+              if (!due || !canPop) break;
+              cards[added].classList.add("is-pop", "is-stacked");
+              // The LAST card is the one the reel continues from — its video
+              // plays on the pile so motion never stops across the hand-off.
+              if (added === cards.length - 1) {
+                var lastVid = cards[added].querySelector("video");
+                if (lastVid) lastVid.play().catch(function () {});
+              }
+              added += 1;
+              nextSlot = now + STAGGER;
+              if (t0 === null) t0 = now;
             }
-            added += 1;
           }
-          var p = Math.min(1, t / animEnd);
-          if (count) count.textContent = "(" + Math.round(p * 100) + ")";
+          if (count && !hero.classList.contains("is-live")) {
+            count.textContent = "(" + loadPct + ")";
+          }
+          var p = added < cards.length || t0 === null
+            ? 0
+            : Math.min(1, (now - t0 - (cards.length - 1) * STAGGER) / DUR);
           if (p < 1) {
             window.requestAnimationFrame(tick);
             return;
@@ -273,7 +416,29 @@
             });
         };
         window.requestAnimationFrame(tick);
+      })();
+    })();
+  }
+
+  // The loading screen's DOM is reclaimed as soon as the hero goes live,
+  // whichever path got it there — the morph, the CSS fallback, the restore
+  // branch or a skip. The CSS rule in home-c.css has already cancelled all 28
+  // marquees and dropped their layers by this point (display:none); this only
+  // frees the ~112 nodes and unhooks the resize listener.
+  if (hero) {
+    (function () {
+      if (hero.classList.contains("is-live")) {
+        if (window.__heroLoaderTeardown) window.__heroLoaderTeardown();
+        return;
+      }
+      var mo = new MutationObserver(function () {
+        if (!hero.classList.contains("is-live")) return;
+        mo.disconnect();
+        hero.classList.remove("is-booting");
+        if (window.__heroCleanup) window.__heroCleanup();
+        if (window.__heroLoaderTeardown) window.__heroLoaderTeardown();
       });
+      mo.observe(hero, { attributes: true, attributeFilter: ["class"] });
     })();
   }
 
@@ -309,33 +474,6 @@
     syncOverHero();
   }
 
-  // ---- 2d. Hero theme: blue at the top, light once you scroll on ---------
-  // The page opens on .theme-blue (set in the markup so it paints blue with no
-  // flash) and hands over to the light theme as the intro curtain takes the
-  // viewport. Anchored to the INTRO's top edge (the hero is pinned and never
-  // scrolls away): blue while the intro is still below the viewport's
-  // midpoint, light after — symmetric, so scrolling back returns the blue.
-  // The cross-fade is the universal theme transition (src/base/typography.css).
-  //
-  // Stands down if the visitor has explicitly picked a theme with the dev
-  // toggle (js/theme-toggle.js persists `icon-theme`), so that tool still wins.
-  if (hero && introSec) {
-    var themePinned = false;
-    try { themePinned = !!localStorage.getItem("icon-theme"); } catch (e) {}
-
-    if (!themePinned) {
-      var syncHeroTheme = function () {
-        document.documentElement.classList.toggle(
-          "theme-blue",
-          introSec.getBoundingClientRect().top > window.innerHeight * 0.75
-        );
-      };
-      window.addEventListener("scroll", syncHeroTheme, { passive: true });
-      window.addEventListener("resize", syncHeroTheme);
-      syncHeroTheme();
-    }
-  }
-
   // ---- 2c. Headline exit — TRIGGERED (not scroll-scrubbed) ---------------
   // Once you scroll past a small threshold, add .is-exiting on the hero: the CSS
   // then plays the whole "Make what matters" lockup out word-by-word IN FULL
@@ -365,20 +503,6 @@
       }, { threshold: 0.18, rootMargin: "0px 0px -8% 0px" });
       figs.forEach(function (el) { iIO.observe(el); });
     }
-  }
-
-  // ---- 3b. Clients marquee pause (WCAG 2.2.2) ----------------------------
-  // Toggles .is-paused on the section (CSS pauses all three tracks) and keeps
-  // aria-pressed + the label in sync. The button is CSS-hidden under reduced
-  // motion, where the marquee never animates.
-  var clientsPause = document.querySelector("[data-clients-pause]");
-  if (clientsPause) {
-    var clientsSection = clientsPause.closest(".clients");
-    clientsPause.addEventListener("click", function () {
-      var paused = clientsSection.classList.toggle("is-paused");
-      clientsPause.setAttribute("aria-pressed", paused ? "true" : "false");
-      clientsPause.setAttribute("aria-label", paused ? "Play client name animation" : "Pause client name animation");
-    });
   }
 
   // ---- 3c. Word-cascade text reveals ([data-reveal-words]) ---------------

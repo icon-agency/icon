@@ -1,0 +1,318 @@
+/* text-box.css — the kinetic text box: a square room seen from its open end,
+ * every wall running marquees of one line. Promoted from
+ * experiments/text-intro.html (variant 02) to serve as the homepage hero's
+ * loading screen.
+ *
+ * The room is a straight TUNNEL, not a frustum — four panels hinged on the
+ * stage's edges, folded 90 degrees in, running back parallel. The far face is
+ * therefore the stage's own rectangle pushed away, and inherits its aspect
+ * ratio: squaring the aperture means squaring the stage, which is why this
+ * block is aspect-ratio 1 and nothing else would do. (Tapering the walls
+ * instead would need trapezoids, which a rotated rectangle cannot be.)
+ *
+ * Sizing is deliberately NOT set here — the block only fixes its ratio. Each
+ * host decides how big it is: the experiment page caps it, and --cover below
+ * blows it up to fill a viewport. That split matters because `container-type:
+ * size` makes cqw resolve against this box, so every band height, every font
+ * size and the lens itself are proportional to whatever size the host gives
+ * it. The composition is scale-invariant; only its pixel size changes.
+ *
+ * Drupal: SDC `text-box` with one `field_line` prop. The 28 rows are a Twig
+ * loop over a 7-step depth ramp x 4 panels, not hand-authored markup — see
+ * js/hero-loader.js, which builds exactly that shape client-side here.
+ */
+
+.text-box {
+  position: relative;
+  /* SQUARE. The room is a straight tunnel, not a frustum — the panels
+     hinge on the stage's edges and run back parallel, so the far face is
+     the stage's own rectangle pushed away. Its aspect ratio IS the
+     stage's, and the only way to square the aperture is to square the
+     stage. (Tapering the walls instead would need trapezoids, which a
+     rotated rectangle cannot be.) Sizing is the host's job — see the
+     file header. */
+  aspect-ratio: 1;
+  overflow: hidden;
+  /* White ground, brand-blue type — the loading screen reads as a page of the
+     light site rather than a brand takeover, and the header above it keeps
+     its normal ink. Bound to brand tokens, not theme foreground: this is a
+     brand moment, not themed content. */
+  background: var(--color-white);
+  color: var(--color-icon-blue);
+  container-type: size;
+  /* Custom value: 95cqw — the original lens, restored. A 19cqw throw was
+     tried to deepen the tunnel and shrink the far square, but the hero's
+     popping cards sit over the box's centre, exactly where the extra depth
+     lives: everything the short lens added was hidden behind the pile, and
+     the visible margin around the cards got THINNER. The longer lens keeps
+     the big near rows large and out at the edges, where the pile never
+     covers them. (Aperture = p / (p + 100cqw): 95 gives about half the
+     opening, 19 gave a sixth.) */
+  perspective: 95cqw;
+  perspective-origin: 50% 50%;
+}
+.text-box__room {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  --D: 170cqw;               /* how deep the box runs */
+  --E: calc(100cqw / 7);     /* row pitch, the ~7:1 strip ratio */
+}
+.text-box__panel {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  background: var(--color-white);
+}
+/* ceiling + floor: full stage width, D deep, hinged top/bottom edge.
+   Rows run ACROSS the stage and slide sideways — road markings. */
+.text-box__panel--ceiling,
+.text-box__panel--floor {
+  left: 0;
+  width: 100cqw;
+  height: var(--D);
+}
+.text-box__panel--ceiling { top: 0; transform-origin: 50% 0; transform: rotateX(-90deg); }
+.text-box__panel--floor { bottom: 0; transform-origin: 50% 100%; transform: rotateX(90deg); flex-direction: column-reverse; }
+/* side walls: full stage height, D long, hinged left/right edge.
+   Rows run INTO the depth and slide in/out of the box. */
+.text-box__panel--left,
+.text-box__panel--right {
+  top: 0;
+  width: var(--D);
+  height: 100cqh;
+}
+.text-box__panel--left { left: 0; transform-origin: 0 50%; transform: rotateY(90deg); }
+.text-box__panel--right { right: 0; transform-origin: 100% 50%; transform: rotateY(-90deg); }
+
+.text-box__row {
+  /* band size set inline: every panel shares the same 7 depth
+     fractions, so the hairlines ring the box continuously and the
+     side bands MATCH the top/bottom bands at every depth */
+  flex: 0 0 auto;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+.text-box__run {
+  display: inline-flex;
+  white-space: nowrap;
+  /* depth-scaled AND band-tight: each band's height is its share of
+     the depth ramp and the glyphs fill 88% of it — near-touching rows,
+     biggest at the open end, converging inward. DOM order = depth
+     order on every panel (the floor stacks column-reverse so its
+     first row is also the near one). */
+  font-size: var(--fs, calc(var(--E) * 0.6));
+  line-height: 1;
+  font-weight: 900;
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  /* TWO animations on one element: the endless marquee on `transform`
+     and a one-shot entry on `opacity`. Different properties, so they
+     never fight, and the text is already gliding by the time it becomes
+     visible — the box materialises rather than lurching off a standstill.
+     `both` holds the from-state (opacity 0) through the delay, which is
+     what makes the stage load with the hairline grid and no copy.
+
+     The delay is depth-first, panel-second: every row is a beat behind
+     the one in front of it, and each wall a beat behind the last, so the
+     text arrives as a spiral running into the box instead of four
+     quadrants switching on together. */
+  /* THE ENTRY IS A SCROLL-IN, NOT A FADE. The row starts genuinely
+     empty — the line is parked one panel-length off the frame and the
+     row's overflow:hidden clips it — and the copy arrives by travelling
+     in, the way the marquee itself moves. Nothing is ever
+     semi-transparent.
+
+     ONE SPEED THROUGHOUT. The entry travels at exactly the rate that
+     row's marquee will keep going at, so there is no acceleration
+     anywhere and nothing changes pace at the handover: linear timing,
+     and a duration measured per row in JS below (CSS cannot know how
+     wide the run is, and the marquee's rate is defined against that
+     width). The first attempt covered the run's FULL width in a fixed
+     1.1s — 4,400 to 9,800 px/s against a marquee of 57 to 158, so it
+     whipped in and slammed to a crawl.
+
+     One panel-length is all the travel needed: past that the line is
+     already outside the row and clipped. max() because the wall rows
+     are rotated, so their axis is the stage's height while the ceiling
+     and floor run along its width. */
+  /* Cascade: every ring starts TOGETHER. --enter-step is the single lever —
+     at 0s the whole tunnel arrives as one sweep, inside and outside at once,
+     which is what the constant-velocity retune makes possible (identical
+     entry durations mean identical arrival). Give it a value and the rings
+     stagger again, ordered by --zr: the ring's distance from the vanishing
+     point, so a positive step runs inside-out.
+     --zr is kept separate from --z on purpose — --z is geometry (which band
+     am I), --zr is choreography (when is my turn). Re-ordering or un-ordering
+     the show should never mean renumbering the bands. */
+  --enter-step: 0s;
+  --enter-delay: calc(var(--zr, 0) * var(--enter-step));
+  --in-dist: max(100cqw, 100cqh);
+  --in-dur: 6s; /* replaced per row by the measured, speed-matched value */
+
+  /* the parked position, and what an unlit box shows: nothing */
+  transform: translate3d(var(--in-dist), 0, 0);
+
+  /* Two animations on one property, run in sequence rather than at once:
+     the one-shot slide-in, then the endless marquee delayed until it has
+     finished. Where both apply the later one wins, which is exactly the
+     handover wanted — and `both` on the first holds the parked position
+     through its delay, so a row waiting its turn stays empty. */
+  animation:
+    text-box-in var(--in-dur) linear var(--enter-delay) both,
+    text-box-slide var(--d, 38s) linear infinite
+      calc(var(--enter-delay) + var(--in-dur));
+
+  /* Switched off by NAME, not paused. Pausing was the first attempt and
+     it is a trap: an animation that has already run freezes wherever it
+     got to, so once the cascade had played, un-lighting the box left
+     every row parked at the END and it could never replay. Flipping the
+     names off and back starts genuinely fresh animations, and the base
+     transform above re-parks the copy off frame in the meantime. */
+  animation-name: none, none;
+  will-change: transform;
+}
+
+/* Lit when the box is on screen, so the cascade is seen rather than
+   spent while the section is still below the fold — and it replays on
+   every visit, since this is a page you scrub up and down while judging
+   it. */
+.text-box.is-lit .text-box__run {
+  animation-name: text-box-in, text-box-slide;
+}
+.text-box__run > span { padding-right: 0.35em; }
+/* Every row enters from the same side, travelling the marquee's own
+   direction of first motion. Leaving from the other side would mean
+   shifting the run clear by its FULL width — fourteen panel-lengths —
+   which at a matched speed is minutes, not seconds. The odd rows, whose
+   marquee then runs the other way, simply reverse once they are home;
+   their loop's start state is a whole copy along, which is the same
+   picture, so there is nothing to jump. */
+@keyframes text-box-in {
+  from { transform: translate3d(var(--in-dist), 0, 0); }
+  to { transform: translate3d(0, 0, 0); }
+}
+@keyframes text-box-slide {
+  to { transform: translate3d(-50%, 0, 0); }
+}
+
+/* side walls: the text is ROTATED 90° — vertical lines stacked along
+   the depth, sliding up/down the wall. The rows become columns
+   (flex-direction: row on the panel), and the 90° lives on the
+   `rotate` property so it composes with the marquee's animated
+   `transform` instead of being overwritten by it. */
+.text-box__panel--left {
+  flex-direction: row;
+}
+/* the right wall's hinge (near edge) is on its RIGHT — the band order
+   reverses so the biggest band sits at the stage edge, same reason the
+   floor stacks column-reverse. Declared HERE, after the shared wall
+   block, so source order can't hand it back to plain row. */
+.text-box__panel--right {
+  flex-direction: row-reverse;
+}
+.text-box__panel--left .text-box__row,
+.text-box__panel--right .text-box__row {
+  position: relative;
+  display: block;
+}
+.text-box__panel--left .text-box__run,
+.text-box__panel--right .text-box__run {
+  position: absolute;
+  top: 0;
+  /* centre the rotated line in its column: after rotate(90deg) about
+     the top-left corner the line box extends left of the origin by its
+     own height */
+  left: calc(50% + var(--fs, 1em) * 0.5);
+  rotate: 90deg;
+  transform-origin: 0 0;
+}
+
+/* The far end: a solid face that caps the box so you cannot see out
+   through the vanishing point. It carries no copy — the lockup that used
+   to sit here competed with the marquees for the same three words, and
+   the empty aperture reads as depth rather than as a slide. */
+.text-box__back {
+  position: absolute;
+  inset: 0;
+  background: var(--color-white);
+  transform: translateZ(calc(var(--D) * -1));
+}
+
+/* ==========================================================================
+ * --flip rows: the alternate direction, done with geometry
+ * ========================================================================
+ * Alternate depths run the other way. The obvious tool — animation-direction:
+ * reverse on the marquee — was how the experiment did it, and it produced the
+ * flaw this replaces: the ENTRY has to travel in from the strip's empty end,
+ * which only exists on one side, so a reverse row slid in leftward and then
+ * its marquee set off rightward. The line visibly changed direction the
+ * moment it arrived.
+ *
+ * Mirroring the ROW instead flips both motions at once: the same entry
+ * keyframe and the same marquee run in the row's flipped space, so the line
+ * arrives travelling the way it will keep going — and the loop stays
+ * seamless, because the two copies in the strip make -50% indistinguishable
+ * from 0.
+ *
+ * The glyphs need un-mirroring, and the axis matters:
+ *  - ceiling/floor rows: row scaleX(-1) x span scaleX(-1) = identity for the
+ *    glyphs, positions mirrored. Upright text, reversed travel.
+ *  - wall rows carry rotate(90) on the run, so a scaleX pair would compose to
+ *    rotate(-90) and stand alternate lines on their heads. scaleY(-1) on the
+ *    row instead: scaleY x rotate(90) x spans' scaleX(-1) = rotate(90) — the
+ *    same orientation as every other wall row, travel reversed.
+ */
+.text-box__row--flip {
+  transform: scaleX(-1);
+}
+
+.text-box__panel--left .text-box__row--flip,
+.text-box__panel--right .text-box__row--flip {
+  transform: scaleY(-1);
+}
+
+.text-box__row--flip .text-box__run > span {
+  transform: scaleX(-1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .text-box__run { animation: none; transform: none; }
+}
+
+/* ==========================================================================
+ * --cover: fill a viewport, keeping the square
+ * ========================================================================
+ * COVER, not contain. The box is 1:1 and the viewport is not, so filling it
+ * means overflowing on one axis: on a landscape desktop that is full width
+ * with the top and bottom cropped, and on a portrait phone it flips to full
+ * height with the sides cropped. max() of the two viewport units does both
+ * without a media query — the larger dimension wins, which is exactly the
+ * definition of cover.
+ *
+ * svh/svw rather than vh/vw: mobile browsers grow the viewport as the URL bar
+ * retracts, and a box sized to the LARGE viewport would leave a strip of page
+ * showing underneath at first paint, which on a loading screen is the one
+ * frame you cannot afford to get wrong.
+ *
+ * The centring is a translate, not a margin: the box is bigger than its
+ * parent on one axis, so there is no free space for auto margins to
+ * distribute — half of the overflow has to be pulled back explicitly.
+ *
+ * NB the cqw trap: because .text-box is a size container, growing it here
+ * grows every band, every glyph and the lens along with it. That is wanted —
+ * the composition is scale-invariant — but it does mean the numbers measured
+ * at experiment size do not carry over, and any timing derived from run
+ * widths has to be measured again at this size. js/hero-loader.js does.
+ */
+.text-box--cover {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  translate: -50% -50%;
+  width: max(100svw, 100svh);
+  /* aspect-ratio carries the height; stating it would let the two disagree */
+  border-radius: 0;
+}

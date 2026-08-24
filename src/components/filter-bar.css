@@ -118,9 +118,12 @@
   width: 0.68em;
   height: 0.68em;
   border-radius: 0.15em;
-  /* the mock's #EDEEF5 — derived from the brand blue rather than hard-coded,
-     so a re-theme carries it */
-  background: color-mix(in srgb, var(--color-icon-blue) 7%, var(--color-white));
+  /* Icon grey, lightened to a wash: --color-icon-grey at full strength is
+     icon-black at 80% and would read as a FILLED box — heavier than the blue
+     it is meant to sit quieter than, inverting the checked/unchecked
+     hierarchy. Mixing it toward white keeps the brand grey's hue while
+     leaving the blue clearly dominant. */
+  background: color-mix(in srgb, var(--color-icon-grey) 18%, var(--color-white));
   transition: background var(--duration-normal) var(--ease-standard);
 }
 

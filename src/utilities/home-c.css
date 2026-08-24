@@ -368,11 +368,13 @@
 .hero__lockup {
   /* Extra breathing room between the three lines, on top of the leading. */
   --lead: 0.1em;
-  /* The serif italic "Make" sits on a different baseline within its line box
-     than the Kumbh caps do (different ascent/descent metrics), so equal BOX
-     steps still leave unequal INK gaps. Measured: the Make→WHAT gap came out
-     0.072em tighter than WHAT→MATTERS; this puts the two visually identical. */
-  --make-fix: 0.072em;
+  /* The serif line sits on a different baseline within its line box than the
+     Kumbh caps do (different ascent/descent metrics), so equal BOX steps leave
+     unequal INK gaps. Measured with canvas TextMetrics — baseline of one line
+     to cap-top of the next, which is the gap the eye actually reads: at 0.06em
+     it came out 20.7px above WHAT and 15.6px below. The 0.053em difference is
+     folded in here, so the correction is 0.113em and the two gaps match. */
+  --serif-fix: 0.113em;
   display: inline-block;
   text-align: center;
   /* Same scale as the WORK / NEWS display headings through tablet, then the
@@ -394,10 +396,34 @@
   overflow: hidden;
   padding-block: 0.16em;
   margin-block: -0.16em calc(-0.32em + var(--lead));
+  /* The mask exists to clip the word-rise VERTICALLY, but overflow cannot be
+     hidden on one axis and visible on the other — asking for that computes the
+     visible axis to auto — so it clips sideways too, and the italic serif's T
+     was losing its overhang. Measured at 0.109em past the advance width.
+     Same trick as the vertical padding: widen the clip box, take the space
+     straight back with a negative margin. The content edge does not move, so
+     WHAT still right-aligns exactly to MATTERS. */
+  padding-inline: 0.14em;
+  margin-inline: -0.14em;
 }
 /* the serif line needs the metric correction on top of the lead */
-.hero__lockup-line:first-child {
-  margin-bottom: calc(-0.32em + var(--lead) + var(--make-fix));
+/* MAKE centred, WHAT hard right to MATTERS' edge, MATTERS the widest line and
+   so the block's own width — the arrangement in the reference. The words are
+   display:block and fill the line, so aligning the LINE aligns the glyphs. */
+.hero__lockup-line:nth-child(2) {
+  text-align: right;
+  margin-bottom: calc(-0.32em + var(--lead) + var(--serif-fix));
+}
+
+/* The correction has to go on BOTH sides of the gap, and that is not
+   belt-and-braces — it is the only thing that works. Adjacent negative margins
+   COLLAPSE to the most negative of the pair rather than summing (the same rule
+   the padding-cancelling margins above are built around), so raising line 2's
+   margin-bottom alone did nothing at all: line 3's -0.16em was still the more
+   negative and still won. Measured before and after — the gap did not move a
+   pixel until this rule existed. */
+.hero__lockup-line:nth-child(3) {
+  margin-top: calc(-0.16em + var(--serif-fix));
 }
 .hero__lockup-line:last-child {
   margin-bottom: -0.16em; /* trim the block's bottom padding only */
@@ -406,15 +432,21 @@
 /* The serif italic reads smaller at the same size, so it is scaled up — which
    would also scale its (unitless) line-height and open a wider gap under it.
    Dividing the leading by the same factor keeps every step identical. */
-.hero__make {
+/* The serif line: Miller Text, bold, italic, and CAPS like its neighbours —
+   note there is no `text-transform: none` here any more. It used to sit on
+   "Make" in sentence case; the reference puts the serif on WHAT and sets all
+   three lines in caps.
+   The serif reads smaller than Kumbh at the same nominal size, so it is
+   scaled up — and its (unitless) line-height divided by the same factor, or
+   the scale would reopen the gap under it. */
+.hero__serif {
   --serif-scale: 1.06;
   font-family: var(--font-serif);
   font-style: italic;
-  font-weight: var(--font-weight-medium);
+  font-weight: var(--font-weight-bold);
   font-size: calc(1em * var(--serif-scale));
   line-height: calc(0.8 / var(--serif-scale));
   letter-spacing: 0;
-  text-transform: none;
 }
 
 /* block, not inline-block: an inline-block sits on the parent's baseline, so
@@ -667,7 +699,7 @@ html:not(.js-animations) .hero__count { display: none; }
 .intro__fact-label {
   margin: auto 0 0; /* pins the rule + label to the foot */
   padding-top: calc(var(--intro-card-w) * 0.082);
-  border-top: 1px solid var(--rule);
+  border-top: var(--rule-weight) solid var(--rule);
   font-size: calc(var(--intro-card-w) * 0.059);
   font-weight: var(--font-weight-medium);
   letter-spacing: -0.01em;
@@ -728,29 +760,86 @@ html:not(.js-animations) .hero__count { display: none; }
   text-wrap: pretty;
 }
 
+/* Everything about how this READS — voice, muted ink, the slash that fades in
+   and the nudge on hover — comes from the shared rule with the expertise
+   links below. Only its position in the prose column is its own. */
 .intro__about {
-  display: inline-block;
   margin-top: var(--space-sm);
-  font-size: var(--text-xs);
-  font-weight: var(--font-weight-bold);
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--color-icon-black);
-  text-decoration: none;
-  transition: color var(--duration-fast) var(--ease-standard);
 }
-.intro__about::before { content: "/ "; }
-.intro__about:hover,
-.intro__about:focus-visible { color: var(--color-icon-blue); }
+
+/* ...and its transitions have to be restated, which is the one thing the
+   shared rule cannot give it.
+ *
+ * This link is ALSO a [data-animate] scroll-reveal target — the only element
+ * on the page that is both — and the reveal host in animations.css sets
+ * `transition: opacity, transform` at a higher specificity
+ * (.js-animations [data-animate] beats .intro__about). That silently replaced
+ * the link's own `color, translate` transition, so the hover state was
+ * applying with no animation at all: the colour and the nudge snapped.
+ *
+ * Declaring all four here, at a specificity that clears the host, lets the two
+ * jobs coexist — and note the per-item delays: the reveal keeps its stagger,
+ * while hover must react immediately (inheriting --animate-delay would have
+ * put a 200ms pause on the pointer). */
+.js-animations .intro__about[data-animate] {
+  transition:
+    opacity var(--duration-slow) var(--ease-standard) var(--animate-delay, 0ms),
+    transform var(--duration-slow) var(--ease-standard) var(--animate-delay, 0ms),
+    color var(--duration-fast) var(--ease-standard) 0ms,
+    translate var(--duration-normal) var(--ease-decelerate) 0ms;
+}
+
 
 /* ---- Expertise list (scroll-highlighted, sticky label) ------------------- */
 
 .intro__expertise {
   display: flex;
-  gap: var(--space-md);
+  /* Tighter on small screens: the label and the list share one narrow column
+     there, and --space-md's 2rem left the links stranded mid-width with the
+     label marooned to their left. The wider gap only earns its keep once
+     there is room for the two to read as separate columns. */
+  gap: var(--space-sm);
   /* top-aligned: the label starts level with the statement's opening line */
   align-items: flex-start;
 }
+
+@media (min-width: 768px) {
+  .intro__expertise { gap: var(--space-md); }
+}
+
+/* Tablet: the band still stacks, but the prose lines up with the LIST rather
+   than with the container edge — so "Our expertise" is the only thing hanging
+   out in the left margin, and the links, the statement and About us all share
+   one left edge.
+ *
+ * Two tracks (label, then everything else) with the expertise row adopting them
+ * via `subgrid`, which is what lets the LABEL's own width define track 1 while
+ * the prose — a sibling, not a descendant — lands on track 2.
+ *
+ * Placed AFTER .intro__expertise's own `display: flex`, deliberately. A media
+ * query adds no specificity, so the later plain-class rule beat this one when it
+ * sat above — the band grew its two tracks but the expertise row stayed flex,
+ * nothing landed in track 1, and it measured 0px wide.
+ *
+ * NOT `display: contents` on .intro__expertise, which would be shorter and
+ * would silently break the reveal: that element is a [data-animate] target, and
+ * an element generating no box has nothing to fade or translate. The wrapper
+ * has to survive, so the grid reaches through it instead. */
+@media (min-width: 768px) and (max-width: 899.98px) {
+  .intro__band {
+    grid-template-columns: auto minmax(0, 1fr);
+    column-gap: var(--space-md);
+  }
+  .intro__expertise {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: subgrid;
+  }
+  .intro__prose {
+    grid-column: 2;
+  }
+}
+
 
 /* The label LOCKS while everything else scrolls naturally: sticky against the
    viewport, it holds ~60% down the screen while the list slides up past it,
@@ -774,46 +863,16 @@ html:not(.js-animations) .hero__count { display: none; }
   padding: 0;
 }
 
-.intro__expertise-list a {
-  position: relative;
-  display: inline-block;
-  font-size: var(--voice-mid);
-  font-weight: var(--font-weight-medium);
-  letter-spacing: -0.01em;
-  line-height: 1.32;
-  color: color-mix(in srgb, var(--color-icon-black) 32%, transparent);
-  text-decoration: none;
-  transition:
-    color var(--duration-fast) var(--ease-standard),
-    translate var(--duration-normal) var(--ease-decelerate);
-}
+/* Voice, muted ink, the hover slash and the nudge all come from
+   .quiet-link (components/quiet-link.css) — these two and /news's Subscribe
+   are the same link, so the recipe is shared rather than copied. */
 
 /* Scroll highlight inks the active item. Hover goes accent blue and plays in
    sequence: the name slides right FIRST, then a "/" fades in just before it
    (a word-space away — the transition-delay below waits out the slide). The
    delay lives only on the hover state, so on exit the slash vanishes
    instantly while the name slides back. */
-.intro__expertise-list a::before {
-  content: "/";
-  position: absolute;
-  left: -0.65em;
-  opacity: 0;
-  /* a real fade both ways — at --duration-fast it read as a hard pop */
-  transition: opacity 0.25s var(--ease-standard);
-}
-
 .intro__expertise-list a.is-active { color: var(--color-icon-black); }
-
-.intro__expertise-list a:hover,
-.intro__expertise-list a:focus-visible {
-  color: var(--color-icon-blue);
-  translate: 0.65em 0;
-}
-.intro__expertise-list a:hover::before,
-.intro__expertise-list a:focus-visible::before {
-  opacity: 1;
-  transition-delay: 0.15s; /* starts as the name is landing; fade-out has none */
-}
 
 /* no-JS: the first item reads inked */
 html:not(.js-animations) .intro__expertise-list li:first-child a {
@@ -822,8 +881,6 @@ html:not(.js-animations) .intro__expertise-list li:first-child a {
 
 @media (prefers-reduced-motion: reduce) {
   .intro__badge { display: none; }
-  .intro__expertise-list a,
-  .intro__expertise-list a::before { transition: none; }
 }
 
 /* ---- Word-cascade reveal primitive ([data-reveal-words]) ----------------
@@ -878,9 +935,9 @@ html:not(.js-animations) .intro__expertise-list li:first-child a {
 .work__heading {
   margin: 0 0 var(--space-xl);
   text-align: center;
-  font-size: clamp(2.5rem, 6vw, 9rem);
+  font-size: var(--voice-display);
   font-weight: 900; /* Kumbh Sans Black — the heaviest cut; size eased back to suit */
-  line-height: 0.9;
+  line-height: var(--voice-display-lh);
   letter-spacing: var(--tracking-caps);
   text-transform: uppercase;
   color: var(--color-icon-black);
@@ -946,6 +1003,21 @@ html:not(.js-animations) .intro__expertise-list li:first-child a {
   margin-bottom: var(--space-xl);
 }
 
+/* Ratios return with the grid. Below this the tiles are square (see
+   .work__figure) because a single stacked column has no composition to serve. */
+@media (min-width: 768px) {
+  .work__figure { aspect-ratio: 4 / 3; }
+  /* 16/9 is the campaign film's OWN frame (measured: 1920x1080). At the old
+     21/9 the figure was 2.33 against the video's 1.78, so object-fit cropped
+     24% off the top and bottom of every frame — heads and feet — and it read as
+     a letterbox bar rather than a wide tile.
+     This lives ONLY here, never in the base layer: `.work__item--wide
+     .work__figure` is (0,2,0) against the square rule's (0,1,0), so a base-layer
+     copy outranked the mobile square at every width and left one 16/9 tile in an
+     otherwise square column, whatever the source order. */
+  .work__item--wide .work__figure { aspect-ratio: 16 / 9; }
+}
+
 /* Tablet: split rows go two-up rather than stacking, on the same 12-column
    structure the desktop layout uses (6 + 6). The per-tile aspect ratios stay
    uniform here — at this width the mismatched 3/2 + 1/1 pairing of the desktop
@@ -1001,7 +1073,12 @@ html:not(.js-animations) .intro__expertise-list li:first-child a {
   margin: 0;
   border-radius: var(--radius-icon);
   overflow: hidden;
-  aspect-ratio: 4 / 3;
+  /* Mobile: one column, so every tile is already the same WIDTH — squaring them
+     makes them the same size, full stop. The mixed 4/3 + 21/9 ratios were a
+     desktop composition device (a tall tile beside a short one, a wide feature
+     row); stacked single-file they just read as an inconsistent list. Both
+     ratios come back at 768 where the grid exists to justify them. */
+  aspect-ratio: 1 / 1;
 
   /* Hover: the MASK draws in slightly (the frame closes on the image, rather
      than the image moving) and the frame takes a very subtle 3D tilt that
@@ -1024,10 +1101,6 @@ html:not(.js-animations) .intro__expertise-list li:first-child a {
      itself), since no ancestor between here and the root is a scroll container —
      so the image can parallax + zoom on scroll. */
   view-timeline-name: --work-media;
-}
-
-.work__item--wide .work__figure {
-  aspect-ratio: 21 / 9;
 }
 
 /* Oversized + offset so the scroll parallax translate never exposes an edge. */
@@ -1080,6 +1153,15 @@ html:not(.js-animations) .intro__expertise-list li:first-child a {
   font-weight: var(--font-weight-medium);
   letter-spacing: -0.01em;
   color: var(--color-icon-black);
+  /* balance, not pretty — measured, not assumed. Chrome 148 applies `pretty`
+     here (it computes, it is supported) and it changes NOTHING: across all
+     eight card headlines on this page the line breaks under `pretty` are
+     byte-identical to `auto`, orphans included — "families" alone on a line at
+     20% of the measure, "visas" at 14%. Its last-line guard simply declines
+     every one of these. `balance` fixes four of the eight (14%->56%, 20%->64%,
+     25%->59%, 29%->61%) and — contrary to the worry that replaced it — never
+     adds a line, not even to the four-line Butterfly headline. Where there is
+     no orphan it leaves the breaks alone. Re-measure if the clamp changes. */
   text-wrap: balance;
   /* Reserve room at the measure's end for the hover arrow below, so the text
      never runs the full card width. */
@@ -1168,15 +1250,21 @@ html:not(.js-animations) .intro__expertise-list li:first-child a {
 }
 
 /* Top + bottom rules — inset to the content margins (not full-bleed like the
-   marquee) and in icon black. */
+   marquee). On --rule like every other hairline on the site: these were the
+   one exception, painted in full icon black, which is why they read heavier
+   than the news and footer lines sitting a screen away. */
 .clients::before,
 .clients::after {
   content: "";
   position: absolute;
   left: var(--container-pad);
   right: var(--container-pad);
-  height: 1px;
-  background: var(--color-icon-black);
+  height: var(--rule-weight);
+  background: var(--rule);
+  /* drawn left-to-right on reveal, like every other rule — see rules.css */
+  transform: scaleX(var(--rule-draw, 1));
+  transform-origin: left center;
+  transition: transform var(--rule-draw-dur) var(--ease-decelerate);
 }
 .clients::before { top: 0; }
 .clients::after { bottom: 0; }
@@ -1235,45 +1323,7 @@ html:not(.js-animations) .intro__expertise-list li:first-child a {
   to { transform: translateX(-100%); }
 }
 
-/* Pause control — WCAG 2.2.2 (Level A): any auto-motion >5s needs a visible
-   pause. Sits inside the section's bottom content margin; icon swaps via
-   .is-paused (JS toggles the class + aria-pressed). */
-.clients__pause {
-  position: absolute;
-  right: var(--container-pad);
-  bottom: 0.75rem;
-  z-index: 1;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 2rem;
-  height: 2rem;
-  padding: 0;
-  border: 1px solid color-mix(in srgb, var(--color-icon-black) 30%, transparent);
-  border-radius: 9999px;
-  background: var(--color-background);
-  color: var(--color-icon-black);
-  cursor: pointer;
-  transition: border-color var(--duration-normal) var(--ease-standard);
-}
 
-.clients__pause:hover {
-  border-color: var(--color-icon-black);
-}
-
-.clients__pause-icon {
-  width: 0.8rem;
-  height: 0.8rem;
-}
-
-/* Icon swap: show pause bars while running, play triangle while paused. */
-.clients__pause-icon--play { display: none; }
-.clients.is-paused .clients__pause-icon--pause { display: none; }
-.clients.is-paused .clients__pause-icon--play { display: block; }
-
-.clients.is-paused .clients__track {
-  animation-play-state: paused;
-}
 
 @media (prefers-reduced-motion: reduce) {
   .clients__track {
@@ -1281,9 +1331,6 @@ html:not(.js-animations) .intro__expertise-list li:first-child a {
   }
   .clients__scroller {
     overflow-x: auto;
-  }
-  .clients__pause {
-    display: none; /* nothing is animating — no control needed */
   }
 }
 
@@ -1311,7 +1358,7 @@ html:not(.js-animations) .intro__expertise-list li:first-child a {
   /* The shared display-caps voice (WORK heading, footer LET'S TALK). The old
      pinned version capped this at 14svh so the masthead + cards fit one
      viewport; nothing is pinned now, so the plain clamp applies. */
-  --news-masthead: clamp(2.5rem, 6vw, 9rem);
+  --news-masthead: var(--voice-display);
 }
 
 .news__inner {
@@ -1330,25 +1377,41 @@ html:not(.js-animations) .intro__expertise-list li:first-child a {
 
 /* ---- left rail: NEWS top, More bottom ----------------------------------- */
 
+/* MOBILE: the head DISSOLVES. display:contents lifts its two children into
+   .news__inner's own grid so they can sit either side of the list — masthead
+   first, More last, under the final story.
+ *
+ * This is also what fixes the images overflowing the viewport, and the two
+ * problems were one problem: as a flex ROW the head's min-content was the
+ * masthead (282px) plus More (54px) = 368px, wider than .news__inner's 327px
+ * column. A grid track sizes to its widest item, so that 368px track dragged
+ * the LIST out with it, then the card, then the figure — and the image, which
+ * is 106% of its figure for the parallax overscan, reached 437px in a 375px
+ * viewport. Fixing where More sits fixes the width, exactly as suspected. */
 .news__head {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: var(--space-md);
+  display: contents;
 }
-/* Below the split the rail is a full-width auto-height box, so its
-   space-between has no free space to distribute: More would land directly
-   under the masthead and ABOVE every row, inverting the mock's rail
-   relationship and making the CTA read as a subheading. Lay it out as a row
-   instead — NEWS left, More right, on one baseline. */
-@media (max-width: 1023.98px) {
+
+.news__heading { order: 1; }
+.news__list { order: 2; }
+.news__more { order: 3; }
+/* From the split up, the head is a real rail again: its own grid column, with
+   the masthead pinned at the top and More at the foot of the stories beside
+   it. (Mobile-first — this replaces a max-width query, which was one of the
+   file's few desktop-first exceptions.) */
+@media (min-width: 1024px) {
   .news__head {
-    flex-direction: row;
-    align-items: baseline;
+    display: flex;
+    flex-direction: column;
     justify-content: space-between;
-    width: 100%;
+    align-items: flex-start;
+    gap: var(--space-md);
   }
+
+  /* one grid item again; placement is the grid's job, not order's */
+  .news__heading,
+  .news__list,
+  .news__more { order: 0; }
 }
 
 /* The box the sticky masthead travels inside. It exists purely to be SHORTER
@@ -1384,7 +1447,7 @@ html:not(.js-animations) .intro__expertise-list li:first-child a {
   margin: 0;
   font-size: var(--news-masthead);
   font-weight: 900;
-  line-height: 0.9;
+  line-height: var(--voice-display-lh);
   letter-spacing: var(--tracking-caps);
   text-transform: uppercase;
   color: var(--color-icon-black);
@@ -1455,7 +1518,7 @@ html:not(.js-animations) .intro__expertise-list li:first-child a {
    rows instead of hard against the next tile. */
 .news__list > li + li {
   padding-top: var(--space-md);
-  border-top: 1px solid var(--rule);
+  border-top: var(--rule-weight) solid var(--rule);
 }
 
 /* The card itself is src/components/news-card.css — one shared component,
@@ -1488,3 +1551,53 @@ html:not(.js-animations) .intro__expertise-list li:first-child a {
 .arrow-link:focus-visible svg {
   transform: translateX(0.25rem);
 }
+
+/* ==========================================================================
+ * The hero's loading screen — the kinetic text box behind the build
+ * ======================================================================== */
+
+/* Sits under everything the hero draws: the reel is z-1, the card stage z-2,
+   the lockup above that. z-0 puts the box on the curtain's plane, which is
+   what it is — the ground the show is staged on. */
+.hero .text-box--cover {
+  z-index: 0;
+}
+
+/* Only ever present with JS. Without it js/hero-loader.js never runs, the box
+   is an empty div, and a full-bleed opaque blue panel with no way past would
+   be the whole homepage. Same guard the rest of this file uses. */
+html:not(.js-animations) .hero .text-box--cover {
+  display: none;
+}
+
+/* THE TEARDOWN, and the reason it is a CSS rule rather than a JS call.
+ *
+ * .is-live is the one state every path reaches — the GSAP morph, the no-GSAP
+ * `is-opening--css` fallback, the reduced-motion branch, the deep-scroll
+ * restore, and the promise .catch() force-reveal. Hanging the teardown off it
+ * means no path can forget to stop the box.
+ *
+ * display:none specifically. Measured against the alternatives with
+ * document.getAnimations(): opacity:0, visibility:hidden and
+ * content-visibility:hidden ALL leave every one of the 28 marquees running and
+ * their layers resident; animation-play-state:paused keeps them resident too
+ * AND strands each row wherever it stopped. Only display:none cancels the
+ * animations synchronously and drops layout, paint and tile memory.
+ *
+ * NB it cancels rather than pauses, so a re-shown box would restart from zero.
+ * Correct for a once-per-load screen; if anything ever needs it to resume,
+ * this is the rule to revisit. js/hero-loader.js removes the node afterwards.
+ *
+ * Not at morph START: the reel does not cover the box until the morph ENDS,
+ * and freezing the copy mid-flight is visible for the better part of a second. */
+.hero.is-live .text-box--cover {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero .text-box--cover {
+    display: none;
+  }
+}
+
+

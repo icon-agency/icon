@@ -1,0 +1,109 @@
+/* rules.css — THE hairline. One weight, one colour, one entrance.
+ *
+ * Every rule on the site is 1px of --rule (which is the theme's border token
+ * on ordinary surfaces and --rule-on-color on the dark and brand panels — a
+ * white line is invisible on white, so the two values are the same decision
+ * expressed twice, not an inconsistency). --rule-weight makes the thickness a
+ * single edit too.
+ *
+ * THE DRAW. A rule marked [data-rule] arrives by growing from its left edge
+ * rather than appearing whole, once it scrolls into view. Two mechanisms,
+ * because a border cannot be scaled and a pseudo-element can:
+ *
+ *   1. Border-drawn rules keep their 1px border for LAYOUT but paint it
+ *      transparent, and the visible line becomes a background gradient sized
+ *      0 -> 100% across the border box. Nothing moves when the animation runs
+ *      — the box is the same height before and after — which is why this and
+ *      not a pseudo-element overlay: several of these sit in grids and lists
+ *      where a re-layout would shove content around mid-scroll.
+ *   2. Rules already drawn as pseudo-elements (the clients marquee's) just
+ *      scale on the X axis from a left origin. They are handled in place.
+ *
+ * Both read the same --rule-draw-dur so the whole page draws at one speed.
+ *
+ * No-JS and reduced motion: the line is simply present. The hidden state lives
+ * behind .js-animations, and reduced motion resets it — a rule that never
+ * arrives would take content with it (the news list's rows are separated by
+ * these), so this degrades to "always drawn", never to "never drawn".
+ */
+
+:root {
+  --rule-weight: 1px;
+  --rule-draw-dur: 0.7s;
+  /* the scale factor the clients pseudo-rules read; 1 = fully drawn */
+  --rule-draw: 1;
+}
+
+/* ---- border-drawn rules ------------------------------------------------- */
+
+[data-rule] {
+  /* the border survives for layout; the gradient is what you see */
+  border-color: transparent !important;
+  background-image: linear-gradient(var(--rule), var(--rule));
+  background-repeat: no-repeat;
+  /* over the border box, not the padding box, or the line would sit inside
+     the element rather than on its edge */
+  background-origin: border-box;
+  background-clip: border-box;
+  background-size: 100% var(--rule-weight);
+}
+
+[data-rule="top"] { background-position: left top; }
+[data-rule="bottom"] { background-position: left bottom; }
+
+.js-animations [data-rule] {
+  background-size: 0 var(--rule-weight);
+  transition: background-size var(--rule-draw-dur) var(--ease-decelerate);
+}
+
+.js-animations [data-rule].is-drawn {
+  background-size: 100% var(--rule-weight);
+}
+
+/* An element can carry rules on BOTH edges (the footer's last office row).
+   Two gradients, two sizes, one transition. */
+[data-rule="both"] {
+  background-image:
+    linear-gradient(var(--rule), var(--rule)),
+    linear-gradient(var(--rule), var(--rule));
+  background-position: left top, left bottom;
+  background-size: 100% var(--rule-weight), 100% var(--rule-weight);
+}
+
+.js-animations [data-rule="both"] {
+  background-size: 0 var(--rule-weight), 0 var(--rule-weight);
+}
+
+.js-animations [data-rule="both"].is-drawn {
+  background-size: 100% var(--rule-weight), 100% var(--rule-weight);
+}
+
+/* ---- pseudo-element rules ----------------------------------------------- */
+
+/* The clients marquee draws its two rules as ::before/::after. They read
+   --rule-draw directly (see home-c.css), so the section only has to flip the
+   variable. */
+.js-animations [data-rule-host] {
+  --rule-draw: 0;
+}
+
+.js-animations [data-rule-host].is-drawn {
+  --rule-draw: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .js-animations [data-rule],
+  .js-animations [data-rule].is-drawn {
+    background-size: 100% var(--rule-weight);
+    transition: none;
+  }
+
+  .js-animations [data-rule="both"],
+  .js-animations [data-rule="both"].is-drawn {
+    background-size: 100% var(--rule-weight), 100% var(--rule-weight);
+  }
+
+  .js-animations [data-rule-host] {
+    --rule-draw: 1;
+  }
+}

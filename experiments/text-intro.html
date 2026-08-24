@@ -36,8 +36,9 @@
          band height and type size both follow one depth ramp, so the rows
          stay tight at every depth and the type converges with the geometry.
          Floor and ceiling rows run across and slide sideways; wall rows are
-         rotated 90 degrees and slide along the walls. A settled lockup sits
-         on the far face at the vanishing point.
+         rotated 90 degrees and slide along the walls. The stage is square, so
+         the far aperture is too, and it is left empty — the copy is already
+         on every wall.
 
          Both are CSS 3D on real DOM text — crisp at any size, no glyph
          atlas, no WebGL. Reduced motion: 01 holds a fixed mid-tumble frame,
@@ -171,22 +172,45 @@
          makes it read as kinetic rather than a single conveyor. */
       .exp-tb {
         position: relative;
-        margin: clamp(1.5rem, 3vw, 2.5rem) clamp(1rem, 3vw, 2.5rem) 0;
-        height: min(82svh, 60rem);
+        /* SQUARE. The room is a straight tunnel, not a frustum — the panels
+           hinge on the stage's edges and run back parallel, so the far face is
+           the stage's own rectangle pushed away. Its aspect ratio IS the
+           stage's, and the only way to square the aperture is to square the
+           stage. (Tapering the walls instead would need trapezoids, which a
+           rotated rectangle cannot be.)
+           Width follows the height so the box stays inside the viewport, and
+           it centres in the page rather than stretching to the gutters. */
+        aspect-ratio: 1;
+        /* Width drives BOTH dimensions, so the square survives narrow
+           viewports: it is the smaller of the page width and the height cap,
+           and the height then follows from the ratio. Setting an explicit
+           height instead left the box 375x666 on a phone — max-width clamped
+           the width while the fixed height stood, and the ratio lost. */
+        width: min(100%, 82svh, 60rem);
+        height: auto;
+        margin: clamp(1.5rem, 3vw, 2.5rem) auto 0;
         border-radius: var(--radius-icon);
         overflow: hidden;
         background: var(--color-icon-blue);
         color: var(--color-white);
         container-type: size;
-        /* short lens = deep box */
-        perspective: 95cqw;
+        /* Custom value: 19cqw — a very short lens, and the whole reason the
+           far aperture is a small square rather than a wide window. Measured:
+           the aperture comes out at p / (p + 100cqw) of the opening, so 95cqw
+           gave roughly half and 19cqw gives a sixth.
+           Deliberately the LENS and not --D. Depth and the band ramp are the
+           same variable — every row's height and --fs is a fraction of --D —
+           so winding --D up to converge the tunnel also scales the type: at
+           520cqw the near line hit 865px and still had not closed the
+           aperture. Shortening the lens converges it without touching a
+           single band. */
+        perspective: 19cqw;
         perspective-origin: 50% 50%;
       }
       .exp-tb__room {
         position: absolute;
         inset: 0;
         transform-style: preserve-3d;
-        --rule: var(--rule-on-color); /* brand panel: the on-colour hairline */
         --D: 170cqw;               /* how deep the box runs */
         --E: calc(100cqw / 7);     /* row pitch, the ~7:1 strip ratio */
       }
@@ -226,7 +250,6 @@
         display: flex;
         align-items: center;
         overflow: hidden;
-        border-block-end: 1px solid var(--rule);
       }
       .exp-tb__run {
         display: inline-flex;
@@ -241,10 +264,82 @@
         font-weight: 900;
         letter-spacing: var(--tracking-caps);
         text-transform: uppercase;
-        animation: exp-tb-slide var(--d, 38s) linear infinite var(--dir, normal);
+        /* TWO animations on one element: the endless marquee on `transform`
+           and a one-shot entry on `opacity`. Different properties, so they
+           never fight, and the text is already gliding by the time it becomes
+           visible — the box materialises rather than lurching off a standstill.
+           `both` holds the from-state (opacity 0) through the delay, which is
+           what makes the stage load with the hairline grid and no copy.
+
+           The delay is depth-first, panel-second: every row is a beat behind
+           the one in front of it, and each wall a beat behind the last, so the
+           text arrives as a spiral running into the box instead of four
+           quadrants switching on together. */
+        /* THE ENTRY IS A SCROLL-IN, NOT A FADE. The row starts genuinely
+           empty — the line is parked one panel-length off the frame and the
+           row's overflow:hidden clips it — and the copy arrives by travelling
+           in, the way the marquee itself moves. Nothing is ever
+           semi-transparent.
+
+           ONE SPEED THROUGHOUT. The entry travels at exactly the rate that
+           row's marquee will keep going at, so there is no acceleration
+           anywhere and nothing changes pace at the handover: linear timing,
+           and a duration measured per row in JS below (CSS cannot know how
+           wide the run is, and the marquee's rate is defined against that
+           width). The first attempt covered the run's FULL width in a fixed
+           1.1s — 4,400 to 9,800 px/s against a marquee of 57 to 158, so it
+           whipped in and slammed to a crawl.
+
+           One panel-length is all the travel needed: past that the line is
+           already outside the row and clipped. max() because the wall rows
+           are rotated, so their axis is the stage's height while the ceiling
+           and floor run along its width. */
+        --enter-delay: calc(var(--z, 0) * 0.6s);
+        --in-dist: max(100cqw, 100cqh);
+        --in-dur: 6s; /* replaced per row by the measured, speed-matched value */
+
+        /* the parked position, and what an unlit box shows: nothing */
+        transform: translate3d(var(--in-dist), 0, 0);
+
+        /* Two animations on one property, run in sequence rather than at once:
+           the one-shot slide-in, then the endless marquee delayed until it has
+           finished. Where both apply the later one wins, which is exactly the
+           handover wanted — and `both` on the first holds the parked position
+           through its delay, so a row waiting its turn stays empty. */
+        animation:
+          exp-tb-in var(--in-dur) linear var(--enter-delay) both,
+          exp-tb-slide var(--d, 38s) linear infinite var(--dir, normal)
+            calc(var(--enter-delay) + var(--in-dur));
+
+        /* Switched off by NAME, not paused. Pausing was the first attempt and
+           it is a trap: an animation that has already run freezes wherever it
+           got to, so once the cascade had played, un-lighting the box left
+           every row parked at the END and it could never replay. Flipping the
+           names off and back starts genuinely fresh animations, and the base
+           transform above re-parks the copy off frame in the meantime. */
+        animation-name: none, none;
         will-change: transform;
       }
+
+      /* Lit when the box is on screen, so the cascade is seen rather than
+         spent while the section is still below the fold — and it replays on
+         every visit, since this is a page you scrub up and down while judging
+         it. */
+      .exp-tb.is-lit .exp-tb__run {
+        animation-name: exp-tb-in, exp-tb-slide;
+      }
       .exp-tb__run > span { padding-right: 0.35em; }
+      /* Every row enters from the same side, travelling the marquee's own
+         direction of first motion. Leaving from the other side would mean
+         shifting the run clear by its FULL width — fourteen panel-lengths —
+         which at a matched speed is minutes, not seconds. The odd rows, whose
+         marquee then runs the other way, simply reverse once they are home;
+         their loop's start state is a whole copy along, which is the same
+         picture, so there is nothing to jump. */
+      @keyframes exp-tb-in {
+        from { transform: translate3d(var(--in-dist), 0, 0); }
+        to { transform: translate3d(0, 0, 0); }
+      }
       @keyframes exp-tb-slide {
         to { transform: translate3d(-50%, 0, 0); }
       }
@@ -268,8 +363,6 @@
       .exp-tb__panel--right .exp-tb__row {
         position: relative;
         display: block;
-        border-block-end: 0;
-        border-inline-end: 1px solid var(--rule);
       }
       .exp-tb__panel--left .exp-tb__run,
       .exp-tb__panel--right .exp-tb__run {
@@ -283,27 +376,19 @@
         transform-origin: 0 0;
       }
 
-      /* the far end: a solid face with one small settled lockup at the
-         vanishing point */
+      /* The far end: a solid face that caps the box so you cannot see out
+         through the vanishing point. It carries no copy — the lockup that used
+         to sit here competed with the marquees for the same three words, and
+         the empty aperture reads as depth rather than as a slide. */
       .exp-tb__back {
         position: absolute;
         inset: 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        text-align: center;
         background: var(--color-icon-blue);
         transform: translateZ(calc(var(--D) * -1));
-        font-size: 10cqw;
-        line-height: 0.92;
-        font-weight: 900;
-        letter-spacing: var(--tracking-caps);
-        text-transform: uppercase;
       }
-      .exp-tb__back span { display: block; }
 
       @media (prefers-reduced-motion: reduce) {
-        .exp-tb__run { animation: none; }
+        .exp-tb__run { animation: none; transform: none; }
       }
 
       /* reduced motion: hold a mid-tumble frame — the lattice reads as a
@@ -398,8 +483,10 @@
         continuously; band height and type size follow one depth ramp, keeping the rows tight at
         every depth while the type converges with the geometry. Floor and ceiling rows run across
         and slide sideways, wall rows are rotated 90&deg; and slide along the walls, with
-        directions and speeds alternating per row. A settled lockup sits on the far face at the
-        vanishing point.
+        directions and speeds alternating per row. The stage is square, which is what makes the
+        far aperture square: the room is a straight tunnel, so the far face is the stage&rsquo;s own
+        rectangle pushed back. It is left empty &mdash; the three words are already running on every
+        wall, and a lockup at the vanishing point competed with them.
       </p>
 
       <div class="exp-tb">
@@ -441,10 +528,62 @@
               <div class="exp-tb__row" style="--z: 5; width: 9.61%; --fs: calc(var(--D) * 0.0846); --d: 51s; --dir: reverse"><span class="exp-tb__run" aria-hidden="true"><span>Make What Matters Make What Matters</span><span>Make What Matters Make What Matters</span></span></div>
               <div class="exp-tb__row" style="--z: 6; width: 7.27%; --fs: calc(var(--D) * 0.0640); --d: 58s"><span class="exp-tb__run" aria-hidden="true"><span>Make What Matters Make What Matters Make What Matters</span><span>Make What Matters Make What Matters Make What Matters</span></span></div>
             </div>
-          <div class="exp-tb__back"><p><span>Make</span><span>What</span><span>Matters</span></p></div>
+          <div class="exp-tb__back"></div>
         </div>
       </div>
     </section>
+
+    <script>
+      /* Light the box when it enters view: the rows' entry animations are
+       * parked (animation-play-state) until then, so the cascade plays on
+       * arrival rather than having already finished below the fold.
+       * Toggled rather than latched, so it replays each time you come back.
+       * Reduced motion: lit immediately, and the CSS drops the animations. */
+      (function () {
+        "use strict";
+        var box = document.querySelector(".exp-tb");
+        if (!box) return;
+
+        /* Match each row's entry speed to its own marquee, exactly.
+         *
+         * The marquee covers half the run's width in --d seconds (the run
+         * holds two copies of the line, so half a width is one copy — that is
+         * what makes the loop seamless). That gives px/s. The entry has to
+         * cover one panel-length at the same rate, so its duration is
+         * distance / speed. Measured rather than declared because CSS has no
+         * way to read the run's width, and the marquee's rate is defined
+         * against it.
+         *
+         * Recomputed on resize: both the run width and the panel length are
+         * container-relative, and their ratio does not survive a reflow. */
+        function retime() {
+          var dist = Math.max(box.clientWidth, box.clientHeight);
+          box.querySelectorAll(".exp-tb__row").forEach(function (row) {
+            var run = row.querySelector(".exp-tb__run");
+            if (!run) return;
+            var d = parseFloat(getComputedStyle(row).getPropertyValue("--d")) || 38;
+            var speed = (run.offsetWidth * 0.5) / d; // px per second
+            if (!speed) return;
+            run.style.setProperty("--in-dur", (dist / speed).toFixed(2) + "s");
+          });
+        }
+        retime();
+        var rt;
+        window.addEventListener("resize", function () {
+          clearTimeout(rt);
+          rt = setTimeout(retime, 200);
+        }, { passive: true });
+
+        if (window.matchMedia("(prefers-reduced-motion: reduce)").matches ||
+            !("IntersectionObserver" in window)) {
+          box.classList.add("is-lit");
+          return;
+        }
+        new IntersectionObserver(function (entries) {
+          box.classList.toggle("is-lit", entries[0].isIntersecting);
+        }, { threshold: 0.2 }).observe(box);
+      })();
+    </script>
 
     <script>
       /* Wheel coupling — a wheel over the stage nudges a --twist on the

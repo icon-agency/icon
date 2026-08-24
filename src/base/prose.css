@@ -226,12 +226,12 @@
     font-weight: 600;
     text-align: left;
     padding: 0.75rem;
-    border-bottom: 1px solid var(--rule);
+    border-bottom: var(--rule-weight) solid var(--rule);
   }
 
   .content-page td {
     padding: 0.75rem;
-    border-bottom: 1px solid var(--rule);
+    border-bottom: var(--rule-weight) solid var(--rule);
   }
 
   @media (prefers-reduced-motion: reduce) {

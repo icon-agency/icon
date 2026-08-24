@@ -32,4 +32,37 @@
   }, { threshold: 0.1, rootMargin: "0px 0px -50px 0px" });
 
   nodes.forEach(function (el) { io.observe(el); });
+
+  /* ---- rules draw themselves in --------------------------------------------
+   * Every hairline on the site ([data-rule], and the clients marquee's
+   * pseudo-element pair via [data-rule-host]) grows from its left edge as it
+   * arrives. One observer for the lot so the whole page draws at one speed and
+   * nothing has to remember to opt in beyond the attribute.
+   *
+   * Latched, not toggled: a rule is a structural line between two pieces of
+   * content, and re-drawing it every time it re-enters would make the page
+   * feel like it was still loading. Unobserved once drawn.
+   */
+  var ruleEls = Array.prototype.slice.call(
+    document.querySelectorAll("[data-rule], [data-rule-host]")
+  );
+  if (ruleEls.length) {
+    if (!("IntersectionObserver" in window)) {
+      ruleEls.forEach(function (el) { el.classList.add("is-drawn"); });
+    } else {
+      var ruleIO = new IntersectionObserver(
+        function (entries) {
+          entries.forEach(function (e) {
+            if (!e.isIntersecting) return;
+            e.target.classList.add("is-drawn");
+            ruleIO.unobserve(e.target);
+          });
+        },
+        // a sliver is enough: these are 1px lines, so waiting for a ratio of
+        // them would never fire
+        { rootMargin: "0px 0px -5% 0px" }
+      );
+      ruleEls.forEach(function (el) { ruleIO.observe(el); });
+    }
+  }
 })();

@@ -36,7 +36,7 @@
   /* near-black panel: dividers take the on-colour hairline */
   --rule: var(--rule-on-color);
 
-  --footer-voice-caps: clamp(2.5rem, 6vw, 9rem);
+  --footer-voice-caps: var(--voice-display); /* the shared display voice */
   --footer-voice-mid: var(--voice-mid); /* the shared mid voice */
   --footer-voice-meta: var(--voice-meta); /* the shared meta voice */
 
@@ -125,7 +125,7 @@
   /* the shared display-caps voice (WORK / NEWS mastheads) */
   font-size: var(--footer-voice-caps);
   font-weight: 900;
-  line-height: 0.9;
+  line-height: var(--voice-display-lh);
   letter-spacing: var(--tracking-caps);
   text-transform: uppercase;
 }
@@ -226,11 +226,11 @@
 }
 
 .site-footer__office-item {
-  border-top: 1px solid var(--rule);
+  border-top: var(--rule-weight) solid var(--rule);
 }
 
 .site-footer__office-item:last-child {
-  border-bottom: 1px solid var(--rule);
+  border-bottom: var(--rule-weight) solid var(--rule);
 }
 
 .site-footer__office-summary {

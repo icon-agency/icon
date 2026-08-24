@@ -1,0 +1,51 @@
+/* quiet-link.css — the site's understated link: muted ink, a slash that fades
+ * in from the left on hover, and the word nudging across to meet it.
+ *
+ * Promoted out of the homepage's intro (the expertise list and "About us")
+ * once /news wanted the same treatment for Subscribe. It lives here rather
+ * than in the page layer precisely so a component can use it — a component
+ * reaching up into src/utilities/home-c.css would invert this project's layer
+ * order.
+ *
+ * The hosts keep their own positioning; this owns only how the link READS.
+ */
+
+.quiet-link {
+  position: relative;
+  display: inline-block;
+  font-size: var(--voice-mid);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: -0.01em;
+  line-height: 1.32;
+  color: color-mix(in srgb, var(--color-icon-black) 32%, transparent);
+  text-decoration: none;
+  transition:
+    color var(--duration-fast) var(--ease-standard),
+    translate var(--duration-normal) var(--ease-decelerate);
+}
+
+.quiet-link::before {
+  content: "/";
+  position: absolute;
+  left: -0.65em;
+  opacity: 0;
+  /* a real fade both ways — at --duration-fast it read as a hard pop */
+  transition: opacity 0.25s var(--ease-standard);
+}
+
+.quiet-link:hover,
+.quiet-link:focus-visible {
+  color: var(--color-icon-blue);
+  translate: 0.65em 0;
+}
+
+.quiet-link:hover::before,
+.quiet-link:focus-visible::before {
+  opacity: 1;
+  transition-delay: 0.15s; /* starts as the word is landing; fade-out has none */
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .quiet-link,
+  .quiet-link::before { transition: none; }
+}

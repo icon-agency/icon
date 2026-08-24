@@ -179,6 +179,10 @@
   font-weight: var(--font-weight-medium);
   line-height: 1.3;
   color: var(--color-icon-black);
+  /* balance, not pretty: measured on this page, Chrome's `pretty` leaves these
+     breaks byte-identical to `auto` and lets one-word last lines stand.
+     `balance` clears them without ever adding a line. See work__title. */
+  text-wrap: balance;
   padding-inline-end: 1.5em; /* room for the hover arrow */
 
   /* The row's height is max(tile, text): the figure's aspect-ratio stops it

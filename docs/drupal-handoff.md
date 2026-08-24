@@ -74,3 +74,25 @@ The CSS doesn't change shape across the port — only the markup gets re-templat
 - `field-naming.md` — BEM-prefixed field machine names.
 - `wysiwyg-output.md` — how CKEditor body fields are styled by the `.content-page` prose wrapper.
 - `tailwind-conventions.md` — the utility-vs-BEM decision and why CVA is rejected for this theme.
+
+## Prototype paths that must revert on port
+
+The templates are browsable as a static site on GitHub Pages, where the project
+is served from a subdirectory (`/icon/`), not a domain root. Two consequences,
+both deliberate, both to be undone when the markup becomes Twig:
+
+- **The four "home" controls point at the design-system index, not `/`.** The
+  header wordmark (`.site-logo`), the nav pill's home glyph
+  (`.site-nav__home`), the mobile home button (`.site-header__mobile-home
+  .icon-button`) and the logo inside the open mobile menu
+  (`.mobile-menu__logo`) all use `href="../index.html"`. On Pages an `href="/"`
+  leaves the project entirely and lands on the org root. In Drupal all four are
+  the site front page: `href="/"` (or `{{ path('<front>') }}`). Each template
+  carries a comment saying so above the wordmark.
+
+- **Content links keep their real Drupal paths and do NOT resolve statically.**
+  `/work`, `/news`, `/news/article`, `/news?category=…`, `/contact` and the
+  rest are the routes the built site will have, so they are written as such and
+  simply 404 on the preview server. Do not "fix" these to relative paths — they
+  are correct, and the filter chips in particular rely on the query string
+  being honoured server-side by a Views exposed filter.

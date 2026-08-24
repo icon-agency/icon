@@ -32,7 +32,14 @@
     <!-- ================= HEADER (global region) ================= -->
     <header class="site-header">
       <!-- Wordmark, fixed top-left -->
-      <a class="site-logo" href="/" aria-label="ICON Agency — home">
+        <!-- PROTOTYPE PATH. All four "home" controls in this header (this
+             wordmark, the nav pill's home glyph, the mobile home button and
+             the logo inside the mobile menu) point at ../index.html — the
+             design-system index — so the prototype is browsable on GitHub
+             Pages, where the site lives under /icon/ and an href="/" lands on
+             the org root instead. In Drupal every one of them is the site
+             front page: href="/". See docs/drupal-handoff.md. -->
+      <a class="site-logo" href="../index.html" aria-label="ICON Agency — home">
         <svg
           class="site-logo__mark"
           viewBox="0 0 154 50"
@@ -53,7 +60,7 @@
       <div class="site-nav" data-nav>
         <nav class="site-nav__pill" aria-label="Primary">
           <div class="site-nav__row">
-            <a class="site-nav__home" href="/" aria-label="Home">
+            <a class="site-nav__home" href="../index.html" aria-label="Home">
               <svg class="site-nav__home-glyph" viewBox="0 0 64 80" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                 <path d="M63.5616 80L44.3508 63.9521H16.1712C7.25435 63.9521 0 56.6747 0 47.7297V0H47.3305C56.3073 0 63.5616 7.27741 63.5616 16.2226V80ZM6.64572 6.6668V47.7297C6.64572 52.9987 10.9187 57.2853 16.1712 57.2853H46.7556L56.916 65.7731V16.2226C56.916 10.9534 52.6429 6.6668 47.3905 6.6668H6.64572Z" fill="currentColor" />
               </svg>
@@ -98,7 +105,7 @@
 
       <!-- Mobile home glyph (appears on scroll) -->
       <div class="site-header__mobile-home" data-mobile-home>
-        <a class="icon-button" href="/" aria-label="Home">
+        <a class="icon-button" href="../index.html" aria-label="Home">
           <svg class="icon-button__icon" viewBox="0 0 64 80" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
             <path d="M63.5616 80L44.3508 63.9521H16.1712C7.25435 63.9521 0 56.6747 0 47.7297V0H47.3305C56.3073 0 63.5616 7.27741 63.5616 16.2226V80ZM6.64572 6.6668V47.7297C6.64572 52.9987 10.9187 57.2853 16.1712 57.2853H46.7556L56.916 65.7731V16.2226C56.916 10.9534 52.6429 6.6668 47.3905 6.6668H6.64572Z" fill="currentColor" />
           </svg>
@@ -130,7 +137,7 @@
       <div class="mobile-menu" id="mobile-menu" data-mobile-menu hidden>
         <div class="mobile-menu__bg" aria-hidden="true"></div>
         <div class="mobile-menu__inner">
-          <a class="mobile-menu__logo" href="/" aria-label="ICON Agency — home">
+          <a class="mobile-menu__logo" href="../index.html" aria-label="ICON Agency — home">
             <svg class="site-logo__mark" viewBox="0 0 154 50" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
               <path d="M153.042 18.4117L148.607 14.7183H142.101C140.042 14.7183 138.367 13.0435 138.367 10.9848V0H149.309C151.367 0 153.042 1.67487 153.042 3.73356V18.4117ZM139.902 1.53434V10.9848C139.902 12.1974 140.888 13.184 142.101 13.184H149.162L151.508 15.1374V3.73356C151.508 2.52088 150.521 1.53434 149.309 1.53434H139.902Z" fill="currentColor" />
               <path d="M80.7421 29.5428C80.7421 34.619 76.6127 38.7489 71.5366 38.7489C66.4604 38.7489 62.3305 34.619 62.3305 29.5428C62.3305 24.4665 66.4602 20.3372 71.5366 20.3372C76.6129 20.3372 80.7421 24.4668 80.7421 29.5428ZM91.8734 29.543C91.8734 18.3293 82.7503 9.20605 71.5363 9.20605C60.3222 9.20605 51.1992 18.3293 51.1992 29.543C51.1992 40.7567 60.3222 49.8802 71.5363 49.8802C82.7503 49.8802 91.8734 40.7567 91.8734 29.543Z" fill="currentColor" />

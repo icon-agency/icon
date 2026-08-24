@@ -39,9 +39,9 @@
    heading above keeps the mixed-case serif-accent voice for pages that still
    use it (/work). */
 .page-header__heading--display {
-  font-size: clamp(2.5rem, 6vw, 9rem);
+  font-size: var(--voice-display);
   font-weight: 900;
-  line-height: 0.9;
+  line-height: var(--voice-display-lh);
   letter-spacing: var(--tracking-caps);
   text-transform: uppercase;
 }
@@ -104,7 +104,12 @@
   gap: var(--space-md);
 }
 
-@media (min-width: 1024px) {
+/* From tablet up, the two ends of the row rather than a stack. Below 1024 the
+   masthead is still ONE column, so the aside spans the full page and Subscribe
+   lands on the right gutter — which is where it reads, instead of trailing
+   under the checklist in the left margin. flex-end keeps it on the last filter
+   row's baseline, the same landing it makes in the desktop mock. */
+@media (min-width: 768px) {
   .page-header__aside {
     flex-direction: row;
     align-items: flex-end;
@@ -122,29 +127,15 @@
   overflow-x: visible;
 }
 
-/* Subscribe as an underlined word rather than the filled pill /work uses. */
+/* Subscribe reads as the site's quiet link (components/quiet-link.css) — the
+   same treatment as the homepage's expertise list and "About us", so the two
+   pages' understated links are one thing. Only the button reset is needed
+   here; a <button> does not inherit the <a> defaults the class assumes. */
 .page-header__subscribe {
   padding: 0;
   border: 0;
   background: none;
   cursor: pointer;
   font-family: inherit;
-  font-size: var(--voice-mid);
-  font-weight: var(--font-weight-medium);
-  letter-spacing: -0.01em;
-  line-height: 1.2;
-  color: var(--color-icon-black);
-  text-decoration: underline;
-  text-underline-offset: 0.18em;
-  text-decoration-thickness: from-font;
-  transition: color var(--duration-normal) var(--ease-standard);
 }
 
-.page-header__subscribe:hover,
-.page-header__subscribe:focus-visible {
-  color: var(--color-icon-blue);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .page-header__subscribe { transition: none; }
-}

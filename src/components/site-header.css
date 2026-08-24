@@ -102,9 +102,9 @@
   display: none;
 }
 
-/* The full pill fits from md up (~520px pill vs ~560px free right of the logo
-   at 768) — RIGHT-aligned so it clears the fixed wordmark, then centred once
-   there's room at lg. Below md the mobile controls take over. */
+/* The full pill fits from md up — RIGHT-aligned so it clears the fixed
+   wordmark, then centred once there's room. Below md the mobile controls take
+   over. */
 @media (min-width: 768px) {
   .site-nav {
     position: fixed;
@@ -118,7 +118,17 @@
   }
 }
 
-@media (min-width: 1024px) {
+/* Centred from 900, not 1024 — measured, and it clears the wordmark in the
+   state that matters. The pill is 442px at rest and 470px once scrolled (the
+   scrolled state pads out around its background), and the wordmark's right edge
+   is 204.5px. At 900 a centred 442px pill starts at 229px: 24.5px of daylight.
+   The wider 470px pill would start at 215px — but it is only ever that wide
+   when the page is scrolled, and by then .is-faded has slid the wordmark up
+   behind its mask (site-logo above), so there is nothing there to collide with.
+   Below 900 the pill genuinely would sit on the wordmark, which is why that
+   band stays right-aligned. 900 is also where the work rows and the intro band
+   pick up their grid, so this is the site's breakpoint rather than a new one. */
+@media (min-width: 900px) {
   .site-nav {
     justify-content: center;
     padding-inline-end: 0;

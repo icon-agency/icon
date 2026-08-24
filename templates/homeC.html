@@ -1,8 +1,9 @@
 <!doctype html>
-<!-- Opens on the ICON-blue theme; js/home-c.js (2d) hands over to light
-     once the hero scrolls away. Class sits on <html> because the @theme inline
-     --color-* aliases resolve at :root — see LESSONS.md. -->
-<html lang="en" class="theme-blue">
+<!-- Light theme throughout. The page used to open on .theme-blue and hand
+     over to light as the hero scrolled away (js/home-c.js 2d); that flip is
+     gone. A page theme class would sit on <html>, not <body>, because the
+     @theme inline --color-* aliases resolve at :root — see LESSONS.md. -->
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -32,7 +33,14 @@
   <body>
     <!-- ================= HEADER (global region) ================= -->
     <header class="site-header">
-      <a class="site-logo" href="/" aria-label="ICON Agency — home">
+        <!-- PROTOTYPE PATH. All four "home" controls in this header (this
+             wordmark, the nav pill's home glyph, the mobile home button and
+             the logo inside the mobile menu) point at ../index.html — the
+             design-system index — so the prototype is browsable on GitHub
+             Pages, where the site lives under /icon/ and an href="/" lands on
+             the org root instead. In Drupal every one of them is the site
+             front page: href="/". See docs/drupal-handoff.md. -->
+      <a class="site-logo" href="../index.html" aria-label="ICON Agency — home">
         <svg class="site-logo__mark" viewBox="0 0 154 50" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
           <path d="M153.042 18.4117L148.607 14.7183H142.101C140.042 14.7183 138.367 13.0435 138.367 10.9848V0H149.309C151.367 0 153.042 1.67487 153.042 3.73356V18.4117ZM139.902 1.53434V10.9848C139.902 12.1974 140.888 13.184 142.101 13.184H149.162L151.508 15.1374V3.73356C151.508 2.52088 150.521 1.53434 149.309 1.53434H139.902Z" fill="currentColor" />
           <path d="M80.7421 29.5428C80.7421 34.619 76.6127 38.7489 71.5366 38.7489C66.4604 38.7489 62.3305 34.619 62.3305 29.5428C62.3305 24.4665 66.4602 20.3372 71.5366 20.3372C76.6129 20.3372 80.7421 24.4668 80.7421 29.5428ZM91.8734 29.543C91.8734 18.3293 82.7503 9.20605 71.5363 9.20605C60.3222 9.20605 51.1992 18.3293 51.1992 29.543C51.1992 40.7567 60.3222 49.8802 71.5363 49.8802C82.7503 49.8802 91.8734 40.7567 91.8734 29.543Z" fill="currentColor" />
@@ -45,7 +53,7 @@
       <div class="site-nav" data-nav>
         <nav class="site-nav__pill" aria-label="Primary">
           <div class="site-nav__row">
-            <a class="site-nav__home" href="/" aria-label="Home">
+            <a class="site-nav__home" href="../index.html" aria-label="Home">
               <svg class="site-nav__home-glyph" viewBox="0 0 64 80" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                 <path d="M63.5616 80L44.3508 63.9521H16.1712C7.25435 63.9521 0 56.6747 0 47.7297V0H47.3305C56.3073 0 63.5616 7.27741 63.5616 16.2226V80ZM6.64572 6.6668V47.7297C6.64572 52.9987 10.9187 57.2853 16.1712 57.2853H46.7556L56.916 65.7731V16.2226C56.916 10.9534 52.6429 6.6668 47.3905 6.6668H6.64572Z" fill="currentColor" />
               </svg>
@@ -78,7 +86,7 @@
       </div>
 
       <div class="site-header__mobile-home" data-mobile-home>
-        <a class="icon-button" href="/" aria-label="Home">
+        <a class="icon-button" href="../index.html" aria-label="Home">
           <svg class="icon-button__icon" viewBox="0 0 64 80" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
             <path d="M63.5616 80L44.3508 63.9521H16.1712C7.25435 63.9521 0 56.6747 0 47.7297V0H47.3305C56.3073 0 63.5616 7.27741 63.5616 16.2226V80ZM6.64572 6.6668V47.7297C6.64572 52.9987 10.9187 57.2853 16.1712 57.2853H46.7556L56.916 65.7731V16.2226C56.916 10.9534 52.6429 6.6668 47.3905 6.6668H6.64572Z" fill="currentColor" />
           </svg>
@@ -101,7 +109,7 @@
       <div class="mobile-menu" id="mobile-menu" data-mobile-menu hidden>
         <div class="mobile-menu__bg" aria-hidden="true"></div>
         <div class="mobile-menu__inner">
-          <a class="mobile-menu__logo" href="/" aria-label="ICON Agency — home">
+          <a class="mobile-menu__logo" href="../index.html" aria-label="ICON Agency — home">
             <svg class="site-logo__mark" viewBox="0 0 154 50" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
               <path d="M153.042 18.4117L148.607 14.7183H142.101C140.042 14.7183 138.367 13.0435 138.367 10.9848V0H149.309C151.367 0 153.042 1.67487 153.042 3.73356V18.4117ZM139.902 1.53434V10.9848C139.902 12.1974 140.888 13.184 142.101 13.184H149.162L151.508 15.1374V3.73356C151.508 2.52088 150.521 1.53434 149.309 1.53434H139.902Z" fill="currentColor" />
               <path d="M80.7421 29.5428C80.7421 34.619 76.6127 38.7489 71.5366 38.7489C66.4604 38.7489 62.3305 34.619 62.3305 29.5428C62.3305 24.4665 66.4602 20.3372 71.5366 20.3372C76.6129 20.3372 80.7421 24.4668 80.7421 29.5428ZM91.8734 29.543C91.8734 18.3293 82.7503 9.20605 71.5363 9.20605C60.3222 9.20605 51.1992 18.3293 51.1992 29.543C51.1992 40.7567 60.3222 49.8802 71.5363 49.8802C82.7503 49.8802 91.8734 40.7567 91.8734 29.543Z" fill="currentColor" />
@@ -145,6 +153,16 @@
            reel plays each piece for 3s with a 0.1s cross-fade (stills get a
            subtle Ken Burns) while "Make what matters" rises word-by-word. -->
       <section class="hero" data-hero>
+        <!-- THE LOADING SCREEN. A kinetic-text room filling the viewport,
+             under the pile and the reel, while the hero's media loads. Built
+             and lit by js/hero-loader.js (loaded ahead of the CDN scripts so
+             it paints on the first frame), and torn down the moment .is-live
+             lands — the reel covers it by then, and 28 marquees are not
+             something to leave running behind an opaque video.
+             Decorative: aria-hidden, and absent entirely without JS or under
+             reduced motion. -->
+        <div class="text-box text-box--cover" data-text-box data-line="Make What Matters" aria-hidden="true"></div>
+
         <!-- the reel — sits under the pile, revealed by the takeover -->
         <div class="hero__show" aria-hidden="true">
           <!-- inner carries the counter-transform during the takeover morph -->
@@ -169,8 +187,8 @@
           <h1 class="hero__headline">
             <span class="sr-only">Make what matters</span>
             <span class="hero__lockup" aria-hidden="true">
-              <span class="hero__lockup-line"><span class="hero__word hero__make" style="--w: 0">Make</span></span>
-              <span class="hero__lockup-line"><span class="hero__word" style="--w: 1">What</span></span>
+              <span class="hero__lockup-line"><span class="hero__word" style="--w: 0">Make</span></span>
+              <span class="hero__lockup-line"><span class="hero__word hero__serif" style="--w: 1">What</span></span>
               <span class="hero__lockup-line"><span class="hero__word" style="--w: 2">Matters</span></span>
             </span>
           </h1>
@@ -213,7 +231,7 @@
                 <path d="M254.98 17.44C253.29 15.66 250.92 14.64 248.46 14.64H217.8C217.59 9.16 217.3 5.83 217.27 5.48L216.8 0H61.19L60.71 5.47C60.68 5.82 60.39 9.16 60.18 14.63H29.53C27.07 14.63 24.7 15.65 23.01 17.43C21.32 19.21 20.43 21.63 20.57 24.08C21.26 36.96 24.19 68.52 36.4 83.22C49.45 98.93 65.86 100.6 69.48 100.78C74.65 117.63 81.87 131.16 91.09 141.24C94.38 144.83 97.91 147.95 101.67 150.61C104.7 154.77 112.88 167.41 112.88 182.44C112.88 205.85 99.55 221.66 95.01 226.36H80.08C70.42 226.36 62.55 234.22 62.55 243.89V278H212.62V243.89C212.62 234.23 204.76 226.36 195.09 226.36H182.94C178.39 221.69 165.09 206.01 165.09 182.44C165.09 167.41 173.28 154.76 176.31 150.6C180.07 147.94 183.6 144.83 186.88 141.24C196.11 131.17 203.32 117.63 208.49 100.78C212.08 100.61 228.52 98.94 241.58 83.22C253.79 68.52 256.72 36.97 257.41 24.08C257.54 21.63 256.65 19.21 254.96 17.43L254.98 17.44ZM45.63 75.56C37.98 66.35 34.02 44.83 32.75 26.64H59.94C59.93 35.16 60.24 45.67 61.31 57.07C62.37 68.34 63.99 78.74 66.16 88.28C61.28 87.26 52.87 84.27 45.63 75.57V75.56ZM200.63 243.89V266H74.56V243.89C74.56 240.84 77.04 238.36 80.09 238.36H195.11C198.16 238.36 200.64 240.84 200.64 243.89H200.63ZM167.42 226.36H110.58C117.17 217.14 124.88 202.15 124.88 182.44C124.88 173.8 122.8 165.93 120.17 159.44C126.06 161.11 132.34 161.96 138.99 161.96C145.64 161.96 151.92 161.1 157.82 159.44C155.2 165.93 153.11 173.8 153.11 182.44C153.11 202.15 160.82 217.14 167.41 226.36H167.42ZM178.04 133.15C175.03 136.43 171.82 139.21 168.39 141.52L168.27 141.42C168.23 141.47 168.1 141.62 167.92 141.84C159.63 147.28 150.08 149.96 139 149.96C127.92 149.96 118.37 147.29 110.09 141.85C109.91 141.62 109.78 141.47 109.74 141.42L109.62 141.53C106.19 139.22 102.97 136.44 99.96 133.16C70.36 100.85 71.37 31.91 72.34 12.01H205.68C206.65 31.91 207.66 100.85 178.05 133.16L178.04 133.15ZM232.37 75.56C225.13 84.28 216.7 87.26 211.83 88.28C214 78.75 215.62 68.34 216.68 57.07C217.75 45.67 218.06 35.16 218.05 26.64H245.25C243.98 44.83 240.02 66.35 232.37 75.56Z" />
               </svg>
               <p class="intro__fact-title">14 Agency of the Year awards</p>
-              <p class="intro__fact-label">Since 2021</p>
+              <p class="intro__fact-label" data-rule="top">Since 2021</p>
             </div>
             <figure class="intro__card"><img src="../assets/Social/627444563_18555467572046950_1262000765995898142_n.jpg" alt="ICON team on Sydney Harbour" /></figure>
             <figure class="intro__card"><img src="../assets/Social/545109535_18525186949046950_8652350879767222386_n.jpg" alt="ICON studio" /></figure>
@@ -224,7 +242,7 @@
                 <path d="M26 0C11.6645 0 0 11.6645 0 26C0 40.3355 11.6645 52 26 52C40.3355 52 52 40.3355 52 26C52 11.6645 40.3355 0 26 0ZM39.5481 24.8777C39.4845 21.9616 39.1758 19.1315 38.6409 16.4791C44.6302 18.3178 48.8744 21.3929 49.6338 24.8777H39.5481ZM37.3035 24.8777H27.1223V14.6965C30.3321 14.7714 33.3997 15.1679 36.183 15.817C36.8321 18.6003 37.2268 21.6679 37.3035 24.8777ZM27.1223 12.4519V2.36619C30.607 3.12561 33.684 7.36978 35.5209 13.3591C32.8685 12.8242 30.0384 12.5155 27.1223 12.4519ZM24.8777 2.36619V12.4519C21.9616 12.5155 19.1315 12.8242 16.4791 13.3591C18.3178 7.36978 21.3929 3.12561 24.8777 2.36619ZM24.8777 14.6965V24.8777H14.6965C14.7714 21.6679 15.1679 18.6003 15.817 15.817C18.6003 15.1679 21.6679 14.7732 24.8777 14.6965ZM12.4519 24.8777H2.36619C3.12561 21.3929 7.36978 18.316 13.3591 16.4791C12.8242 19.1315 12.5155 21.9616 12.4519 24.8777ZM12.4519 27.1223C12.5155 30.0384 12.8242 32.8685 13.3591 35.5209C7.36978 33.6822 3.12561 30.607 2.36619 27.1223H12.4519ZM14.6965 27.1223H24.8777V37.3035C21.6679 37.2286 18.6003 36.8321 15.817 36.183C15.1679 33.3997 14.7732 30.3321 14.6965 27.1223ZM24.8777 39.5481V49.6338C21.3929 48.8744 18.316 44.6302 16.4791 38.6409C19.1315 39.1758 21.9616 39.4845 24.8777 39.5481ZM27.1223 49.6338V39.5481C30.0384 39.4845 32.8685 39.1758 35.5209 38.6409C33.6822 44.6302 30.607 48.8744 27.1223 49.6338ZM27.1223 37.3035V27.1223H37.3035C37.2286 30.3321 36.8321 33.3997 36.183 36.183C33.3997 36.8321 30.3321 37.2268 27.1223 37.3035ZM39.5481 27.1223H49.6338C48.8744 30.607 44.6302 33.684 38.6409 35.5209C39.1758 32.8685 39.4845 30.0384 39.5481 27.1223ZM48.8276 19.4196C47.5875 18.2393 46.0013 17.1544 44.0934 16.2004C42.279 15.2932 40.2439 14.5394 38.0517 13.9483C37.4624 11.7561 36.7068 9.72101 35.7996 7.90662C34.8456 5.99871 33.7607 4.41065 32.5804 3.17237C40.3991 5.43007 46.5718 11.6027 48.8276 19.4196ZM19.4196 3.17237C18.2393 4.41252 17.1544 5.99871 16.2004 7.90662C15.2932 9.72101 14.5394 11.7561 13.9483 13.9483C11.7561 14.5376 9.72101 15.2932 7.90662 16.2004C5.99871 17.1544 4.41065 18.2393 3.17237 19.4196C5.43007 11.6027 11.6027 5.43007 19.4196 3.17237ZM3.17237 32.5804C4.41252 33.7607 5.99871 34.8456 7.90662 35.7996C9.72101 36.7068 11.7561 37.4606 13.9483 38.0517C14.5376 40.2439 15.2932 42.279 16.2004 44.0934C17.1544 46.0013 18.2393 47.5894 19.4196 48.8276C11.6009 46.5699 5.4282 40.3973 3.17237 32.5804ZM32.5804 48.8276C33.7607 47.5875 34.8456 46.0013 35.7996 44.0934C36.7068 42.279 37.4606 40.2439 38.0517 38.0517C40.2439 37.4624 42.279 36.7068 44.0934 35.7996C46.0013 34.8456 47.5894 33.7607 48.8276 32.5804C46.5699 40.3991 40.3973 46.5718 32.5804 48.8276Z" />
               </svg>
               <p class="intro__fact-title">83 global partners</p>
-              <p class="intro__fact-label">In 60 countries</p>
+              <p class="intro__fact-label" data-rule="top">In 60 countries</p>
             </div>
             <figure class="intro__card"><img src="../assets/Social/564545908_18531909973046950_6284360111624424011_n.jpg" alt="ICON team" /></figure>
             <figure class="intro__card"><img src="../assets/Social/616265353_18549911215046950_7228439008647051683_n.jpg" alt="ICON team" /></figure>
@@ -235,7 +253,7 @@
                 <path d="M42.802 22.1953L42.4391 22.098C41.3056 21.795 40.1309 21.8605 39.0573 22.2776L39.7755 19.5972C40.1534 18.1868 39.9588 16.7147 39.2293 15.4503C38.4998 14.1858 37.3214 13.2824 35.9111 12.9045L35.5482 12.8073C34.3866 12.4968 33.2101 12.5865 32.1663 12.9924L33.7375 7.13215C34.5437 4.12251 32.7518 1.0156 29.7403 0.209417C28.2813 -0.181518 26.7587 0.0186255 25.4512 0.774309C24.1437 1.52999 23.2085 2.74769 22.8175 4.20668L19.5404 16.436L16.2633 4.20481C15.4552 1.1933 12.3502 -0.600511 9.33869 0.205676C6.32905 1.01186 4.53524 4.11877 5.34143 7.12841L10.6256 26.8585C8.10603 28.714 6.4656 31.7012 6.4656 35.0644V38.2629C6.4656 45.9601 12.7318 51.9887 20.7282 51.9887H27.3965C35.262 51.9887 41.6591 45.5897 41.6591 37.7261H41.4403C43.2734 37.2416 44.8072 35.8182 45.3328 33.8579L46.6646 28.8898C47.4446 25.9793 45.7106 22.9772 42.8001 22.1972L42.802 22.1953ZM34.9683 14.9752L35.3312 15.0724C36.1617 15.295 36.8557 15.8281 37.2859 16.5726C37.7161 17.317 37.8302 18.185 37.6076 19.0155L34.4147 30.9306C33.9545 32.6458 32.185 33.6671 30.4716 33.207L30.1088 33.1097C29.2783 32.8871 28.5843 32.354 28.1541 31.6096C27.9221 31.2074 27.7856 30.7697 27.7407 30.3208C27.737 30.231 27.7314 30.1412 27.7239 30.0514C27.7201 29.7559 27.7538 29.4585 27.8324 29.1667L31.0253 17.2516C31.4855 15.5363 33.2531 14.515 34.9683 14.9752ZM7.51121 6.54855C7.02488 4.73417 8.10603 2.86179 9.92042 2.37546C11.7367 1.88913 13.6072 2.97028 14.0935 4.78467L17.9542 19.195C18.1488 19.9227 18.7866 20.4109 19.5385 20.4109C20.2905 20.4109 20.9283 19.9227 21.1229 19.195L24.9836 4.78654C25.2193 3.9074 25.7823 3.17229 26.5716 2.71776C27.3591 2.26323 28.2775 2.14165 29.1585 2.37733C30.9729 2.86366 32.0541 4.73604 31.5678 6.55042L26.1844 26.6396C25.1538 25.5566 23.7004 24.8795 22.0918 24.8795H16.6524C15.2289 24.8795 13.8728 25.175 12.6401 25.7044L7.50934 6.55042L7.51121 6.54855ZM27.3984 49.7422H20.7301C17.4716 49.7422 14.4452 48.5788 12.208 46.4688C9.95409 44.3421 8.71207 41.426 8.71207 38.2611V35.0625C8.71207 30.6837 12.2754 27.1204 16.6542 27.1204H22.0937C23.8501 27.1204 25.2997 28.4559 25.4811 30.1637C25.4849 30.2591 25.4886 30.3526 25.498 30.448C25.498 30.4742 25.5017 30.5004 25.5017 30.5284C25.5017 32.4083 23.9735 33.9365 22.0937 33.9365H16.7945V36.1811H22.0937C24.0783 36.1811 25.8272 35.1523 26.8354 33.5998C27.5237 34.3873 28.444 34.9858 29.5289 35.2776L29.8918 35.3749C30.3632 35.5002 30.8401 35.5638 31.3152 35.5638C32.2617 35.5638 33.197 35.315 34.0387 34.8287C34.2501 34.7071 34.4521 34.5706 34.6429 34.4247C34.7345 34.6473 34.8411 34.8642 34.9627 35.0775C35.6922 36.3419 36.8706 37.2454 38.281 37.6232L38.6439 37.7205C38.9001 37.7897 39.1583 37.8365 39.4164 37.8683C39.3397 44.43 33.9807 49.7441 27.4003 49.7441L27.3984 49.7422ZM44.4985 28.3063L43.1667 33.2743C42.9442 34.1048 42.4111 34.7988 41.6666 35.229C40.9221 35.6592 40.0542 35.7733 39.2237 35.5507L38.8608 35.4534C38.0303 35.2309 37.3364 34.6978 36.9062 33.9533C36.476 33.2088 36.3619 32.3409 36.5844 31.5104L37.9162 26.5424C38.1388 25.7119 38.6719 25.0179 39.4164 24.5877C40.1608 24.1575 41.0288 24.0434 41.8593 24.266L42.2221 24.3632C43.9374 24.8234 44.9587 26.591 44.4985 28.3063Z" />
               </svg>
               <p class="intro__fact-title">24+ years of experience</p>
-              <p class="intro__fact-label">An independent Australian agency</p>
+              <p class="intro__fact-label" data-rule="top">An independent Australian agency</p>
             </div>
             <figure class="intro__card"><img src="../assets/Social/627494402_18555766234046950_1068044228574929997_n.jpg" alt="ICON team" /></figure>
             <figure class="intro__card"><img src="../assets/Social/505432743_18507792805046950_44209313391173575_n.jpg" alt="ICON team" /></figure>
@@ -246,7 +264,7 @@
                 <path d="M39.1925 21.3683L37.5739 19.8129L35.3809 22.262C35.459 21.0064 35.4234 19.7761 35.2224 18.4952C34.7514 15.5004 33.4705 11.0168 31.7692 8.24825C29.5555 4.64573 26.741 2.4872 25.4268 1.77956L22.2046 0.0449219L22.2333 3.70489C22.2333 3.80598 22.2264 13.9059 14.7238 19.698C6.30909 26.1954 6.46992 34.6227 6.52735 35.6991C6.53999 39.1558 7.54746 42.4998 9.44292 45.3775C10.6089 47.1466 12.0621 48.6779 13.7623 49.9277C14.8249 50.7089 16.0897 51.2454 16.926 51.6015C17.0581 51.6578 17.181 51.7095 17.2959 51.76C18.1 52.1104 19.0386 51.9553 19.6865 51.3637C20.3344 50.7732 20.5768 49.8519 20.301 49.0191C20.1046 48.4229 19.9438 47.8783 19.8829 47.6003C19.2304 44.6434 20.061 42.1621 20.5561 40.6802L20.5894 40.5814C21.1776 38.8203 22.0943 37.1776 23.3154 35.6991C23.6118 35.3407 23.9116 35.0087 24.208 34.7043C25.1971 38.4366 27.189 40.5596 28.8674 42.3493C30.6399 44.2379 31.7094 45.3786 31.7094 48.1414C31.7094 48.3895 31.6554 48.8789 31.5739 49.3591C31.4383 50.1678 31.7554 50.9823 32.4021 51.4866C32.8008 51.7968 33.2832 51.9565 33.7703 51.9565C34.0736 51.9565 34.3792 51.8944 34.6675 51.7681C34.7835 51.7175 34.9122 51.6624 35.0523 51.6026C35.8886 51.2477 37.1534 50.7101 38.216 49.9289C39.9162 48.679 41.3694 47.1477 42.5354 45.3786C44.4309 42.5021 45.4383 39.1558 45.451 35.7003C45.5027 34.7204 45.6382 27.567 39.1936 21.3694L39.1925 21.3683ZM41.1236 35.4682L41.1178 35.5337V35.6325C41.1178 38.2632 40.3573 40.8077 38.9168 42.9938C38.0943 44.2425 37.0834 45.3338 35.9082 46.2414C35.4211 42.9995 33.7014 41.165 32.0288 39.3821C30.0472 37.2707 28.177 35.2764 27.9449 30.4941L27.7623 26.7089L24.5928 28.7859C23.4073 29.5624 21.644 30.9134 19.9737 32.9375C18.4125 34.8284 17.2373 36.9375 16.4791 39.2052L16.4469 39.3028C15.9989 40.64 15.2626 42.8422 15.3074 45.6026C14.4527 44.8353 13.7002 43.9611 13.0627 42.9915C11.6233 40.8054 10.8616 38.2597 10.8616 35.6302L10.8639 35.559L10.8559 35.4671C10.849 35.343 10.7732 33.6049 11.5073 31.2787C12.5101 28.1001 14.4837 25.358 17.374 23.1259C23.2281 18.6067 25.3568 12.1483 26.1287 7.9289C26.7652 8.62045 27.4418 9.47743 28.0782 10.5148C29.405 12.6744 30.5239 16.501 30.9421 19.165C31.2465 21.1052 31.0397 22.9593 30.6078 25.3223C30.3504 26.7284 31.0397 28.0966 32.3229 28.725C33.606 29.3534 35.1075 29.0604 36.061 27.9967L37.714 26.1506C41.343 30.6641 41.1431 35.1592 41.1247 35.4648L41.1236 35.4682Z" />
               </svg>
               <p class="intro__fact-title">Australian Government Drupal Services Panel</p>
-              <p class="intro__fact-label">We&rsquo;re GovCMS specialists</p>
+              <p class="intro__fact-label" data-rule="top">We&rsquo;re GovCMS specialists</p>
             </div>
           </div>
         </div>
@@ -257,11 +275,11 @@
                  scrolls up past it, and js inks whichever item sits beside it. -->
             <span class="intro__expertise-label">Our expertise</span>
             <ul class="intro__expertise-list" aria-label="Our expertise">
-              <li><a href="/services#creative">Creative</a></li>
-              <li><a href="/services#communications">Communications</a></li>
-              <li><a href="/services/digital">Digital</a></li>
-              <li><a href="/services#reputation">Reputation</a></li>
-              <li><a href="/services#production">Production</a></li>
+              <li><a href="/services#creative" class="quiet-link">Creative</a></li>
+              <li><a href="/services#communications" class="quiet-link">Communications</a></li>
+              <li><a href="/services/digital" class="quiet-link">Digital</a></li>
+              <li><a href="/services#reputation" class="quiet-link">Reputation</a></li>
+              <li><a href="/services#production" class="quiet-link">Production</a></li>
             </ul>
           </div>
           <div class="intro__prose">
@@ -271,7 +289,7 @@
               technology, health, education and social impact, helping
               organisations and change-makers create work that matters.
             </p>
-            <a class="intro__about" href="/about" data-animate style="--animate-delay: 200ms">About us</a>
+            <a class="intro__about quiet-link" href="/about" data-animate style="--animate-delay: 200ms">About us</a>
           </div>
         </div>
         <div class="intro__badge" data-strip-badge aria-hidden="true">Drag</div>
@@ -346,7 +364,7 @@
       <!-- Each track holds an EVEN number of clients (12) so the nth-child(even)
            Miller-italic alternation stays continuous across the loop seam — an odd
            count doubles up two same-style names where the tracks meet. -->
-      <section class="clients" aria-label="Selected clients">
+      <section class="clients" data-rule-host aria-label="Selected clients">
         <!-- Top row — scrolls right (opposite the middle) -->
         <div class="clients__scroller clients__scroller--reverse">
           <ul class="clients__track">
@@ -440,12 +458,6 @@
             <li class="client">Allied Health Professions Australia</li>
           </ul>
         </div>
-        <!-- WCAG 2.2.2 (Level A): auto-motion longer than 5s needs a pause
-             control. Hidden under reduced motion (the marquee isn't animating). -->
-        <button class="clients__pause" type="button" aria-pressed="false" aria-label="Pause client name animation" data-clients-pause>
-          <svg class="clients__pause-icon clients__pause-icon--pause" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1" /><rect x="14" y="5" width="4" height="14" rx="1" /></svg>
-          <svg class="clients__pause-icon clients__pause-icon--play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z" /></svg>
-        </button>
       </section>
 
       <!-- ================= NEWS ================= -->
@@ -473,7 +485,7 @@
                 </div>
               </a>
             </li>
-            <li>
+            <li data-rule="top">
               <a class="news-card" href="/news/article" aria-label="ICON launches new wellbeing agency website for veterans and families">
                 <figure class="news-card__figure media-reveal" data-reveal-img>
                   <img class="news-card__img" loading="lazy" src="../assets/News/Tile-DVA-Wellbeing.png" alt="Homepage of the Veteran and Family Wellbeing Agency site on desktop and mobile" />
@@ -484,7 +496,7 @@
                 </div>
               </a>
             </li>
-            <li>
+            <li data-rule="top">
               <a class="news-card" href="/news/article" aria-label="ICON helps eSafety expose the tactics behind sextortion scams">
                 <figure class="news-card__figure media-reveal" data-reveal-img>
                   <img class="news-card__img" loading="lazy" src="../assets/News/tile-sextortion-campaign.jpg" alt="Still from the campaign film: an AI-generated woman captioned I'm not real, I'm here to blackmail you" />
@@ -536,7 +548,7 @@
         <div class="site-footer__locations">
           <h3 class="sr-only">Our offices</h3>
           <ul class="site-footer__offices" role="list">
-            <li class="site-footer__office-item">
+            <li class="site-footer__office-item" data-rule="top">
               <details class="site-footer__office">
                 <summary class="site-footer__office-summary">
                   <!-- footer-melbourne-icon.tsx, inlined; fill follows currentColor -->
@@ -551,7 +563,7 @@
                 </address>
               </details>
             </li>
-            <li class="site-footer__office-item">
+            <li class="site-footer__office-item" data-rule="top">
               <details class="site-footer__office">
                 <summary class="site-footer__office-summary">
                   <!-- footer-sydney-icon.tsx, inlined; fill follows currentColor -->
@@ -566,7 +578,7 @@
                 </address>
               </details>
             </li>
-            <li class="site-footer__office-item">
+            <li class="site-footer__office-item" data-rule="top">
               <details class="site-footer__office">
                 <summary class="site-footer__office-summary">
                   <!-- footer-brisbane-icon.tsx, inlined; fill follows currentColor -->
@@ -581,7 +593,7 @@
                 </address>
               </details>
             </li>
-            <li class="site-footer__office-item">
+            <li class="site-footer__office-item" data-rule="both">
               <details class="site-footer__office">
                 <summary class="site-footer__office-summary">
                   <!-- footer-fiji-icon.tsx, inlined; fill follows currentColor -->
@@ -632,6 +644,10 @@
     <!-- GSAP core + SplitText (line-mask text reveals). SplitText is free in
          GSAP 3.13. Lenis provides the smooth momentum scroll. (Prototype deps —
          like homeB's Three.js; not part of the core stack yet.) -->
+    <!-- Ahead of the CDN scripts on purpose: the loading screen must not wait
+         on two third-party round-trips to appear. See js/hero-loader.js. -->
+    <script src="../js/hero-loader.js"></script>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js"></script>

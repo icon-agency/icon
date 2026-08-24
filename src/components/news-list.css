@@ -35,7 +35,7 @@
 }
 
 .news-list__item {
-  border-top: 1px solid var(--rule);
+  border-top: var(--rule-weight) solid var(--rule);
   padding-block: var(--space-md);
 }
 
@@ -79,7 +79,7 @@
     top: -1px;
     left: 100%;
     width: 100%; /* the empty column is the same 1fr */
-    border-top: 1px solid var(--rule);
+    border-top: var(--rule-weight) solid var(--rule);
   }
 }
 
