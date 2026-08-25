@@ -2,8 +2,9 @@
  * Imported LAST in src/main.css so it cascades over everything.
  *
  * Holds three concerns:
- *  1. .theme-work-article — a per-route LIGHT theme. The site default is dark
- *     (.dark on <html>); this scope sits on the SAME <html> element (class="dark
+ *  1. .theme-work-article — a per-route LIGHT theme. This prototype page still
+ *     runs dark (.dark on <html> — the canonical pages are light-default now);
+ *     the scope sits on the SAME <html> element (class="dark
  *     theme-work-article") and re-binds the brand vars to the work-article
  *     palette (already in colors.css as --work-article-*). It must be on <html>,
  *     not <body>: Tailwind v4 registers the --color-* aliases and resolves them

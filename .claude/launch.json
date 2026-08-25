@@ -2,17 +2,6 @@
   "version": "0.0.1",
   "configurations": [
     {
-      "name": "icon-ref",
-      "runtimeExecutable": "npm",
-      "runtimeArgs": [
-        "--prefix",
-        "v40-1-icon",
-        "run",
-        "dev"
-      ],
-      "port": 3000
-    },
-    {
       "name": "icon-build",
       "runtimeExecutable": "node",
       "runtimeArgs": [

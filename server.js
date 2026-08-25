@@ -1,6 +1,6 @@
 /* Minimal static file server for previewing the static build locally.
- * Dev-only tooling (not part of the Drupal handoff). `/` serves the template
- * index (index.html), which links to every page under templates/. */
+ * Dev-only tooling (not part of the Drupal handoff). `/` serves index.html —
+ * the design-system index — which also links to every page under templates/. */
 const http = require("http");
 const fs = require("fs");
 const path = require("path");

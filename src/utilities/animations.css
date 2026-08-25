@@ -1,11 +1,12 @@
-/* animations.css — keyframes + the shared scroll-reveal host.
+/* animations.css — the shared scroll-reveal host + common keyframes.
  *
- * Two motion systems run on this site:
- *   1. Scroll-reveal (this file's [data-animate] host) for simple fade/rise.
- *   2. GSAP timelines (hero letter reveal, cursor pops, parallax) attached
- *      per component in JS.
- * Both are cancelled under prefers-reduced-motion. See docs/animation.md
- * (added during the docs pass). */
+ * One piece of the site's motion inventory (the full map lives in
+ * docs/animation.md). This file owns:
+ *   - the [data-animate] host — opacity + rise; js/reveal.js toggles
+ *     .is-visible, the CSS owns the transition and --animate-delay stagger;
+ *   - the masked line-rise variant (.reveal-lines) riding the same host;
+ *   - shared keyframes (grain, marquee scroll, fadeIn, slideIn);
+ *   - the reduced-motion guards that reset it all to visible. */
 
 /* ---- Scroll-reveal host -------------------------------------------------- */
 
