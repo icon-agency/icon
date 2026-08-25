@@ -581,8 +581,12 @@ html:not(.js-animations) .hero__count { display: none; }
   /* One source of truth for the intro's display scale: the headline sets its
      font-size from this, and the logo-mark video takes a fixed FRACTION of it
      (--mark-ratio), so the mark scales on exactly the same curve as the type
-     at every width instead of sitting at a fixed pixel size. */
-  --intro-display: clamp(2.4rem, 5.6vw, 9rem);
+     at every width instead of sitting at a fixed pixel size.
+
+     The curve itself is now the site's display voice, so this statement and
+     the WORK / NEWS & INSIGHTS mastheads are the same size by construction
+     rather than by two matching literals. */
+  --intro-display: var(--voice-display);
   --mark-ratio: 1.25;
 }
 
@@ -960,40 +964,25 @@ html:not(.js-animations) .intro__expertise-list li:first-child a {
      (It used to be half the display masthead: much louder, and it read as a
      second heading rather than a link.) */
   font-size: var(--voice-mid);
-  font-weight: var(--font-weight-medium);
+  font-weight: var(--font-weight-semibold);
   line-height: 1.2;
   letter-spacing: -0.01em;
   color: var(--color-icon-black);
   text-decoration: none;
-  transition:
-    color var(--duration-fast) var(--ease-standard),
-    translate var(--duration-normal) var(--ease-decelerate);
+  transition: color var(--duration-fast) var(--ease-standard);
 }
 
-/* Same slash hover as the NEWS more + the expertise links. */
-.work__more::before {
-  content: "/";
-  position: absolute;
-  left: -0.65em;
-  opacity: 0;
-  transition: opacity 0.25s var(--ease-standard);
-}
-
+/* Prefixed by the shared .invite-arrow utility (markup class — see
+   effects.css), matching the footer's Subscribe. The slash hover this
+   carried (and the translate that made room for it) moved on when the
+   arrow arrived: one prefix per link. The expertise links keep theirs. */
 .work__more:hover,
 .work__more:focus-visible {
   color: var(--color-icon-blue);
-  translate: 0.65em 0;
-}
-
-.work__more:hover::before,
-.work__more:focus-visible::before {
-  opacity: 1;
-  transition-delay: 0.15s;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .work__more,
-  .work__more::before { transition: none; }
+  .work__more { transition: none; }
 }
 
 .work__row {
@@ -1146,11 +1135,13 @@ html:not(.js-animations) .intro__expertise-list li:first-child a {
 
 .work__title {
   margin: 0;
-  /* Same voice as the intro statement (size, weight, tracking, line-height) —
-     the tiles read as sentences, not display caps. */
+  /* The mid voice's size/tracking/line-height, one weight up (semibold, with
+     the news-card titles and the two More links) — the titles read as
+     sentences, not display caps, but carry a step more ink than the running
+     mid-voice text around them. */
   font-size: var(--voice-mid);
   line-height: 1.2;
-  font-weight: var(--font-weight-medium);
+  font-weight: var(--font-weight-semibold);
   letter-spacing: -0.01em;
   color: var(--color-icon-black);
   /* balance, not pretty — measured, not assumed. Chrome 148 applies `pretty`
@@ -1443,13 +1434,24 @@ html:not(.js-animations) .intro__expertise-list li:first-child a {
   }
 }
 
+/* Sentence case, as authored — "News / & Insights", not the shouted version.
+   Tracking still comes from --tracking-caps: it is only -0.015em, which is a
+   display-type tightening rather than a caps-specific one, and it suits the
+   Kumbh 900 line and the Miller accent below it equally. */
 .news__heading {
   margin: 0;
   font-size: var(--news-masthead);
-  font-weight: 900;
-  line-height: var(--voice-display-lh);
+  /* Bold — two steps back off Kumbh's Black, and the project's own token
+     rather than a numeric literal, so this masthead stops being the one place
+     a raw weight is hard-coded. It also puts the Kumbh line on the same
+     numeric weight as the Miller accent beneath it (.masthead-accent), which
+     is the only heavy cut that kit ships. WORK and the footer's LET'S TALK
+     stay at 900: they are caps settings, where the extra weight reads as
+     authority rather than heft, and this masthead has gone its own way
+     (sentence case over a serif accent). */
+  font-weight: var(--font-weight-bold);
+  line-height: var(--voice-display-lh-sentence);
   letter-spacing: var(--tracking-caps);
-  text-transform: uppercase;
   color: var(--color-icon-black);
 }
 
@@ -1464,41 +1466,23 @@ html:not(.js-animations) .intro__expertise-list li:first-child a {
      (It used to be half the display masthead: much louder, and it read as a
      second heading rather than a link.) */
   font-size: var(--voice-mid);
-  font-weight: var(--font-weight-medium);
+  font-weight: var(--font-weight-semibold);
   line-height: 1.2;
   letter-spacing: -0.01em;
   color: var(--color-icon-black);
   text-decoration: none;
-  transition:
-    color var(--duration-fast) var(--ease-standard),
-    translate var(--duration-normal) var(--ease-decelerate);
+  transition: color var(--duration-fast) var(--ease-standard);
 }
 
-/* Same treatment as the work MORE: slides right, then a "/" fades in a
-   word-space before it, both in accent blue. */
-.news__more::before {
-  content: "/";
-  position: absolute;
-  left: -0.65em;
-  opacity: 0;
-  transition: opacity 0.25s var(--ease-standard);
-}
-
+/* Same treatment as the work MORE: the shared .invite-arrow prefix
+   (effects.css, markup class) and the accent-blue hover. */
 .news__more:hover,
 .news__more:focus-visible {
   color: var(--color-icon-blue);
-  translate: 0.65em 0;
-}
-
-.news__more:hover::before,
-.news__more:focus-visible::before {
-  opacity: 1;
-  transition-delay: 0.15s;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .news__more,
-  .news__more::before { transition: none; }
+  .news__more { transition: none; }
 }
 
 /* ---- the list ------------------------------------------------------------ */

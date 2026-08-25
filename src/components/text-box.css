@@ -17,8 +17,8 @@
  * size and the lens itself are proportional to whatever size the host gives
  * it. The composition is scale-invariant; only its pixel size changes.
  *
- * Drupal: SDC `text-box` with one `field_line` prop. The 28 rows are a Twig
- * loop over a 7-step depth ramp x 4 panels, not hand-authored markup — see
+ * Drupal: SDC `text-box` with one `field_line` prop. The 16 rows are a Twig
+ * loop over a 4-step depth ramp x 4 panels, not hand-authored markup — see
  * js/hero-loader.js, which builds exactly that shape client-side here.
  */
 
@@ -56,7 +56,7 @@
   inset: 0;
   transform-style: preserve-3d;
   --D: 170cqw;               /* how deep the box runs */
-  --E: calc(100cqw / 7);     /* row pitch, the ~7:1 strip ratio */
+  --E: calc(100cqw / 4);     /* row pitch — matches the 4-band ramp (no-JS fallback only; js/hero-loader.js always sets --fs) */
 }
 .text-box__panel {
   position: absolute;
@@ -86,7 +86,7 @@
 .text-box__panel--right { right: 0; transform-origin: 100% 50%; transform: rotateY(-90deg); }
 
 .text-box__row {
-  /* band size set inline: every panel shares the same 7 depth
+  /* band size set inline: every panel shares the same 4 depth
      fractions, so the hairlines ring the box continuously and the
      side bands MATCH the top/bottom bands at every depth */
   flex: 0 0 auto;
@@ -99,10 +99,11 @@
   display: inline-flex;
   white-space: nowrap;
   /* depth-scaled AND band-tight: each band's height is its share of
-     the depth ramp and the glyphs fill 88% of it — near-touching rows,
-     biggest at the open end, converging inward. DOM order = depth
-     order on every panel (the floor stacks column-reverse so its
-     first row is also the near one). */
+     the depth ramp and the glyph em overshoots it slightly (the FILL
+     lever in js/hero-loader.js — the ink stays inside the band) so the
+     rows run near-touching, biggest at the open end, converging inward.
+     DOM order = depth order on every panel (the floor stacks
+     column-reverse so its first row is also the near one). */
   font-size: var(--fs, calc(var(--E) * 0.6));
   line-height: 1;
   font-weight: 900;

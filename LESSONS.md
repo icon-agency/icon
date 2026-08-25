@@ -135,3 +135,20 @@ goes wrong.
   '\.selector{[^}]*}' css/main.css` — because this class of bug only exists
   after minification. (Same engine as the `--minify` shorthand hazard above.)
   (`src/components/site-footer.css`.)
+
+- **A `readyState` gate on a paused video deadlocks on iOS — Safari ignores
+  `preload="auto"` and parks paused video at `HAVE_METADATA`, so a gate
+  waiting for `readyState >= 3` never settles on a phone.** The hero boot
+  gated each card (and the reel's hand-off slide) this way: on mobile the
+  two video gates sat until the 5.5s `MAX_WAIT` cap on every load — the pile
+  stalled, and the (real) load counter froze at (40) because only the two
+  image gates could ever settle, which read as "the loading is fake". Worse,
+  the reduced-motion path had the same gate with NO cap: a permanent blank
+  hero on reduced-motion iOS. Fix: **prime the video** — a `muted playsinline`
+  video may be `play()`ed without a gesture, and playback is the one thing
+  that reliably makes Safari buffer; pause it the moment its gate settles
+  (invisible pre-pop, so nothing shows). Low Power Mode rejects the `play()`
+  — caught, and the cap still fails open. And when a fail-open cap fires,
+  **resolve the counter with it** (the loading phase is over by policy) —
+  a real counter that can freeze below 100 is worse than an honest cap.
+  (`js/home-c.js` hero boot; found on a phone, Aug 2026.)

@@ -182,6 +182,14 @@
         // Gated, same as the full path: activating an unloaded 6MB video
         // showed an empty reel until it painted. (Pre-existing; the loading
         // screen work just made the double standard obvious.)
+        //
+        // PRIMED, also same as the full path — and here it is load-bearing,
+        // not just faster: this gate has no cap, and iOS parks a paused
+        // video's readyState below the gate's bar (preload="auto" ignored),
+        // so without the play() kick reduced-motion iOS would deadlock on a
+        // blank hero forever. activate(0) plays it properly when the gate
+        // settles; until then it plays invisibly (not yet .is-active).
+        if (slides[0].tagName === "VIDEO") slides[0].play().catch(function () {});
         mediaReady(slides[0]).then(function () {
           activate(0);
           loop(0);
@@ -218,9 +226,11 @@
       var HOLD = 800;     // beat on the finished pile
       var TAKEOVER = 1000; // matches the takeover transition in CSS
 
-      // The box gets a clear beat on its own before anything pops over it, and
-      // the whole show runs even off a warm cache — that is the point of it.
-      var MIN_TEXT = 1400;
+      // The cards start the moment their media allows — no mandatory beat for
+      // the text box first (it had 1400ms; cut to 0 on request, Aug 2026 —
+      // the box now plays under and between the pops rather than before
+      // them). The lever stays because the show's shape is one edit away.
+      var MIN_TEXT = 0;
       // ...and nobody waits forever. This cap carries the whole "no skip
       // button" decision: past it the cards pop regardless of what has
       // loaded, so the worst-case hold is ~5.5s of kinetic text before the
@@ -244,15 +254,44 @@
       var settle = function (i) {
         return function () { ready[i] = true; bumpCount(); };
       };
+      // PRIME the videos. iOS ignores preload="auto" on a paused video —
+      // readyState parks at HAVE_METADATA, so on every phone the video gates
+      // above sat until the cap: the pile popped at 5.5s and the counter
+      // froze at (40) (the two images were the only gates that could settle).
+      // Playback is the one thing that reliably makes Safari buffer, and a
+      // muted playsinline video may be play()ed without a gesture. The card
+      // is invisible pre-pop, so nothing shows; paused again the moment its
+      // gate settles (the pop re-plays the last card itself). Low Power Mode
+      // rejects the play() — caught, and the cap below still fails open.
+      var prime = function (host) {
+        var v = host.tagName === "VIDEO" ? host : host.querySelector("video");
+        if (v) v.play().catch(function () {});
+        return v;
+      };
       cards.forEach(function (c, i) {
-        var p = mediaReady(c, i === lastCard);
-        p.then(settle(i));
+        var v = prime(c);
+        mediaReady(c, i === lastCard).then(function () {
+          if (v) v.pause();
+          settle(i)();
+        });
       });
       var reelReady = false;
+      var reelVid = prime(slides[slides.length - 1]);
       mediaReady(slides[slides.length - 1], true).then(function () {
+        if (reelVid) reelVid.pause();
         reelReady = true;
         bumpCount();
       });
+      // The cap is fail-open by policy (a stalled file must not hold the
+      // page); the counter follows the same policy. When the cap passes,
+      // whatever has not settled is not going to before the show proceeds —
+      // the loading phase is OVER, so the counter completes instead of
+      // freezing at a number nobody can act on.
+      setTimeout(function () {
+        ready.forEach(function (_, i) { ready[i] = true; });
+        reelReady = true;
+        bumpCount();
+      }, Math.max(0, capAt - performance.now()));
 
       // THE COUNTER IS REAL NOW. It was a fake clock driven off the animation's
       // own progress; with load genuinely gating the show, it reports what has
@@ -422,9 +461,9 @@
 
   // The loading screen's DOM is reclaimed as soon as the hero goes live,
   // whichever path got it there — the morph, the CSS fallback, the restore
-  // branch or a skip. The CSS rule in home-c.css has already cancelled all 28
+  // branch or a skip. The CSS rule in home-c.css has already cancelled all 16
   // marquees and dropped their layers by this point (display:none); this only
-  // frees the ~112 nodes and unhooks the resize listener.
+  // frees the ~64 nodes and unhooks the resize listener.
   if (hero) {
     (function () {
       if (hero.classList.contains("is-live")) {

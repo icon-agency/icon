@@ -215,6 +215,10 @@
   color: var(--footer-ink);
 }
 
+/* The ↳ before Subscribe and Get in touch is the shared .invite-arrow
+   utility (effects.css), applied in markup — promoted out of this file when
+   the homepage More links became its third and fourth consumers. */
+
 /* ---- offices accordion --------------------------------------------------- */
 
 .site-footer__offices {
@@ -277,8 +281,10 @@
 .site-footer__office-toggle {
   position: relative;
   flex: 0 0 auto;
-  width: 1em;
-  height: 1em;
+  /* a touch under the voice's em — full-size read as heavy next to the city
+     names; the bars span the box, so this is the glyph's one size lever */
+  width: 0.85em;
+  height: 0.85em;
   font-size: var(--footer-voice-mid);
   transition: rotate var(--duration-normal) var(--ease-standard);
 }

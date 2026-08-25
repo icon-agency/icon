@@ -9,14 +9,14 @@
  * and running on the first frame regardless of what the CDNs are doing.
  *
  * It owns three things and nothing else:
- *   1. building the room (28 rows: a 7-step depth ramp on each of 4 panels),
+ *   1. building the room (16 rows: a 4-step depth ramp on each of 4 panels),
  *   2. timing it so the copy travels at one constant speed and the whole
  *      composition has arrived before the hero's cards start popping,
  *   3. handing js/home-c.js a start time to hang the rest of the show off.
  *
  * The rows are built here rather than authored into the template because they
  * are pure geometry — a Twig loop in Drupal, per docs/drupal-handoff.md — and
- * 112 nodes of hand-written markup would be a liability in a page anyone edits.
+ * 64 nodes of hand-written markup would be a liability in a page anyone edits.
  * The box is decorative (aria-hidden) and never present without JS, so nothing
  * is lost from the no-JS baseline: the CSS keeps it display:none there.
  */
@@ -28,25 +28,26 @@
 
   var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  // A tunnel of 28 marquees receding through a perspective camera is exactly
+  // A tunnel of 16 marquees receding through a perspective camera is exactly
   // the vestibular trigger the media query exists for. Not built, not lit.
   if (reduce) return;
 
   /* ---- 1. the room ------------------------------------------------------- */
 
-  // The depth ramp, measured off the original: each band's share of the depth
-  // and the glyph size that fills 88% of it. Seven steps, biggest at the open
-  // end, converging inward. Every panel shares them, which is what makes the
-  // bands line up all the way round the box at every depth.
-  var BANDS = [
-    { h: 21.3, fs: 0.1874 },
-    { h: 18.96, fs: 0.1669 },
-    { h: 16.62, fs: 0.1463 },
-    { h: 14.29, fs: 0.1257 },
-    { h: 11.95, fs: 0.1051 },
-    { h: 9.61, fs: 0.0846 },
-    { h: 7.27, fs: 0.064 }
-  ];
+  // The depth ramp: each band's share of the depth. Four steps, biggest at
+  // the open end, converging inward on the same near:far ratio (~2.9) the
+  // original seven kept. Every panel shares them, which is what makes the
+  // bands line up all the way round the box at every depth. Sum is 100.
+  var BANDS = [{ h: 37.3 }, { h: 29.1 }, { h: 20.9 }, { h: 12.7 }];
+
+  // The line-height lever: glyph em as a fraction of its band. Above 1 the em
+  // overshoots the band — deliberately. Kumbh 900's caps ink is 0.762em and
+  // sits nearly centred in the em (0.123em above, 0.115 below — measured), so
+  // at 1.12 the INK fills 85% of the band with ~7% clearance each side, and
+  // the rows read near-touching. Clipping against the row's overflow:hidden
+  // starts at ~1.30; keep well under it, the 3D projection has no subpixel
+  // mercy.
+  var FILL = 1.12;
 
   // Rings arrive INSIDE OUT: the small ring at the vanishing point first,
   // growing outward to the big near rows at the frame's edges. See --zr below.
@@ -85,6 +86,7 @@
     // had no content to size against, and both walls vanished entirely.
     var dim = name === "left" || name === "right" ? "width" : "height";
     BANDS.forEach(function (band, z) {
+      var fs = (band.h / 100) * FILL; // glyph em as a fraction of --D
       var row = document.createElement("div");
       // Alternate depths travel the other way — via the --flip class, which
       // mirrors the row's geometry, NOT animation-direction: reverse. Reverse
@@ -100,8 +102,8 @@
         // geometry and the entry order can differ without renumbering.
         ";--zr:" + (BANDS.length - 1 - z) +
         ";" + dim + ":" + band.h + "%" +
-        ";--fs:calc(var(--D) * " + band.fs + ")" +
-        ";--d:" + (K * band.fs + PANEL_OFFSET[p]).toFixed(2) + "s";
+        ";--fs:calc(var(--D) * " + fs.toFixed(4) + ")" +
+        ";--d:" + (K * fs + PANEL_OFFSET[p]).toFixed(2) + "s";
       // two copies: the marquee travels exactly half the run, so the loop is
       // seamless and "half a width" is one whole line
       row.innerHTML =
@@ -172,7 +174,7 @@
 
   // Teardown is CSS-driven off .is-live (see home-c.css) so no path can forget
   // it; this only reclaims the DOM afterwards. display:none has already
-  // cancelled all 56 animations and dropped the layers by the time this runs.
+  // cancelled all 32 animations and dropped the layers by the time this runs.
   window.__heroLoaderTeardown = function () {
     window.removeEventListener("resize", onResize);
     clearTimeout(rt);
@@ -182,7 +184,7 @@
     });
   };
 
-  // Backstop: nothing should ever leave 28 marquees running behind an opaque
+  // Backstop: nothing should ever leave 16 marquees running behind an opaque
   // reel. CONDITIONAL on the hero actually being live — an unconditional
   // timer here once removed the loading screen mid-show on a slow load, which
   // is the one moment it exists for. While the show is still running the box

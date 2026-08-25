@@ -31,7 +31,7 @@ Drupal: `Drupal.behaviors.iconReveal`.
 The homepage's choreography lives in **three** files:
 
 - **`js/hero-loader.js`** — builds and lights the hero's kinetic-text loading
-  screen (the `.text-box` "room" of 28 marquee rows). Deliberately its own
+  screen (the `.text-box` "room" of 16 marquee rows). Deliberately its own
   file, loaded *before* the CDN scripts, so the loading screen exists on the
   first frame even when GSAP/Lenis round-trips are slow. Hands `js/home-c.js`
   a start time. A perspective tunnel is a vestibular trigger, so reduced
@@ -152,7 +152,7 @@ missing.
 | Header (scroll state, mobile menu, drawer offset) | `js/header.js` | — | `iconHeader` → `icon/header` |
 | Shared scroll-reveal | `js/reveal.js` | — | `iconReveal` → `icon/reveal` |
 | Homepage system | `js/home-c.js` | gsap, SplitText, lenis | `iconHomeC` → `icon/home-c` |
-| Hero loading screen | `js/hero-loader.js` | — (deliberately) | part of the hero SDC; its 28 rows become a Twig loop |
+| Hero loading screen | `js/hero-loader.js` | — (deliberately) | part of the hero SDC; its 16 rows become a Twig loop |
 | Global footer | `js/site-footer.js` | — | `iconFooter` → `icon/site-footer` |
 | News listing (filter + card motion) | `js/news.js` | — | `iconNews` → `icon/news` |
 | Work section (swipe, underline, hover-video) | `js/work.js` | — | `iconWork` → `icon/work` |

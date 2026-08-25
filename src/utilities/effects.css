@@ -11,6 +11,57 @@
     font-style: italic;
   }
 
+  /* The accent line inside a caps masthead — the "& Insights" of both news
+     mastheads, set against the Kumbh 900 line above it.
+
+     UPRIGHT serif, because the italic's slant fights the vertical rhythm of
+     the block it sits in. Weight STATED, not inherited: this lands inside a
+     Kumbh 900 setting and Miller has no 900, so inheriting would ask the
+     browser to synthesise one. Tracking is left inherited — --tracking-caps is
+     only -0.015em, a display tightening that suits a large serif too.
+
+     It carried a `text-transform: none` while the mastheads were uppercased
+     and this was the one line kept as authored; both are sentence case now, so
+     the reset would be dead weight. Re-add it if this is ever used inside a
+     setting that still shouts. */
+  .masthead-accent {
+    font-family: var(--font-serif);
+    font-weight: 700;
+    font-style: normal;
+  }
+
+  /* The invitation arrow — the corner ↳ prefixing the site's standing
+     invitations: the footer's Subscribe and Get in touch, and both homepage
+     More links. Applied as a markup class (like .masthead-accent), promoted
+     here from site-footer.css when the More links became its third and
+     fourth consumers.
+
+     Tinted with currentColor, not a token, so it rides whatever hover its
+     host already has (muted -> ink in the footer, ink -> blue on the More
+     links) with no extra rules. Sized in em so it tracks the host voice.
+
+     Longhand mask properties, -webkit- first: the minifier mangles
+     multi-part mask shorthands and drops the first of a prefixed pair
+     (LESSONS.md). */
+  .invite-arrow::before {
+    content: "";
+    display: inline-block;
+    width: 0.8em;
+    height: 0.8em;
+    margin-right: 0.35em;
+    /* the glyph's corner sits low in its box; nudge it onto the baseline */
+    vertical-align: -0.04em;
+    background-color: currentColor;
+    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 5v10h12'/%3E%3Cpath d='m14 11 4 4-4 4'/%3E%3C/svg%3E");
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 5v10h12'/%3E%3Cpath d='m14 11 4 4-4 4'/%3E%3C/svg%3E");
+    -webkit-mask-size: contain;
+    mask-size: contain;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+    mask-position: center;
+  }
+
   .fluid-heading {
     font-size: var(--heading-1);
     line-height: 1;

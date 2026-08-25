@@ -43,10 +43,24 @@
 .reveal-lines__line {
   display: block;
   overflow: hidden;
-  /* room for ascenders/descenders the tight display leading would clip,
-     taken straight back off so the lockup does not open up */
-  padding-block: 0.14em;
-  margin-block: -0.14em;
+  /* Room for ascenders/descenders the tight display leading (0.82) would
+     otherwise clip, taken straight back off in margin so the lockup does not
+     open up.
+
+     ASYMMETRIC because the two ends are not the same problem. Above, the tall
+     glyph is a cap and 0.14em clears it. Below, the deepest descender the
+     mastheads carry is Miller's sentence-case "g" (the "& Insights" accent) —
+     and the sentence-case leading (--voice-display-lh-sentence, 0.72) shrinks
+     each line box, which pushes that descender further past the box's bottom
+     edge: 0.24em cleared it at 0.82 leading and clipped 1.5px at 0.72
+     (measured both times). 0.30em covers the tight leading with ~4px slack.
+
+     Do not push the bottom much past this without checking the rise: the word
+     waits below the mask at translateY(155%) and the mask must still hide it
+     there. Growing this padding lowers the mask's edge and eats that gap —
+     the pad and the travel move together (see the keyframe note below). */
+  padding-block: 0.14em 0.30em;
+  margin-block: -0.14em -0.30em;
 }
 
 .reveal-lines__word {
@@ -61,8 +75,15 @@
   transition: none;
 }
 
+/* 155%, not 100%: the rest position has to clear the MASK, which is taller
+   than the word by the descender padding above — and translateY is relative
+   to the LINE BOX, which the tight sentence leading shrank, so the same
+   percentage now travels fewer pixels while the pad pushed the mask's edge
+   lower. At 135% the resting glyphs sat 0.1px below the edge (measured);
+   155% restores ~8px of certainty. The extra travel is imperceptible over
+   0.62s. If the pad or the leading move again, re-measure this. */
 .js-animations [data-animate] .reveal-lines__word {
-  transform: translateY(125%);
+  transform: translateY(155%);
   transition: transform 0.62s var(--ease-decelerate) calc(var(--w, 0) * 0.2s);
 }
 

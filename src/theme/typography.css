@@ -49,7 +49,10 @@
      Subscribe / city names / socials. Every one of those carried the same
      literal, so naming it makes a retune one edit and stops the roles
      drifting apart. Keeps growing to a ~2285px viewport, then caps at 3rem.
-     Its companions: medium weight, -0.01em tracking, 1.2 line-height. */
+     Its companions: medium weight, -0.01em tracking, 1.2 line-height — except
+     the TITLES and the More links (work__title, news-card__title, work__more,
+     news__more), which run one step heavier (semibold) so they carry more ink
+     than the running text at the same size. */
   --voice-mid: clamp(1.4rem, 2.1vw, 3rem);
 
   /* The meta voice — the quiet line under the mid one: card categories and
@@ -58,32 +61,40 @@
      repeated across four files. */
   --voice-meta: clamp(1.0625rem, 1.1vw, 1.5rem);
 
+  /* --logo-h — the wordmark's own stepped ladder (mirror of
+     .site-logo__mark; keep the two in step if that ladder ever moves). Still
+     consumed by the news listing's sticky lead card, which pins clear of the
+     fixed wordmark sitting over its column. */
+  --logo-h: 3.5rem;
+
   /* THE DISPLAY VOICE — the big caps mastheads (NEWS & INSIGHTS, WORK, the
      footer's LET'S TALK) and the /news page heading.
-     
-     Sized to the ICON WORDMARK, not to the viewport. It follows the logo's own
-     stepped ladder in site-header.css rather than a vw curve, because the logo
-     does not scale fluidly and a fluid heading beside a stepped mark only
-     matches at one width.
-     
-     The 1.0914 converts logo BOX height to font size so the two CAP HEIGHTS
-     agree, which is what the eye compares: the wordmark's cap is 0.8154 of its
-     SVG box (the "I" runs y 12.73→68.99 of a 69 viewBox) and Kumbh Sans 900's
-     cap is 0.7471 of its em — both measured, not estimated. 0.8154 / 0.7471.
-     
-     Keep --logo-h in step with .site-logo__mark if that ladder ever moves. */
-  --logo-h: 3.5rem;
-  /* ...capped on the narrowest screens, where matching the wordmark is worth
-     less than the words fitting. "& INSIGHTS" is the longest masthead line at
-     ~5.5em, and at 375px it came to 336px in a 327px column — one word wide,
-     so it wrapped and the masthead grew a fourth line. 15vw keeps the longest
-     line inside the column with a little headroom, and because the cap is a
-     min() it stops biting at about 407px, above which the logo match resumes
-     untouched. */
-  --voice-display: min(calc(var(--logo-h) * 1.0914), 15vw);
+
+     ONE curve with the intro statement ("A strategic communications agency for
+     complex change"), and literally the same token: .intro sets its
+     --intro-display from this, so the mastheads read at exactly the
+     statement's scale and the two can never drift apart.
+
+     This replaced a wordmark-derived size, min(--logo-h * 1.0914, 15vw), which
+     matched the logo's CAP HEIGHT — 0.8154 of the mark's SVG box over 0.7471
+     of Kumbh 900's em, both measured. Cap-height parity is a real relationship
+     and the maths was sound, but it tied the mastheads to a four-rung ladder
+     while every other voice on the page grew smoothly, and it left them
+     reading small beside the intro statement.
+
+     The clamp's FLOOR also covers what the old 15vw cap was there for:
+     "& INSIGHTS" is the longest masthead line at ~5.5em, and at 375px this
+     holds it to 2.4rem — tighter than the cap ever allowed — so it still
+     clears a 327px column instead of wrapping to a fourth line. */
+  --voice-display: clamp(2.4rem, 5.6vw, 9rem);
   /* tight: these are stacked two-line mastheads, and at cap-height parity with
      the wordmark the old 0.9 left them looking like separate lines */
   --voice-display-lh: 0.82;
+  /* tighter still for the SENTENCE-CASE mastheads (News / & Insights): with
+     lowercase in play the x-height line leaves more visual air than a caps
+     setting at the same leading, so these close up further. Caps settings
+     (WORK, LET'S TALK) keep the value above. */
+  --voice-display-lh-sentence: 0.72;
 
   /* Weights */
   --font-weight-normal: 400;

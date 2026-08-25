@@ -24,7 +24,11 @@
     translate var(--duration-normal) var(--ease-decelerate);
 }
 
-.quiet-link::before {
+/* The slash lives on ::after, not ::before, purely to leave ::before free for
+   the shared .invite-arrow prefix (effects.css) — an element has only one of
+   each, and a quiet link that is also an invitation needs both pseudos. No
+   visual difference: the slash is absolutely placed either way. */
+.quiet-link::after {
   content: "/";
   position: absolute;
   left: -0.65em;
@@ -39,13 +43,28 @@
   translate: 0.65em 0;
 }
 
-.quiet-link:hover::before,
-.quiet-link:focus-visible::before {
+.quiet-link:hover::after,
+.quiet-link:focus-visible::after {
   opacity: 1;
   transition-delay: 0.15s; /* starts as the word is landing; fade-out has none */
 }
 
+/* ONE PREFIX PER LINK. A quiet link carrying the invitation arrow drops the
+   slash: two marks racing in from the left of the same word is noise, and the
+   arrow is always present where the slash only appears on hover. The nudge
+   goes with it — the word slid right to MEET the slash, and there is nothing
+   to meet. Colour still shifts to accent blue, and the arrow follows via
+   currentColor. Same decision the two More links took when they gained it. */
+.quiet-link.invite-arrow::after {
+  content: none;
+}
+
+.quiet-link.invite-arrow:hover,
+.quiet-link.invite-arrow:focus-visible {
+  translate: none;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .quiet-link,
-  .quiet-link::before { transition: none; }
+  .quiet-link::after { transition: none; }
 }
