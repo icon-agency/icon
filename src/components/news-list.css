@@ -83,6 +83,121 @@
   }
 }
 
+/* ---- the lead story ------------------------------------------------------
+   The newest story runs BIG: its square tile fills the whole left column with
+   the title + meta underneath, and it STICKS — holding position while the
+   three stories beside it scroll past, releasing only once the third has
+   caught up to the bottom of its column.
+
+   The lead is the FIRST VISIBLE item, not a flagged one, so filtering
+   re-leads on whatever is newest in that category. No per-story field to set,
+   and nothing to go stale as stories age out. (Drupal: this stays a pure
+   display rule on the Views list — no `promoted` flag, no second view mode.)
+
+   THE SPAN IS THE SCROLL TRACK. `position: sticky` travels inside its nearest
+   block-container ancestor, so the <li>'s grid area — three rows tall — is
+   exactly the distance the card is allowed to hold for. Stretching the item
+   and sticking the CARD inside it is what buys the effect; sticking the item
+   itself would pin the track along with its passenger and nothing would move.
+
+   Two guards decide whether any of it runs:
+
+   1. `min-width: 1024px`. "Big" only means anything next to a SPLIT card. In
+      the 768–1024 band the column is still under the card's own 26rem
+      container threshold, so every card already stacks: the lead would be no
+      taller than its neighbours while claiming rows, opening a hole under
+      itself. lg is the project's desktop cutoff anyway.
+   2. Enough stories to fill the column beside it — three where they exist,
+      falling back to two, and to the plain pair grid below that. Awards (2
+      stories) takes the last of those; Agency and Insights (3 each) get a
+      two-high lead rather than losing it.
+
+   Parity is why three-up is the tidier number: a lead plus three consumes
+   four slots — an even count — so the base odd-left/even-right pairing
+   resumes at the 5th story completely untouched, and so does the stub carry
+   rule above (an odd last story is alone in the left column, which is exactly
+   what that rule already assumes). Only the two-high fallback has to correct
+   anything, and only because its 3rd story ends up on the right. */
+
+@media (min-width: 1024px) {
+  /* ---- the lead card, common to both spans ---- */
+
+  .news-list:has(> .news-list__item:nth-child(3 of .news-list__item:not([hidden])))
+    > .news-list__item:nth-child(1 of .news-list__item:not([hidden])) {
+    padding-right: calc(var(--space-md) / 2);
+    padding-left: 0;
+  }
+
+  /* Drop the tile|text split the card's own container query would apply at
+     this width, and re-cluster the body under the tile: `space-between` sends
+     the meta to the tile's BASELINE, which has no meaning once the tile sits
+     above the text rather than beside it.
+
+     The pin clears the fixed wordmark, which sits over this very column —
+     2rem down the page, --logo-h tall (the token follows the mark's stepped
+     ladder, so this offset re-derives instead of drifting), plus a gap.
+
+     Caveat worth knowing: on a short viewport a full-column square plus its
+     headline can stand taller than the screen, and a sticky box taller than
+     the scrollport pins from its top — so the meta line waits below the fold
+     until the card releases. Reducing the square to buy the headroom would
+     cost the thing that makes this a lead, so it stays. */
+  .news-list:has(> .news-list__item:nth-child(3 of .news-list__item:not([hidden])))
+    > .news-list__item:nth-child(1 of .news-list__item:not([hidden])) .news-card {
+    grid-template-columns: 1fr;
+    position: sticky;
+    top: calc(2rem + var(--logo-h) + var(--space-sm));
+  }
+
+  .news-list:has(> .news-list__item:nth-child(3 of .news-list__item:not([hidden])))
+    > .news-list__item:nth-child(1 of .news-list__item:not([hidden])) .news-card__body {
+    justify-content: flex-start;
+  }
+
+  /* ---- three beside the lead (4+ visible) ---- */
+
+  .news-list:has(> .news-list__item:nth-child(4 of .news-list__item:not([hidden])))
+    > .news-list__item:nth-child(1 of .news-list__item:not([hidden])) {
+    grid-row: span 3;
+  }
+
+  /* Stories 2–4 all share the right column. Only the 3rd actually needs
+     correcting (odd, so the base rule would gutter it as a left), but naming
+     all three keeps the column's membership readable rather than implied. */
+  .news-list:has(> .news-list__item:nth-child(4 of .news-list__item:not([hidden])))
+    > .news-list__item:nth-child(2 of .news-list__item:not([hidden])),
+  .news-list:has(> .news-list__item:nth-child(4 of .news-list__item:not([hidden])))
+    > .news-list__item:nth-child(3 of .news-list__item:not([hidden])),
+  .news-list:has(> .news-list__item:nth-child(4 of .news-list__item:not([hidden])))
+    > .news-list__item:nth-child(4 of .news-list__item:not([hidden])) {
+    padding-left: calc(var(--space-md) / 2);
+    padding-right: 0;
+  }
+
+  /* ---- two beside the lead (exactly 3 visible) ---- */
+
+  .news-list:has(> .news-list__item:nth-child(3 of .news-list__item:not([hidden]))):not(:has(> .news-list__item:nth-child(4 of .news-list__item:not([hidden]))))
+    > .news-list__item:nth-child(1 of .news-list__item:not([hidden])) {
+    grid-row: span 2;
+  }
+
+  .news-list:has(> .news-list__item:nth-child(3 of .news-list__item:not([hidden]))):not(:has(> .news-list__item:nth-child(4 of .news-list__item:not([hidden]))))
+    > .news-list__item:nth-child(2 of .news-list__item:not([hidden])),
+  .news-list:has(> .news-list__item:nth-child(3 of .news-list__item:not([hidden]))):not(:has(> .news-list__item:nth-child(4 of .news-list__item:not([hidden]))))
+    > .news-list__item:nth-child(3 of .news-list__item:not([hidden])) {
+    padding-left: calc(var(--space-md) / 2);
+    padding-right: 0;
+  }
+
+  /* The 3rd story is both odd and last, so the stub rule above would carry a
+     line off its right edge — but it sits in the RIGHT column here, where the
+     line already ran the full width. */
+  .news-list:has(> .news-list__item:nth-child(3 of .news-list__item:not([hidden]))):not(:has(> .news-list__item:nth-child(4 of .news-list__item:not([hidden]))))
+    > .news-list__item:nth-child(3 of .news-list__item:not([hidden]))::after {
+    content: none;
+  }
+}
+
 /* Scroll-velocity lean — the homepage card behaviour, ported without GSAP:
    js/news.js writes ONE --nl-lean on the list per frame and every card
    inherits it. The hook lives here, not in the component: on the homepage
