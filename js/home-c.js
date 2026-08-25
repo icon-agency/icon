@@ -3,6 +3,7 @@
  *   2. Hero load sequence: masked "Make what matters" reveal, image zoom-settle,
  *      PiP fade-in (CSS transitions keyed off .is-ready).
  *   3. Image clip + scale reveals on scroll-in (IntersectionObserver → .is-revealed).
+ *   3g. Clients logo marquee: the strip's drift + drag, shared STRIP_SPEED.
  *   4. GSAP SplitText line-mask text reveals — a per-element timeline fired by an
  *      IntersectionObserver (no ScrollTrigger, matching the project's approach).
  *
@@ -13,6 +14,10 @@
   "use strict";
 
   var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  // One drift speed for every hand-draggable strip on the page — the intro
+  // filmstrip (3d) and the clients logo marquee (3g) read this same number,
+  // so "they scroll at the same pace" is true by construction, not by tuning.
+  var STRIP_SPEED = 55; // px/s
   var hasIO = "IntersectionObserver" in window;
   var gsapOk = typeof window.gsap !== "undefined";
   var splitOk = gsapOk && typeof window.SplitText !== "undefined";
@@ -665,7 +670,7 @@
       window.addEventListener("resize", measure, { passive: true });
 
       var pos = 0;         // marquee position, px
-      var SPEED = 55;      // autoplay px/s
+      var SPEED = STRIP_SPEED; // autoplay px/s — shared with the clients marquee
       var vel = 0;         // momentum px/s after a drag
       var lean = 0;        // smoothed drag tilt
       var stalled = false; // hover stall
@@ -900,6 +905,119 @@
       });
     });
   }
+
+  // ---- 3g. Clients logo marquee — counter-drifting, mirror-linked rows ---
+  // The intro filmstrip's drift + drag (3d: same STRIP_SPEED, same 1:1 drag,
+  // same decaying momentum), but the two rows are ONE mechanism, not two:
+  // a single shared phase drives both, row 1 reading it straight and row 2
+  // negated (the .clients__scroller--reverse polarity). Everything the user
+  // asked of the pair falls out of that one number:
+  //   · at rest the rows counter-drift — one phase, two signs;
+  //   · dragging EITHER row moves the other identically, mirrored, live —
+  //     they cannot even drift out of sync, because there is nothing to sync;
+  //   · a fling re-points the shared drift, so both rows swap direction
+  //     together (each still leading with its own sign).
+  // Deliberately NOT the strip's hover-stall — pause-on-hover was removed
+  // from this marquee by request (docs/design-system-plan.md) — nor its
+  // card-tilt machinery. The CSS keyframes are the no-JS/no-gsap fallback
+  // (row 2's reverse comes from the same --reverse class there), switched
+  // off via .is-js-marquee so the two mechanisms never both run.
+  // Reduced motion: no drift; drag works, and the mirror-link stands — it
+  // is user-initiated motion, the same footing as the drag itself.
+  (function () {
+    var scrollers = Array.prototype.slice.call(document.querySelectorAll(".clients__scroller"));
+    if (!scrollers.length || !gsapOk) return;
+
+    var pos = 0;   // THE shared phase — the only moving part
+    var vel = 0;
+    var dir = 1;
+    var draggingOn = null; // the scroller currently held, if any
+
+    var rows = [];
+    scrollers.forEach(function (scroller) {
+      var tracks = Array.prototype.slice.call(scroller.querySelectorAll(".clients__track"));
+      if (tracks.length !== 2) return;
+      scroller.classList.add("is-js-marquee");
+      var row = {
+        el: scroller,
+        tracks: tracks,
+        // row 2 carries --reverse: it reads the phase negated, in the CSS
+        // fallback and here alike, so the two mechanisms agree about it
+        polarity: scroller.classList.contains("clients__scroller--reverse") ? -1 : 1,
+        loop: 0
+      };
+      var measure = function () { row.loop = tracks[0].offsetWidth; };
+      measure();
+      window.addEventListener("resize", measure, { passive: true });
+      rows.push(row);
+    });
+    if (!rows.length) return;
+
+    window.gsap.ticker.add(function (time, deltaMS) {
+      var dt = deltaMS / 1000;
+      if (!draggingOn) {
+        var auto = reduce ? 0 : STRIP_SPEED * dir;
+        pos += (auto + vel) * dt;
+        vel *= Math.pow(0.9, dt * 60); // same decay as the strip
+        if (Math.abs(vel) < 1) vel = 0;
+      }
+      for (var i = 0; i < rows.length; i++) {
+        var r = rows[i];
+        if (!(r.loop > 0)) continue;
+        var local = ((r.polarity * pos) % r.loop + r.loop) % r.loop;
+        window.gsap.set(r.tracks[0], { x: -local });
+        window.gsap.set(r.tracks[1], { x: -local });
+      }
+    });
+
+    rows.forEach(function (row) {
+      var scroller = row.el;
+      var startX = 0, startPos = 0, lastX = 0, lastT = 0, moved = 0, dragVel = 0;
+      scroller.addEventListener("pointerdown", function (e) {
+        draggingOn = scroller;
+        moved = 0;
+        startX = lastX = e.clientX;
+        startPos = pos;
+        lastT = performance.now();
+        dragVel = 0;
+        vel = 0;
+        // both rows are moving under this one gesture — show it on both
+        rows.forEach(function (r) { r.el.classList.add("is-dragging"); });
+        try { scroller.setPointerCapture(e.pointerId); } catch (err) {}
+      });
+      scroller.addEventListener("pointermove", function (e) {
+        if (draggingOn !== scroller) return;
+        var now = performance.now();
+        var dx = e.clientX - lastX;
+        moved += Math.abs(dx);
+        // 1:1 under the hand that is dragging; the other row gets the
+        // negation through its polarity at render
+        pos = startPos - row.polarity * (e.clientX - startX);
+        if (now - lastT > 0) dragVel = (-row.polarity * dx) / ((now - lastT) / 1000);
+        lastX = e.clientX;
+        lastT = now;
+      });
+      var endDrag = function () {
+        if (draggingOn !== scroller) return;
+        draggingOn = null;
+        rows.forEach(function (r) { r.el.classList.remove("is-dragging"); });
+        vel = window.gsap.utils.clamp(-2200, 2200, dragVel); // momentum under reduce too, like the strip
+        // THE DRIFT FOLLOWS THE DRAG — in shared-phase terms, so both rows
+        // re-point together, each still reading its own sign. Velocity for a
+        // real fling, net displacement for a slow carry, a tap changes
+        // nothing.
+        if (Math.abs(vel) > 40) dir = vel > 0 ? 1 : -1;
+        else if (Math.abs(pos - startPos) > 6) dir = pos > startPos ? 1 : -1;
+        dragVel = 0;
+      };
+      scroller.addEventListener("pointerup", endDrag);
+      scroller.addEventListener("pointercancel", endDrag);
+      // a real drag must not land as a click if these cards ever become links
+      scroller.addEventListener("click", function (e) {
+        if (moved > 6) { e.preventDefault(); e.stopPropagation(); }
+      }, true);
+    });
+  })();
 
   // ---- 4. SplitText line-mask text reveals -------------------------------
   var texts = Array.prototype.slice.call(document.querySelectorAll("[data-reveal-text]"));

@@ -43,8 +43,16 @@ The homepage's choreography lives in **three** files:
   crop-zoom image reveals via IO (3) · word-cascade text reveals
   (`[data-reveal-words]`, 3c) · the intro filmstrip — GSAP-ticker marquee,
   drag with momentum, hover-stall, DRAG badge (3d) · scroll-velocity card lean
-  (3e) · cursor tilt on work/news cards (3f) · GSAP **SplitText line-mask**
-  text reveals, fired per element by IO — no ScrollTrigger (4).
+  (3e) · cursor tilt on work/news cards (3f) · the clients logo marquee —
+  two counter-drifting rows on ONE shared phase (row 2 reads it negated), so
+  dragging either row moves both, mirrored, and a fling re-points the pair
+  together; the filmstrip's drift and drag constants via the shared
+  `STRIP_SPEED`, no hover-stall (removed by request), CSS keyframes kept as
+  the no-JS/no-GSAP fallback — row 2's reverse from the same `--reverse`
+  class — and switched off via `.is-js-marquee` so the two mechanisms never
+  both run (3g) · GSAP
+  **SplitText line-mask** text reveals, fired per element by IO — no
+  ScrollTrigger (4).
 - **`src/utilities/home-c.css`** — the reveal-fx primitives the JS toggles:
   `.media-reveal` (clip-path inset growing from the bottom-left corner + a
   zoom-settle; the transform stays on the *media*, never the observed frame —

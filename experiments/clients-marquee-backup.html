@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Backup — Clients marquee (as shipped)</title>
+    <meta name="robots" content="noindex" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Kumbh+Sans:wght@400..900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://use.typekit.net/bhv7yrj.css" />
+    <link rel="stylesheet" href="../css/main.css" />
+
+    <!-- BACKUP, not an exploration. This is the clients marquee EXACTLY as it
+         shipped on templates/homeC.html on 25 Aug 2026, kept so the rebuild
+         that replaces it has something to return to and to be judged against.
+
+         FROZEN ON PURPOSE. Every class is re-prefixed bk- and every rule is
+         inlined below, so nothing here resolves against the live .clients
+         component: rewrite or delete that and this page is unaffected. It
+         still links css/main.css, but only for the tokens, reset and fonts —
+         which is what keeps it looking like the site rather than a bare page.
+
+         The one thing NOT copied is the rule-draw wiring: on the real page
+         js/reveal.js adds .is-drawn to flip --rule-draw 0 -> 1 and grow the
+         two hairlines from the left. There is no JS here, so the markup
+         carries .is-drawn from the start and the rules are simply present.
+         Everything else — the three rows, the opposite middle direction, the
+         80s loop, the serif alternation, the reduced-motion fallback — is
+         verbatim. -->
+    <style>
+      /* ---- page chrome ---- */
+      .bk-page {
+        min-height: 100svh;
+        background: var(--color-background);
+        color: var(--color-icon-black);
+        padding-block: clamp(3rem, 8vw, 7rem);
+      }
+
+      .bk-note {
+        max-width: 46rem;
+        margin: 0 auto clamp(2.5rem, 6vw, 5rem);
+        padding-inline: clamp(1rem, 3vw, 3rem);
+      }
+
+      .bk-note h1 {
+        margin: 0 0 0.6rem;
+        font-size: clamp(1.5rem, 2.4vw, 2.25rem);
+        font-weight: var(--font-weight-semibold);
+        letter-spacing: -0.01em;
+        line-height: 1.15;
+      }
+
+      .bk-note p {
+        margin: 0 0 0.75rem;
+        font-size: var(--text-base);
+        line-height: 1.6;
+        color: var(--color-icon-grey);
+      }
+
+      .bk-note code {
+        font-size: 0.9em;
+        padding: 0.1em 0.35em;
+        border-radius: var(--radius-icon);
+        background: var(--color-secondary);
+      }
+
+      /* ==================================================================
+       * The component, verbatim from src/utilities/home-c.css (25 Aug 2026),
+       * selectors re-prefixed bk- so it cannot collide with the live one.
+       * ================================================================== */
+
+      .bk-clients {
+        /* Full-bleed out of the container so the marquee runs edge to edge. */
+        position: relative;
+        width: 100vw;
+        margin-inline: calc(50% - 50vw);
+        padding-block: var(--space-xl);
+        /* Stack the three marquee rows, tightly. */
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-2xs);
+      }
+      
+      /* Top + bottom rules — inset to the content margins (not full-bleed like the
+         marquee). On --rule like every other hairline on the site: these were the
+         one exception, painted in full icon black, which is why they read heavier
+         than the news and footer lines sitting a screen away. */
+      .bk-clients::before,
+      .bk-clients::after {
+        content: "";
+        position: absolute;
+        left: var(--container-pad);
+        right: var(--container-pad);
+        height: var(--rule-weight);
+        background: var(--rule);
+        /* drawn left-to-right on reveal, like every other rule — see rules.css */
+        transform: scaleX(var(--rule-draw, 1));
+        transform-origin: left center;
+        transition: transform var(--rule-draw-dur) var(--ease-decelerate);
+      }
+      .bk-clients::before { top: 0; }
+      .bk-clients::after { bottom: 0; }
+      
+      /* Auto-scrolling client marquee. Two identical tracks abut and translate by 100%;
+       * as the first exits the second fills it — a seamless loop. Three rows: the middle
+       * runs left, the top + bottom run the opposite way (--reverse). Runs edge to edge
+       * (no fade) and never pauses. */
+      .bk-clients__scroller {
+        display: flex;
+        width: 100%;
+        overflow: hidden;
+      }
+      
+      .bk-clients__track {
+        display: flex;
+        flex: 0 0 auto;
+        align-items: center;
+        gap: var(--space-lg);
+        margin: 0;
+        padding: 0 var(--space-lg) 0 0;
+        list-style: none;
+        animation: bk-clients-scroll 80s linear infinite;
+      }
+      
+      /* Opposite direction for the top + bottom rows. */
+      .bk-clients__scroller--reverse .bk-clients__track {
+        animation-direction: reverse;
+      }
+      
+      .bk-client {
+        flex: 0 0 auto;
+        white-space: nowrap;
+        /* Custom fluid value: oversized display marquee. Raised cap so it keeps growing
+           on wide screens (~48px @1440 → 72px by ~2120px). */
+        font-size: clamp(1.5rem, 3.4vw, 5.5rem); /* keeps growing to ~2590px */
+        font-weight: var(--font-weight-medium);
+        line-height: 1.3; /* enough leading that the italic serif descenders (Polytechnic's y, etc.) aren't clipped by the scroller's overflow:hidden */
+        letter-spacing: -0.01em;
+        color: var(--color-icon-black);
+        text-wrap: pretty;
+      }
+      
+      /* Alternate every second client into Miller Text italic — a mixed-typeface
+         marquee that echoes the brand's serif accents (the "Our expertise" label,
+         "matters", "one"). Applied per-track, so the serif/sans rhythm lines up in
+         both the real and the aria-hidden duplicate track. NB: each track holds an
+         ODD number of clients (11), so the rhythm doubles up once at the loop seam;
+         even out the count for a perfectly continuous A-B-A-B. */
+      .bk-client:nth-child(even) {
+        font-family: var(--font-serif);
+        font-style: italic;
+      }
+      
+      @keyframes bk-clients-scroll {
+        to { transform: translateX(-100%); }
+      }
+      
+      
+      
+      @media (prefers-reduced-motion: reduce) {
+        .bk-clients__track {
+          animation: none;
+        }
+        .bk-clients__scroller {
+          overflow-x: auto;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="bk-page">
+      <div class="bk-note">
+        <h1>Clients marquee — as shipped</h1>
+        <p>
+          A frozen copy of the <code>.clients</code> section from
+          <code>templates/homeC.html</code>, taken 25&nbsp;Aug&nbsp;2026 before the
+          scroller was rebuilt. Markup and CSS are verbatim; only the class
+          prefix changed (<code>bk-</code>), so this page keeps working no matter
+          what happens to the live component.
+        </p>
+        <p>
+          Three rows, the middle running opposite the outer two, an 80s linear
+          loop over two abutting tracks, every second client set in Miller Text
+          italic, and a pair of inset hairlines. No pause control — a known
+          WCAG&nbsp;2.2.2 exception recorded in
+          <code>docs/accessibility-checklist.md</code>.
+        </p>
+      </div>
+
+      <section class="bk-clients is-drawn" data-rule-host aria-label="Selected clients">
+                <!-- Top row — scrolls right (opposite the middle) -->
+                <div class="bk-clients__scroller bk-clients__scroller--reverse">
+                  <ul class="bk-clients__track">
+                    <li class="bk-client">Yarra Trams</li>
+                    <li class="bk-client">Alcohol and Drug Foundation</li>
+                    <li class="bk-client">KMD Brands</li>
+                    <li class="bk-client">Allied Health Professions Australia</li>
+                    <li class="bk-client">Schneider Electric</li>
+                    <li class="bk-client">Anti-corruption Commission (IBAC)</li>
+                    <li class="bk-client">Melbourne Polytechnic</li>
+                    <li class="bk-client">Royal Life Saving</li>
+                    <li class="bk-client">Meta</li>
+                    <li class="bk-client">Australian Space Agency</li>
+                    <li class="bk-client">Department of Finance</li>
+                    <li class="bk-client">NDIS</li>
+                  </ul>
+                  <ul class="bk-clients__track" aria-hidden="true">
+                    <li class="bk-client">Yarra Trams</li>
+                    <li class="bk-client">Alcohol and Drug Foundation</li>
+                    <li class="bk-client">KMD Brands</li>
+                    <li class="bk-client">Allied Health Professions Australia</li>
+                    <li class="bk-client">Schneider Electric</li>
+                    <li class="bk-client">Anti-corruption Commission (IBAC)</li>
+                    <li class="bk-client">Melbourne Polytechnic</li>
+                    <li class="bk-client">Royal Life Saving</li>
+                    <li class="bk-client">Meta</li>
+                    <li class="bk-client">Australian Space Agency</li>
+                    <li class="bk-client">Department of Finance</li>
+                    <li class="bk-client">NDIS</li>
+                  </ul>
+                </div>
+                <!-- Middle row — scrolls left -->
+                <div class="bk-clients__scroller">
+                  <ul class="bk-clients__track">
+                    <li class="bk-client">Meta</li>
+                    <li class="bk-client">Australian Space Agency</li>
+                    <li class="bk-client">Department of Finance</li>
+                    <li class="bk-client">NDIS</li>
+                    <li class="bk-client">Yarra Trams</li>
+                    <li class="bk-client">Alcohol and Drug Foundation</li>
+                    <li class="bk-client">KMD Brands</li>
+                    <li class="bk-client">Allied Health Professions Australia</li>
+                    <li class="bk-client">Schneider Electric</li>
+                    <li class="bk-client">Anti-corruption Commission (IBAC)</li>
+                    <li class="bk-client">Melbourne Polytechnic</li>
+                    <li class="bk-client">Royal Life Saving</li>
+                  </ul>
+                  <ul class="bk-clients__track" aria-hidden="true">
+                    <li class="bk-client">Meta</li>
+                    <li class="bk-client">Australian Space Agency</li>
+                    <li class="bk-client">Department of Finance</li>
+                    <li class="bk-client">NDIS</li>
+                    <li class="bk-client">Yarra Trams</li>
+                    <li class="bk-client">Alcohol and Drug Foundation</li>
+                    <li class="bk-client">KMD Brands</li>
+                    <li class="bk-client">Allied Health Professions Australia</li>
+                    <li class="bk-client">Schneider Electric</li>
+                    <li class="bk-client">Anti-corruption Commission (IBAC)</li>
+                    <li class="bk-client">Melbourne Polytechnic</li>
+                    <li class="bk-client">Royal Life Saving</li>
+                  </ul>
+                </div>
+                <!-- Bottom row — scrolls right (opposite the middle) -->
+                <div class="bk-clients__scroller bk-clients__scroller--reverse">
+                  <ul class="bk-clients__track">
+                    <li class="bk-client">Schneider Electric</li>
+                    <li class="bk-client">Anti-corruption Commission (IBAC)</li>
+                    <li class="bk-client">Melbourne Polytechnic</li>
+                    <li class="bk-client">Royal Life Saving</li>
+                    <li class="bk-client">Meta</li>
+                    <li class="bk-client">Australian Space Agency</li>
+                    <li class="bk-client">Department of Finance</li>
+                    <li class="bk-client">NDIS</li>
+                    <li class="bk-client">Yarra Trams</li>
+                    <li class="bk-client">Alcohol and Drug Foundation</li>
+                    <li class="bk-client">KMD Brands</li>
+                    <li class="bk-client">Allied Health Professions Australia</li>
+                  </ul>
+                  <ul class="bk-clients__track" aria-hidden="true">
+                    <li class="bk-client">Schneider Electric</li>
+                    <li class="bk-client">Anti-corruption Commission (IBAC)</li>
+                    <li class="bk-client">Melbourne Polytechnic</li>
+                    <li class="bk-client">Royal Life Saving</li>
+                    <li class="bk-client">Meta</li>
+                    <li class="bk-client">Australian Space Agency</li>
+                    <li class="bk-client">Department of Finance</li>
+                    <li class="bk-client">NDIS</li>
+                    <li class="bk-client">Yarra Trams</li>
+                    <li class="bk-client">Alcohol and Drug Foundation</li>
+                    <li class="bk-client">KMD Brands</li>
+                    <li class="bk-client">Allied Health Professions Australia</li>
+                  </ul>
+                </div>
+              </section>
+    </main>
+  </body>
+</html>

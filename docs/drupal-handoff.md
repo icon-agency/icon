@@ -69,6 +69,13 @@ Every component note should include:
 
 The CSS doesn't change shape across the port — only the markup gets re-templated as Twig + SDC schemas.
 
+## Asset conventions
+
+Client logo SVGs follow one upload rule — the component owns colour and
+sizing, the file owns clean geometry — documented in
+`assets/client-logos/README.md` beside the files themselves. The same rule
+becomes the `client` media type's editor guidance at port time.
+
 ## Related docs
 - `drupal-mapping-pattern.md` — the three-piece SDC pattern with a worked example.
 - `field-naming.md` — BEM-prefixed field machine names.

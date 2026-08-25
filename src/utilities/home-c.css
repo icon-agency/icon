@@ -1225,8 +1225,41 @@ html:not(.js-animations) .intro__expertise-list li:first-child a {
 }
 
 /* ======================================================================
- * Clients — big wrapping list
+ * Clients — logo card marquee (zypsy.com reference)
  * ==================================================================== */
+
+/* Two rows of uniform cards — the client list's first half over its second
+ * — pale mono ground, each SVG mark centred inside its own padding, each
+ * row counter-drifting at the intro filmstrip's
+ * own pace and independently draggable like it (js/home-c.js 3g reads the
+ * same STRIP_SPEED and momentum constants as 3d). The rows are ONE shared
+ * phase read with opposite signs: dragging either moves both, mirrored. The CSS keyframe below is the
+ * no-JS / no-gsap fallback on the same two-track geometry (two identical
+ * tracks abut; the travel is exactly one track width, so the seam is
+ * invisible either way).
+ *
+ * Replaces the three-row mixed-serif TEXT marquee, which is archived
+ * verbatim (markup + CSS, bk- prefixed) in
+ * experiments/clients-marquee-backup.html — judge the two side by side
+ * there. The hairline pair and [data-rule-host] wiring went with it: the
+ * cards structure the band on their own, the way the reference does.
+ *
+ * THE LOGOS ARE FORCED MONO IN CSS, and this is load-bearing, not taste:
+ * the source SVGs arrive in every brand colour there is, and two of them
+ * (CES Victoria, MARI Group) are filled WHITE — invisible on this page
+ * without the filter. brightness(0) flattens any fill, white included, to
+ * ink; the dark and blue themes add invert(1) to flip it light, and the
+ * card ground is a color-mix of --icon-black so it re-themes on the same
+ * token. Do not "fix" a logo by editing its file — new SVGs drop in as
+ * exported.
+ *
+ * Still no pause control — the WCAG 2.2.2 exception recorded in
+ * docs/accessibility-checklist.md carries over from the text marquee.
+ * Reduced motion: the track stands still and the row becomes an ordinary
+ * horizontal scroller.
+ *
+ * Drupal: SDC `clients`; one media field per client (svg + name), the
+ * duplicate track emitted by the template loop, aria-hidden. */
 
 .clients {
   /* Full-bleed out of the container so the marquee runs edge to edge. */
@@ -1234,93 +1267,114 @@ html:not(.js-animations) .intro__expertise-list li:first-child a {
   width: 100vw;
   margin-inline: calc(50% - 50vw);
   padding-block: var(--space-xl);
-  /* Stack the three marquee rows, tightly. */
+  overflow: hidden;
+  /* stack the two rows on the same gutter the cards use, so the wall reads
+     as one uniform grid drifting in layers */
   display: flex;
   flex-direction: column;
   gap: var(--space-2xs);
 }
 
-/* Top + bottom rules — inset to the content margins (not full-bleed like the
-   marquee). On --rule like every other hairline on the site: these were the
-   one exception, painted in full icon black, which is why they read heavier
-   than the news and footer lines sitting a screen away. */
-.clients::before,
-.clients::after {
-  content: "";
-  position: absolute;
-  left: var(--container-pad);
-  right: var(--container-pad);
-  height: var(--rule-weight);
-  background: var(--rule);
-  /* drawn left-to-right on reveal, like every other rule — see rules.css */
-  transform: scaleX(var(--rule-draw, 1));
-  transform-origin: left center;
-  transition: transform var(--rule-draw-dur) var(--ease-decelerate);
-}
-.clients::before { top: 0; }
-.clients::after { bottom: 0; }
-
-/* Auto-scrolling client marquee. Two identical tracks abut and translate by 100%;
- * as the first exits the second fills it — a seamless loop. Three rows: the middle
- * runs left, the top + bottom run the opposite way (--reverse). Runs edge to edge
- * (no fade) and never pauses. */
 .clients__scroller {
   display: flex;
   width: 100%;
   overflow: hidden;
+  /* draggable (js/home-c.js 3g) — keep vertical page scroll on touch */
+  touch-action: pan-y;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.clients__scroller.is-js-marquee { cursor: grab; }
+.clients__scroller.is-dragging { cursor: grabbing; }
+
+/* Row 2 runs the other way — in the CSS fallback via animation-direction,
+   and in the JS engine via the same class read as a polarity (home-c.js 3g),
+   so both mechanisms agree about which row is which. */
+.clients__scroller--reverse .clients__track {
+  animation-direction: reverse;
+}
+
+/* The engine owns the motion the moment it binds — the keyframe below is the
+   no-JS / no-gsap fallback, and the two must never both run (same rule as
+   the hero parallax's CSS/JS split). */
+.clients__scroller.is-js-marquee .clients__track {
+  animation: none;
 }
 
 .clients__track {
   display: flex;
   flex: 0 0 auto;
   align-items: center;
-  gap: var(--space-lg);
+  gap: var(--space-2xs);
   margin: 0;
-  padding: 0 var(--space-lg) 0 0;
+  /* the gap BETWEEN the two tracks, so the loop seam keeps the rhythm */
+  padding: 0 var(--space-2xs) 0 0;
   list-style: none;
-  animation: clients-scroll 80s linear infinite;
+  animation: clients-scroll 65s linear infinite;
 }
 
-/* Opposite direction for the top + bottom rows. */
-.clients__scroller--reverse .clients__track {
-  animation-direction: reverse;
-}
-
+/* The card: ~2:1, sized from one height so the row can never rag.
+   NB the wrap constraint: a row's single track must stay WIDER than any
+   viewport, or the two-track loop shows a gap. Nine cards at this sizing
+   clear 4xl (2560px) by ~4% — if the split ever goes below nine a side, or
+   cards shrink, re-check that margin. */
 .client {
   flex: 0 0 auto;
-  white-space: nowrap;
-  /* Custom fluid value: oversized display marquee. Raised cap so it keeps growing
-     on wide screens (~48px @1440 → 72px by ~2120px). */
-  font-size: clamp(1.5rem, 3.4vw, 5.5rem); /* keeps growing to ~2590px */
-  font-weight: var(--font-weight-medium);
-  line-height: 1.3; /* enough leading that the italic serif descenders (Polytechnic's y, etc.) aren't clipped by the scroller's overflow:hidden */
-  letter-spacing: -0.01em;
-  color: var(--color-icon-black);
-  text-wrap: pretty;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  --client-card-h: clamp(4.5rem, 7vw, 8.5rem);
+  height: var(--client-card-h);
+  width: calc(var(--client-card-h) * 2.05);
+  border-radius: var(--radius-icon);
+  /* the pale ground — mixed from the ink token, so dark/blue themes get the
+     same fraction of their own (light) ink instead of a hole. 4%, halved
+     from the original 8% (user call, Aug 2026): quieter cards, more page. */
+  background: color-mix(in srgb, var(--color-icon-black) 4%, transparent);
 }
 
-/* Alternate every second client into Miller Text italic — a mixed-typeface
-   marquee that echoes the brand's serif accents (the "Our expertise" label,
-   "matters", "one"). Applied per-track, so the serif/sans rhythm lines up in
-   both the real and the aria-hidden duplicate track. NB: each track holds an
-   ODD number of clients (11), so the rhythm doubles up once at the loop seam;
-   even out the count for a perfectly continuous A-B-A-B. */
-.client:nth-child(even) {
-  font-family: var(--font-serif);
-  font-style: italic;
+/* Centred mark, breathing room on every side. A FIXED box + object-fit,
+   deliberately not max-bounds: max-width/max-height only cap, they never
+   scale UP, so a logo exported with small unit numbers (MoAD's 50x15
+   viewBox, San Churro's 31x31) rendered at its intrinsic pixel size — a
+   stamp in the corner of the card — while big-numbered exports (Meta's
+   948) scaled down to fit. A fixed box letterboxes every mark to the same
+   stage regardless of the numbers in its file: width rules the wide
+   wordmarks, height the square and portrait marks, each at its own aspect
+   ratio. This is what makes the viewBox's SCALE genuinely irrelevant to
+   the upload rule (assets/client-logos/README.md) — only its crop matters. */
+.client__logo {
+  /* 72%/52%, raised from 62%/46%: width for the Australian Government crest
+     lockups (DCCEEW, DSS run ~4:1 with fine text that needs the pixels to
+     read), height for the square/portrait marks small at equal bounds. */
+  width: 72%;
+  height: 52%;
+  object-fit: contain;
+  filter: brightness(0); /* any brand colour -> ink (see the header note) */
+  /* the strip is pointer-dragged; a native image ghost-drag would steal it */
+  -webkit-user-drag: none;
+  user-drag: none;
+}
+
+.dark .client__logo,
+.theme-blue .client__logo {
+  filter: brightness(0) invert(1); /* ink -> light on the dark grounds */
 }
 
 @keyframes clients-scroll {
   to { transform: translateX(-100%); }
 }
 
-
-
 @media (prefers-reduced-motion: reduce) {
   .clients__track {
     animation: none;
   }
-  .clients__scroller {
+  /* native horizontal scroll as the fallback interaction — but only while
+     the CSS side owns the row; once the JS engine binds, drag is the
+     interaction (mirroring the intro strip under reduce) and a live
+     scrollbar would fight the transform. */
+  .clients__scroller:not(.is-js-marquee) {
     overflow-x: auto;
   }
 }

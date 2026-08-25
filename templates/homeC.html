@@ -362,98 +362,64 @@
       <!-- Each track holds an EVEN number of clients (12) so the nth-child(even)
            Miller-italic alternation stays continuous across the loop seam — an odd
            count doubles up two same-style names where the tracks meet. -->
-      <section class="clients" data-rule-host aria-label="Selected clients">
-        <!-- Top row — scrolls right (opposite the middle) -->
-        <div class="clients__scroller clients__scroller--reverse">
-          <ul class="clients__track">
-            <li class="client">Yarra Trams</li>
-            <li class="client">Alcohol and Drug Foundation</li>
-            <li class="client">KMD Brands</li>
-            <li class="client">Allied Health Professions Australia</li>
-            <li class="client">Schneider Electric</li>
-            <li class="client">Anti-corruption Commission (IBAC)</li>
-            <li class="client">Melbourne Polytechnic</li>
-            <li class="client">Royal Life Saving</li>
-            <li class="client">Meta</li>
-            <li class="client">Australian Space Agency</li>
-            <li class="client">Department of Finance</li>
-            <li class="client">NDIS</li>
-          </ul>
-          <ul class="clients__track" aria-hidden="true">
-            <li class="client">Yarra Trams</li>
-            <li class="client">Alcohol and Drug Foundation</li>
-            <li class="client">KMD Brands</li>
-            <li class="client">Allied Health Professions Australia</li>
-            <li class="client">Schneider Electric</li>
-            <li class="client">Anti-corruption Commission (IBAC)</li>
-            <li class="client">Melbourne Polytechnic</li>
-            <li class="client">Royal Life Saving</li>
-            <li class="client">Meta</li>
-            <li class="client">Australian Space Agency</li>
-            <li class="client">Department of Finance</li>
-            <li class="client">NDIS</li>
-          </ul>
-        </div>
-        <!-- Middle row — scrolls left -->
+      <section class="clients" aria-label="Selected clients">
+        <!-- Logo card marquee (zypsy reference), TWO rows: first half of the
+             client list on top, second half below — each row its own
+             seamless track pair and its own drag (js/home-c.js 3g). The
+             previous three-row text marquee is archived verbatim in
+             experiments/clients-marquee-backup.html. Clients whose SVG has
+             not arrived yet (Equip Super, DFAT, Home Affairs, Melbourne
+             Marathon, Brandon Capital, DITRDCA, Greater Western Water,
+             Alcohol and Drug Foundation, Cancer Institute NSW, Cancer
+             Council Victoria) join whichever row is shorter when their
+             files land in assets/client-logos/. Second track in each row is
+             the loop duplicate: aria-hidden, empty alts. -->
         <div class="clients__scroller">
           <ul class="clients__track">
-            <li class="client">Meta</li>
-            <li class="client">Australian Space Agency</li>
-            <li class="client">Department of Finance</li>
-            <li class="client">NDIS</li>
-            <li class="client">Yarra Trams</li>
-            <li class="client">Alcohol and Drug Foundation</li>
-            <li class="client">KMD Brands</li>
-            <li class="client">Allied Health Professions Australia</li>
-            <li class="client">Schneider Electric</li>
-            <li class="client">Anti-corruption Commission (IBAC)</li>
-            <li class="client">Melbourne Polytechnic</li>
-            <li class="client">Royal Life Saving</li>
+            <li class="client"><img class="client__logo" loading="lazy" src="../assets/client-logos/meta.svg" alt="Meta" /></li>
+            <li class="client"><img class="client__logo" loading="lazy" src="../assets/client-logos/dcceew.svg" alt="Department of Climate Change, Energy, the Environment and Water" /></li>
+            <li class="client"><img class="client__logo" loading="lazy" src="../assets/client-logos/the-athletes-foot.svg" alt="The Athlete’s Foot" /></li>
+            <li class="client"><img class="client__logo" loading="lazy" src="../assets/client-logos/beyond-blue.svg" alt="Beyond Blue" /></li>
+            <li class="client"><img class="client__logo" loading="lazy" src="../assets/client-logos/schneider-electric.svg" alt="Schneider Electric" /></li>
+            <li class="client"><img class="client__logo" loading="lazy" src="../assets/client-logos/moad.svg" alt="Museum of Australian Democracy" /></li>
+            <li class="client"><img class="client__logo" loading="lazy" src="../assets/client-logos/kmart.svg" alt="Kmart" /></li>
+            <li class="client"><img class="client__logo" loading="lazy" src="../assets/client-logos/australian-wildlife-conservancy.svg" alt="Australian Wildlife Conservancy" /></li>
+            <li class="client"><img class="client__logo" loading="lazy" src="../assets/client-logos/cefc.svg" alt="Clean Energy Finance Corporation" /></li>
           </ul>
           <ul class="clients__track" aria-hidden="true">
-            <li class="client">Meta</li>
-            <li class="client">Australian Space Agency</li>
-            <li class="client">Department of Finance</li>
-            <li class="client">NDIS</li>
-            <li class="client">Yarra Trams</li>
-            <li class="client">Alcohol and Drug Foundation</li>
-            <li class="client">KMD Brands</li>
-            <li class="client">Allied Health Professions Australia</li>
-            <li class="client">Schneider Electric</li>
-            <li class="client">Anti-corruption Commission (IBAC)</li>
-            <li class="client">Melbourne Polytechnic</li>
-            <li class="client">Royal Life Saving</li>
+            <li class="client"><img class="client__logo" loading="lazy" src="../assets/client-logos/meta.svg" alt="" /></li>
+            <li class="client"><img class="client__logo" loading="lazy" src="../assets/client-logos/dcceew.svg" alt="" /></li>
+            <li class="client"><img class="client__logo" loading="lazy" src="../assets/client-logos/the-athletes-foot.svg" alt="" /></li>
+            <li class="client"><img class="client__logo" loading="lazy" src="../assets/client-logos/beyond-blue.svg" alt="" /></li>
+            <li class="client"><img class="client__logo" loading="lazy" src="../assets/client-logos/schneider-electric.svg" alt="" /></li>
+            <li class="client"><img class="client__logo" loading="lazy" src="../assets/client-logos/moad.svg" alt="" /></li>
+            <li class="client"><img class="client__logo" loading="lazy" src="../assets/client-logos/kmart.svg" alt="" /></li>
+            <li class="client"><img class="client__logo" loading="lazy" src="../assets/client-logos/australian-wildlife-conservancy.svg" alt="" /></li>
+            <li class="client"><img class="client__logo" loading="lazy" src="../assets/client-logos/cefc.svg" alt="" /></li>
           </ul>
         </div>
-        <!-- Bottom row — scrolls right (opposite the middle) -->
         <div class="clients__scroller clients__scroller--reverse">
           <ul class="clients__track">
-            <li class="client">Schneider Electric</li>
-            <li class="client">Anti-corruption Commission (IBAC)</li>
-            <li class="client">Melbourne Polytechnic</li>
-            <li class="client">Royal Life Saving</li>
-            <li class="client">Meta</li>
-            <li class="client">Australian Space Agency</li>
-            <li class="client">Department of Finance</li>
-            <li class="client">NDIS</li>
-            <li class="client">Yarra Trams</li>
-            <li class="client">Alcohol and Drug Foundation</li>
-            <li class="client">KMD Brands</li>
-            <li class="client">Allied Health Professions Australia</li>
+            <li class="client"><img class="client__logo" loading="lazy" src="../assets/client-logos/myfitnesspal.svg" alt="MyFitnessPal" /></li>
+            <li class="client"><img class="client__logo" loading="lazy" src="../assets/client-logos/dss.svg" alt="Department of Social Services" /></li>
+            <li class="client"><img class="client__logo" loading="lazy" src="../assets/client-logos/australian-space-agency.svg" alt="Australian Space Agency" /></li>
+            <li class="client"><img class="client__logo" loading="lazy" src="../assets/client-logos/san-churro.svg" alt="San Churro" /></li>
+            <li class="client"><img class="client__logo" loading="lazy" src="../assets/client-logos/asqa.svg" alt="ASQA" /></li>
+            <li class="client"><img class="client__logo" loading="lazy" src="../assets/client-logos/phn.svg" alt="PHN North Western Melbourne" /></li>
+            <li class="client"><img class="client__logo" loading="lazy" src="../assets/client-logos/mari-group.svg" alt="MARI Group" /></li>
+            <li class="client"><img class="client__logo" loading="lazy" src="../assets/client-logos/ces-victoria.svg" alt="Commissioner for Environmental Sustainability, Victoria" /></li>
+            <li class="client"><img class="client__logo" loading="lazy" src="../assets/client-logos/ifs.svg" alt="IFS" /></li>
           </ul>
           <ul class="clients__track" aria-hidden="true">
-            <li class="client">Schneider Electric</li>
-            <li class="client">Anti-corruption Commission (IBAC)</li>
-            <li class="client">Melbourne Polytechnic</li>
-            <li class="client">Royal Life Saving</li>
-            <li class="client">Meta</li>
-            <li class="client">Australian Space Agency</li>
-            <li class="client">Department of Finance</li>
-            <li class="client">NDIS</li>
-            <li class="client">Yarra Trams</li>
-            <li class="client">Alcohol and Drug Foundation</li>
-            <li class="client">KMD Brands</li>
-            <li class="client">Allied Health Professions Australia</li>
+            <li class="client"><img class="client__logo" loading="lazy" src="../assets/client-logos/myfitnesspal.svg" alt="" /></li>
+            <li class="client"><img class="client__logo" loading="lazy" src="../assets/client-logos/dss.svg" alt="" /></li>
+            <li class="client"><img class="client__logo" loading="lazy" src="../assets/client-logos/australian-space-agency.svg" alt="" /></li>
+            <li class="client"><img class="client__logo" loading="lazy" src="../assets/client-logos/san-churro.svg" alt="" /></li>
+            <li class="client"><img class="client__logo" loading="lazy" src="../assets/client-logos/asqa.svg" alt="" /></li>
+            <li class="client"><img class="client__logo" loading="lazy" src="../assets/client-logos/phn.svg" alt="" /></li>
+            <li class="client"><img class="client__logo" loading="lazy" src="../assets/client-logos/mari-group.svg" alt="" /></li>
+            <li class="client"><img class="client__logo" loading="lazy" src="../assets/client-logos/ces-victoria.svg" alt="" /></li>
+            <li class="client"><img class="client__logo" loading="lazy" src="../assets/client-logos/ifs.svg" alt="" /></li>
           </ul>
         </div>
       </section>
