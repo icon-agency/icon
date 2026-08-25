@@ -105,8 +105,10 @@ steps so the value stays single-sourced:
   `CSS.supports('animation-timeline: scroll()')` so the two never both run. Do
   **not** drive a transform from a `scroll` event handler, even rAF-throttled —
   it lags a frame and visibly stutters (see `LESSONS.md` and `animation.md`).
-- GSAP timelines (hero ScrambleText, tagline cursor-pop/fit-to-width) attach as
-  behaviours per component; see `animation.md`.
+- GSAP timelines attach as behaviours per component — on the canonical
+  homepage that is `js/home-c.js` (SplitText line-masks, the hero takeover, the
+  intro filmstrip); the ScrambleText hero and cursor-pop tagline live on in the
+  prototypes. The full inventory and the rules live in `animation.md`.
 
 ## Quality bar
 - Visually polished across every breakpoint (mobile through `4xl`).

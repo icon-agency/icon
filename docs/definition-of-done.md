@@ -20,7 +20,7 @@ A page or component is done when:
 - Keyboard flow works.
 - Focus states are visible (`:focus-visible { outline: 2px solid var(--color-icon-blue); outline-offset: 2px; }` in `src/base/reset.css`).
 - Landmarks and headings are correct.
-- `prefers-reduced-motion` is respected at every motion surface — the GSAP component timelines (hero ScrambleText headline, tagline cursor-pop trail / fit-to-width) and the CSS scroll-driven hero-video parallax — not just the global scroll-reveal host.
+- `prefers-reduced-motion` is respected at every motion surface — the full inventory (shared `[data-animate]` reveal + hairline draw, the homepage takeover/SplitText/filmstrip system, the footer, the news filter transitions, the CSS scroll-driven parallax, and the prototype timelines) is in `docs/animation.md` — not just the global scroll-reveal host.
 - Automated accessibility scan shows no serious issues.
 
 For the full a11y checklist, see `docs/accessibility-checklist.md`.

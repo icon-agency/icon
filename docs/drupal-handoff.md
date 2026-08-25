@@ -27,7 +27,7 @@ The full worked example (paragraph YAML → preprocess PHP → `.component.yml` 
 
 ## Example handoff note: tagline component
 
-A short, real component to show the shape of a per-component note. Source: `src/components/tagline.css`, `js/tagline.js`.
+A short, real component to show the **shape** of a per-component note. Source: `src/components/tagline.css`, `js/tagline.js`. (The tagline itself now lives only on the prototype pages — the canonical components carry richer notes of this same shape in the design-system index (`/index.html`), e.g. the Intro section's "Drupal (Canvas / SDC)" block, which lists props, behaviours and reduced-motion notes ready to lift into a `component.yml`.)
 
 Suggested Drupal structure:
 - Paragraph: `paragraph: tagline` (page-section paragraph).
@@ -64,8 +64,8 @@ Every component note should include:
 | `src/base/*.css` | Port as-is. |
 | `src/utilities/*.css` | Port as-is. |
 | `src/components/*.css` | Port as-is. The BEM names match what the SDC Twig outputs. |
-| `templates/*.html` | Rebuild as SDC `.twig` under `components/<name>/<name>.twig`, plus a `<name>.component.yml` schema. |
-| `js/*.js` | Move into Drupal libraries (`icon/header`, `icon/hero`, `icon/tagline`); attach via `Drupal.behaviors`. |
+| `templates/*.html` | Rebuild as SDC `.twig` under `components/<name>/<name>.twig`, plus a `<name>.component.yml` schema. `homeC.html` (canonical) and `news.html` are the pages being ported; `home`/`homeB`/`work`/`work-article` are prototypes — port their components only where the system has adopted them. |
+| `js/*.js` | Move into Drupal libraries; attach via `Drupal.behaviors`. The full behaviour → library table (header, reveal, home, site-footer, news, work, work-filter, plus the prototype-only files and the never-ported dev theme-toggle) is in `docs/animation.md`. `js/hero-loader.js`'s generated rows become a Twig loop inside the hero SDC. |
 
 The CSS doesn't change shape across the port — only the markup gets re-templated as Twig + SDC schemas.
 

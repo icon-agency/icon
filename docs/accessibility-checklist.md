@@ -21,11 +21,15 @@ This is the canonical a11y home for the project. Other docs (e.g. definition-of-
 - Hover-only behaviour has a keyboard equivalent (pair a `:focus-visible` sibling with every `:hover` rule).
 
 ## Motion
-- Respect `prefers-reduced-motion`. Current motion is two systems, each reduced-motion-guarded:
-  - **GSAP timelines** attached per component in JS — the hero ScrambleText headline reveal and the tagline cursor-pop trail / fit-to-width.
-  - **CSS scroll-driven parallax** on the hero video (with a rAF-lerp JS fallback).
-  - The `[data-animate]` scroll-reveal host in `src/utilities/animations.css` is an available primitive (currently unused) and is also cancelled under reduced motion.
-- The reduced-motion guards live in `src/base/reset.css` (`scroll-behavior: auto`) and `src/utilities/animations.css` (zeroes `[data-animate]` and `[data-parallax*]` transforms). Any new component-level transition needs its own guard.
+- Respect `prefers-reduced-motion`. The motion inventory lives in `docs/animation.md`; every system there is reduced-motion-guarded **and no-JS safe** (hidden states sit behind `.js-animations`):
+  - the shared `[data-animate]` scroll-reveal + hairline draw (`js/reveal.js` — active on every template);
+  - the canonical homepage system (`js/hero-loader.js` kinetic loading screen — a perspective tunnel is a vestibular trigger, so under reduced motion it is *never built*; `js/home-c.js` Lenis / takeover / SplitText / filmstrip — reduced motion falls back to native scroll and plain text, drag still works);
+  - the global footer reveal / films / velocity skew (`js/site-footer.js`);
+  - the news listing's View-Transition filter swap and rAF card motion (`js/news.js` — reduced motion gets the instant toggle);
+  - CSS scroll-driven parallax (hero video, card media) — nested inside `@media (prefers-reduced-motion: no-preference)`, so it simply never applies;
+  - prototype GSAP timelines (hero scramble, tagline pops, homeB sphere) — all bail to a static state.
+- The global guards live in `src/base/reset.css` (`scroll-behavior: auto`) and `src/utilities/animations.css`. Any new component-level transition needs its own guard.
+- **Known exception (open):** the clients marquee runs continuously with no pause control — auto-motion longer than 5s is WCAG 2.2.2 (Level A). Hover-pause was removed by request; a pause affordance is still the recommendation (see `design-system-plan.md`). Record the final decision here and in the DS clients section when it lands.
 - Avoid unnecessary animation; motion is never required to understand content.
 
 ## Content
@@ -33,7 +37,7 @@ This is the canonical a11y home for the project. Other docs (e.g. definition-of-
 - No two links on a page share an accessible name while pointing at different destinations. Repeated CTAs ("Read more", "View service details") get an `sr-only` suffix naming the target: `View service details<span class="sr-only"> for [service]</span>`. Entities sharing a title need a qualifier (e.g. suburb). Same rule for repeated buttons (`aria-label="Save [title]"`).
 - Buttons describe the action.
 - Images have an alt-text strategy. Decorative images / SVGs take `alt=""` or `aria-hidden="true"`.
-- Contrast meets WCAG AA. The palette is oklch neutral semantic roles plus brand `--icon-black` / `--icon-grey` / `--icon-blue`, defined only in `src/theme/colors.css`. Dark mode is the **default** (`.dark` on `<html>`), so verify any new colour pairing against the `.dark` values — `--icon-black` inverts to `#f5f5f5` and `--icon-blue` to a translucent white in dark mode.
+- Contrast meets WCAG AA. The palette is oklch neutral semantic roles plus brand `--icon-black` / `--icon-grey` / `--icon-blue`, defined only in `src/theme/colors.css`. The canonical pages default to the **light** palette, but `.dark` and `.theme-blue` are inspectable via the dev toggle (and the prototypes still open dark) — so verify any new colour pairing under **all three** themes: `--icon-black` inverts in dark mode, and the blue theme swaps ink/surface entirely.
 
 ## Forms and interactive patterns
 - Labels are present (visible or `sr-only` via Tailwind's built-in `sr-only` utility — the templates already use `sr-only`, e.g. the hero `<h1>`).

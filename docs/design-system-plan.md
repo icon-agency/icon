@@ -8,6 +8,40 @@ prototypes and stay OUT of the system (linked only as reference).
 
 ---
 
+## Status — August 2026
+
+The plan below is kept as the working brief; this block records where it stands.
+
+- **Phase 1 (shell + foundations): shipped.** Root `index.html` replaced the
+  redirect. Sidebar (Template / Experiments / Prototypes / Pattern Library),
+  mobile drawer, scrollspy (geometry recomputed on the pane's scroll,
+  rAF-coalesced — one step past the GreenPowerDS IO lesson, see the inline
+  comment), `src/utilities/design-system.css`, and all six Foundations
+  sections. Light default with the dev theme toggle, per §4 — plus a third
+  `.theme-blue` theme the plan didn't anticipate.
+- **Phase 2 (component sections): partial.** Hero (link-out card, per §3.6)
+  and Intro are live with full Canvas/SDC notes; Header, Work, Clients, News,
+  Arrow link and Reveal primitives are still commented out in the sidebar
+  (the curation mechanism from §3.8), each to be uncommented as its section
+  ships.
+- **Phase 3 (configurators): not started.**
+- **Phase 4 (gate): partial.** This docs pass is the `AGENTS.md`/`docs/`
+  update; `scripts/verify.mjs` is **not built** — `npm run verify` still
+  aliases the build.
+- **§5 naming decision: RESOLVED — promoted.** The `homec-*` namespace became
+  the site-canonical API (`.hero`, `.intro`, `.work`, `.clients`, `.news`,
+  `.arrow-link`, `.media-reveal`, `.page-home`); the home-A prototype's hero
+  was renamed `.video-hero` to free the name. Field prefixes and SDC folders
+  inherit these names.
+- **§2 marquee pause: still open.** The clients marquee runs without a pause
+  control; the exception is recorded in `accessibility-checklist.md` until the
+  DS clients section lands and makes the decision prose.
+- **Blueprint drift:** the sidebar gained an **Experiments** group (linking
+  `experiments/*` one-offs) between Template and Prototypes; `templates/news.html`
+  joined the Template group alongside Home C.
+
+---
+
 ## 1. Does "Drupal Canvas AI, not GovCMS" matter? Yes — three ways
 
 1. **Document SDC props, not just paragraph fields.** GreenPowerDS annotated

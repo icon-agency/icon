@@ -1,221 +1,169 @@
 # Animation
 
-This site has **two** animation systems. They are not interchangeable — pick the
-right one for the job, and always pair motion with a `prefers-reduced-motion`
-reset.
-
-1. **GSAP per-component timelines** — attached as `Drupal.behaviors` in each
-   component's JS. Used for the hero headline reveal and the tagline cursor-pop
-   trail. Mount-driven / interaction-driven effects.
-2. **CSS scroll-driven parallax** — `animation-timeline: scroll()` on the hero
-   video, sampled on the compositor in lockstep with scroll, with a continuous
-   rAF-lerp JS fallback for browsers that lack it. Never a scroll-event handler.
-
-There is also a third, **available-but-unused** primitive — the `[data-animate]`
-scroll-reveal host in `src/utilities/animations.css`. It is wired and
-documented below, but nothing currently uses it.
+Motion on this site is organised **per page bundle**: every behaviour is one JS
+IIFE (→ one future `Drupal.behaviors` entry), every effect is
+reduced-motion-guarded, and every reveal is no-JS safe (the hidden state lives
+behind a `.js-animations` class added in `<head>`, so a no-JS page renders
+fully visible). The systems below are ordered by how much of the site they
+touch.
 
 ---
 
-## System 1 — GSAP per-component timelines
+## 1. Shared scroll-reveal — `[data-animate]` + `js/reveal.js` (every page)
 
-GSAP (core from cdnjs; `ScrambleTextPlugin` and `InertiaPlugin` from jsDelivr,
-all free in GSAP 3.13) drives the two bespoke entrance / interaction effects.
-Each lives in its own IIFE that maps cleanly to a `Drupal.behaviors`.
+The workhorse. `src/utilities/animations.css` owns a simple opacity +
+`translateY(20px)` rise (with a `--animate-delay` per-element stagger) plus a
+**masked line-rise variant** — each line waits below its own overflow mask and
+rises on a stagger (the hero lockup's gesture, packaged; worn by the two
+"News & Insights" mastheads). `js/reveal.js` is the only JS: an
+IntersectionObserver that adds `.is-visible` once per element — and the same
+file drives the **hairline draw**, adding `.is-drawn` to `[data-rule]` /
+`[data-rule-host]` lines so they grow from their left edge (the CSS lives in
+`utilities/rules.css`).
 
-### Where it lives
+Used on `homeC`, `news`, `work` and `work-article`. (The design-system index
+deliberately loads no page JS — its inline demos show the genuine no-JS state.)
+Under `prefers-reduced-motion: reduce` the CSS resets everything to visible.
+Drupal: `Drupal.behaviors.iconReveal`.
 
-| Effect | JS | Plugin | Drupal behaviour / library |
-|---|---|---|---|
-| Hero headline scramble | `js/hero.js` | `ScrambleTextPlugin` | `Drupal.behaviors.iconHero` → `icon/hero` (deps `gsap`, `ScrambleTextPlugin`) |
-| Tagline cursor-pop trail | `js/tagline.js` | `InertiaPlugin` | `Drupal.behaviors.iconTagline` → `icon/tagline` (dep `gsap`) |
+## 2. The canonical homepage system (`templates/homeC.html`)
 
-`tagline.js` also runs two non-GSAP helpers in the same behaviour: a per-line
-scroll reveal (`IntersectionObserver` toggling `.is-visible` on `[data-tagline]`)
-and a desktop fit-to-width that binary-searches the headline font size so the
-longest line fills its box.
+The homepage's choreography lives in **three** files:
 
-### Hero headline scramble
+- **`js/hero-loader.js`** — builds and lights the hero's kinetic-text loading
+  screen (the `.text-box` "room" of 28 marquee rows). Deliberately its own
+  file, loaded *before* the CDN scripts, so the loading screen exists on the
+  first frame even when GSAP/Lenis round-trips are slow. Hands `js/home-c.js`
+  a start time. A perspective tunnel is a vestibular trigger, so reduced
+  motion means it is never even built.
+- **`js/home-c.js`** — one IIFE, sections numbered in the file:
+  Lenis smooth scroll (1) · hero stack-takeover: preload → card pile → viewport
+  takeover → reel with cross-fades and Ken Burns stills (2) · header inversion
+  over the hero (2b) · triggered headline exit (2c) · `.media-reveal`
+  crop-zoom image reveals via IO (3) · word-cascade text reveals
+  (`[data-reveal-words]`, 3c) · the intro filmstrip — GSAP-ticker marquee,
+  drag with momentum, hover-stall, DRAG badge (3d) · scroll-velocity card lean
+  (3e) · cursor tilt on work/news cards (3f) · GSAP **SplitText line-mask**
+  text reveals, fired per element by IO — no ScrollTrigger (4).
+- **`src/utilities/home-c.css`** — the reveal-fx primitives the JS toggles:
+  `.media-reveal` (clip-path inset growing from the bottom-left corner + a
+  zoom-settle; the transform stays on the *media*, never the observed frame —
+  see LESSONS.md) and `.split-line` masks.
 
-**How to use.** The markup is three `.hero__line` elements inside `[data-hero]`;
-each carries its final string in `data-text`. `js/hero.js` finds them, splits
-each line into per-character `.hero__char` spans, and runs a single
-`gsap.timeline()` that scrambles each line in sequentially (Make → what →
-matters), one word per line, with each letter resolving in place.
+Libraries on this page: GSAP core + SplitText (CDN) and Lenis (CDN). Everything
+degrades: no GSAP/SplitText → text renders plainly; no Lenis / reduced motion →
+native scroll; no IO → everything visible.
 
-**How it works.**
-1. On boot, the `[data-hero-overlay]` gets `.is-covering` (a black cover).
-2. The reveal waits for the first video readiness event (`loadeddata` /
-   `canplay` / `error`), with a 3s safety timeout, then removes the cover.
-3. Each `.hero__line` is split into fixed-width `.hero__char` spans — the width
-   is measured per glyph with a `Range`, so every letter scrambles **in its
-   final position** with no horizontal reflow.
-4. The timeline fades each line in, then tweens each char's `scrambleText`
-   (`chars: "lowerCase"`, `revealDelay: 0.18`) staggered by `charStagger`.
-5. `onComplete` flattens the spans back to plain text so the headline stays
-   responsive after the entrance.
+## 3. The global footer — `js/site-footer.js` (every page)
 
-Glyph widths are only measured once `document.fonts.ready` resolves (Miller Text
-loads from Typekit), so the locked widths match the real display font.
+Three concerns, all documented in the file header: a **replaying reveal**
+(`.is-revealed` toggles both ways so the entrance re-runs on every return),
+the **films inside the logo mask** (one video decoding at a time, only while
+the panel is on screen, `preload="none"`), and a **scroll-velocity skew**
+(one `--footer-skew` custom property written per frame — velocity is not
+expressible as a CSS scroll timeline, so this is the one part that must stay
+scripted). Ships standalone because the footer appears on pages that never
+load the homepage bundle (and have no GSAP). Drupal:
+`Drupal.behaviors.iconFooter` via `icon/site-footer`.
 
-### Tagline cursor-pop trail
+## 4. The news listing — `js/news.js` (`templates/news.html`)
 
-**How to use.** Inside `[data-tagline]`, an empty `[data-tagline-pops]` element
-is the trail's positioning context. As the pointer moves over it, work
-thumbnails spawn and drift.
+No GSAP on this page. The news cards are the shared `components/news-card.css`;
+their hover/parallax behaviours are ported to rAF here (home-c.js drives the
+same cards with GSAP on the homepage). The category filter is chips-as-real-links
+enhanced with `pushState`, and the card swap runs inside a **View Transition**
+where supported (each card carries a `view-transition-name`, so survivors glide;
+choreography in `news-list.css`). Unsupported browsers and reduced-motion users
+get the instant toggle. Drupal: `Drupal.behaviors.iconNews` — the filter maps to
+a Views exposed filter.
 
-**How it works.**
-1. `onMove` (bound to `mousemove` + `touchmove`, both `passive`) measures
-   pointer travel and velocity. It only spawns once accumulated travel passes
-   `SPACING` (72px) — a distance gate, not a time interval — so the trail
-   density is consistent regardless of pointer speed.
-2. Each spawn pops an `<img>` from a pool (capped at `MAX` 16 concurrent), fades
-   and scales it in, then hands it the pointer's clamped momentum via
-   `InertiaPlugin` (`inertia: { x, y, resistance: 520 }`) so it drifts and
-   decelerates naturally. It holds, then fades out and recycles back to the pool.
-3. Images are `aria-hidden` and preloaded; the pool avoids per-move allocation.
+## 5. CSS scroll-driven animations (compositor parallax)
 
-### Reduced motion / graceful degradation
+Two shapes, both pure CSS with LESSONS.md-verified plumbing:
 
-Both effects bail to a static state. The hero shows the headline plainly and
-removes the cover when `prefers-reduced-motion: reduce`, GSAP is missing, or
-`ScrambleTextPlugin` is missing. The tagline `return`s before wiring the pops
-under reduced-motion, no GSAP, or a missing `[data-tagline-pops]`; without
-`InertiaPlugin` it falls back to a short `power2.out` drift. The per-line reveal
-and fit-to-width still run, since neither is motion-heavy.
+- **Hero video parallax** (home-A prototype, `src/components/hero.css`):
+  `animation-timeline: scroll(root)` translating the video at half scroll
+  speed. `js/hero.js` keeps a continuous rAF-**lerp** fallback for browsers
+  without scroll-driven animations, gated by
+  `CSS.supports('animation-timeline: scroll()')` so the two never both run.
+- **Card/media parallax** (`project-card`, `image-grid`, the case-study
+  featured media): a **named `view-timeline`** declared on the outer `.reveal`
+  wrapper, consumed by the media via `animation-timeline: --card-parallax`.
+  Named, not bare `view()`, because each medium sits inside an
+  `overflow: hidden` frame that would otherwise become the timeline's
+  scrollport and freeze it — and `body` must stay `overflow-x: clip`, not
+  `hidden`, for the same reason (both in LESSONS.md).
 
----
+Never a `scroll`-event handler — even rAF-throttled, it lags a frame and
+visibly swims.
 
-## System 2 — CSS scroll-driven parallax
+## 6. Prototype-only GSAP timelines (outside the system)
 
-The hero video translates down at half the scroll speed over the hero's height.
-This is **compositor-driven CSS**, not a JS scroll handler — see LESSONS.md.
+Kept for the browsable prototypes; not part of the canonical bundle:
 
-### Where it lives
+- `js/hero.js` — home-A ScrambleText headline (per-glyph widths pre-measured so
+  letters resolve in place; flattens back to plain text on complete).
+- `js/tagline.js` — cursor-pop image trail (InertiaPlugin, distance-gated
+  spawning, pooled `<img>`s) + per-line reveal + fit-to-width sizing.
+- `js/hero-sphere.js` — homeB's Three.js orbiting photo-sphere (the one place
+  ScrollTrigger and Three.js appear).
 
-- CSS: `src/components/hero.css` (`@keyframes hero-video-parallax` +
-  `animation-timeline: scroll(root)`).
-- JS fallback: `js/hero.js`, the rAF-lerp loop at the bottom.
-
-### How it works
-
-The primary path is pure CSS. The element is `[data-hero-video]` (class
-`.hero__video`):
-
-```css
-@keyframes hero-video-parallax {
-  to { transform: translate3d(0, 50vh, 0); }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  @supports (animation-timeline: scroll()) {
-    .hero__video {
-      animation: hero-video-parallax linear both;
-      animation-timeline: scroll(root);
-      animation-range: 0 100vh;       /* over the hero's height */
-    }
-  }
-}
-```
-
-The browser samples this on the compositor, in exact lockstep with scroll. It
-reproduces `translateY = scrollY * 0.5` precisely (at scrollY 400, computed
-translateY = 200px) but never stutters or "swims" the way a main-thread handler
-does.
-
-### Fallback
-
-For browsers without scroll-driven animations (Firefox, today), `js/hero.js`
-runs a **continuous rAF lerp** loop — never a scroll-event handler:
-
-```js
-var current = 0;
-(function loop() {
-  var target = window.scrollY * 0.5;
-  current += (target - current) * 0.18;
-  if (Math.abs(target - current) < 0.05) current = target;
-  video.style.transform = "translate3d(0," + current.toFixed(2) + "px,0)";
-  window.requestAnimationFrame(loop);
-})();
-```
-
-It is gated by `CSS.supports('animation-timeline: scroll()')` so the CSS path
-and the JS path can never both run. The lerp smooths over the gaps that a naive
-`scroll`-event handler leaves between events — which is the whole reason we don't
-use one (LESSONS.md).
-
-### Reduced motion
-
-The `@supports` block is nested inside
-`@media (prefers-reduced-motion: no-preference)`, so the CSS parallax simply
-never applies under reduced motion. The JS fallback is guarded by the same
-`reduce` check before its loop starts.
-
----
-
-## Available primitive — `[data-animate]` scroll reveal (currently unused)
-
-`src/utilities/animations.css` ships a generic scroll-reveal host: a simple
-opacity + `translateY(20px)` rise, gated on a `.js-animations` class so the page
-is fully visible before JS boots (no-JS safe). It is **wired but not currently
-used** by any template — document it as an available primitive, not the active
-system.
-
-```css
-.js-animations [data-animate] {
-  opacity: 0;
-  transform: translateY(20px);
-  transition:
-    opacity var(--duration-slow) var(--ease-standard),
-    transform var(--duration-slow) var(--ease-standard);
-  transition-delay: var(--animate-delay, 0ms);
-}
-
-.js-animations [data-animate].is-visible {
-  opacity: 1;
-  transform: none;
-}
-```
-
-To activate it you would add `.js-animations` to `<html>` on boot, an
-`IntersectionObserver` to add `.is-visible` on enter, and `[data-animate]` to the
-target elements (with an optional `--animate-delay` per element). Under
-`prefers-reduced-motion: reduce` the same file resets `[data-animate]` to visible
-with no transition.
-
-The file also holds the shared keyframes (`grain`, `scroll`, `fadeIn`,
-`slideIn`) used by decorative utilities.
+All bail to a static state under reduced motion or when their library is
+missing.
 
 ---
 
 ## Rules
 
 1. **Always pair motion with a `prefers-reduced-motion` reset.** Every system
-   here does; new motion must too.
-2. **Parallax runs on the compositor, never on a `scroll` handler.** Use
-   `animation-timeline: scroll()`; where it's unsupported, a continuous rAF
-   **lerp** loop — gated by `CSS.supports(...)` so the two never both run. (See
-   LESSONS.md for why a rAF-throttled scroll handler still stutters.)
-3. **GSAP is the only JS animation library.** Name it explicitly; load its
-   plugins as library deps. Don't hand-roll tweens that GSAP already does.
-4. **One behaviour per component.** Each effect is an IIFE keyed to a single
-   `Drupal.behaviors` so unused components ship no dead animation code.
-5. **Don't use JS for what CSS handles** — hover, focus rings, simple
-   transitions stay in CSS. JS animation is for mount-driven, interaction-driven,
-   or scroll-driven effects only.
+   here does; new motion must too. Reveals must also be **no-JS safe**: hide
+   only behind `.js-animations`, so the unenhanced page is fully visible.
+2. **Parallax and scroll-linked motion run on the compositor, never on a
+   `scroll` handler.** Use `animation-timeline` (named `view-timeline` when the
+   subject sits inside an overflow-hidden frame); where unsupported, a
+   continuous rAF **lerp** loop gated by `CSS.supports(...)`. The one scripted
+   exception is *velocity*-driven motion (footer skew, card lean) — a scroll
+   timeline is position-driven, so velocity must be sampled in JS, rAF-coalesced.
+3. **GSAP is the only JS animation library** (SplitText on the homepage;
+   ScrambleText/Inertia in prototypes). **Lenis is the only scroll library**
+   (canonical homepage only). Three.js appears only in the homeB prototype.
+   Don't hand-roll tweens GSAP already does — but plain rAF is fine where a
+   page deliberately ships without GSAP (news.js).
+4. **One behaviour per component/page concern**, each an IIFE keyed to a single
+   future `Drupal.behaviors` entry, so unused components ship no dead animation
+   code. When two files need the same helper (the velocity sampler in
+   site-footer.js and news.js), the *third* consumer is the moment to lift it
+   into a shared primitive — not before.
+5. **Don't use JS for what CSS handles** — hover, focus, and theme
+   cross-fades stay in CSS; observer-triggered reveals (including the hairline
+   draw) keep the *transition* in CSS and use JS only to flip a class. JS
+   animation is for mount-driven, interaction-driven, velocity-driven, or
+   observer-triggered effects only.
+6. **Never clip or transform the element an IntersectionObserver watches** —
+   observe a stable wrapper, animate the child (LESSONS.md). And measure
+   scroll-driven transforms only after a double rAF.
 
 ---
 
 ## Drupal port
 
-When this lands in the vanilla Drupal 11+ Canvas (SDC) theme:
+| Behaviour | File | Library dep | Drupal.behaviors → library |
+|---|---|---|---|
+| Header (scroll state, mobile menu, drawer offset) | `js/header.js` | — | `iconHeader` → `icon/header` |
+| Shared scroll-reveal | `js/reveal.js` | — | `iconReveal` → `icon/reveal` |
+| Homepage system | `js/home-c.js` | gsap, SplitText, lenis | `iconHomeC` → `icon/home-c` |
+| Hero loading screen | `js/hero-loader.js` | — (deliberately) | part of the hero SDC; its 28 rows become a Twig loop |
+| Global footer | `js/site-footer.js` | — | `iconFooter` → `icon/site-footer` |
+| News listing (filter + card motion) | `js/news.js` | — | `iconNews` → `icon/news` |
+| Work section (swipe, underline, hover-video) | `js/work.js` | — | `iconWork` → `icon/work` |
+| Work listing filter | `js/work-filter.js` | — | `iconWorkFilter` → `icon/work-filter` |
+| Home-A hero (prototype) | `js/hero.js` | gsap, ScrambleText | `iconHero` → `icon/hero` |
+| Tagline (prototype) | `js/tagline.js` | gsap, Inertia | `iconTagline` → `icon/tagline` |
+| HomeB sphere (prototype) | `js/hero-sphere.js` | three, gsap, ScrollTrigger | `iconHeroSphere` → `icon/hero-sphere` |
+| Theme toggle | `js/theme-toggle.js` | — | **dev-only — never ported** |
 
-- **Hero** → SDC `hero`; `js/hero.js` becomes `Drupal.behaviors.iconHero`,
-  attached via `icon/hero` (deps `gsap`, `ScrambleTextPlugin`). The CSS parallax
-  ships with the component stylesheet.
-- **Tagline** → SDC `tagline`; `js/tagline.js` becomes
-  `Drupal.behaviors.iconTagline` via `icon/tagline` (dep `gsap`,
-  `InertiaPlugin`).
-- The `[data-animate]` host CSS belongs in the theme's global stylesheet; if a
-  component adopts it, its observer wiring rides in that component's behaviour
-  rather than a shared global so unused components stay dead-code-free.
+CDN loading (cdnjs/jsDelivr for GSAP + plugins, jsDelivr for Lenis) is a
+prototype convenience; self-hosting is a performance choice at port time, not a
+compliance requirement (this is not GovCMS). The `[data-animate]` host CSS
+belongs in the theme's global stylesheet; each adopter's observer wiring rides
+in that component's behaviour.
