@@ -434,7 +434,7 @@
   z-index: 0;
   background:
     radial-gradient(120% 120% at 20% 10%, var(--color-shader-blue), transparent 60%),
-    linear-gradient(160deg, var(--color-shader-blue) 0%, #1e1e1e 55%);
+    linear-gradient(160deg, var(--color-shader-blue) 0%, var(--footer-bg) 55%); /* fixed near-black end — was a raw #1e1e1e, the one hex that had escaped colors.css */
 }
 
 .mobile-menu__inner {
