@@ -169,10 +169,17 @@
 @media (min-width: 768px) {
   .news-article__body {
     display: grid;
-    grid-template-columns: minmax(7rem, 12rem) minmax(0, 1fr);
+    /* SYMMETRIC: the rail is mirrored by a phantom right column, so the
+       flow's centre IS the page's centre — with only a left rail the prose
+       sat visibly right of centre (user catch). Share takes the left cell;
+       the right stays empty on purpose. */
+    grid-template-columns: minmax(7rem, 12rem) minmax(0, 1fr) minmax(7rem, 12rem);
     gap: var(--space-lg) var(--space-md);
     align-items: start;
   }
+
+  .news-article__share { grid-column: 1; }
+  .news-article__flow { grid-column: 2; }
 }
 
 .news-article__flow {
@@ -182,22 +189,22 @@
   min-width: 0;
 }
 
-/* The reading column. Floor 46rem; past ~2015px it grows on the SAME curve
-   as the article's body type below (36.5vw ≈ 33.5em of the 1.09vw body), so
+/* The reading column. Floor 46rem; past ~1840px it grows on the SAME curve
+   as the article's body type below (40vw ≈ 33.3em of the 1.2vw body), so
    the measure holds ~67ch while both scale to the 4xl horizon. */
 .news-article__prose {
   width: 100%;
-  max-width: clamp(46rem, 36.5vw, 58.5rem);
+  max-width: clamp(46rem, 40vw, 64rem);
   margin-inline: auto;
 }
 
 /* Article body copy grows to the 4xl horizon — the global .content-page p
    caps at 1.375rem by ~1257px (right for the capped work-article folio, too
-   small for this full-bleed page on a big screen). Same floor, longer curve:
-   1.09vw matches today's size at ~1960px and keeps going to ~28px/2560. */
+   small for this full-bleed page on a big screen). A step up on request
+   (Aug 2026): 19px floor, 1.2vw curve, ~30px by the horizon. */
 .news-article .content-page p,
 .news-article .content-page li {
-  font-size: clamp(1.125rem, 1.09vw, 1.75rem);
+  font-size: clamp(1.1875rem, 1.2vw, 1.875rem);
 }
 
 /* the wide bands: full container width, uniform crop */
