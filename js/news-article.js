@@ -23,10 +23,16 @@
   var head = document.querySelector(".news-article__head");
   if (!head || !("IntersectionObserver" in window)) return;
 
+  // The handover fires at the head's HALFWAY point — half the photo gone,
+  // theme gone — not at its last pixel, which left the dark opening
+  // overstaying its welcome (user call). ratio, not isIntersecting: with a
+  // threshold, isIntersecting is true either side of it while any sliver
+  // remains. (A viewport too short to ever show half the head would start
+  // light; acceptable degenerate case.)
   var io = new IntersectionObserver(function (entries) {
     entries.forEach(function (e) {
-      document.documentElement.classList.toggle("dark", e.isIntersecting);
+      document.documentElement.classList.toggle("dark", e.intersectionRatio >= 0.5);
     });
-  });
+  }, { threshold: 0.5 });
   io.observe(head);
 })();
