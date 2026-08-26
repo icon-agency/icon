@@ -48,18 +48,19 @@
      tile titles, both section "More" links, and the footer's blurb /
      Subscribe / city names / socials. Every one of those carried the same
      literal, so naming it makes a retune one edit and stops the roles
-     drifting apart. Keeps growing to a ~2285px viewport, then caps at 3rem.
+     drifting apart. Keeps growing to a ~2590px viewport — the 4xl horizon,
+     where the display voice caps too — then caps at 3.4rem.
      Its companions: medium weight, -0.01em tracking, 1.2 line-height — except
      the TITLES and the More links (work__title, news-card__title, work__more,
      news__more), which run one step heavier (semibold) so they carry more ink
      than the running text at the same size. */
-  --voice-mid: clamp(1.4rem, 2.1vw, 3rem);
+  --voice-mid: clamp(1.4rem, 2.1vw, 3.4rem);
 
   /* The meta voice — the quiet line under the mid one: card categories and
      dates, work meta, the footer's place names and acknowledgement, the news
      filter labels. A step up from --text-xs, and the same literal was already
      repeated across four files. */
-  --voice-meta: clamp(1.0625rem, 1.1vw, 1.5rem);
+  --voice-meta: clamp(1.0625rem, 1.1vw, 1.75rem); /* caps ~2545px, the 4xl horizon like the rest */
 
   /* --logo-h — the wordmark's own stepped ladder (mirror of
      .site-logo__mark; keep the two in step if that ladder ever moves). Still
