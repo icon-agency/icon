@@ -84,6 +84,7 @@
               <ul class="ds-nav__list">
                 <li><a class="ds-nav__link" href="#hero">Hero</a></li>
                 <li><a class="ds-nav__link" href="#intro">Intro statement</a></li>
+                <li><a class="ds-nav__link" href="#news-article">News article</a></li>
                 <!-- Phase 2 — uncomment each entry as its section ships:
                 <li><a class="ds-nav__link" href="#header">Site header</a></li>
                 <li><a class="ds-nav__link" href="#work">Work grid</a></li>
@@ -144,7 +145,7 @@
               <div class="ds-group">
                 <h4 class="ds-group__title">Brand</h4>
                 <ul class="ds-swatches">
-                  <li class="ds-swatch"><div class="ds-swatch__chip bg-icon-black"></div><div class="ds-swatch__meta"><span class="ds-swatch__name">Icon black</span><span class="ds-swatch__token">--color-icon-black</span><span class="ds-swatch__value">#111111 (dark: #f5f5f5)</span></div></li>
+                  <li class="ds-swatch"><div class="ds-swatch__chip bg-icon-black"></div><div class="ds-swatch__meta"><span class="ds-swatch__name">Icon black</span><span class="ds-swatch__token">--color-icon-black</span><span class="ds-swatch__value">#0d0d0d (dark: #f5f5f5)</span></div></li>
                   <li class="ds-swatch"><div class="ds-swatch__chip bg-icon-grey"></div><div class="ds-swatch__meta"><span class="ds-swatch__name">Icon grey</span><span class="ds-swatch__token">--color-icon-grey</span><span class="ds-swatch__value">icon-black @ 80%</span></div></li>
                   <li class="ds-swatch"><div class="ds-swatch__chip bg-icon-blue"></div><div class="ds-swatch__meta"><span class="ds-swatch__name">Icon blue</span><span class="ds-swatch__token">--color-icon-blue</span><span class="ds-swatch__value">#0000ff (dark: white @ 80%)</span></div></li>
                 </ul>
@@ -486,6 +487,57 @@
                       </div>
                     </div>
                   </section>
+
+            <section class="ds-section" id="news-article">
+              <h3 class="ds-section__title">News article</h3>
+              <p class="ds-section__intro">
+                <code class="ds-code">.news-article</code> &mdash; the full news story page
+                (<code class="ds-code">templates/news-article.html</code>, design:
+                <code class="ds-code">experiments/News-article.png</code>). Full-bleed on the shared
+                <code class="ds-code">--gutter-page</code>. The page <strong>opens dark and hands over
+                to light</strong> as the head&rsquo;s halfway point scrolls past &mdash; two-way, so the
+                return scroll restores the dark opening &mdash; with every hairline reading
+                <code class="ds-code">--rule-on-color</code> while dark. The head is a ruled column
+                (Share opens it, the meta line closes it on the photo&rsquo;s baseline) beside a square
+                photo; the body is a symmetric grid &mdash; a sticky Share rail, a centred ~67ch prose
+                measure that scales with its own 1.2vw body copy to the 4xl horizon, and a phantom
+                right column so the prose centres on the PAGE, not the flow. Wide figures break out
+                between prose chunks; upright serif statements
+                (<code class="ds-code">.pull-quote--upright</code>) divide the acts; a
+                &ldquo;Next up&rdquo; teaser rail reuses the homepage news block under its own rule.
+              </p>
+              <div class="ds-group">
+                <h4 class="ds-group__title">Why it is not demoed here</h4>
+                <p class="ds-group__note">
+                  The page IS its scroll choreography &mdash; the theme handover, the sticky rail, the
+                  media reveals and hairline draws. A scaled inline copy would show none of it
+                  honestly. Open the real thing:
+                </p>
+                <a class="ds-thumb-link" href="templates/news-article.html">
+                  <figure>
+                    <figcaption>Open the News article template, at full scale</figcaption>
+                  </figure>
+                </a>
+              </div>
+              <div class="ds-group">
+                <h4 class="ds-group__title">Drupal (Canvas / SDC)</h4>
+                <p class="ds-group__note">
+                  The full node view of <code class="ds-code">news</code> &mdash; not a paragraph
+                  type. Title, date and category come from the node; the body renders into
+                  <code class="ds-code">.content-page</code> (heading registers re-scoped by the page
+                  layer, <code class="ds-code">src/utilities/news-article.css</code>); the wide
+                  figures and serif statements are body-embedded media/paragraphs; the
+                  &ldquo;Next up&rdquo; rail is a Views block of three teasers wearing
+                  <code class="ds-code">news-card</code>. Share is the inert
+                  <code class="ds-code">[data-share]</code> hook until that behaviour ships.
+                  Behaviours: <code class="ds-code">Drupal.behaviors.iconNewsArticle</code> (the
+                  theme handover &mdash; colour-only cross-fade, exempt from the reduced-motion
+                  guard per <code class="ds-code">base/typography.css</code>) and the shared
+                  <code class="ds-code">iconReveal</code>. No-JS reads dark end to end &mdash; a
+                  legitimate rendering, not a fallback apology.
+                </p>
+              </div>
+            </section>
                 </div>
                 <p class="ds-demo__label">intro · .intro — __mark video + __headline + __viewport (__track of tilted __cards) + __band (__expertise sticky label + list | __statement + __about) + fixed __badge</p>
               </div>
