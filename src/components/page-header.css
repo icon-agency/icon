@@ -14,7 +14,7 @@
  */
 
 .page-header {
-  padding-inline: clamp(1rem, 3vw, 3rem);
+  padding-inline: var(--gutter-page);
   /* Clears the fixed site-header; mirrors v0 pt-32 / md:pt-36 / lg:pt-40. */
   padding-top: clamp(8rem, 12vw, 10rem);
 }
@@ -57,7 +57,7 @@
  * chips scroll under the viewport edge; the inner .filter-bar re-adds the edge
  * padding and centres once the chips fit (lg+). Pair with .scrollbar-hide. */
 .page-header__filters {
-  margin-inline: calc(-1 * clamp(1rem, 3vw, 3rem));
+  margin-inline: calc(-1 * var(--gutter-page));
   margin-bottom: var(--spacing-md);
   overflow-x: auto;
 }

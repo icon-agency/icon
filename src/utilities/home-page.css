@@ -10,7 +10,7 @@
 /* Contained intro block: logo loop + tagline. */
 .home-intro {
   padding-block: clamp(4rem, 8vw, 10rem);
-  padding-inline: clamp(1rem, 3vw, 3rem);
+  padding-inline: var(--gutter-page);
 }
 
 /* Temporary spacer so following sections can be scrolled to during the build. */

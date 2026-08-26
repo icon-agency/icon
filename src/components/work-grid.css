@@ -14,7 +14,7 @@
  */
 
 .work-grid {
-  padding-inline: clamp(1rem, 3vw, 3rem);
+  padding-inline: var(--gutter-page);
   padding-bottom: var(--spacing-3xl);
 }
 

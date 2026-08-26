@@ -26,7 +26,7 @@
   /* NO gaps — see the header note; rhythm comes from the items' padding */
   gap: 0;
   margin: 0;
-  padding: 0 clamp(1rem, 3vw, 3rem); /* self-pads, like .work-grid */
+  padding: 0 var(--gutter-page); /* self-pads, like .work-grid */
   list-style: none;
 }
 

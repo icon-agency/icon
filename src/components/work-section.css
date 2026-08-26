@@ -8,7 +8,7 @@
  */
 
 .work-section {
-  padding-inline: clamp(1rem, 3vw, 3rem);
+  padding-inline: var(--gutter-page);
 }
 
 .work-section__grid {

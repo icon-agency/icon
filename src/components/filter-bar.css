@@ -14,7 +14,7 @@
 .filter-bar {
   display: flex;
   gap: var(--spacing-sm);
-  padding-inline: clamp(1rem, 3vw, 3rem);
+  padding-inline: var(--gutter-page);
   justify-content: flex-start;
 }
 

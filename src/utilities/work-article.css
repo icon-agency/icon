@@ -61,7 +61,7 @@
 /* ---- 2. Layout ----------------------------------------------------------- */
 
 .case-study {
-  padding-inline: clamp(1rem, 3vw, 3rem);
+  padding-inline: var(--gutter-page);
   padding-top: clamp(8rem, 12vw, 10rem);
   padding-bottom: var(--space-section);
 }
