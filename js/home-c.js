@@ -2,7 +2,7 @@
  *   1. Lenis smooth (momentum) scroll — off under reduced motion / if absent.
  *   2. Hero load sequence: masked "Make what matters" reveal, image zoom-settle,
  *      PiP fade-in (CSS transitions keyed off .is-ready).
- *   3. Image clip + scale reveals on scroll-in (IntersectionObserver → .is-revealed).
+ *   3. Image clip + scale reveals — now js/reveal.js's shared observer.
  *   3g. Clients logo marquee: the strip's drift + drag, shared STRIP_SPEED.
  *   4. GSAP SplitText line-mask text reveals — a per-element timeline fired by an
  *      IntersectionObserver (no ScrollTrigger, matching the project's approach).
@@ -532,22 +532,11 @@
     syncHeroExit();
   }
 
-  // ---- 3. Image clip + scale reveals -------------------------------------
-  var figs = Array.prototype.slice.call(document.querySelectorAll("[data-reveal-img]"));
-  if (figs.length) {
-    if (!hasIO) {
-      figs.forEach(function (el) { el.classList.add("is-revealed"); });
-    } else {
-      var iIO = new IntersectionObserver(function (entries) {
-        entries.forEach(function (e) {
-          if (!e.isIntersecting) return;
-          e.target.classList.add("is-revealed");
-          iIO.unobserve(e.target);
-        });
-      }, { threshold: 0.18, rootMargin: "0px 0px -8% 0px" });
-      figs.forEach(function (el) { iIO.observe(el); });
-    }
-  }
+  // ---- 3. Image clip + scale reveals — MOVED to js/reveal.js -------------
+  // The [data-reveal-img] observer now lives with the page's other
+  // scroll-reveals (reveal.js, which this page loads), lifted there when the
+  // news article became its third consumer. The reveal-fx CSS stays in
+  // home-c.css.
 
   // ---- 3c. Word-cascade text reveals ([data-reveal-words]) ---------------
   // Promoted from the approved Prose experiment: each word is wrapped in a

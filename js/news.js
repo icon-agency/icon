@@ -183,25 +183,9 @@
     });
   }
 
-  /* ---- 3. media clip + scale reveals -------------------------------------
-     The homepage's [data-reveal-img] observer, same thresholds: figures wear
-     the shared .media-reveal primitive (its styles ship in the global build)
-     and open up-and-right from the bottom-left corner as they scroll in. */
-  var figs = Array.prototype.slice.call(document.querySelectorAll("[data-reveal-img]"));
-  if (figs.length) {
-    if (!("IntersectionObserver" in window)) {
-      figs.forEach(function (el) { el.classList.add("is-revealed"); });
-    } else {
-      var figIO = new IntersectionObserver(function (entries) {
-        entries.forEach(function (e) {
-          if (!e.isIntersecting) return;
-          e.target.classList.add("is-revealed");
-          figIO.unobserve(e.target);
-        });
-      }, { threshold: 0.18, rootMargin: "0px 0px -8% 0px" });
-      figs.forEach(function (el) { figIO.observe(el); });
-    }
-  }
+  /* ---- 3. media clip + scale reveals — MOVED to js/reveal.js ------------
+     The [data-reveal-img] observer was lifted to reveal.js (loaded by every
+     page) when the news article became its third consumer. */
 
   /* ---- 4. scroll-velocity lean -------------------------------------------
      The homepage card lean (home-c.js 3e), ported without GSAP: sample scroll

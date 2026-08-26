@@ -17,9 +17,10 @@ The workhorse. `src/utilities/animations.css` owns a simple opacity +
 rises on a stagger (the hero lockup's gesture, packaged; worn by the two
 "News & Insights" mastheads). `js/reveal.js` is the only JS: an
 IntersectionObserver that adds `.is-visible` once per element — and the same
-file drives the **hairline draw**, adding `.is-drawn` to `[data-rule]` /
-`[data-rule-host]` lines so they grow from their left edge (the CSS lives in
-`utilities/rules.css`).
+file drives the **hairline draw** (`.is-drawn` on `[data-rule]` /
+`[data-rule-host]`; CSS in `utilities/rules.css`) and the **media reveals**
+(`.is-revealed` on `[data-reveal-img]` frames wearing `.media-reveal`) —
+both lifted here from per-page copies once a third page needed them.
 
 Used on `homeC`, `news`, `work` and `work-article`. (The design-system index
 deliberately loads no page JS — its inline demos show the genuine no-JS state.)
@@ -39,8 +40,7 @@ The homepage's choreography lives in **three** files:
 - **`js/home-c.js`** — one IIFE, sections numbered in the file:
   Lenis smooth scroll (1) · hero stack-takeover: preload → card pile → viewport
   takeover → reel with cross-fades and Ken Burns stills (2) · header inversion
-  over the hero (2b) · triggered headline exit (2c) · `.media-reveal`
-  crop-zoom image reveals via IO (3) · word-cascade text reveals
+  over the hero (2b) · triggered headline exit (2c) · word-cascade text reveals
   (`[data-reveal-words]`, 3c) · the intro filmstrip — GSAP-ticker marquee,
   drag with momentum, hover-stall, DRAG badge (3d) · scroll-velocity card lean
   (3e) · cursor tilt on work/news cards (3f) · the clients logo marquee —

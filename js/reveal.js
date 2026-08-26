@@ -43,6 +43,29 @@
    * content, and re-drawing it every time it re-enters would make the page
    * feel like it was still loading. Unobserved once drawn.
    */
+  /* Media clip + scale reveals — the shared .media-reveal primitive
+   * ([data-reveal-img] frames whose media opens up-and-right on scroll-in;
+   * styles in utilities/home-c.css). Lifted here at its THIRD consumer:
+   * js/home-c.js and js/news.js each carried this identical observer for
+   * their own page, and the news article template made it three — this file
+   * is where every page's scroll-reveals already live. Same thresholds the
+   * copies used. Latched, like everything here. */
+  var figEls = Array.prototype.slice.call(document.querySelectorAll("[data-reveal-img]"));
+  if (figEls.length) {
+    if (!("IntersectionObserver" in window)) {
+      figEls.forEach(function (el) { el.classList.add("is-revealed"); });
+    } else {
+      var figIO = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (!e.isIntersecting) return;
+          e.target.classList.add("is-revealed");
+          figIO.unobserve(e.target);
+        });
+      }, { threshold: 0.18, rootMargin: "0px 0px -8% 0px" });
+      figEls.forEach(function (el) { figIO.observe(el); });
+    }
+  }
+
   var ruleEls = Array.prototype.slice.call(
     document.querySelectorAll("[data-rule], [data-rule-host]")
   );
