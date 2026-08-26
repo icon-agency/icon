@@ -85,14 +85,13 @@
                 <li><a class="ds-nav__link" href="#hero">Hero</a></li>
                 <li><a class="ds-nav__link" href="#intro">Intro statement</a></li>
                 <li><a class="ds-nav__link" href="#news-article">News article</a></li>
-                <!-- Phase 2 — uncomment each entry as its section ships:
-                <li><a class="ds-nav__link" href="#header">Site header</a></li>
+                <li><a class="ds-nav__link" href="#site-header">Site header</a></li>
                 <li><a class="ds-nav__link" href="#work">Work grid</a></li>
                 <li><a class="ds-nav__link" href="#clients">Clients marquee</a></li>
-                <li><a class="ds-nav__link" href="#news">News editorial stack</a></li>
-                <li><a class="ds-nav__link" href="#arrow-link">Arrow link</a></li>
+                <li><a class="ds-nav__link" href="#news-stack">News — cards &amp; stack</a></li>
+                <li><a class="ds-nav__link" href="#invitations">Invitations &amp; links</a></li>
                 <li><a class="ds-nav__link" href="#primitives">Reveal primitives</a></li>
-                -->
+                <li><a class="ds-nav__link" href="#site-footer">Global footer</a></li>
               </ul>
             </div>
           </details>
@@ -129,7 +128,7 @@
               <p class="ds-category__note">
                 Every design value flows through a token. Raw colour values exist in exactly one file
                 (<code class="ds-code">src/theme/colors.css</code>); type, spacing, radius and motion are
-                Tailwind v4 <code class="ds-code">@theme</code> custom properties in <code class="ds-code">src/theme/</code>.
+                type, spacing, radius and motion are Tailwind v4 <code class="ds-code">@theme</code> custom properties in <code class="ds-code">src/theme/</code>, with the newest tokens — the voice roles, the fluid <code class="ds-code">--space</code> ramp, <code class="ds-code">--gutter-page</code> and <code class="ds-code">--rule</code> — as plain <code class="ds-code">:root</code> properties consumed by component CSS rather than generated utilities.
               </p>
             </div>
 
@@ -137,15 +136,13 @@
               <h3 class="ds-section__title">Colours</h3>
               <p class="ds-section__intro">
                 Chips below are painted with the live tokens, so they re-resolve when the theme flips —
-                use the toggle (bottom-right) to inspect the dark palette. Values noted as text are the
-                light-theme values; dark values in brackets. Brand aliases invert in dark;
-                <code class="ds-code">--color-brand-blue</code> deliberately never does.
+                use the toggle (bottom-right), which now cycles THREE themes: light → dark (<code class="ds-code">.dark</code>) → blue (<code class="ds-code">.theme-blue</code>, a brand-blue page with white ink). Values noted as text are the light-theme values; dark values in brackets. Brand aliases invert in dark and flip to white on blue; <code class="ds-code">--color-brand-blue</code> deliberately never re-themes.
               </p>
 
               <div class="ds-group">
                 <h4 class="ds-group__title">Brand</h4>
                 <ul class="ds-swatches">
-                  <li class="ds-swatch"><div class="ds-swatch__chip bg-icon-black"></div><div class="ds-swatch__meta"><span class="ds-swatch__name">Icon black</span><span class="ds-swatch__token">--color-icon-black</span><span class="ds-swatch__value">#0d0d0d (dark: #f5f5f5)</span></div></li>
+                  <li class="ds-swatch"><div class="ds-swatch__chip bg-icon-black"></div><div class="ds-swatch__meta"><span class="ds-swatch__name">Icon black</span><span class="ds-swatch__token">--color-icon-black</span><div class="ds-group"><h4 class="ds-group__title">Rules — THE hairline</h4><p class="ds-group__note">Every divider on the site is <code class="ds-code">1px solid var(--rule)</code> and nothing else — no ad-hoc alphas. <code class="ds-code">--rule</code> follows the theme's border token on ordinary surfaces; a component sitting on a brand or near-black panel re-points it at <code class="ds-code">--rule-on-color</code> (28% white — the same value the blue theme already uses for <code class="ds-code">--border</code>), so the weight reads the same on every ground. Deliberately a plain, unregistered property: the registered <code class="ds-code">--color-*</code> aliases resolve at <code class="ds-code">:root</code> and inherit their resolved value, so a component-level override of those would silently do nothing (see LESSONS.md). Thickness and the draw-in entrance are <code class="ds-code">--rule-weight</code> / <code class="ds-code">--rule-draw-dur</code> in <code class="ds-code">src/utilities/rules.css</code>.</p></div></div></li>
                   <li class="ds-swatch"><div class="ds-swatch__chip bg-icon-grey"></div><div class="ds-swatch__meta"><span class="ds-swatch__name">Icon grey</span><span class="ds-swatch__token">--color-icon-grey</span><span class="ds-swatch__value">icon-black @ 80%</span></div></li>
                   <li class="ds-swatch"><div class="ds-swatch__chip bg-icon-blue"></div><div class="ds-swatch__meta"><span class="ds-swatch__name">Icon blue</span><span class="ds-swatch__token">--color-icon-blue</span><span class="ds-swatch__value">#0000ff (dark: white @ 80%)</span></div></li>
                 </ul>
@@ -153,11 +150,20 @@
 
               <div class="ds-group">
                 <h4 class="ds-group__title">Fixed — never re-theme</h4>
+                <p class="ds-group__note">
+                  ONE black and ONE blue. The raws (<code class="ds-code">--black</code> #0d0d0d,
+                  <code class="ds-code">--blue</code> #0000ff) are the single source for every
+                  black-ish and blue-ish role: the theming <code class="ds-code">--icon-*</code>
+                  tokens above read them in light and override per theme; the fixed roles below
+                  read them and never flip. The system previously carried three of each &mdash;
+                  two hand-synced duplicate literals and a shader blue that had drifted to its
+                  own #142cfe &mdash; consolidated Aug 2026. <code class="ds-code">shader-blue</code>
+                  survives as a ROLE name (the menu/footer shader) wearing the one blue.
+                </p>
                 <ul class="ds-swatches">
                   <li class="ds-swatch"><div class="ds-swatch__chip bg-white"></div><div class="ds-swatch__meta"><span class="ds-swatch__name">White</span><span class="ds-swatch__token">--color-white</span><span class="ds-swatch__value">#ffffff</span></div></li>
-                  <li class="ds-swatch"><div class="ds-swatch__chip bg-black"></div><div class="ds-swatch__meta"><span class="ds-swatch__name">Black</span><span class="ds-swatch__token">--color-black</span><span class="ds-swatch__value">#000000</span></div></li>
-                  <li class="ds-swatch"><div class="ds-swatch__chip bg-brand-blue"></div><div class="ds-swatch__meta"><span class="ds-swatch__name">Brand blue</span><span class="ds-swatch__token">--color-brand-blue</span><span class="ds-swatch__value">#0000ff — reveal swipe, promo card</span></div></li>
-                  <li class="ds-swatch"><div class="ds-swatch__chip bg-shader-blue"></div><div class="ds-swatch__meta"><span class="ds-swatch__name">Shader blue</span><span class="ds-swatch__token">--color-shader-blue</span><span class="ds-swatch__value">#142cfe — menu / footer shader</span></div></li>
+                  <li class="ds-swatch"><div class="ds-swatch__chip bg-black"></div><div class="ds-swatch__meta"><span class="ds-swatch__name">Black</span><span class="ds-swatch__token">--color-black &rarr; --black</span><span class="ds-swatch__value">#0d0d0d &mdash; the one black (was #000)</span></div></li>
+                  <li class="ds-swatch"><div class="ds-swatch__chip bg-brand-blue"></div><div class="ds-swatch__meta"><span class="ds-swatch__name">Brand blue</span><span class="ds-swatch__token">--color-brand-blue &rarr; --blue</span><span class="ds-swatch__value">the one blue, fixed &mdash; reveal swipe, promo card, shader role</span></div></li>
                 </ul>
               </div>
 
@@ -177,14 +183,16 @@
                   <li class="ds-swatch"><div class="ds-swatch__chip bg-muted-foreground"></div><div class="ds-swatch__meta"><span class="ds-swatch__name">Muted foreground</span><span class="ds-swatch__token">--color-muted-foreground</span><span class="ds-swatch__value">secondary text</span></div></li>
                 </ul>
               </div>
+            
+              <div class="ds-group"><h4 class="ds-group__title">Rules — THE hairline</h4><p class="ds-group__note">Every divider on the site is <code class="ds-code">1px solid var(--rule)</code> and nothing else — no ad-hoc alphas. <code class="ds-code">--rule</code> follows the theme's border token on ordinary surfaces; a component sitting on a brand or near-black panel re-points it at <code class="ds-code">--rule-on-color</code> (28% white — the same value the blue theme already uses for <code class="ds-code">--border</code>), so the weight reads the same on every ground. Deliberately a plain, unregistered property: the registered <code class="ds-code">--color-*</code> aliases resolve at <code class="ds-code">:root</code> and inherit their resolved value, so a component-level override of those would silently do nothing (see LESSONS.md). Thickness and the draw-in entrance are <code class="ds-code">--rule-weight</code> / <code class="ds-code">--rule-draw-dur</code> in <code class="ds-code">src/utilities/rules.css</code>.</p></div>
+            
+              <p class="ds-group__note">Theme-aware component roles also live in <code class="ds-code">colors.css</code> and are overridden per theme: <code class="ds-code">--nav-bg-scrolled</code> (the frosted nav pill), <code class="ds-code">--pager-surface</code> / <code class="ds-code">--pager-surface-strong</code> (pager prev + status pill), and the work-article accent pair <code class="ds-code">--work-article-text</code> / <code class="ds-code">--work-article-bg</code> (per-route override in the v0 build).</p>
             </section>
 
             <section class="ds-section" id="typography">
               <h3 class="ds-section__title">Typography</h3>
               <p class="ds-section__intro">
-                Kumbh Sans (Google Fonts) carries the interface; Miller Text italic (Typekit kit
-                <code class="ds-code">bhv7yrj</code>) is the serif accent — "Make", "matters", every second
-                marquee client. Pixel readouts are measured live from the cascade, not typed in, so this
+                Kumbh Sans (Google Fonts) carries the interface; <li class="ds-swatch"><div class="ds-swatch__chip" style="background: var(--footer-bg)"></div><div class="ds-swatch__meta"><span class="ds-swatch__name">Footer panel</span><span class="ds-swatch__token">--footer-bg</span><span class="ds-swatch__value">#0d0d0d — fixed in every theme; the SAME literal as light icon-black on purpose, but never an alias (aliasing it flipped the whole footer white in dark — caught live). --footer-ink #ffffff, --footer-muted white @ 55%.</span></div></li> Pixel readouts are measured live from the cascade, not typed in, so this
                 panel cannot drift from the real scale.
               </p>
 
@@ -242,34 +250,36 @@
               <div class="ds-group">
                 <h4 class="ds-group__title">Wrapping &amp; the lockup rule</h4>
                 <p class="ds-group__note">
-                  <code class="ds-code">text-wrap: pretty</code> is the default on all content;
-                  <code class="ds-code">balance</code> only where asked for (currently the work titles).
+                  <p class="ds-group__note">Theme-aware component roles also live in <code class="ds-code">colors.css</code> and are overridden per theme: <code class="ds-code">--nav-bg-scrolled</code> (the frosted nav pill), <code class="ds-code">--pager-surface</code> / <code class="ds-code">--pager-surface-strong</code> (pager prev + status pill), and the work-article accent pair <code class="ds-code">--work-article-text</code> / <code class="ds-code">--work-article-bg</code> (per-route override in the v0 build).</p>
                   The hero lockup's caps are sized so the WHAT/MATTERS letter height matches the ICON
                   wordmark's letter height at each logo breakpoint — do not grow the lockup for wide
                   screens; the logo caps at 1536px, so the lockup does too.
                 </p>
               </div>
+            
+              <div class="ds-group"><h4 class="ds-group__title">Voice roles — reach for these before inventing a size</h4><p class="ds-group__note">Three named voices carry most of the canonical pages' running text. <code class="ds-code">--voice-mid</code> — THE "sentence" size (hero client label + counter, intro statement, expertise links, work tile titles, both "More" links, the footer's blurb / Subscribe / cities / socials): clamp(1.4rem, 2.1vw, 3.4rem), medium weight, −0.01em tracking, 1.2 line-height — titles and More links run one step heavier (semibold). <code class="ds-code">--voice-meta</code> — the quiet line under it (card categories and dates, work meta, footer place names, filter labels): clamp(1.0625rem, 1.1vw, 1.75rem). <code class="ds-code">--voice-display</code> — the big caps mastheads (WORK, NEWS &amp; INSIGHTS, LET'S TALK, the /news h1) AND the intro statement, one curve and literally one token (<code class="ds-code">.intro</code> aliases it, so the two can never drift): clamp(2.4rem, 5.6vw, 9rem), paired with <code class="ds-code">--voice-display-lh</code> (0.82) for stacked caps and <code class="ds-code">--voice-display-lh-sentence</code> (0.72) for the sentence-case mastheads. All three keep growing to the ~2545–2590px "4xl horizon" before capping. The display voice replaced a wordmark cap-height derivation (reasoning preserved in <code class="ds-code">src/theme/typography.css</code>); <code class="ds-code">--logo-h</code> survives for the wordmark ladder and the news lead's sticky offset.</p></div>
+            
+              <div class="ds-specimen"><span class="ds-specimen__label">--card-subtitle</span><span class="ds-specimen__sample ds-fs-card-sub" data-type-px>Card subtitle</span><span class="ds-specimen__px"></span></div>
             </section>
 
             <section class="ds-section" id="spacing">
               <h3 class="ds-section__title">Spacing &amp; layout</h3>
               <p class="ds-section__intro">
                 Named spacing keys generate utilities (<code class="ds-code">p-md</code>,
-                <code class="ds-code">gap-lg</code>) alongside Tailwind's numeric scale. Fluid section rhythm
-                and the container live as <code class="ds-code">:root</code> tokens consumed by component CSS.
+                <code class="ds-code">gap-lg</code>) alongside Tailwind's numeric scale. <span class="ds-swatch__value">#0d0d0d — the footer's black, promoted to THE brand black (dark: #f5f5f5)</span>
               </p>
 
               <div class="ds-group">
                 <h4 class="ds-group__title">Named scale</h4>
-                <div class="ds-space-row"><span class="ds-specimen__label">--spacing-3xs</span><div><div class="ds-space-row__bar ds-w-3xs"></div></div><span class="ds-specimen__px">2px</span></div>
-                <div class="ds-space-row"><span class="ds-specimen__label">--spacing-2xs</span><div><div class="ds-space-row__bar ds-w-2xs"></div></div><span class="ds-specimen__px">4px</span></div>
-                <div class="ds-space-row"><span class="ds-specimen__label">--spacing-xs</span><div><div class="ds-space-row__bar ds-w-xs"></div></div><span class="ds-specimen__px">8px</span></div>
-                <div class="ds-space-row"><span class="ds-specimen__label">--spacing-sm</span><div><div class="ds-space-row__bar ds-w-sm"></div></div><span class="ds-specimen__px">12px</span></div>
-                <div class="ds-space-row"><span class="ds-specimen__label">--spacing-md</span><div><div class="ds-space-row__bar ds-w-md"></div></div><span class="ds-specimen__px">16px</span></div>
-                <div class="ds-space-row"><span class="ds-specimen__label">--spacing-lg</span><div><div class="ds-space-row__bar ds-w-lg"></div></div><span class="ds-specimen__px">24px</span></div>
-                <div class="ds-space-row"><span class="ds-specimen__label">--spacing-xl</span><div><div class="ds-space-row__bar ds-w-xl"></div></div><span class="ds-specimen__px">32px</span></div>
-                <div class="ds-space-row"><span class="ds-specimen__label">--spacing-2xl</span><div><div class="ds-space-row__bar ds-w-2xl"></div></div><span class="ds-specimen__px">48px</span></div>
-                <div class="ds-space-row"><span class="ds-specimen__label">--spacing-3xl</span><div><div class="ds-space-row__bar ds-w-3xl"></div></div><span class="ds-specimen__px">64px</span></div>
+                <div class="ds-space-row"><span class="ds-specimen__label">--spacing-3xs</span><div><div class="ds-space-row__bar ds-w-3xs"></div></div><span class="ds-specimen__px"></span></div>
+                <div class="ds-space-row"><span class="ds-specimen__label">--spacing-2xs</span><div><div class="ds-space-row__bar ds-w-2xs"></div></div><span class="ds-specimen__px"></span></div>
+                <div class="ds-space-row"><span class="ds-specimen__label">--spacing-xs</span><div><div class="ds-space-row__bar ds-w-xs"></div></div><span class="ds-specimen__px"></span></div>
+                <div class="ds-space-row"><span class="ds-specimen__label">--spacing-sm</span><div><div class="ds-space-row__bar ds-w-sm"></div></div><span class="ds-specimen__px"></span></div>
+                <div class="ds-space-row"><span class="ds-specimen__label">--spacing-md</span><div><div class="ds-space-row__bar ds-w-md"></div></div><span class="ds-specimen__px"></span></div>
+                <div class="ds-space-row"><span class="ds-specimen__label">--spacing-lg</span><div><div class="ds-space-row__bar ds-w-lg"></div></div><span class="ds-specimen__px"></span></div>
+                <div class="ds-space-row"><span class="ds-specimen__label">--spacing-xl</span><div><div class="ds-space-row__bar ds-w-xl"></div></div><span class="ds-specimen__px"></span></div>
+                <div class="ds-space-row"><span class="ds-specimen__label">--spacing-2xl</span><div><div class="ds-space-row__bar ds-w-2xl"></div></div><span class="ds-specimen__px"></span></div>
+                <div class="ds-space-row"><span class="ds-specimen__label">--spacing-3xl</span><div><div class="ds-space-row__bar ds-w-3xl"></div></div><span class="ds-specimen__px"></span></div>
               </div>
 
               <div class="ds-group">
@@ -286,13 +296,17 @@
                   <thead><tr><th>Token</th><th>Value</th><th>Role</th></tr></thead>
                   <tbody>
                     <tr><td><code>--container-max</code></td><td>90rem</td><td>site-wide content cap (not on homepage)</td></tr>
-                    <tr><td><code>--container-pad</code></td><td>clamp(1.5rem, 4vw, 4rem)</td><td>side gutter (homepage raises the cap to 7.5rem)</td></tr>
+                    <tr><td><code>--container-pad</code></td><td>clamp(1.5rem, 4vw, 4rem)</td><td>side gutter (the homepage — and its adjacent footer, which sits outside <code>&lt;main&gt;</code> and cannot inherit it — re-declares it as clamp(1.5rem, 4.2vw, 7.5rem): ~60px @ 1440 → 120px cap)</td></tr>
                     <tr><td><code>--grid-gutter</code></td><td>clamp(1rem, 2.2vw, 3rem)</td><td>homepage 12-column gutter</td></tr>
                     <tr><td><code>--space-section</code></td><td>clamp(4rem, 8vw, 12rem)</td><td>vertical rhythm between major sections</td></tr>
                     <tr><td><code>--space-section-sm</code></td><td>clamp(2rem, 5vw, 6rem)</td><td>tighter section rhythm</td></tr>
                   </tbody>
                 </table>
               </div>
+            
+              <div class="ds-group"><h4 class="ds-group__title">Fluid ramp — one slope family</h4><p class="ds-group__note">Every margin/padding/gap picks a step from <code class="ds-code">--space-3xs</code> … <code class="ds-code">--space-2xl</code> instead of inventing its own clamp — previously ~18 ad-hoc slopes (several in vh, which collapsed on wide-short screens) froze by ~1400px while the type kept growing. The ramp's steps share a slope family and all reach their cap at ~2300px, so space and type grow together on big monitors. Global <code class="ds-code">:root</code>, not page-scoped, because the footer consumes it from OUTSIDE <code class="ds-code">&lt;main&gt;</code> — an undefined var() there silently invalidates whole shorthands.</p></div>
+            
+              <tr><td><code>--gutter-page</code></td><td>clamp(1rem, 3vw, 3rem)</td><td>full-bleed page gutter — the edge padding a viewport-wide section carries when it skips the capped container (listings, articles, the home work section); the same literal had spread across eight files before it was named</td></tr>
             </section>
 
             <section class="ds-section" id="radius">
@@ -302,11 +316,11 @@
                 <code class="ds-code">--radius-icon</code> used on every media frame and card.
               </p>
               <div class="ds-radius-row">
-                <div class="ds-radius-chip"><div class="ds-radius-chip__box ds-r-sm"></div>--radius-sm · 6px</div>
-                <div class="ds-radius-chip"><div class="ds-radius-chip__box ds-r-md"></div>--radius-md · 8px</div>
-                <div class="ds-radius-chip"><div class="ds-radius-chip__box ds-r-lg"></div>--radius-lg · 10px</div>
-                <div class="ds-radius-chip"><div class="ds-radius-chip__box ds-r-xl"></div>--radius-xl · 14px</div>
-                <div class="ds-radius-chip"><div class="ds-radius-chip__box ds-r-icon"></div>--radius-icon · 4px</div>
+                <div class="ds-radius-chip"><div class="ds-radius-chip__box ds-r-sm"></div><span class="ds-specimen__label">--radius-sm</span><span class="ds-specimen__px"></span></div>
+                <div class="ds-radius-chip"><div class="ds-radius-chip__box ds-r-md"></div><span class="ds-specimen__label">--radius-md</span><span class="ds-specimen__px"></span></div>
+                <div class="ds-radius-chip"><div class="ds-radius-chip__box ds-r-lg"></div><span class="ds-specimen__label">--radius-lg</span><span class="ds-specimen__px"></span></div>
+                <div class="ds-radius-chip"><div class="ds-radius-chip__box ds-r-xl"></div><span class="ds-specimen__label">--radius-xl</span><span class="ds-specimen__px"></span></div>
+                <div class="ds-radius-chip"><div class="ds-radius-chip__box ds-r-icon"></div><span class="ds-specimen__label">--radius-icon</span><span class="ds-specimen__px"></span></div>
               </div>
             </section>
 
@@ -314,18 +328,14 @@
               <h3 class="ds-section__title">Motion</h3>
               <p class="ds-section__intro">
                 Three easings and four durations cover the interface. Hover a row to run its easing.
-                Policy: scroll-linked movement runs on the compositor via CSS scroll-driven animations
-                (<code class="ds-code">animation-timeline</code>) — never a scroll handler; one-shot entrances
-                are class-triggered transitions so they always play out in full; everything is
-                reduced-motion guarded. GSAP (SplitText) and Lenis are page-level enhancements on the
-                homepage, not requirements.
+                <code class="ds-code">text-wrap: balance</code> is global on <code class="ds-code">h1</code>–<code class="ds-code">h4</code>; body copy (<code class="ds-code">p</code>, <code class="ds-code">li</code>, <code class="ds-code">dd</code>) gets <code class="ds-code">pretty</code> — both set once in <code class="ds-code">src/base/typography.css</code>. Do not re-apply per component; the base rule covers every element.
               </p>
 
               <div class="ds-group">
                 <h4 class="ds-group__title">Easings</h4>
-                <div class="ds-ease-row" tabindex="0"><span class="ds-specimen__label">--ease-standard</span><div class="ds-ease-row__track"><div class="ds-ease-row__dot ease-standard"></div></div><span class="ds-specimen__px">cubic-bezier(.4, 0, .2, 1)</span></div>
-                <div class="ds-ease-row" tabindex="0"><span class="ds-specimen__label">--ease-decelerate</span><div class="ds-ease-row__track"><div class="ds-ease-row__dot ease-decelerate"></div></div><span class="ds-specimen__px">cubic-bezier(0, 0, .2, 1)</span></div>
-                <div class="ds-ease-row" tabindex="0"><span class="ds-specimen__label">--ease-accelerate</span><div class="ds-ease-row__track"><div class="ds-ease-row__dot ease-accelerate"></div></div><span class="ds-specimen__px">cubic-bezier(.4, 0, 1, 1)</span></div>
+                <div class="ds-ease-row" tabindex="0"><span class="ds-specimen__label">--ease-standard</span><div class="ds-ease-row__track"><div class="ds-ease-row__dot ease-standard"></div></div><span class="ds-specimen__px" data-live-token="--ease-standard"></span></div>
+                <div class="ds-ease-row" tabindex="0"><span class="ds-specimen__label">--ease-decelerate</span><div class="ds-ease-row__track"><div class="ds-ease-row__dot ease-decelerate"></div></div><span class="ds-specimen__px" data-live-token="--ease-decelerate"></span></div>
+                <div class="ds-ease-row" tabindex="0"><span class="ds-specimen__label">--ease-accelerate</span><div class="ds-ease-row__track"><div class="ds-ease-row__dot ease-accelerate"></div></div><span class="ds-specimen__px" data-live-token="--ease-accelerate"></span></div>
               </div>
 
               <div class="ds-group">
@@ -333,13 +343,17 @@
                 <table class="ds-table">
                   <thead><tr><th>Token</th><th>Value</th><th>Use</th></tr></thead>
                   <tbody>
-                    <tr><td><code>--duration-fast</code></td><td>150ms</td><td>hovers, small state flips</td></tr>
-                    <tr><td><code>--duration-normal</code></td><td>300ms</td><td>most transitions (nav, theme fades)</td></tr>
-                    <tr><td><code>--duration-slow</code></td><td>500ms</td><td>large moves, staged entrances</td></tr>
-                    <tr><td><code>--duration-slower</code></td><td>1000ms</td><td>hero-scale choreography</td></tr>
+                    <tr><td><code>--duration-fast</code></td><td data-live-token="--duration-fast"></td><td>hovers, small state flips</td></tr>
+                    <tr><td><code>--duration-normal</code></td><td data-live-token="--duration-normal"></td><td>most transitions (nav, theme fades)</td></tr>
+                    <tr><td><code>--duration-slow</code></td><td data-live-token="--duration-slow"></td><td>large moves, staged entrances</td></tr>
+                    <tr><td><code>--duration-slower</code></td><td data-live-token="--duration-slower"></td><td>hero-scale choreography</td></tr>
                   </tbody>
                 </table>
               </div>
+            
+              <tr><td><code>--transition-base</code></td><td>var(--duration-normal) var(--ease-standard)</td><td>the default composed transition</td></tr>
+<tr><td><code>--transition-slow</code></td><td>var(--duration-slow) var(--ease-standard)</td><td>large composed moves</td></tr>
+plus a note: decorative effect knobs also live in <code class="ds-code">motion.css</code> — <code class="ds-code">--overlay-blur</code> (24px), <code class="ds-code">--overlay-opacity</code> (0.5), <code class="ds-code">--video-filter</code> (saturate(0) contrast(2) brightness(0.7)) — consumed by <code class="ds-code">utilities/effects.css</code>.
             </section>
 
             <section class="ds-section" id="breakpoints">
@@ -358,7 +372,7 @@
                   <tr><td><code>xl</code></td><td>1280px</td><td>logo size step</td></tr>
                   <tr><td><code>2xl</code></td><td>1536px</td><td>logo + lockup cap</td></tr>
                   <tr><td><code>3xl</code></td><td>1920px</td><td>custom — wide screens</td></tr>
-                  <tr><td><code>4xl</code></td><td>2560px</td><td>custom — ultra-wide</td></tr>
+                  <tr><td><code>4xl</code></td><td>2560px</td><td>custom — ultra-wide; the "4xl horizon" where the fluid voices stop growing (<code>--voice-mid</code> caps ~2590px, <code>--voice-meta</code> ~2545px, <code>--voice-display</code> ~2570px; the <code>--space</code> ramp caps a little earlier, ~2300px)</td></tr>
                 </tbody>
               </table>
             </section>
@@ -538,6 +552,1304 @@
                 </p>
               </div>
             </section>
+
+            <section class="ds-section" id="site-header">
+              <h3 class="ds-section__title">Site header</h3>
+              <p class="ds-section__intro">
+                <code class="ds-code">.site-header</code> &mdash; the global chrome
+                (<code class="ds-code">src/components/site-header.css</code> +
+                <code class="ds-code">js/header.js</code>, a faithful port of v40-1&rsquo;s
+                <code class="ds-code">navigation-bar.tsx</code> / <code class="ds-code">site-logo.tsx</code>):
+                fixed wordmark top-left, desktop pill nav, mobile icon controls, full-screen mobile
+                menu. One token squares the corner &mdash; <code class="ds-code">--header-control</code>
+                (3.5rem) sizes the mobile button squares AND the wordmark, so the logo is always
+                exactly as tall as the buttons &mdash; and <code class="ds-code">--header-gutter</code>
+                (1.5&rarr;3rem across the breakpoints) is the header&rsquo;s own side gutter,
+                deliberately NOT <code class="ds-code">--container-pad</code>: the header hugs the edge
+                tighter than the content grid, and anything that must line up with the wordmark (the
+                hero&rsquo;s client name) reads the token instead of re-deriving the number. Scroll
+                drives the chrome: past 10px the pill frosts
+                (<code class="ds-code">--nav-bg-scrolled</code> + 24px backdrop blur,
+                <code class="ds-code">-webkit-</code> first per LESSONS); past 100px the hero-exit swap
+                &mdash; the wordmark slides up behind its own anchor&rsquo;s overflow mask (the hero
+                lockup&rsquo;s masked reveal, 0.62s decelerating; a ONE-SHOT transition toggled by JS
+                at the same line the glyph appears, so it runs to completion instead of scrubbing with
+                scroll and never strands half-way) while the home glyph expands into the pill and the
+                mobile home button fades in. Pages without <code class="ds-code">header.js</code>
+                simply keep the wordmark. The pill right-aligns from 768 to clear the wordmark and
+                centres from 900 &mdash; measured, not guessed: the 442px resting pill centred at 900
+                starts 24.5px clear of the wordmark&rsquo;s 204.5px right edge, and the wider 470px
+                state only exists once scrolled, when <code class="ds-code">.is-faded</code> has
+                already slid the wordmark away; 900 is also where the work rows and the intro band
+                pick up their grid, so it&rsquo;s the site&rsquo;s breakpoint, not a new one. Over a
+                dark hero a page toggles <code class="ds-code">.is-over-hero</code>
+                (<code class="ds-code">js/home-c.js</code>, IntersectionObserver) to force
+                light-on-dark whatever the theme, and the frosted pill dark-tints so the white links
+                still read.
+              </p>
+
+              <div class="ds-group">
+                <h4 class="ds-group__title">Live &mdash; the pill nav</h4>
+                <p class="ds-group__note">
+                  The real pill subtree wearing the production CSS &mdash; staged without its
+                  <code class="ds-code">.site-nav</code> positioner, which is
+                  <code class="ds-code">position: fixed</code> at z-index 10000 (and
+                  <code class="ds-code">display: none</code> below md): it would escape the dashed
+                  stage and sit over this page&rsquo;s own chrome. Two consequences to read honestly:
+                  the stage lends the pill its width (in the header it shrink-wraps as a flex item of
+                  the fixed row), and with no page JS this is the genuine top-of-page state &mdash;
+                  transparent background, home glyph collapsed to zero width (it only expands past
+                  the 100px line). The SERVICES drawer, though, is live right here: its open baseline
+                  is CSS <code class="ds-code">:has()</code> hover &mdash; hovering SERVICES frosts
+                  the pill (so the drawer reads even at the top of the page) and grows it downward
+                  via <code class="ds-code">grid-template-rows</code> 0fr&rarr;1fr, no magic
+                  max-height; the drawer inner pins to the row&rsquo;s width
+                  (<code class="ds-code">width: 0; min-width: 100%</code>) so a long submenu label can
+                  never widen the pill, and the link hovers (accent blue on a background tint) are
+                  CSS too. What&rsquo;s missing without <code class="ds-code">js/header.js</code>:
+                  the submenu rests at <code class="ds-code">--submenu-offset</code>&rsquo;s 0.5rem
+                  fallback instead of aligning under the SERVICES text, and the 150ms hover-intent
+                  close, aria-expanded sync, ArrowDown-into-drawer, first-tap-opens on touch,
+                  Esc-returns-focus and outside-click close are absent &mdash; as is the
+                  ResizeObserver that keeps the offset true while the home glyph expands (it observes
+                  only the ROW, since writing the offset resizes the drawer, not the row: no RO
+                  loop).
+                </p>
+                <div class="ds-demo ds-demo--home-context">
+                  <nav class="site-nav__pill" aria-label="Primary">
+                    <div class="site-nav__row">
+                      <a class="site-nav__home" href="#" aria-label="Home">
+                        <svg class="site-nav__home-glyph" viewBox="0 0 64 80" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                          <path d="M63.5616 80L44.3508 63.9521H16.1712C7.25435 63.9521 0 56.6747 0 47.7297V0H47.3305C56.3073 0 63.5616 7.27741 63.5616 16.2226V80ZM6.64572 6.6668V47.7297C6.64572 52.9987 10.9187 57.2853 16.1712 57.2853H46.7556L56.916 65.7731V16.2226C56.916 10.9534 52.6429 6.6668 47.3905 6.6668H6.64572Z" fill="currentColor" />
+                        </svg>
+                      </a>
+                      <ul class="site-nav__list">
+                        <li class="site-nav__item"><a class="site-nav__link" href="#">AGENCY</a></li>
+                        <li class="site-nav__item site-nav__item--has-submenu">
+                          <a
+                            class="site-nav__link"
+                            href="#"
+                            aria-haspopup="true"
+                            aria-expanded="false"
+                            aria-controls="nav-services"
+                            >SERVICES</a
+                          >
+                        </li>
+                        <li class="site-nav__item"><a class="site-nav__link" href="#">WORK</a></li>
+                        <li class="site-nav__item"><a class="site-nav__link" href="#">NEWS</a></li>
+                        <li class="site-nav__item"><a class="site-nav__link" href="#">CONTACT</a></li>
+                      </ul>
+                    </div>
+                    <div class="site-nav__drawer" id="nav-services">
+                      <div class="site-nav__drawer-inner">
+                        <ul class="site-nav__submenu-list">
+                          <li><a class="site-nav__submenu-link" href="#">Interdisciplinary</a></li>
+                          <li><a class="site-nav__submenu-link" href="#">Creative</a></li>
+                          <li><a class="site-nav__submenu-link" href="#">Communications</a></li>
+                          <li><a class="site-nav__submenu-link" href="#">Digital</a></li>
+                          <li><a class="site-nav__submenu-link" href="#">Reputation</a></li>
+                          <li><a class="site-nav__submenu-link" href="#">Behaviour change</a></li>
+                          <li><a class="site-nav__submenu-link" href="#">Production</a></li>
+                        </ul>
+                      </div>
+                    </div>
+                  </nav>
+                </div>
+                <p class="ds-demo__label">site-header &middot; .site-nav__pill &mdash; __row (__home glyph, collapsed at rest + __list of __links) + __drawer (__drawer-inner &gt; __submenu-list; labels authored natural-case, uppercased by CSS)</p>
+              </div>
+
+              <div class="ds-group">
+                <h4 class="ds-group__title">Why the rest is not demoed here</h4>
+                <p class="ds-group__note">
+                  Everything else about the header is viewport-fixed, scroll-driven chrome: the
+                  wordmark&rsquo;s masked slide-out and the glyph swap at the 100px line, the 10px
+                  frost, the centred-pill handover at 900, the over-hero inversion, and the
+                  full-screen mobile menu &mdash; hamburger&rarr;X, body scroll lock
+                  (<code class="ds-code">body.is-menu-open</code> also hides the page chrome that
+                  would show through), 0.5s staggered slide-ins on the v0 delays (0.2&ndash;0.7s),
+                  and a gradient standing in for the DEFERRED WebGL shader island.
+                  <code class="ds-code">position: fixed</code> cannot enter the bordered stage, and
+                  the choreography needs the real page scroll plus
+                  <code class="ds-code">js/header.js</code>. Open the real thing:
+                </p>
+                <a class="ds-thumb-link" href="templates/news-article.html">
+                  <figure>
+                    <figcaption>Open the News article template &rarr; scroll the header, at full scale</figcaption>
+                  </figure>
+                </a>
+              </div>
+
+              <div class="ds-group">
+                <h4 class="ds-group__title">Drupal (Canvas / SDC)</h4>
+                <p class="ds-group__note">
+                  Not a paragraph &mdash; per the source headers this is the THEME HEADER REGION.
+                  The desktop pill nav and the full-screen mobile menu render from ONE menu
+                  (<code class="ds-code">main</code>), and the logo is the site-branding block.
+                  <code class="ds-code">js/header.js</code> becomes
+                  <code class="ds-code">Drupal.behaviors.iconHeader</code>, attached via the
+                  <code class="ds-code">icon/header</code> library; the SERVICES submenu&rsquo;s open
+                  baseline stays CSS-driven, so only the scroll state and the mobile menu need JS at
+                  all. The WebGL shader behind the mobile menu is a DEFERRED island &mdash; the
+                  gradient stands in for now. Prototype paths: all four &ldquo;home&rdquo; controls
+                  (wordmark, pill glyph, mobile home button, menu logo) point at
+                  <code class="ds-code">../index.html</code> so the prototype browses under GitHub
+                  Pages&rsquo; <code class="ds-code">/icon/</code> prefix; in Drupal every one is the
+                  site front page, <code class="ds-code">href="/"</code> (see
+                  <code class="ds-code">docs/drupal-handoff.md</code>). Reduced motion switches off
+                  the wordmark and drawer transitions and the menu stagger.
+                </p>
+              </div>
+            </section>
+
+            <section class="ds-section" id="work">
+              <h3 class="ds-section__title">Work &mdash; editorial grid</h3>
+              <p class="ds-section__intro">
+                <code class="ds-code">.work</code> &mdash; the asymmetric editorial grid of project
+                tiles (<code class="ds-code">templates/homeC.html</code>, CSS in
+                <code class="ds-code">src/utilities/home-c.css</code>). A centred WORK masthead
+                (<code class="ds-code">--voice-display</code>, Kumbh Black 900,
+                <code class="ds-code">--tracking-caps</code> &mdash; no pin, no fade: it scrolls with
+                the page and enters on the standard word cascade) over rows snapped to the
+                intro&rsquo;s own 12 columns and <code class="ds-code">--grid-gutter</code>, closed by
+                a centred More link on the shared <code class="ds-code">.invite-arrow</code> at
+                <code class="ds-code">--voice-mid</code> &mdash; the size the footer&rsquo;s Subscribe
+                wears, because the site&rsquo;s standing invitations speak at one size (at half the
+                masthead it read as a second heading). At &ge;900px a split row pairs a 3/2
+                landscape with a taller 1/1 square, top-aligned
+                (<code class="ds-code">--tall-left</code> mirrors the pair);
+                <code class="ds-code">__item--wide</code> runs one 16/9 feature across all twelve
+                &mdash; 16/9 because it is the campaign film&rsquo;s own frame (measured: 1920&times;1080);
+                the old 21/9 cropped 24% off the top and bottom of every frame. Tablet
+                (768&ndash;899px) keeps split rows two-up but uniforms them to 4/3; mobile stacks a
+                single column of squares &mdash; the mixed ratios are a desktop composition device,
+                and stacked single-file they just read as an inconsistent list. Each tile is one
+                link: a <code class="ds-code">.work__figure</code> media frame
+                (<code class="ds-code">--radius-icon</code>, media oversized to 110% so the parallax
+                never exposes an edge) over a caption &mdash; the title in the mid voice, semibold,
+                <code class="ds-code">text-wrap: balance</code> (measured, not assumed:
+                <code class="ds-code">pretty</code> left all eight headlines byte-identical to
+                <code class="ds-code">auto</code>, orphans included; <code class="ds-code">balance</code>
+                fixed four of them and never added a line), with an inline icon-blue arrow that
+                always occupies its space so nothing reflows on hover &mdash; and the client name in
+                <code class="ds-code">--voice-meta</code> grey. Hover is pointer-only
+                (<code class="ds-code">hover: hover</code> &mdash; on touch, <code class="ds-code">:hover</code>
+                sticks after a tap): the mask draws in 1.6% (the frame closes on the image, the
+                image never moves), the media brightens 1.08, and the arrow fades + slides in.
+              </p>
+
+              <div class="ds-group">
+                <h4 class="ds-group__title">Live</h4>
+                <p class="ds-group__note">
+                  Real markup wearing the production CSS. This page loads no page JS, so this is
+                  the genuine no-JS state: the crop-zoom media reveals are gated on
+                  <code class="ds-code">.js-animations</code>, so images and films simply render
+                  visible (the videos autoplay from their own attributes), captions sit in place,
+                  and WORK / More render plainly with no word cascade. The CSS-only hover suite is
+                  fully honest here &mdash; mask draw-in, brighten, title arrow &mdash; but the
+                  cursor tilt rests flat: its <code class="ds-code">--mx</code>/<code class="ds-code">--my</code>
+                  writer (<code class="ds-code">js/home-c.js</code> 3f) is not loaded and the
+                  fallbacks are zero.
+                </p>
+                <div class="ds-demo ds-demo--home-context">
+                  <section class="work u-container" aria-label="Selected work">
+                    <h2 class="work__heading">Work</h2>
+
+                    <div class="work__row work__row--split">
+                      <a class="work__item" href="#" aria-label="Transforming the elephant in the room into conversations that change lives &mdash; PHN North Western Melbourne">
+                        <figure class="work__figure media-reveal">
+                          <video class="work__img" src="assets/video/NWMPHN_RAISEIT_30s_16-9_h264_2.mp4" autoplay loop muted playsinline preload="auto" aria-label="PHN North Western Melbourne &mdash; Raise It campaign film"></video>
+                        </figure>
+                        <div class="work__caption">
+                          <h2 class="work__title">Transforming the elephant in the room into conversations that change lives</h2>
+                          <span class="work__meta">PHN North Western Melbourne</span>
+                        </div>
+                      </a>
+                      <a class="work__item" href="#" aria-label="Changing CALD community conversations on protection visas &mdash; Permanent Protection Visa">
+                        <figure class="work__figure media-reveal">
+                          <img class="work__img" src="assets/work/PPV.jpg" alt="Permanent Protection Visa community campaign" />
+                        </figure>
+                        <div class="work__caption">
+                          <h2 class="work__title">Changing CALD community conversations on protection visas</h2>
+                          <span class="work__meta">Permanent Protection Visa</span>
+                        </div>
+                      </a>
+                    </div>
+
+                    <div class="work__row">
+                      <a class="work__item work__item--wide" href="#" aria-label="Celebrating movement in all its forms &mdash; The Athlete&rsquo;s Foot">
+                        <figure class="work__figure media-reveal">
+                          <video class="work__img" src="assets/video/Banner-Fit%20For%20Every%20Run.mp4" autoplay loop muted playsinline preload="auto" aria-label="The Athlete&rsquo;s Foot &mdash; Fit for every run campaign film"></video>
+                        </figure>
+                        <div class="work__caption">
+                          <h2 class="work__title">Celebrating movement in all its forms</h2>
+                          <span class="work__meta">The Athlete&rsquo;s Foot</span>
+                        </div>
+                      </a>
+                    </div>
+
+                    <div class="work__row work__row--split work__row--tall-left">
+                      <a class="work__item" href="#" aria-label="iCanQuit is more than breaking a habit&mdash;it&rsquo;s an identity transformation &mdash; Cancer Institute NSW">
+                        <figure class="work__figure media-reveal">
+                          <img class="work__img" src="assets/work/iCanQuit.png" alt="iCanQuit &mdash; Cancer Institute NSW" />
+                        </figure>
+                        <div class="work__caption">
+                          <h2 class="work__title">iCanQuit is more than breaking a habit&mdash;it&rsquo;s an identity transformation</h2>
+                          <span class="work__meta">Cancer Institute NSW</span>
+                        </div>
+                      </a>
+                      <a class="work__item" href="#" aria-label="Democracy Cards &ndash; pre-election public education campaign &mdash; Museum of Australian Democracy (MoAD)">
+                        <figure class="work__figure media-reveal">
+                          <img class="work__img" src="assets/work/Democracy-Cards-Tile.jpg" alt="Democracy Cards &mdash; Museum of Australian Democracy" />
+                        </figure>
+                        <div class="work__caption">
+                          <h2 class="work__title">Democracy Cards &ndash; pre-election public education campaign</h2>
+                          <span class="work__meta">Museum of Australian Democracy (MoAD)</span>
+                        </div>
+                      </a>
+                    </div>
+
+                    <p class="work__more-wrap">
+                      <a class="work__more invite-arrow" href="#" aria-label="More work">More</a>
+                    </p>
+                  </section>
+                </div>
+                <p class="ds-demo__label">work &middot; .work &mdash; __heading + __rows (--split | --split.--tall-left mirror | __item--wide feature) of __item links (__figure.media-reveal &gt; __img | __caption &gt; __title + __meta) + __more-wrap &gt; __more</p>
+              </div>
+
+              <div class="ds-group">
+                <h4 class="ds-group__title">Rows &amp; ratios</h4>
+                <table class="ds-table">
+                  <thead><tr><th>Row</th><th>&lt;768</th><th>768&ndash;899</th><th>&ge;900</th></tr></thead>
+                  <tbody>
+                    <tr><td><code>--split</code></td><td>stacked, 1/1</td><td>6+6, both 4/3</td><td>6+6 &mdash; 3/2 left, 1/1 right</td></tr>
+                    <tr><td><code>--split --tall-left</code></td><td>stacked, 1/1</td><td>6+6, both 4/3</td><td>6+6 &mdash; 1/1 left, 3/2 right</td></tr>
+                    <tr><td><code>__item--wide</code></td><td>stacked, 1/1</td><td>span 12, 16/9</td><td>span 12, 16/9</td></tr>
+                  </tbody>
+                </table>
+                <p class="ds-group__note">
+                  The 16/9 rule lives ONLY inside the &ge;768 media query, never the base layer:
+                  <code class="ds-code">.work__item--wide .work__figure</code> is (0,2,0) against the
+                  square rule&rsquo;s (0,1,0), so a base-layer copy would outrank the mobile square at
+                  every width and leave one 16/9 tile stranded in an otherwise square column.
+                </p>
+              </div>
+
+              <div class="ds-group">
+                <h4 class="ds-group__title">Parallax, lean &amp; tilt &mdash; why they are not demoed here</h4>
+                <p class="ds-group__note">
+                  One image, three property owners &mdash; the crop-zoom reveal drives
+                  <code class="ds-code">scale</code>, the scroll parallax drives
+                  <code class="ds-code">transform</code> (a &minus;3%&rarr;3% translate + 1.05 zoom on the
+                  frame&rsquo;s named view timeline <code class="ds-code">--work-media</code>,
+                  compositor-driven, never a scroll handler), the hover brighten drives
+                  <code class="ds-code">filter</code> &mdash; so all three compose on one element
+                  without fighting. The cursor tilt (&plusmn;2.2&deg;, <code class="ds-code">js/home-c.js</code>
+                  3f) therefore lands on the FRAME, never the image, fed by
+                  <code class="ds-code">--mx</code>/<code class="ds-code">--my</code> written on the ITEM
+                  and inherited down &mdash; declaring them on the frame would shadow the inherited
+                  value and pin the tilt at zero. The scroll-velocity lean (3e, gsap) rotates every
+                  tile up to 2.5&deg; with the sampled scroll speed (full lean at 2600px/s, decaying
+                  as the scroll settles, lerped only while the section is near the viewport) &mdash;
+                  capped low because a tile is about half the container wide, so a bigger angle
+                  swings its corners into the neighbour. All of it is tuned against the full-page
+                  document scroll; a scaled inline copy would misrepresent it. Open the real thing:
+                </p>
+                <a class="ds-thumb-link" href="templates/homeC.html">
+                  <figure>
+                    <figcaption>Open the Home template &rarr; Work, at full scale</figcaption>
+                  </figure>
+                </a>
+              </div>
+
+              <div class="ds-group">
+                <h4 class="ds-group__title">Drupal (Canvas / SDC)</h4>
+                <p class="ds-group__note">
+                  SDC <code class="ds-code">work</code>. Props: <code class="ds-code">heading</code>,
+                  <code class="ds-code">more_link</code> and the rows &mdash; the row layout
+                  (<code class="ds-code">split</code> / <code class="ds-code">split tall-left</code> /
+                  <code class="ds-code">wide</code>) is the single enum variant; each item carries
+                  media (image or campaign film), <code class="ds-code">title</code>,
+                  <code class="ds-code">client</code> and a url. Films render
+                  autoplay/loop/muted/playsinline with their own <code class="ds-code">aria-label</code>;
+                  each tile link&rsquo;s label joins title and client. Behaviours: the media
+                  crop-zoom (<code class="ds-code">[data-reveal-img]</code>) and caption rise
+                  (<code class="ds-code">[data-animate]</code>) are the shared
+                  <code class="ds-code">Drupal.behaviors.iconReveal</code>
+                  (<code class="ds-code">js/reveal.js</code>); the word cascade, scroll-velocity lean
+                  (3e, depends on gsap) and cursor tilt (3f, vanilla rAF, pointer devices only) map
+                  to <code class="ds-code">Drupal.behaviors.iconHome</code>. NB the similarly named
+                  <code class="ds-code">js/work.js</code> (<code class="ds-code">Drupal.behaviors.iconWork</code>)
+                  is the PROTOTYPE work listing&rsquo;s chrome &mdash; reveal swipe, section-title
+                  underline, <code class="ds-code">.project-card</code> hover-video &mdash; not part of
+                  this block. Reduced motion drops the figure&rsquo;s clip/tilt/transitions and both
+                  JS effects; the parallax is double-gated
+                  (<code class="ds-code">prefers-reduced-motion: no-preference</code> and
+                  <code class="ds-code">@supports (animation-timeline: view())</code>); no-JS renders
+                  media plainly &mdash; the hidden state exists only under
+                  <code class="ds-code">.js-animations</code>.
+                </p>
+              </div>
+            </section>
+
+            <section class="ds-section" id="clients">
+              <h3 class="ds-section__title">Clients &mdash; logo marquee</h3>
+              <p class="ds-section__intro">
+                <code class="ds-code">.clients</code> &mdash; the logo card marquee (zypsy.com
+                reference) that replaced the three-row mixed-serif <em>text</em> marquee, archived
+                verbatim (markup + CSS, <code class="ds-code">bk-</code> prefixed) in
+                <a href="experiments/clients-marquee-backup.html">Clients marquee &mdash; backup</a> so the
+                two can be judged side by side. Two full-bleed rows (<code class="ds-code">width: 100vw</code>
+                + the <code class="ds-code">margin-inline: calc(50% - 50vw)</code> trick) of uniform ~2:1
+                cards &mdash; the client list&rsquo;s first half over its second &mdash; counter-drifting at
+                the intro filmstrip&rsquo;s own pace and draggable like it. Each row is a seamless two-track
+                loop: two identical <code class="ds-code">.clients__track</code> lists abut (the second
+                <code class="ds-code">aria-hidden</code>, empty alts), the track&rsquo;s right padding keeps
+                the card rhythm across the join, and the travel is exactly one track width, so the seam is
+                invisible. Cards size from one height &mdash; <code class="ds-code">--client-card-h:
+                clamp(4.5rem, 7vw, 8.5rem)</code>, width &times;2.05 &mdash; so a row can never rag; the
+                pale ground is <code class="ds-code">color-mix</code> of 4% <code class="ds-code">--color-icon-black</code>
+                (halved from 8% &mdash; user call, Aug 2026: quieter cards, more page), so the dark and blue
+                themes get the same fraction of their own light ink instead of a hole. The rows stack on the
+                same <code class="ds-code">--space-2xs</code> gutter the cards use, so the band reads as one
+                grid drifting in layers. Wrap constraint: a single track must stay <strong>wider than any
+                viewport</strong> or the loop shows a gap &mdash; nine cards a side clear 4xl (2560px) by
+                ~4%; re-check that margin if the split ever drops below nine or the cards shrink.
+              </p>
+
+              <div class="ds-group">
+                <h4 class="ds-group__title">Live</h4>
+                <p class="ds-group__note">
+                  Real markup wearing the production CSS &mdash; one row of six logos here
+                  (production runs two counter-drifting rows of nine; nine a side is what clears a
+                  real 4xl viewport, per the wrap constraint above). This page loads no page JS or
+                  GSAP, so this is the genuine no-JS state &mdash; and for this component that state
+                  is <em>alive</em>: the CSS keyframe fallback
+                  (<code class="ds-code">clients-scroll</code>, 65s linear per loop) owns the motion,
+                  so the row genuinely drifts. It is <em>not</em> draggable &mdash; the grab cursor
+                  and 1:1 drag only arrive when <code class="ds-code">js/home-c.js</code> binds and
+                  stamps <code class="ds-code">.is-js-marquee</code>, which switches this keyframe
+                  off so the two mechanisms never both run &mdash; and the drift pace here is the
+                  keyframe&rsquo;s 65s-per-loop, not the engine&rsquo;s
+                  <code class="ds-code">STRIP_SPEED</code>. Under reduced motion the track stands
+                  still and the row becomes an ordinary native horizontal scroller
+                  (<code class="ds-code">overflow-x: auto</code>, scoped to
+                  <code class="ds-code">:not(.is-js-marquee)</code> because a live scrollbar would
+                  fight the engine&rsquo;s transform). The stage neutralises the section&rsquo;s
+                  real-viewport full-bleed.
+                </p>
+                <div class="ds-demo ds-demo--home-context">
+                  <section class="clients" aria-label="Selected clients">
+                    <div class="clients__scroller">
+                      <ul class="clients__track">
+                        <li class="client"><img class="client__logo" loading="lazy" src="assets/client-logos/meta.svg" alt="Meta" /></li>
+                        <li class="client"><img class="client__logo" loading="lazy" src="assets/client-logos/dcceew.svg" alt="Department of Climate Change, Energy, the Environment and Water" /></li>
+                        <li class="client"><img class="client__logo" loading="lazy" src="assets/client-logos/the-athletes-foot.svg" alt="The Athlete&rsquo;s Foot" /></li>
+                        <li class="client"><img class="client__logo" loading="lazy" src="assets/client-logos/beyond-blue.svg" alt="Beyond Blue" /></li>
+                        <li class="client"><img class="client__logo" loading="lazy" src="assets/client-logos/schneider-electric.svg" alt="Schneider Electric" /></li>
+                        <li class="client"><img class="client__logo" loading="lazy" src="assets/client-logos/moad.svg" alt="Museum of Australian Democracy" /></li>
+                      </ul>
+                      <ul class="clients__track" aria-hidden="true">
+                        <li class="client"><img class="client__logo" loading="lazy" src="assets/client-logos/meta.svg" alt="" /></li>
+                        <li class="client"><img class="client__logo" loading="lazy" src="assets/client-logos/dcceew.svg" alt="" /></li>
+                        <li class="client"><img class="client__logo" loading="lazy" src="assets/client-logos/the-athletes-foot.svg" alt="" /></li>
+                        <li class="client"><img class="client__logo" loading="lazy" src="assets/client-logos/beyond-blue.svg" alt="" /></li>
+                        <li class="client"><img class="client__logo" loading="lazy" src="assets/client-logos/schneider-electric.svg" alt="" /></li>
+                        <li class="client"><img class="client__logo" loading="lazy" src="assets/client-logos/moad.svg" alt="" /></li>
+                      </ul>
+                    </div>
+                  </section>
+                </div>
+                <p class="ds-demo__label">clients &middot; .clients &mdash; __scroller (+ --reverse for row 2) &rarr; 2 &times; __track (loop pair, second aria-hidden) of .client cards &rarr; mono-filtered .client__logo</p>
+              </div>
+
+              <div class="ds-group">
+                <h4 class="ds-group__title">Forced mono</h4>
+                <p class="ds-group__note">
+                  The logos are forced mono in CSS, and this is load-bearing, not taste: the source
+                  SVGs arrive in every brand colour there is, and two of them (CES Victoria, MARI
+                  Group) are filled <strong>white</strong> &mdash; invisible on this page without the
+                  filter. <code class="ds-code">filter: brightness(0)</code> on
+                  <code class="ds-code">.client__logo</code> flattens any fill &mdash; brand colour,
+                  black, white &mdash; to ink; <code class="ds-code">.dark</code> and
+                  <code class="ds-code">.theme-blue</code> add <code class="ds-code">invert(1)</code>
+                  to flip it light on their grounds, and the card ground re-themes on the same
+                  <code class="ds-code">--color-icon-black</code> token. Never &ldquo;fix&rdquo; a
+                  logo by recolouring its file &mdash; new SVGs drop in as exported.
+                </p>
+              </div>
+
+              <div class="ds-group">
+                <h4 class="ds-group__title">The upload rule</h4>
+                <p class="ds-group__note">
+                  One rule (<code class="ds-code">assets/client-logos/README.md</code>), so a new
+                  client is one upload with zero per-logo tuning, here and in Drupal: <strong>the
+                  component treats every file identically, so the file must carry nothing the
+                  component already owns.</strong> The CSS contract absorbs colour (the mono filter
+                  above) and size/aspect: the mark sits in a <em>fixed</em> 72%/52% box with
+                  <code class="ds-code">object-fit: contain</code> &mdash; deliberately not
+                  max-bounds, because <code class="ds-code">max-width</code>/<code class="ds-code">max-height</code>
+                  only cap and never scale <em>up</em>, so a small-numbered viewBox (MoAD&rsquo;s
+                  50&times;15, San Churro&rsquo;s 31&times;31) rendered as a stamp in the corner
+                  while Meta&rsquo;s 948 scaled down. The fixed box letterboxes every mark to the
+                  same stage &mdash; width rules the wide Australian Government crest lockups
+                  (DCCEEW, DSS run ~4:1 with fine text that needs the pixels), height the square and
+                  portrait marks &mdash; which makes the viewBox&rsquo;s <em>scale</em> genuinely
+                  irrelevant; only its <em>crop</em> matters. What the file must get right (the
+                  component cannot fix these): an SVG with a viewBox cropped tight to the artwork,
+                  no baked-in padding; true transparency for counterforms &mdash; detail cut out as
+                  mask/compound path, never painted white on top, because the mono filter flattens
+                  paint into a silhouette blob (<code class="ds-code">san-churro.svg</code> arrived
+                  like that and was reworked); paths only &mdash; text outlined, no
+                  <code class="ds-code">&lt;image&gt;</code>, no external references; kebab-case
+                  filename with the client&rsquo;s proper name as the <code class="ds-code">alt</code>.
+                </p>
+              </div>
+
+              <div class="ds-group">
+                <h4 class="ds-group__title">Drag &mdash; one shared phase (not in this demo)</h4>
+                <p class="ds-group__note">
+                  <code class="ds-code">js/home-c.js</code> (3g) gives the rows the intro
+                  filmstrip&rsquo;s drift + drag &mdash; the same
+                  <code class="ds-code">STRIP_SPEED</code> (55px/s, one constant read by both strips
+                  so &ldquo;they scroll at the same pace&rdquo; is true by construction, not by
+                  tuning), the same 1:1 drag, the same decaying momentum &mdash; but the two rows are
+                  <strong>one mechanism, not two</strong>: a single shared phase drives both, row 1
+                  reading it straight and row 2 negated. The
+                  <code class="ds-code">--reverse</code> class <em>is</em> that polarity &mdash; read
+                  as <code class="ds-code">animation-direction: reverse</code> by the CSS fallback
+                  and as &minus;1 by the engine, so the two mechanisms agree about which row is
+                  which. Everything asked of the pair falls out of that one number: at rest the rows
+                  counter-drift (one phase, two signs); dragging <em>either</em> row moves the other
+                  identically, mirrored, live &mdash; they cannot drift out of sync, because there is
+                  nothing to sync; a fling re-points the shared drift so both rows swap direction
+                  together (velocity for a real fling, net displacement for a slow carry, a tap
+                  changes nothing). Deliberately <em>not</em> the strip&rsquo;s hover-stall &mdash;
+                  pause-on-hover was removed from this marquee by request &mdash; nor its card-tilt
+                  machinery. <code class="ds-code">touch-action: pan-y</code> keeps vertical page
+                  scroll on touch, a &gt;6px drag is swallowed before it can land as a click (in case
+                  the cards ever become links), and the images carry
+                  <code class="ds-code">user-drag: none</code> so a native image ghost-drag
+                  can&rsquo;t steal the pointer. Reduced motion: no drift, but drag works and the
+                  mirror-link stands &mdash; user-initiated motion, the same footing as the drag
+                  itself.
+                </p>
+                <a class="ds-thumb-link" href="templates/homeC.html">
+                  <figure>
+                    <figcaption>Open the Home template &rarr; clients marquee, drag it at full scale</figcaption>
+                  </figure>
+                </a>
+              </div>
+
+              <div class="ds-group">
+                <h4 class="ds-group__title">Accessibility &mdash; the recorded WCAG 2.2.2 exception</h4>
+                <p class="ds-group__note">
+                  <code class="ds-code">docs/accessibility-checklist.md</code> records a known,
+                  <strong>open</strong> exception carried over from the text marquee: the marquee
+                  runs continuously with no pause control, and auto-motion longer than 5s is WCAG
+                  2.2.2 (Level A). Hover-pause was removed by request; a pause affordance is still
+                  the recommendation, and the final decision is to be recorded there and here when it
+                  lands. What does hold: <code class="ds-code">prefers-reduced-motion</code> stops
+                  the drift in both mechanisms (keyframe off; the engine zeroes its autoplay), with
+                  native horizontal scrolling as the no-JS fallback interaction; the duplicate loop
+                  tracks are <code class="ds-code">aria-hidden</code> with empty alts, so assistive
+                  tech hears each client exactly once; the section is
+                  <code class="ds-code">aria-label="Selected clients"</code> and every primary
+                  <code class="ds-code">alt</code> is the client&rsquo;s proper name.
+                </p>
+              </div>
+
+              <div class="ds-group">
+                <h4 class="ds-group__title">Drupal (Canvas / SDC)</h4>
+                <p class="ds-group__note">
+                  SDC <code class="ds-code">clients</code> (per the
+                  <code class="ds-code">src/utilities/home-c.css</code> header), fed by a
+                  <code class="ds-code">client</code> media type: one SVG file field + one name field
+                  (used as the <code class="ds-code">alt</code>); the template loop emits the card
+                  and the <code class="ds-code">aria-hidden</code> duplicate track. An editor uploads
+                  a file meeting the upload rule and types the name &mdash; nothing else. Validate
+                  the cheap half at upload (reject an SVG with no viewBox); counterforms and
+                  paths-only are export discipline, which is why they live in the README rather than
+                  in code. Pending SVGs &mdash; Equip Super, DFAT, Home Affairs, Melbourne Marathon,
+                  Brandon Capital, DITRDCA, Greater Western Water, Alcohol and Drug Foundation,
+                  Cancer Institute NSW, Cancer Council Victoria &mdash; join whichever row is shorter
+                  as one <code class="ds-code">&lt;li&gt;</code> each when their files land in
+                  <code class="ds-code">assets/client-logos/</code>. Behaviour js maps to
+                  <code class="ds-code">Drupal.behaviors.iconHomeC</code> (per the
+                  <code class="ds-code">js/home-c.js</code> header) &mdash; the shared-phase
+                  drift/drag is section 3g of that behaviour, no-JS / missing-gsap safe.
+                </p>
+              </div>
+            </section>
+
+            <section class="ds-section" id="news-stack">
+              <h3 class="ds-section__title">News &mdash; cards and stack</h3>
+              <p class="ds-section__intro">
+                <code class="ds-code">.news-card</code> (<code class="ds-code">src/components/news-card.css</code>)
+                &mdash; ONE news story card, shared by the homepage news section and the
+                <a href="templates/news.html">/news listing</a>. It was promoted out of the homepage page
+                layer the moment a second page needed it, so the two can never drift: same anatomy, same
+                hovers, same parallax, same JS hooks. Anatomy: a square tile on the left
+                (<code class="ds-code">aspect-ratio: 1 / 1</code>, <code class="ds-code">--radius-icon</code>
+                corner), text to its right with the title at the TOP and the meta on the tile&rsquo;s
+                BASELINE (<code class="ds-code">space-between</code>); the split is the mock&rsquo;s
+                390:425. The title budget is five lines
+                (<code class="ds-code">-webkit-line-clamp</code>) &mdash; the row&rsquo;s height is
+                max(tile, text), so an unclamped headline would grow the ROW and drop the meta off the
+                baseline; that breaks on content, not viewport, so real editor headlines would surface it
+                in Drupal rather than here. The hover arrow is a 1em box masked to the arrow-link glyph
+                and coloured by <code class="ds-code">--color-icon-blue</code>, flowing inline after the
+                title&rsquo;s last word &mdash; it always occupies its space
+                (<code class="ds-code">padding-inline-end: 1.5em</code> reserves it), so nothing reflows
+                on hover. Section chrome around the card differs per host: the homepage&rsquo;s
+                <code class="ds-code">.news</code> editorial stack
+                (<code class="ds-code">src/utilities/home-c.css</code>) and the listing&rsquo;s
+                <code class="ds-code">.news-list</code> pair grid
+                (<code class="ds-code">src/components/news-list.css</code>, behaviours in
+                <code class="ds-code">js/news.js</code>).
+              </p>
+
+              <div class="ds-group">
+                <h4 class="ds-group__title">Live</h4>
+                <p class="ds-group__note">
+                  Real markup wearing the production CSS, at two container widths &mdash; the two boxes
+                  ARE the demo, because this card is sized by its own box, not the viewport (next group).
+                  This page loads no page JS, so this is the genuine no-JS state: the
+                  <code class="ds-code">--mx</code>/<code class="ds-code">--my</code> cursor tilt never
+                  runs (the vars default to 0, so the frame rests flat) and the
+                  <code class="ds-code">.media-reveal</code> figure renders fully visible &mdash; its
+                  hidden state exists only under <code class="ds-code">html.js-animations</code>, the
+                  same guard the site ships. What does work here is the CSS: hovering draws the mask in
+                  (<code class="ds-code">clip-path</code> inset to 1.6%) and brightens the image
+                  (pointer devices only &mdash; on touch, <code class="ds-code">:hover</code> sticks
+                  after a tap), and the arrow fades and slides in after the title. One honest absence:
+                  the &plusmn;2% scroll parallax rides a named
+                  <code class="ds-code">--news-card</code> view timeline, which resolves against the
+                  nearest ancestor scrollport &mdash; and this bordered stage
+                  (<code class="ds-code">overflow-x: auto</code>) is itself a scroll container that
+                  never scrolls, so the image rests level at its midpoint. See it move on either
+                  template. The heading level inside the card is the host page&rsquo;s call &mdash;
+                  /news uses <code class="ds-code">h2</code>, the homepage
+                  <code class="ds-code">h3</code>; nothing in the component depends on the tag.
+                </p>
+                <div class="ds-demo ds-demo--home-context">
+                  <div>
+                    <a class="news-card" href="#">
+                      <figure class="news-card__figure media-reveal" data-reveal-img>
+                        <img class="news-card__img" loading="lazy" src="assets/News/Butterfly_BodyKind.jpg" alt="Three campaign talent standing together in a photography studio" />
+                      </figure>
+                      <div class="news-card__body">
+                        <h3 class="news-card__title">ICON and Butterfly Foundation partner in new campaign to help Australians rethink negative self body talk</h3>
+                        <span class="news-card__meta">Our work / <time datetime="2026-08-09">9 Aug 2026</time></span>
+                      </div>
+                    </a>
+                  </div>
+                </div>
+                <p class="ds-demo__label">news-card · a.news-card — __figure.media-reveal (__img at 106%, 3% overscan a side) + __body (__title + __meta) · full-width stage: past 26rem the card splits 390:425 and the meta drops to the tile's baseline</p>
+                <div class="ds-demo ds-demo--home-context">
+                  <div style="max-width: 24rem">
+                    <a class="news-card" href="#">
+                      <figure class="news-card__figure media-reveal" data-reveal-img>
+                        <img class="news-card__img" loading="lazy" src="assets/Social/587006301_18538192765046950_6531438719646800553_n.jpg" alt="Two ICON staff outside the new Suva Business Center office" />
+                      </figure>
+                      <div class="news-card__body">
+                        <h3 class="news-card__title">ICON expands into the Pacific with a new Suva studio</h3>
+                        <span class="news-card__meta">Agency / <time datetime="2026-07-24">24 Jul 2026</time></span>
+                      </div>
+                    </a>
+                  </div>
+                </div>
+                <p class="ds-demo__label">news-card · the same markup in a 24rem box — under the 26rem threshold, so it stacks and the body re-clusters under the tile</p>
+              </div>
+
+              <div class="ds-group">
+                <h4 class="ds-group__title">Sized by container &mdash; the 26rem split</h4>
+                <p class="ds-group__note">
+                  The homepage gives a card the full container width; /news gives it half of one. A
+                  viewport query would have to guess which &mdash; the same 1024px would mean a 938px
+                  card on one page and a 650px card on the other &mdash; so the card asks its own box
+                  instead: below the threshold it stacks, above it splits. The threshold is
+                  <strong>26rem (416px)</strong>, set by the tightest box this card is ever asked to
+                  split in: the homepage&rsquo;s news rail halves its own column at
+                  <code class="ds-code">min-width: 1024px</code>, dropping the host
+                  <code class="ds-code">&lt;li&gt;</code> to ~452px &mdash; ~445px once a classic
+                  scrollbar takes its 15px. Anything above that stacks the homepage cards through the
+                  whole 1024&ndash;1230px band, where they have always sat side by side; a value just
+                  under 452 would have flipped on any machine that reserves scrollbar gutter. 26rem
+                  clears the scrollbar case with room to spare. An element cannot query itself, so the
+                  breakpoint sits on the PARENT &mdash; declared by the component as
+                  <code class="ds-code">:has(&gt; .news-card) { container-type: inline-size }</code>, so
+                  it carries its own contract and neither list has to know. Deliberately not
+                  <code class="ds-code">li:has(...)</code>: a Drupal Views row wraps each teaser in
+                  <code class="ds-code">&lt;article&gt;</code>, and a selector keyed to
+                  <code class="ds-code">&lt;li&gt;</code> would silently stop matching, no container
+                  would be established, and every <code class="ds-code">@container</code> rule would go
+                  dead. The split rides a three-feature chain
+                  (<code class="ds-code">:has()</code> &rarr; <code class="ds-code">container-type</code>
+                  &rarr; <code class="ds-code">@container</code>), so
+                  <code class="ds-code">@supports not (container-type: inline-size)</code> falls back to
+                  the viewport rule this component replaced
+                  (<code class="ds-code">min-width: 640px</code>) &mdash; wrong only in the narrow band
+                  the container query exists to get right. Same discipline in the type: in the
+                  768&ndash;1024 band the title&rsquo;s 1.5vw curve floored at 20px exactly where the
+                  card&rsquo;s box is widest for the screen, so a banded
+                  <code class="ds-code">cqi</code> clamp lifts it there &mdash; anchored to meet the
+                  floor right at the 416px split, and banded rather than global because a container term
+                  strong enough for tablets would lift the desktop rails MORE.
+                </p>
+              </div>
+
+              <div class="ds-group">
+                <h4 class="ds-group__title">Homepage stack &mdash; <code class="ds-code">.news</code></h4>
+                <p class="ds-group__note">
+                  The editorial stack on the <a href="templates/homeC.html">Home template</a> (design:
+                  <code class="ds-code">experiments/News.png</code>) replaces the pinned horizontal
+                  scroller, archived as direction 01 in
+                  <a href="experiments/news.html">experiments/news.html</a> &mdash; three rows in normal
+                  flow, ordinary vertical scrolling, which is why the pin/sweep/swipe machinery is gone
+                  rather than left dormant. Above 1024 the section is rail | list at the mock&rsquo;s
+                  ~52:48: the sentence-case masthead (&ldquo;News / &amp; Insights&rdquo;,
+                  <code class="ds-code">--voice-display</code> at
+                  <code class="ds-code">--font-weight-bold</code> &mdash; the same numeric weight as its
+                  Miller accent, two steps back off the caps mastheads&rsquo; 900) pins at the top and
+                  rides <code class="ds-code">.news__rail</code>, a box that exists purely to be SHORTER
+                  than the rail so the sticky heading stops short of the More link;
+                  <code class="ds-code">top: 6rem</code> clears the nav pill. More speaks in the shared
+                  mid voice, exactly as the footer&rsquo;s Subscribe &mdash; the site&rsquo;s standing
+                  invitations speak at one size. On mobile the head DISSOLVES:
+                  <code class="ds-code">display: contents</code> lifts masthead and More into the
+                  section&rsquo;s own grid &mdash; masthead first, More under the last story &mdash; and
+                  that same move fixed the images overflowing the viewport: as a flex row the
+                  head&rsquo;s min-content (282px masthead + 54px More = 368px) out-sized the 327px
+                  column, dragged the grid track, the list, the card and the figure with it, and the
+                  106%-overscan image reached 437px in a 375px viewport. Hairlines run between rows on
+                  the <code class="ds-code">&lt;li&gt;</code>, not the card link, so the rule spans the
+                  full column. Only this chrome is page-layer &mdash; the card inside is the shared
+                  component, untouched.
+                </p>
+              </div>
+
+              <div class="ds-group">
+                <h4 class="ds-group__title">/news listing &mdash; pairs, one unbroken rule, and the sticky lead</h4>
+                <p class="ds-group__note">
+                  <code class="ds-code">.news-list</code> runs two stories per line from 768 with a
+                  hairline above every pair. The pair rules can&rsquo;t cross a grid gap (a border spans
+                  only its own item), so the grid has NO gaps: the column gutter lives INSIDE the items
+                  &mdash; half each side, assigned with
+                  <code class="ds-code">:nth-child(odd of .news-list__item:not([hidden]))</code> so
+                  filtering re-forms the pairs &mdash; and every item&rsquo;s
+                  <code class="ds-code">border-top</code> joins into one full-width line. An odd count of
+                  visible stories would stop that line dead at the midpoint, so the last visible odd item
+                  carries it across the empty column with a <code class="ds-code">::after</code> (two of
+                  the four filters hit this) &mdash; spanning the item itself would stretch the CARD too.
+                  The lead story is the FIRST VISIBLE item, not a flagged one, so filtering re-leads on
+                  whatever is newest in that category and nothing goes stale: its square tile fills the
+                  whole left column (the card&rsquo;s own split is dropped, the body re-clustered), the
+                  <code class="ds-code">&lt;li&gt;</code> spans three rows &mdash; falling back to two
+                  with exactly three visible, and to the plain pair grid below that &mdash; and the CARD
+                  inside is <code class="ds-code">position: sticky</code>. <strong>The span is the scroll
+                  track</strong>: sticky travels inside its nearest block-container ancestor, so the
+                  item&rsquo;s three-row grid area is exactly the distance the card holds for while the
+                  stories beside it scroll past; sticking the item itself would pin the track along with
+                  its passenger. The pin (<code class="ds-code">calc(2rem + var(--logo-h) +
+                  var(--space-sm))</code>) clears the fixed wordmark, which sits over this very column
+                  and re-derives with the mark&rsquo;s stepped ladder. It all runs only above 1024:
+                  in the 768&ndash;1024 band the column is still under the card&rsquo;s own 26rem
+                  threshold, so every card already stacks and a lead would open a hole under itself.
+                  Parity is why three-up is the tidy number &mdash; lead plus three is four slots, so the
+                  odd-left/even-right pairing and the stub rule resume at the 5th story untouched. Not
+                  demoed here: the geometry needs the real two-column page, its page-length scroll and
+                  the filter JS this page doesn&rsquo;t load.
+                </p>
+                <a class="ds-thumb-link" href="templates/news.html">
+                  <figure>
+                    <figcaption>Open the News listing template, at full scale</figcaption>
+                  </figure>
+                </a>
+              </div>
+
+              <div class="ds-group">
+                <h4 class="ds-group__title">Filtering &amp; motion &mdash; <code class="ds-code">js/news.js</code></h4>
+                <p class="ds-group__note">
+                  A deliberate FORK of <code class="ds-code">work-filter.js</code> rather than a shared
+                  module &mdash; that file hardcodes /work and the work-grid&rsquo;s span reflow, and in
+                  Drupal both pages collapse into one Views exposed filter anyway. The chips are real
+                  links (<code class="ds-code">/news?category=slug</code> &mdash; the server-side
+                  fallback); JS intercepts unmodified clicks, toggles
+                  <code class="ds-code">hidden</code> on each story
+                  <code class="ds-code">&lt;li&gt;</code> by
+                  <code class="ds-code">data-category</code> (items leave the a11y tree), marks the
+                  active chip with <code class="ds-code">aria-current="true"</code> (removed elsewhere,
+                  never set &ldquo;false&rdquo;), and syncs the URL with
+                  <code class="ds-code">pushState</code>/<code class="ds-code">popstate</code> plus
+                  <code class="ds-code">?category</code> deep links on load &mdash; an unknown slug falls
+                  back to the full list AND corrects the URL, or the All chip becomes a dead control.
+                  Focus moves to the chip BEFORE its story is hidden (focus lost to
+                  <code class="ds-code">&lt;body&gt;</code> restarts Tab at the skip link); an sr-only
+                  live region announces the count and the pager line is rewritten to match. The swap runs
+                  inside <code class="ds-code">document.startViewTransition()</code>: every card and chip
+                  carries a unique <code class="ds-code">view-transition-name</code>, so survivors GLIDE
+                  to their new pair positions (the default group morph, given the site&rsquo;s pace in
+                  <code class="ds-code">news-list.css</code>) while pure entries and exits get their own
+                  keyframes and the root crossfade is disabled; unsupported browsers and reduced-motion
+                  users get the instant toggle. The homepage card behaviours are ported without GSAP: the
+                  cursor tilt writes <code class="ds-code">--mx</code>/<code class="ds-code">--my</code>
+                  on the card, rAF-coalesced, and the scroll-velocity lean writes ONE
+                  <code class="ds-code">--nl-lean</code> on the list per frame &mdash; every card
+                  inherits it through a separate <code class="ds-code">rotate</code> that composes with
+                  the figure&rsquo;s tilt, the loop stops when settled, and an IntersectionObserver idles
+                  it offscreen. The <code class="ds-code">[data-reveal-img]</code> observer lives in
+                  <code class="ds-code">js/reveal.js</code>, lifted there when the news article became
+                  its third consumer.
+                </p>
+              </div>
+
+              <div class="ds-group">
+                <h4 class="ds-group__title">Drupal (Canvas / SDC)</h4>
+                <p class="ds-group__note">
+                  SDC <code class="ds-code">news-card</code> &mdash; the teaser view mode of a
+                  <code class="ds-code">news</code> node; heading level stays the page&rsquo;s call. The
+                  <code class="ds-code">:has()</code> container rule is the one rule the component sets
+                  outside its own root &mdash; an admitted wart for the SDC port, written parent-agnostic
+                  precisely so a Views row&rsquo;s <code class="ds-code">&lt;article&gt;</code> wrapper
+                  keeps the container alive. SDC <code class="ds-code">news-list</code> &mdash; the node
+                  view of <code class="ds-code">news</code> teasers: the
+                  <code class="ds-code">&lt;ul&gt;</code> is a Views unformatted list,
+                  <code class="ds-code">data-category</code> comes from
+                  <code class="ds-code">field_news_list_category</code> (list_string), and it has a
+                  single appearance (the earlier list/grid variants were cut). The lead stays a pure
+                  display rule on the Views list &mdash; no <code class="ds-code">promoted</code> flag,
+                  no second view mode. The page is a Views page over <code class="ds-code">news</code>
+                  nodes whose exposed filter honours the chip links server-side; behaviour js maps to
+                  <code class="ds-code">Drupal.behaviors.iconNews</code>, attached via the
+                  <code class="ds-code">icon/news</code> library. The homepage&rsquo;s
+                  <code class="ds-code">.news</code> chrome is page-layer
+                  (<code class="ds-code">home-c.css</code>), one of the promoted block names slated to
+                  become SDC names in the Canvas build. Subscribe is the shared inert
+                  <code class="ds-code">[data-subscribe]</code> hook until the newsletter slice ships.
+                </p>
+              </div>
+            </section>
+
+            <section class="ds-section" id="invitations">
+              <h3 class="ds-section__title">Invitations and links</h3>
+              <p class="ds-section__intro">
+                The hover-link family &mdash; every species here is CSS-only, which is why this is
+                the rare section that demos at full fidelity. <code class="ds-code">.invite-arrow</code>
+                (<code class="ds-code">src/utilities/effects.css</code>) is the corner &#8627; on
+                <code class="ds-code">::before</code> prefixing the site&rsquo;s standing invitations
+                &mdash; the footer&rsquo;s Subscribe and Get in touch, both homepage More links, and the
+                intro&rsquo;s About us. A markup class, like <code class="ds-code">.masthead-accent</code>
+                from the same file (the news mastheads&rsquo; serif accent &mdash; upright because the
+                italic&rsquo;s slant fights the block&rsquo;s vertical rhythm, weight stated because
+                Miller has no 900 for a Kumbh-900 setting to hand down), promoted out of
+                <code class="ds-code">site-footer.css</code> when the More links became its third and
+                fourth consumers. The glyph is a masked box tinted <strong>currentColor</strong>, not a
+                token, so it rides whatever hover its host already has (muted &rarr; ink in the footer,
+                ink &rarr; accent blue on the More links) with no extra rules; em-sized so it tracks the
+                host voice; longhand mask properties, -webkit- first, because the minifier mangles the
+                shorthand (LESSONS.md). <code class="ds-code">.quiet-link</code>
+                (<code class="ds-code">src/components/quiet-link.css</code>) is the understated link:
+                32% ink, and on hover the word nudges 0.65em right while a &ldquo;/&rdquo; fades in just
+                before it &mdash; the fade-in delayed 0.15s so the slash lands as the word arrives, no
+                delay on the way out, and a real 0.25s fade both ways because at
+                <code class="ds-code">--duration-fast</code> it read as a hard pop. Promoted out of the
+                homepage intro once /news wanted it for Subscribe, and into the component layer on
+                purpose &mdash; a component reaching up into
+                <code class="ds-code">src/utilities/home-c.css</code> would invert the layer order; it
+                owns only how the link <em>reads</em>, hosts keep their own positioning.
+                <code class="ds-code">.work__more</code> / <code class="ds-code">.news__more</code> are
+                the homepage&rsquo;s twin More links: the shared mid voice exactly as the footer&rsquo;s
+                Subscribe wears it &mdash; the standing invitations speak at one size, and at half the
+                display masthead this read as a second heading &mdash; sentence case, so they take the
+                display tracking rather than the caps token
+                (<code class="ds-code">--tracking-caps</code> exists for uppercase settings only), with
+                a colour-only hover to accent blue. <code class="ds-code">.arrow-link</code>
+                (<code class="ds-code">home-c.css</code>) is the caps micro-label &mdash;
+                <code class="ds-code">--text-xs</code> bold, 0.08em tracking, uppercase &mdash; whose
+                inline svg nudges 0.25rem right on hover; shipped as public API in the file&rsquo;s
+                header, though no template instantiates it yet. And
+                <code class="ds-code">.more-link</code>
+                (<code class="ds-code">src/components/more-link.css</code>, port of
+                <code class="ds-code">more-link.tsx</code>) is the pill CTA whose right side opens on
+                hover &mdash; padding 1rem &rarr; 2.75rem while the arrow, parked at opacity 0 and
+                translated 1rem into the clipped overflow, rides in &mdash; in
+                <code class="ds-code">--outline</code> (2px currentColor border),
+                <code class="ds-code">--on-blue</code> (white on brand blue, Home&nbsp;A&rsquo;s promo
+                card) and <code class="ds-code">--button</code> (solid primary &mdash; the work
+                listing&rsquo;s Subscribe) variants.
+              </p>
+
+              <div class="ds-group">
+                <h4 class="ds-group__title">Live</h4>
+                <p class="ds-group__note">
+                  Real markup wearing the production CSS. Everything in this family is CSS
+                  <code class="ds-code">:hover</code>/<code class="ds-code">:focus-visible</code> &mdash;
+                  no page JS involved &mdash; so unlike the choreographed sections these are the genuine
+                  states: hover the quiet link for the slash-and-nudge, About&nbsp;us for the arrow
+                  riding its colour to blue, More for the colour-only shift, the pills for the right
+                  side opening. Tab through for the identical focus treatment. What no-JS does cost:
+                  <code class="ds-code">data-subscribe</code> is an inert hook here, and More&rsquo;s
+                  <code class="ds-code">data-reveal-words</code> cascade is scoped under
+                  <code class="ds-code">.js-animations</code>, so the text simply renders plainly. Two
+                  absentees: the footer pair reads its ink from the footer&rsquo;s own tokens and
+                  belongs to that block&rsquo;s dark ground, and
+                  <code class="ds-code">--on-blue</code> is white on white without its promo-card blue
+                  (see <a href="templates/home.html">templates/home.html</a>). Reduced motion zeroes the
+                  quiet-link and More transitions.
+                </p>
+                <div class="ds-demo ds-demo--home-context">
+                  <p><a class="quiet-link" href="#">Communications</a></p>
+                  <p><a class="quiet-link invite-arrow" href="#">About us</a></p>
+                  <p class="work__more-wrap"><a class="work__more invite-arrow" href="#" data-reveal-words aria-label="More work">More</a></p>
+                  <p><a class="arrow-link" href="#">All news <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg></a></p>
+                  <p>
+                    <a class="more-link more-link--outline" href="#">
+                      More work
+                      <span class="more-link__arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg></span>
+                    </a>
+                    <button class="more-link more-link--button" type="button" data-subscribe>
+                      Subscribe
+                      <span class="more-link__arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg></span>
+                    </button>
+                  </p>
+                </div>
+                <p class="ds-demo__label">invitations · .quiet-link (::after slash) · .quiet-link.invite-arrow (::before &#8627;, slash dropped) · .work__more.invite-arrow · .arrow-link (svg nudge) · .more-link --outline / --button (__arrow reveal)</p>
+              </div>
+
+              <div class="ds-group">
+                <h4 class="ds-group__title">One prefix per link</h4>
+                <p class="ds-group__note">
+                  A link gets ONE mark racing in from its left &mdash; the arrow or the slash, never
+                  both. The slash lives on <code class="ds-code">.quiet-link</code>&rsquo;s
+                  <code class="ds-code">::after</code> purely to leave
+                  <code class="ds-code">::before</code> free for the shared
+                  <code class="ds-code">.invite-arrow</code> prefix: an element has only one of each
+                  pseudo, and a quiet link that is also an invitation needs both; the slash is
+                  absolutely placed either way, so the move cost nothing visually. When the two classes
+                  meet (<code class="ds-code">.quiet-link.invite-arrow</code> &mdash; About&nbsp;us), the
+                  slash goes (<code class="ds-code">content: none</code>) and the nudge goes with it
+                  (<code class="ds-code">translate: none</code>): two marks arriving at the same word is
+                  noise, the arrow is always present where the slash only appears on hover, and the word
+                  slid right to <em>meet</em> the slash &mdash; there is nothing left to meet. Colour
+                  still shifts to accent blue, and the arrow follows via currentColor. The More links
+                  took the same decision when they gained the arrow &mdash; the slash hover they carried,
+                  and the translate that made room for it, moved on. The expertise links keep theirs.
+                </p>
+              </div>
+
+              <div class="ds-group">
+                <h4 class="ds-group__title">Drupal (Canvas / SDC)</h4>
+                <p class="ds-group__note">
+                  None of this is its own SDC. <code class="ds-code">home-c.css</code>&rsquo;s header
+                  lists <code class="ds-code">.arrow-link</code> among the public-API block names that
+                  become SDC component names in the Canvas build
+                  (<code class="ds-code">docs/design-system-plan.md</code>);
+                  <code class="ds-code">.work__more</code> and <code class="ds-code">.news__more</code>
+                  are elements of the <code class="ds-code">work</code> and
+                  <code class="ds-code">news</code> blocks and ship inside those SDCs&rsquo; templates.
+                  <code class="ds-code">.quiet-link</code> and <code class="ds-code">.more-link</code>
+                  are component-layer recipes any SDC template puts on its markup &mdash; the news
+                  listing&rsquo;s page-header Subscribe wears
+                  <code class="ds-code">quiet-link</code>, the work listing&rsquo;s wears
+                  <code class="ds-code">more-link--button</code>, Home&nbsp;A&rsquo;s promo card
+                  <code class="ds-code">more-link--on-blue</code>.
+                  <code class="ds-code">.invite-arrow</code> and
+                  <code class="ds-code">.masthead-accent</code> are utilities
+                  (<code class="ds-code">effects.css</code>: cross-component helpers, not BEM blocks),
+                  applied as markup classes in the template. No behaviours: every state in this family
+                  resolves in CSS &mdash; hover, focus and both prefix marks &mdash; so there is nothing
+                  to register; the Subscribe buttons&rsquo;
+                  <code class="ds-code">data-subscribe</code> is a behaviour hook owned elsewhere, not by
+                  these files.
+                </p>
+              </div>
+            </section>
+
+            <section class="ds-section" id="primitives">
+              <h3 class="ds-section__title">Reveal primitives</h3>
+              <p class="ds-section__intro">
+                The four shared entrance gestures every page composes &mdash; the
+                <code class="ds-code">[data-animate]</code> fade-up, the
+                <code class="ds-code">.reveal-lines</code> masked line rise, the
+                <code class="ds-code">.media-reveal</code> crop-zoom and the
+                <code class="ds-code">[data-rule]</code> hairline draw &mdash; under one contract:
+                the hidden state lives behind a root <code class="ds-code">.js-animations</code>
+                class (stamped by an inline head script on real pages),
+                <code class="ds-code">js/reveal.js</code> toggles one latched class per element
+                from an IntersectionObserver, and the CSS owns every transition and stagger.
+                No-JS never hides anything, and reduced motion resets each primitive to its
+                settled state. Styles: <code class="ds-code">src/utilities/animations.css</code>,
+                <code class="ds-code">src/utilities/rules.css</code>, and the reveal-fx block of
+                <code class="ds-code">src/utilities/home-c.css</code>.
+              </p>
+
+              <div class="ds-group">
+                <h4 class="ds-group__title">[data-animate] &mdash; the fade-up host</h4>
+                <p class="ds-group__note">
+                  Opacity 0 plus a 20px rise, transitioning on
+                  <code class="ds-code">--duration-slow</code> /
+                  <code class="ds-code">--ease-standard</code>, with a per-element stagger via
+                  <code class="ds-code">--animate-delay</code> (it is just the
+                  transition-delay). <code class="ds-code">js/reveal.js</code> adds
+                  <code class="ds-code">.is-visible</code> once (threshold 0.1, bottom rootMargin
+                  &minus;50px) and unobserves &mdash; latched, so an entrance always plays out in
+                  full and never re-runs. It is the generic companion to
+                  <code class="ds-code">js/work.js</code>, which only drives its own
+                  <code class="ds-code">[data-reveal]</code> swipes, underlines and hover-video
+                  &mdash; the /work and /work/article page chrome revealed nothing until this file.
+                  No IntersectionObserver in the browser? Everything is revealed immediately.
+                  Under reduced motion the CSS resets the host to visible with no transition, so
+                  the class toggle is inert.
+                </p>
+              </div>
+
+              <div class="ds-group">
+                <h4 class="ds-group__title">.reveal-lines &mdash; the masked line rise</h4>
+                <p class="ds-group__note">
+                  The hero lockup&rsquo;s gesture, packaged: each line waits below its own
+                  overflow-hidden mask and rises on a stagger (0.62s
+                  <code class="ds-code">--ease-decelerate</code>, delay
+                  <code class="ds-code">--w</code> &times; 0.2s) rather than the block fading up
+                  as one. Used by the two &ldquo;News &amp; Insights&rdquo; mastheads (the
+                  homepage rail and the /news h1). It rides the
+                  <code class="ds-code">[data-animate]</code> host for its trigger &mdash; both on
+                  the same element &mdash; and cancels the host&rsquo;s own fade: two gestures on
+                  one element read as a stutter, and the mask is the one doing the work. The
+                  geometry is a coupled pair. The mask carries asymmetric
+                  <code class="ds-code">padding-block: 0.14em 0.30em</code> (taken straight back
+                  off in margin) &mdash; a cap above, Miller&rsquo;s sentence-case
+                  &ldquo;g&rdquo; below at the tight 0.72 sentence leading, where 0.24em clipped
+                  1.5px, measured. And the word rests at
+                  <code class="ds-code">translateY(155%)</code>, not 100%: it must clear the
+                  MASK, which the descender pad made taller, while translateY is relative to the
+                  line box the tight leading shrank &mdash; at 135% the resting glyphs sat 0.1px
+                  below the edge (measured); 155% buys ~8px of certainty, and the extra travel is
+                  imperceptible over 0.62s. Move the pad or the leading and you re-measure the
+                  travel &mdash; they move together. The footer&rsquo;s LET&rsquo;S TALK repeats
+                  these values under its own classes because it hangs off
+                  <code class="ds-code">.is-revealed</code>, which re-arms every time the panel
+                  is entered, not the fire-once <code class="ds-code">[data-animate]</code>
+                  &mdash; same values, different clock.
+                </p>
+              </div>
+
+              <div class="ds-group">
+                <h4 class="ds-group__title">.media-reveal &mdash; the crop-zoom</h4>
+                <p class="ds-group__note">
+                  The media inside a <code class="ds-code">.media-reveal</code> frame starts as a
+                  bottom-left sliver &mdash; <code class="ds-code">clip-path: inset(84% 84% 0 0
+                  round var(--radius-icon))</code>, scale 1.12,
+                  <code class="ds-code">transform-origin: left bottom</code>, opacity 0 &mdash;
+                  and opens up-and-right to the full frame on
+                  <code class="ds-code">.is-revealed</code> (clip 1.1s + scale 1.3s on
+                  <code class="ds-code">--ease-decelerate</code>, opacity 0.6s). The invariant:
+                  the effect stays on the MEDIA, never on the observed
+                  <code class="ds-code">[data-reveal-img]</code> frame &mdash; a transform or
+                  clip on the observed element skews its own IntersectionObserver ratio, so the
+                  frame keeps its full box while <code class="ds-code">overflow: hidden</code>
+                  plus a fixed aspect-ratio contain the zoom and nothing nudges the caption (see
+                  LESSONS.md). The same rule re-declares the
+                  <code class="ds-code">filter</code> transition it would otherwise out-specify
+                  and drop, keeping the work/news hover-brighten alive. The observer was lifted
+                  into <code class="ds-code">js/reveal.js</code> at its third consumer &mdash;
+                  <code class="ds-code">js/home-c.js</code> and
+                  <code class="ds-code">js/news.js</code> each carried an identical copy and the
+                  news article made three (threshold 0.18, bottom rootMargin &minus;8%,
+                  latched). Sibling primitive: <code class="ds-code">.split-line</code>, the
+                  overflow-hidden wrapper GSAP SplitText puts around each line for the
+                  homepage&rsquo;s line-mask text; its base rule keeps the text visible if JS or
+                  SplitText never runs.
+                </p>
+              </div>
+
+              <div class="ds-group">
+                <h4 class="ds-group__title">[data-rule] &mdash; the hairline draw</h4>
+                <p class="ds-group__note">
+                  THE hairline: every rule on the site is 1px of
+                  <code class="ds-code">--rule</code> &mdash; the theme&rsquo;s border token on
+                  ordinary surfaces, <code class="ds-code">--rule-on-color</code> on the dark and
+                  brand panels, because a white line is invisible on white: the same decision
+                  expressed twice, not an inconsistency.
+                  <code class="ds-code">--rule-weight</code> and
+                  <code class="ds-code">--rule-draw-dur</code> (0.7s) make thickness and speed
+                  single edits, so the whole page draws at one speed. A rule marked
+                  <code class="ds-code">[data-rule]</code> (top / bottom / both) arrives by
+                  growing from its left edge: the 1px border survives for LAYOUT but is painted
+                  transparent, and the visible line is a background gradient sized 0 &rarr; 100%
+                  across the border box. Nothing moves when it runs &mdash; the box is the same
+                  height before and after &mdash; which is why a gradient and not a
+                  pseudo-element overlay: several of these sit in grids and lists where a
+                  re-layout would shove content around mid-scroll.
+                  <code class="ds-code">both</code> (the footer&rsquo;s last office row) is two
+                  gradients, two sizes, one transition. Rules already drawn as pseudo-elements
+                  (the clients marquee&rsquo;s pair) opt in via
+                  <code class="ds-code">[data-rule-host]</code> and read
+                  <code class="ds-code">--rule-draw</code> 0 &rarr; 1, scaling from a left origin
+                  instead. One observer in <code class="ds-code">js/reveal.js</code> covers the
+                  lot &mdash; bottom rootMargin &minus;5% and NO threshold ratio, because a ratio
+                  of a 1px line would never fire. Latched, not toggled: a rule is a structural
+                  line between two pieces of content, and re-drawing it on every re-entry would
+                  make the page feel like it was still loading. Degradation runs one way only:
+                  no-JS and reduced motion read &ldquo;always drawn&rdquo;, never &ldquo;never
+                  drawn&rdquo; &mdash; a rule that never arrives would take content with it (the
+                  news list&rsquo;s rows are separated by these).
+                </p>
+              </div>
+
+              <div class="ds-group">
+                <h4 class="ds-group__title">Live &mdash; the settled state</h4>
+                <p class="ds-group__note">
+                  Real markup wearing the production CSS &mdash; one stretch of the homepage news
+                  stack that carries all four hooks. This page loads no page JS, so nothing
+                  stamps <code class="ds-code">.js-animations</code> on the root and every hidden
+                  state above is inert: this stage IS the genuine no-JS render, which is the
+                  contract&rsquo;s whole point. The masthead sits settled on its masks (the
+                  pad-and-negative-margin geometry is live and inspectable), the
+                  <code class="ds-code">[data-rule="top"]</code> hairline is simply present, the
+                  media is unclipped at full opacity, and the
+                  <code class="ds-code">[data-animate]</code> heading is visible. Nothing here is
+                  waiting &mdash; a no-JS visitor gets a finished page, not an apology.
+                </p>
+                <div class="ds-demo ds-demo--home-context">
+                  <section class="news u-container" aria-label="Latest news">
+                    <div class="news__inner">
+                      <div class="news__head">
+                        <div class="news__rail">
+                          <h2 class="news__heading reveal-lines" data-animate>
+                            <span class="reveal-lines__line"><span class="reveal-lines__word" style="--w: 0">News</span></span>
+                            <span class="reveal-lines__line"><span class="reveal-lines__word masthead-accent" style="--w: 1">&amp; Insights</span></span>
+                          </h2>
+                        </div>
+                        <a class="news__more invite-arrow" href="#" aria-label="More news">More</a>
+                      </div>
+                      <ul class="news__list" role="list">
+                        <li>
+                          <a class="news-card" href="#" aria-label="ICON and Butterfly Foundation partner in new campaign to help Australians rethink negative self body talk">
+                            <figure class="news-card__figure media-reveal" data-reveal-img>
+                              <img class="news-card__img" loading="lazy" src="assets/News/Butterfly_BodyKind.jpg" alt="Three campaign talent standing together in a photography studio" />
+                            </figure>
+                            <div class="news-card__body">
+                              <h3 class="news-card__title">ICON and Butterfly Foundation partner in new campaign to help Australians rethink negative self body talk</h3>
+                              <span class="news-card__meta">Insights / <time datetime="2026-08-09">9 Aug 2026</time></span>
+                            </div>
+                          </a>
+                        </li>
+                        <li data-rule="top">
+                          <a class="news-card" href="#" aria-label="ICON launches new wellbeing agency website for veterans and families">
+                            <figure class="news-card__figure media-reveal" data-reveal-img>
+                              <img class="news-card__img" loading="lazy" src="assets/News/Tile-DVA-Wellbeing.png" alt="Homepage of the Veteran and Family Wellbeing Agency site on desktop and mobile" />
+                            </figure>
+                            <div class="news-card__body">
+                              <h3 class="news-card__title">ICON launches new wellbeing agency website for veterans and families</h3>
+                              <span class="news-card__meta">Insights / <time datetime="2026-06-30">30 Jun 2026</time></span>
+                            </div>
+                          </a>
+                        </li>
+                      </ul>
+                    </div>
+                  </section>
+                </div>
+                <p class="ds-demo__label">news &middot; primitive hosts &mdash; .reveal-lines masthead (rides [data-animate], --w stagger) + [data-rule="top"] row + .media-reveal[data-reveal-img] figures &mdash; all settled: no .js-animations, nothing hidden</p>
+              </div>
+
+              <div class="ds-group">
+                <h4 class="ds-group__title">Why the motion is not demoed here</h4>
+                <p class="ds-group__note">
+                  Every gesture here is armed by the root class and fired by scroll position
+                  against a real viewport; with neither, there is no motion to show &mdash; only
+                  the settled end state above. The full choreography needs the page-length
+                  scroll: fade-ups staggering in, the masthead lines rising off their masks, the
+                  work and news media opening up-and-right, the office rules drawing left to
+                  right. Open the real thing:
+                </p>
+                <a class="ds-thumb-link" href="templates/homeC.html">
+                  <figure>
+                    <figcaption>Open the Home template, at full scale &mdash; all four primitives fire on one page</figcaption>
+                  </figure>
+                </a>
+              </div>
+
+              <div class="ds-group">
+                <h4 class="ds-group__title">Drupal (Canvas / SDC)</h4>
+                <p class="ds-group__note">
+                  Not an SDC &mdash; these are the hooks every SDC&rsquo;s markup opts into by
+                  attribute or class, with the styles shipping in the theme&rsquo;s utility layer
+                  (<code class="ds-code">animations.css</code>,
+                  <code class="ds-code">rules.css</code>, the reveal-fx block of
+                  <code class="ds-code">home-c.css</code>). One behaviour drives the lot:
+                  <code class="ds-code">Drupal.behaviors.iconReveal</code>
+                  (<code class="ds-code">js/reveal.js</code>) &mdash; three latched
+                  IntersectionObservers toggling <code class="ds-code">.is-visible</code> on
+                  <code class="ds-code">[data-animate]</code>,
+                  <code class="ds-code">.is-revealed</code> on
+                  <code class="ds-code">[data-reveal-img]</code> and
+                  <code class="ds-code">.is-drawn</code> on
+                  <code class="ds-code">[data-rule]</code> /
+                  <code class="ds-code">[data-rule-host]</code>, and nothing else; the CSS owns
+                  every transition. The <code class="ds-code">.split-line</code> wrapping belongs
+                  to the homepage&rsquo;s own behaviour (<code class="ds-code">js/home-c.js</code>,
+                  GSAP SplitText &mdash; a page-level enhancement, not a requirement). Without the
+                  behaviour or the root <code class="ds-code">.js-animations</code> class the page
+                  renders fully visible with every rule drawn &mdash; a legitimate rendering, not
+                  a fallback apology.
+                </p>
+              </div>
+            </section>
+
+            <section class="ds-section" id="site-footer">
+              <h3 class="ds-section__title">Global footer</h3>
+              <p class="ds-section__intro">
+                <code class="ds-code">.site-footer</code> &mdash; the global footer
+                (<code class="ds-code">src/components/site-footer.css</code>, design:
+                <code class="ds-code">experiments/Footer.png</code>; lockup:
+                <code class="ds-code">experiments/footer2.png</code>). A <strong>fixed near-black
+                panel, identical in every theme</strong>: the <code class="ds-code">--footer-*</code>
+                tokens in <code class="ds-code">theme/colors.css</code> are constant across
+                light/dark/blue, and none of it reads <code class="ds-code">--color-icon-black</code>
+                &mdash; that token inverts per theme and would turn the panel white in dark mode.
+                <code class="ds-code">--footer-bg</code> is the same #0d0d0d as
+                <code class="ds-code">--icon-black</code>&rsquo;s light value on purpose, but a
+                literal, not an alias &mdash; aliasing it flipped the whole footer white in dark mode
+                (caught live). It sits <strong>outside <code class="ds-code">&lt;main&gt;</code></strong>
+                for the contentinfo landmark, so it carries its own
+                <code class="ds-code">z-index: 1</code> guard against the hero curtain. Structure:
+                the centred LET&rsquo;S TALK / Get in touch CTA (the footer&rsquo;s h2), newsletter
+                blurb + Subscribe left against an accordion of the four offices right, socials + the
+                Acknowledgement of Country across the base, then the brand lockup &mdash; the ICON
+                logo at full width with the hero&rsquo;s banner films playing inside the letterforms.
+                Type rides the homepage voices, named once as
+                <code class="ds-code">--footer-voice-caps/mid/meta</code> so a retune is a one-line
+                edit: the CTA heading takes the display-caps masthead clamp (WORK/NEWS); the blurb,
+                Subscribe, city names and socials share the client-label mid voice; the Indigenous
+                place names and meta take the news-date voice. Hairlines re-point
+                <code class="ds-code">--rule</code> at <code class="ds-code">--rule-on-color</code>,
+                and the focus ring overrides colour only to <code class="ds-code">--footer-ink</code>
+                (the checklist&rsquo;s sanctioned exception) &mdash; the global blue ring is invisible
+                on near-black. The panel arrives inset by the page gutter and <strong>grows to full
+                bleed</strong> within ~45vh of entry on a compositor-sampled
+                <code class="ds-code">view()</code> timeline, never a scroll handler &mdash;
+                scale 0.916 is exactly 1&nbsp;&minus;&nbsp;2&thinsp;&times;&thinsp;0.042,
+                <code class="ds-code">--container-pad</code>&rsquo;s fluid term, anchored at the
+                bottom edge so no gap can open beneath it. It animates the
+                <code class="ds-code">scale</code> <em>property</em>, not
+                <code class="ds-code">transform: scale()</code>, so the grow and the velocity skew
+                below can run at once.
+              </p>
+
+              <div class="ds-group">
+                <h4 class="ds-group__title">Live &mdash; one office row</h4>
+                <p class="ds-group__note">
+                  Real markup wearing the production CSS, honest at this scale because the accordion
+                  is <strong>CSS-only</strong>: native <code class="ds-code">&lt;details&gt;</code>/<code class="ds-code">&lt;summary&gt;</code>
+                  animated via <code class="ds-code">::details-content</code> +
+                  <code class="ds-code">interpolate-size: allow-keywords</code> (scoped to the list),
+                  with no <code class="ds-code">aria-expanded</code>/role/tabindex &mdash; the UA owns
+                  disclosure semantics; browsers without the pair snap open, this project&rsquo;s
+                  accepted degradation. The open address starts exactly under its city name via
+                  <code class="ds-code">--footer-office-indent</code>, built from the same two values
+                  as the summary row (the 1em icon square + <code class="ds-code">--space-xs</code>)
+                  so the panel can&rsquo;t drift from the row it hangs off. The panel is
+                  <code class="ds-code">overflow-y: clip</code>, not hidden &mdash; hidden would mint
+                  a scroll container for Lenis to fight. The +/&times; toggle is two hairline bars
+                  rotating 45deg. This page loads no page JS, so this is also the genuine no-JS
+                  state: nothing is hidden (the hidden states live behind
+                  <code class="ds-code">.js-animations</code>), no skew, no films &mdash; though the
+                  gutter-inset grow is pure CSS, so the panel does still scale in as it enters.
+                </p>
+                <div class="ds-demo ds-demo--home-context">
+                  <footer class="site-footer">
+                    <div class="site-footer__body">
+                      <div class="site-footer__locations">
+                        <h3 class="sr-only">Our offices</h3>
+                        <ul class="site-footer__offices" role="list">
+                          <li class="site-footer__office-item" data-rule="both">
+                            <details class="site-footer__office">
+                              <summary class="site-footer__office-summary">
+                                <!-- footer-melbourne-icon.tsx, inlined; fill follows currentColor -->
+                                <svg class="site-footer__office-icon" viewBox="0 0 278 278" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M243.62,97.25l-7.01-60.45h-15.78l-3.63-22.98L60.7.06l-4.26,36.74h-15.06l-7.01,60.45h14.37l25.68,180.69h129.15l25.68-180.69h14.37ZM52.08,48.8h15.06l4.15-35.77,135.53,11.92,3.76,23.85h15.35l4.23,36.45H47.85l4.23-36.45ZM193.16,265.94h-108.32l-23.98-168.69h156.27l-23.98,168.69Z" /></svg>
+                                <span class="site-footer__office-city">Melbourne</span>
+                                <span class="site-footer__office-place">Naarm</span>
+                                <span class="site-footer__office-toggle" aria-hidden="true"></span>
+                              </summary>
+                              <address class="site-footer__office-details">
+                                <p>Suite 1, Level 2<br />132 Gwynne Street<br />Cremorne VIC 3121 Australia</p>
+                                <p class="site-footer__office-contact">Phone <a href="tel:+61396424107">03 9642 4107</a><br /><a href="mailto:melbourne@iconagency.com.au">melbourne@iconagency.com.au</a></p>
+                              </address>
+                            </details>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </footer>
+                </div>
+                <p class="ds-demo__label">site-footer · .site-footer__offices — __office-item &gt; details.__office (summary: __office-icon 1em square + __office-city + __office-place + __office-toggle; panel: address.__office-details, indented by --footer-office-indent)</p>
+              </div>
+
+              <div class="ds-group">
+                <h4 class="ds-group__title">Why the rest is not demoed here</h4>
+                <p class="ds-group__note">
+                  Everything else is load and scroll choreography, and this page loads no page JS.
+                  The reveal <strong>replays</strong>: <code class="ds-code">js/site-footer.js</code>
+                  toggles <code class="ds-code">.is-revealed</code> both ways with two
+                  IntersectionObservers on different boundaries &mdash; arming is generous (a sliver
+                  of the panel), disarming waits until it is a further 40% of the viewport clear, so
+                  a scroll resting on the threshold cannot flicker it. CSS then staggers the blocks
+                  up (90/180ms), rises LET&rsquo;S TALK word by word on the hero&rsquo;s clock
+                  (masked lines, <code class="ds-code">--w</code> index,
+                  <code class="ds-code">--ease-decelerate</code>), and swivels the logo up out of its
+                  mask hinged on its own bottom edge &mdash; one
+                  <code class="ds-code">transform</code>, not translate + transform, because Lightning
+                  CSS merges the pair and shipped the rotate without the rise (LESSONS.md). Scroll
+                  velocity writes one custom property, <code class="ds-code">--footer-skew</code>,
+                  per frame and the blocks shear by it, the lockup 1.5&times; harder &mdash; capped
+                  at 1.8deg, past ~2 the shear reads as a broken layout; velocity is not expressible
+                  as a CSS scroll timeline (those are position-driven), so it is the footer&rsquo;s
+                  one scripted effect, and it idles while the panel is off screen. The films in the
+                  mark: the logo is a <strong>masked box</strong>, not an
+                  <code class="ds-code">&lt;img&gt;</code> &mdash;
+                  <code class="ds-code">assets/brand/logo-dark.svg</code> as alpha mask over a
+                  <code class="ds-code">--footer-ink</code> fill &mdash; which is what lets the
+                  hero&rsquo;s banner videos play inside the letterforms (only the C and O counters
+                  are big enough to read footage). Exactly one video decodes at a time, only while
+                  the panel is on screen, and they ship
+                  <code class="ds-code">preload="none"</code> &mdash; cached from the hero on the
+                  homepage, never fetched as multi-megabyte decoration elsewhere. Cross-fades run
+                  0.6s (the hero&rsquo;s 100ms cut reads as a glitch inside counters), and a
+                  brightness lift plus a 0.85 opacity cap keeps 15% of the white fill showing so no
+                  dark frame can sink the wordmark into the panel. A scaled inline copy would show
+                  none of it honestly. Open the real thing:
+                </p>
+                <a class="ds-thumb-link" href="templates/news-article.html">
+                  <figure>
+                    <figcaption>Open the News article template &rarr; footer, at full scale</figcaption>
+                  </figure>
+                </a>
+              </div>
+
+              <div class="ds-group">
+                <h4 class="ds-group__title">Drupal (Canvas / SDC)</h4>
+                <p class="ds-group__note">
+                  Theme <strong>region</strong> (footer), not a paragraph type &mdash; one SDC
+                  <code class="ds-code">site-footer</code> with menu/newsletter/offices props; the
+                  offices are a content entity or a settings tray. The accordion needs no behaviour,
+                  so the Twig stays a pure template; Subscribe is the same element and
+                  <code class="ds-code">data-subscribe</code> hook as the mobile menu&rsquo;s control
+                  &mdash; one future behaviour serves both, inert until it is written. Behaviour js
+                  maps to <code class="ds-code">Drupal.behaviors.iconFooter</code>, attached via the
+                  <code class="ds-code">icon/site-footer</code> library alongside the footer region
+                  template &mdash; its own file rather than a section of
+                  <code class="ds-code">home-c.js</code> because the footer is global and ships on
+                  pages that never load the homepage bundle (and have no GSAP). The velocity sampler
+                  is deliberately the same shape as the one in
+                  <code class="ds-code">news.js</code>; a third consumer is the moment to lift it
+                  into a shared primitive rather than copy it again. The deferred WebGL shader
+                  island would mount on <code class="ds-code">.site-footer</code> as an enhancement
+                  &mdash; the flat <code class="ds-code">--footer-bg</code> is the no-JS ground.
+                  Without JS (or IntersectionObserver) the footer is simply visible; reduced motion
+                  gets no shear, rise or fade, snap-open panels and films holding a first frame.
+                </p>
+              </div>
+            </section>
                 </div>
                 <p class="ds-demo__label">intro · .intro — __mark video + __headline + __viewport (__track of tilted __cards) + __band (__expertise sticky label + list | __statement + __about) + fixed __badge</p>
               </div>
@@ -650,6 +1962,33 @@
             if (!sample || !out) return;
             var px = parseFloat(window.getComputedStyle(sample).fontSize);
             out.textContent = Math.round(px * 10) / 10 + "px";
+          });
+
+          // Spacing bars: the bar already renders at width: var(--spacing-*),
+          // so its own box is the truth — the label can't disagree with the
+          // token. (These were hand-typed px once; hand-typed labels are how
+          // the icon-black swatch drifted.)
+          document.querySelectorAll(".ds-space-row").forEach(function (row) {
+            var bar = row.querySelector(".ds-space-row__bar");
+            var out = row.querySelector(".ds-specimen__px");
+            if (bar && out) out.textContent = Math.round(bar.offsetWidth) + "px";
+          });
+
+          // Radius chips: read the corner straight off the box.
+          document.querySelectorAll(".ds-radius-chip").forEach(function (chip) {
+            var box = chip.querySelector(".ds-radius-chip__box");
+            var out = chip.querySelector(".ds-specimen__px");
+            if (box && out) out.textContent = window.getComputedStyle(box).borderTopLeftRadius;
+          });
+
+          // Anything tagged with a token name reads the cascade directly —
+          // easings, durations, and whatever joins them later.
+          var rootStyle = window.getComputedStyle(document.documentElement);
+          document.querySelectorAll("[data-live-token]").forEach(function (el) {
+            var v = rootStyle.getPropertyValue(el.getAttribute("data-live-token")).trim();
+            // the cascade hands back minified seconds (".15s"); read as ms
+            if (/^\.?\d*\.?\d+s$/.test(v)) v = parseFloat(v) * 1000 + "ms";
+            el.textContent = v;
           });
         }
         var t = 0;

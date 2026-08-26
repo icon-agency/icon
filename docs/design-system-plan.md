@@ -19,11 +19,15 @@ The plan below is kept as the working brief; this block records where it stands.
   comment), `src/utilities/design-system.css`, and all six Foundations
   sections. Light default with the dev theme toggle, per §4 — plus a third
   `.theme-blue` theme the plan didn't anticipate.
-- **Phase 2 (component sections): partial.** Hero (link-out card, per §3.6)
-  and Intro are live with full Canvas/SDC notes; Header, Work, Clients, News,
-  Arrow link and Reveal primitives are still commented out in the sidebar
-  (the curation mechanism from §3.8), each to be uncommented as its section
-  ships.
+- **Phase 2 (component sections): COMPLETE (26 Aug 2026).** Ten component
+  sections live, each with Canvas/SDC notes: Hero and News article (link-out,
+  per §3.6), Intro, Site header, Work grid, Clients marquee, News cards &
+  stack, Invitations & links, Reveal primitives, Global footer. The colour
+  foundations were reconciled with the one-black/one-blue token consolidation
+  the swatches themselves surfaced, and every hand-typed spacing / radius /
+  easing / duration label converted to live measurement (the §3.5 principle,
+  finished — a hand-typed swatch label is exactly how the icon-black hex
+  drifted).
 - **Phase 3 (configurators): not started.**
 - **Phase 4 (gate): partial.** This docs pass is the `AGENTS.md`/`docs/`
   update; `scripts/verify.mjs` is **not built** — `npm run verify` still
