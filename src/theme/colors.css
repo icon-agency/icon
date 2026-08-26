@@ -45,8 +45,8 @@
   --sidebar-ring: oklch(0.708 0 0);
 
   /* ICON brand */
-  --icon-black: #111111; /* darkened from #1e1e1e (user request, Aug 2026) */
-  --icon-grey: rgba(17, 17, 17, 0.8); /* icon-black @ 80% — keep in step with it */
+  --icon-black: #0d0d0d; /* the footer's black, promoted to THE brand black (user call, Aug 2026 — was #111, before that #1e1e1e). One black across ink and the footer panel. */
+  --icon-grey: rgba(13, 13, 13, 0.8); /* icon-black @ 80% — keep in step with it */
   --icon-blue: #0000ff;
 
   /* Work-article accent theming (per-route override in the v0 build) */
@@ -188,7 +188,11 @@
    inverts per theme). Values measured off experiments/Footer.png: the muted
    ink and hairline are white at reduced alpha over the #0d0d0d ground. */
 :root {
-  --footer-bg: #0d0d0d;
+  --footer-bg: #0d0d0d; /* the SAME black as --icon-black's light value, on purpose —
+     but a LITERAL, not an alias: the footer panel is fixed near-black in every
+     theme, while --icon-black flips light in .dark. Aliasing it flipped the
+     whole footer white in dark mode (caught live). Keep the two literals in
+     step by hand. */
   --footer-ink: #ffffff;
   --footer-muted: rgb(255 255 255 / 0.55);
   /* One hairline, everywhere. Dividers across the site say
