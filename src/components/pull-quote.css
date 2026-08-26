@@ -24,9 +24,18 @@
   font-family: var(--font-serif);
   font-style: italic;
   font-weight: var(--font-weight-medium);
-  /* Custom fluid value: matches v0's clamp(1.875rem, 4vw, 5rem) pull-quote. */
-  font-size: clamp(1.875rem, 4vw, 5rem);
+  /* Custom fluid value: v0's clamp(1.875rem, 4vw, 5rem) pull-quote, with the
+     cap raised to the site's 4xl horizon (~2600px) so the statement keeps
+     scaling with the frame on massive screens instead of freezing at 2000. */
+  font-size: clamp(1.875rem, 4vw, 6.5rem);
   line-height: 1.2;
   color: var(--color-icon-black);
   text-wrap: balance;
+}
+
+/* Upright variant — the News-article mock sets its centred serif statements
+   roman, where the folio's pull-quotes are italic. Same voice, same scale,
+   the slant is the only difference. */
+.pull-quote--upright .pull-quote__text {
+  font-style: normal;
 }

@@ -1,0 +1,256 @@
+/* news-article.css — PAGE layer for the /news/article template
+ * (templates/news-article.html; design: experiments/News-article.png).
+ *
+ * Holds only what the article page ADDS to existing systems:
+ *   1. the article head — meta line, split headline | photo, Share;
+ *   2. the body rhythm — a centred prose measure with wide figures
+ *      breaking out between the chunks;
+ *   3. mock-scale refinements of the prose headings, scoped here (the
+ *      global .content-page h2/h3 are display-sized; this mock sets its
+ *      section heads a register lower).
+ * Everything else is reuse: prose is .content-page (base/prose.css), the
+ * centred serif statements are .pull-quote (the --upright modifier lives
+ * with the component), images reveal via the shared .media-reveal
+ * primitive, hairlines via [data-rule], and the teaser rail is the
+ * homepage .news block wearing news-card.
+ *
+ * Drupal: the full node view of `news` — title/date/category from the
+ * node, body rendered into .content-page, the wide figures and serif
+ * statements as body-embedded media/paragraphs, the rail a Views block of
+ * three teasers. Share shares the inert [data-share] hook until that
+ * behaviour ships. */
+
+/* While the page is in its dark opening, every hairline here reads
+   ON-COLOUR — the theme's border grey is invisible on the near-black
+   (the footer's and blue theme's decision, reused: --rule-on-color is the
+   28% white both already use). The scroll handover to light hands the
+   rules back to the standard border token with everything else. */
+.dark .news-article {
+  --rule: var(--rule-on-color);
+}
+
+.news-article {
+  /* FULL-BLEED like the news landing and the homepage — self-padded on the
+     shared --gutter-page, not capped in .u-container. The prose measure
+     below is what keeps the reading column honest; the frame (head split,
+     figures, rail) runs with the viewport. */
+  padding-inline: var(--gutter-page);
+  /* clear the fixed wordmark by measurement, same derivation as the /news
+     masthead (page-header--row) so the two pages breathe alike */
+  padding-top: calc(2rem + var(--logo-h) + var(--space-sm));
+}
+
+/* ---- head: meta + headline + Share | photo ------------------------------- */
+
+.news-article__head {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-md);
+}
+
+/* Two columns from TABLET up (md, not lg — the stacked head left a dead
+   right half beside the headline at 768–1024 and pushed the photo below the
+   fold). The headline column is narrow there; the title's clamp floor keeps
+   it wrapping sanely. */
+@media (min-width: 768px) {
+  .news-article__head {
+    grid-template-columns: 1fr 1fr;
+    /* the intro column stretches to the square photo's height, so Share can
+       sit on its baseline (margin-top: auto below) */
+    align-items: stretch;
+  }
+}
+
+.news-article__intro {
+  display: flex;
+  flex-direction: column;
+  /* The top/bottom hairlines: the HOST declares the border (house pattern —
+     see .news-list__item), and rules.css turns [data-rule="both"] borders
+     into the left-to-right draw. Padding is the gap inside them. */
+  border-top: var(--rule-weight) solid var(--rule);
+  border-bottom: var(--rule-weight) solid var(--rule);
+  padding-block: var(--space-sm);
+}
+
+.news-article__meta {
+  /* the meta line closes the column, on the photo's baseline at md+
+     (margin-top: auto below); Share opens it under the top rule */
+  margin: var(--space-md) 0 0;
+  font-size: var(--voice-meta);
+  color: var(--color-icon-grey);
+}
+
+.news-article__meta a {
+  color: inherit;
+  text-decoration: none;
+  transition: color var(--duration-fast) var(--ease-standard);
+}
+
+.news-article__meta a:hover,
+.news-article__meta a:focus-visible {
+  color: var(--color-icon-black);
+}
+
+.news-article__title {
+  margin: 0;
+  /* Custom fluid value: the mock's article headline — a register under the
+     display voice, above the prose h1. The cap sits at the site's 4xl
+     horizon (~2670px), like every voice on this page: the type grows in
+     proportion to the frame all the way to a massive screen. */
+  font-size: clamp(2.25rem, 3.6vw, 6rem);
+  font-weight: var(--font-weight-bold);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  color: var(--color-icon-black);
+}
+
+/* Share — the quiet meta voice, riding the body's left rail and STICKING
+   as the article scrolls (pinned clear of the fixed wordmark, the same
+   derivation as the page's own top padding). Plain <button> on the shared
+   inert [data-share] hook. */
+.news-article__share {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  align-self: start;
+  justify-self: start;
+  position: sticky;
+  top: calc(2rem + var(--logo-h) + var(--space-sm));
+  font-family: inherit;
+  font-size: var(--voice-meta);
+  color: var(--color-icon-grey);
+  transition: color var(--duration-fast) var(--ease-standard);
+}
+
+@media (min-width: 768px) {
+  .news-article__meta { margin-top: auto; }
+}
+
+/* the rail section: hairline above (host border, drawn by rules.css),
+   masthead reads "Next up" */
+.news-article__related {
+  border-top: var(--rule-weight) solid var(--rule);
+  padding-top: var(--space-md);
+}
+
+.news-article__share:hover,
+.news-article__share:focus-visible {
+  color: var(--color-icon-black);
+}
+
+.news-article__media {
+  margin: 0;
+  aspect-ratio: 1;
+  border-radius: var(--radius-icon);
+  overflow: hidden;
+}
+
+.news-article__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* ---- body: centred measure, wide figures between ------------------------- */
+
+/* Body = sticky Share rail | flow. The rail is what narrows the body media
+   relative to the head (the user's ask: room for a travelling Share). On
+   mobile the rail collapses and Share leads the flow in normal position. */
+.news-article__body {
+  margin-top: var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+@media (min-width: 768px) {
+  .news-article__body {
+    display: grid;
+    grid-template-columns: minmax(7rem, 12rem) minmax(0, 1fr);
+    gap: var(--space-lg) var(--space-md);
+    align-items: start;
+  }
+}
+
+.news-article__flow {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+  min-width: 0;
+}
+
+/* The reading column. Floor 46rem; past ~2015px it grows on the SAME curve
+   as the article's body type below (36.5vw ≈ 33.5em of the 1.09vw body), so
+   the measure holds ~67ch while both scale to the 4xl horizon. */
+.news-article__prose {
+  width: 100%;
+  max-width: clamp(46rem, 36.5vw, 58.5rem);
+  margin-inline: auto;
+}
+
+/* Article body copy grows to the 4xl horizon — the global .content-page p
+   caps at 1.375rem by ~1257px (right for the capped work-article folio, too
+   small for this full-bleed page on a big screen). Same floor, longer curve:
+   1.09vw matches today's size at ~1960px and keeps going to ~28px/2560. */
+.news-article .content-page p,
+.news-article .content-page li {
+  font-size: clamp(1.125rem, 1.09vw, 1.75rem);
+}
+
+/* the wide bands: full container width, uniform crop */
+.news-article__figure {
+  margin: 0;
+  border-radius: var(--radius-icon);
+  overflow: hidden;
+  aspect-ratio: 3 / 2;
+}
+
+@media (min-width: 768px) {
+  .news-article__figure { aspect-ratio: 16 / 7; }
+}
+
+.news-article__figure img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Mock-scale prose headings, scoped to this page: the section head
+   ("Multi-Country Campaign Award") title-case at a moderate size, the
+   partnership line a small bold subhead. Custom values from the mock. */
+.news-article .content-page h2 {
+  /* raised a register on request (Aug 2026) — floor and slope together, so
+     it is bigger at every width; still clearly under the article title.
+     Caps at the 4xl horizon. */
+  font-size: clamp(1.75rem, 2.3vw, 3.7rem);
+  font-weight: var(--font-weight-bold);
+  text-transform: none;
+  margin-top: 0;
+  margin-bottom: 0.75rem;
+}
+
+.news-article .content-page h3 {
+  /* raised with h2 — same register step over the body copy */
+  font-size: clamp(1.25rem, 1.5vw, 2.4rem); /* caps at the 4xl horizon */
+  font-weight: var(--font-weight-bold);
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+}
+
+/* the one-line lede that sits directly under a section head */
+.news-article .content-page h2 + p {
+  color: var(--color-icon-grey);
+}
+
+/* ---- the teaser rail ----------------------------------------------------- */
+
+/* Reuses the homepage .news block; only the seam above it is this page's. */
+.news-article__related {
+  margin-top: var(--space-xl);
+  /* the rail self-pads too — on the homepage .u-container supplies this */
+  padding-inline: var(--gutter-page);
+}
