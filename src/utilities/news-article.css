@@ -306,11 +306,14 @@
   display: block;
 }
 
-/* the small-caps register the mock sets the eyebrow and date in */
+/* the caps register the mock sets the eyebrow and date in — IDENTICAL to
+   the main nav items (user call): the label voice at bold, uppercase, no
+   tracking, exactly as .site-nav__link wears it. Only the quiet meta
+   colour differs. */
 .news-article__meta--caps {
   font-size: var(--voice-label);
+  font-weight: var(--font-weight-bold);
   text-transform: uppercase;
-  letter-spacing: var(--letter-spacing-wide);
 }
 
 /* the doubled air goes ABOVE the eyebrow (user correction: the eyebrow
@@ -322,6 +325,10 @@
 }
 
 .news-article__head--stacked .news-article__title {
+  /* TWICE the A title (user call) — the base clamp doubled term for term,
+     still capping at the 4xl horizon. At phone widths the doubled floor is
+     enormous by design; pull it back here if that reads wrong on a device. */
+  font-size: clamp(4.5rem, 7.2vw, 12rem);
   max-width: 24ch; /* the mock breaks the headline over three lines, not the full bleed */
   margin-bottom: var(--space-md);
 }

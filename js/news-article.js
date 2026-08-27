@@ -23,16 +23,21 @@
   var head = document.querySelector(".news-article__head");
   if (!head || !("IntersectionObserver" in window)) return;
 
-  // The handover fires at the head's HALFWAY point — half the photo gone,
-  // theme gone — not at its last pixel, which left the dark opening
-  // overstaying its welcome (user call). ratio, not isIntersecting: with a
-  // threshold, isIntersecting is true either side of it while any sliver
-  // remains. (A viewport too short to ever show half the head would start
-  // light; acceptable degenerate case.)
+  // The handover fires at the head's HALFWAY point — half the head gone,
+  // theme gone (user call) — measured as the head's MIDPOINT crossing the
+  // viewport top, not as intersectionRatio >= 0.5. The ratio version broke
+  // the moment a head grew taller than the viewport (header B's stacked
+  // hero): such a head can never be 50% visible, so the page went light at
+  // load. The dense threshold array keeps callbacks firing while the head
+  // scrolls, and each callback reads the true geometry. Identical
+  // behaviour to the old maths for heads shorter than the viewport.
+  var steps = [];
+  for (var i = 0; i <= 50; i++) steps.push(i / 50);
   var io = new IntersectionObserver(function (entries) {
     entries.forEach(function (e) {
-      document.documentElement.classList.toggle("dark", e.intersectionRatio >= 0.5);
+      var r = e.boundingClientRect;
+      document.documentElement.classList.toggle("dark", r.top + r.height / 2 > 0);
     });
-  }, { threshold: 0.5 });
+  }, { threshold: steps });
   io.observe(head);
 })();
