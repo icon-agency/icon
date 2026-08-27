@@ -192,8 +192,13 @@
           <p class="news-article__meta news-article__meta--date news-article__meta--caps" data-rule="top" data-animate style="--animate-delay: 120ms">
             <time datetime="2026-11-12">12 Nov 2026</time>
           </p>
-          <figure class="news-article__hero media-reveal" data-reveal-img>
-            <img src="../assets/news-article/prca-award-01.png" alt="Three PRCA APAC Awards trophies lined up in the ICON studio" />
+          <!-- Demoing the NO-BANNER fallback: the story's mandatory square
+               card tile, twice. With a banner uploaded this is one 2:1 img
+               (drop --tiled, single <img>). Second tile is decorative
+               repetition: empty alt. -->
+          <figure class="news-article__hero news-article__hero--tiled media-reveal" data-reveal-img>
+            <img src="../assets/Social/708333855_18588965047046950_2864532459197602570_n.jpg" alt="The ICON team on stage accepting the award" />
+            <img src="../assets/Social/708333855_18588965047046950_2864532459197602570_n.jpg" alt="" aria-hidden="true" />
           </figure>
         </header>
 

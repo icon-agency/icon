@@ -340,6 +340,13 @@
   border-top: var(--rule-weight) solid var(--rule);
 }
 
+/* THE BANNER SLOT IS 2:1 — the CMS rule prototyped here (user design):
+   the banner field is optional; the card's mandatory SQUARE tile is the
+   guaranteed fallback, shown TWICE — two 1:1 tiles ARE the 2:1 slot, so
+   the fallback tiles the geometry exactly instead of cropping the square.
+   The whole news system then speaks in squares and their multiples.
+   Drupal: presence of field_news_banner picks the variant in preprocess
+   (hero_style: banner | tiled-card); no variant field needed. */
 .news-article__hero {
   margin: 0;
   border-radius: var(--radius-icon);
@@ -348,7 +355,7 @@
 }
 
 @media (min-width: 768px) {
-  .news-article__hero { aspect-ratio: 16 / 9; }
+  .news-article__hero { aspect-ratio: 2 / 1; }
 }
 
 .news-article__hero img {
@@ -356,4 +363,38 @@
   height: 100%;
   object-fit: cover;
   display: block;
+}
+
+/* The tiled fallback: the square card image twice, separated by the same
+   gutter the card grids use so the diptych reads composed, not accidentally
+   tiled. On mobile only ONE tile shows (two squares at phone width are
+   postage stamps) — the same image the reader tapped on the card, a
+   deliberate continuity. */
+.news-article__hero--tiled {
+  aspect-ratio: auto;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-2xs);
+  border-radius: 0; /* the tiles carry their own corners */
+  overflow: visible;
+}
+
+.news-article__hero--tiled img {
+  aspect-ratio: 1;
+  height: auto;
+  border-radius: var(--radius-icon);
+}
+
+.news-article__hero--tiled img + img {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .news-article__hero--tiled {
+    grid-template-columns: 1fr 1fr;
+    aspect-ratio: auto;
+  }
+  .news-article__hero--tiled img + img {
+    display: block;
+  }
 }
