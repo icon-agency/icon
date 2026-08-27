@@ -62,6 +62,13 @@
     mask-position: center;
   }
 
+  /* The BACK variant — the same corner arrow mirrored to point the way you
+     came (the article eyebrow's News link). One transform: the mask flips
+     with the box, so the glyph needs no second data URI. */
+  .invite-arrow--back::before {
+    transform: scaleX(-1);
+  }
+
   .fluid-heading {
     font-size: var(--heading-1);
     line-height: 1;
