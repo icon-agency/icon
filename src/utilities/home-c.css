@@ -24,6 +24,7 @@
  *
  * The zoom is fully contained by the frame (overflow: hidden + a fixed
  * aspect-ratio), so it never nudges the caption or the surrounding layout.
+ * Speaks img, video and iframe (the article's embedded film).
  * NB: the effect stays on the MEDIA, never on the observed .media-reveal frame —
  * a transform/clip on the observed element itself would skew its
  * IntersectionObserver ratio; the frame must keep its full box. (See LESSONS.md.) */
@@ -32,7 +33,8 @@
 }
 
 .js-animations .media-reveal img,
-.js-animations .media-reveal video {
+.js-animations .media-reveal video,
+.js-animations .media-reveal iframe {
   /* Tiny mask anchored in the BOTTOM-LEFT corner (top+right clipped 84%, bottom+
      left 0), so the reveal grows up-and-right from that corner instead of the
      centre. transform-origin matches, so the scale settles toward the same corner. */
@@ -51,7 +53,8 @@
 }
 
 .js-animations .media-reveal.is-revealed img,
-.js-animations .media-reveal.is-revealed video {
+.js-animations .media-reveal.is-revealed video,
+.js-animations .media-reveal.is-revealed iframe {
   clip-path: inset(0 round var(--radius-icon)); /* grows to full size */
   scale: 1;
   opacity: 1;

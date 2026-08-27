@@ -296,6 +296,26 @@
   display: block;
 }
 
+/* An embedded film in the flow (the Butterfly example): the same wide band,
+   but at the player's own 16:9 — the 16/7 crop would letterbox the chrome.
+   No parallax: the drift recipe absolutely positions IMGs only, and a
+   drifting player would fight its own controls. Declared after the md
+   16/7 rule so the variant wins at equal specificity. */
+.news-article__figure--video {
+  aspect-ratio: 16 / 9;
+}
+
+@media (min-width: 768px) {
+  .news-article__figure--video { aspect-ratio: 16 / 9; }
+}
+
+.news-article__figure--video iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+}
+
 /* ---- media parallax — the homepage cards' drift, on the article bands ----
    The news-card.css recipe verbatim: a NAMED view-timeline declared on the
    frame (never bare view() on the img — the overflow:hidden frame is the
