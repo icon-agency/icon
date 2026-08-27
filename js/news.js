@@ -1,9 +1,12 @@
-/* news.js — News & Insights listing behaviours. One IIFE, two concerns:
+/* news.js — News & Insights card + listing behaviours. One IIFE; the
+ * listing-only concern (the filter) is guarded on its own markup, so the
+ * shared card behaviours (tilt, lean) also run on the article pages'
+ * "Next up" rail, which loads this file for exactly that.
  *
  * The CARDS are the shared components/news-card.css — the same component the
  * homepage renders — so their hover/parallax behaviours are ported here
  * rather than reinvented (home-c.js drives them with GSAP on the homepage;
- * this page has no GSAP, so they run on rAF).
+ * these pages have no GSAP, so they run on rAF).
  *
  * 1. CATEGORY FILTER — a deliberate FORK of the work-filter.js mechanics
  *    rather than a shared module: that file hardcodes /work URLs and the
@@ -27,15 +30,15 @@
   "use strict";
 
   var list = document.querySelector("[data-news-list]");
-  if (!list) return;
+
+  /* ---- 1. category filter (listing page only) --------------------------- */
+  if (list) (function () {
   var items = Array.prototype.slice.call(list.querySelectorAll(".news-list__item"));
   var chips = Array.prototype.slice.call(document.querySelectorAll("[data-filter]"));
   var slugs = chips.map(function (c) { return c.dataset.filter; });
   var status = document.querySelector("[data-news-status]");
   var pagerStatus = document.querySelector(".pager__status");
   var current = "all";
-
-  /* ---- 1. category filter ---------------------------------------------- */
 
   // Fluid filter swap: with unique view-transition-names the browser tracks
   // each card across the DOM change — survivors morph to their new slot,
@@ -149,6 +152,7 @@
       } catch (err) {}
     }
   }
+  })();
 
   /* ---- 2. card cursor tilt ------------------------------------------------
      home-c.js 3f, verbatim behaviour on the shared .news-card: feed --mx/--my
@@ -160,7 +164,9 @@
     !window.matchMedia("(prefers-reduced-motion: reduce)").matches &&
     window.matchMedia("(hover: hover)").matches
   ) {
-    Array.prototype.slice.call(list.querySelectorAll(".news-card")).forEach(function (card) {
+    // document-wide, not list-scoped: on the article pages the cards live in
+    // the "Next up" rail and there is no [data-news-list] at all
+    Array.prototype.slice.call(document.querySelectorAll(".news-card")).forEach(function (card) {
       var raf = 0, mx = 0, my = 0;
       var write = function () {
         raf = 0;
@@ -190,10 +196,14 @@
   /* ---- 4. scroll-velocity lean -------------------------------------------
      The homepage card lean (home-c.js 3e), ported without GSAP: sample scroll
      velocity, decay it when scrolling stops, lerp toward a clamped lean and
-     write ONE custom property on the list per frame — every row inherits
-     var(--nl-lean). The rAF loop only runs while there is motion to settle,
-     and an observer idles the whole thing when the list is offscreen. */
-  if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+     write ONE custom property on the host per frame — every card inherits
+     var(--nl-lean). The host is the listing where there is one, else the
+     article's "Next up" rail (each page ships its own CSS consumer:
+     news-list.css rows / news-article.css rail cards). The rAF loop only
+     runs while there is motion to settle, and an observer idles the whole
+     thing when the host is offscreen. */
+  var leanHost = list || document.querySelector(".news-article__related");
+  if (leanHost && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
     (function () {
       var MAX = 1.2;          // deg — full-width rows swing more px per degree
       var VEL_AT_MAX = 2600;  // scroll px/s that reaches the full lean
@@ -202,7 +212,7 @@
       if (!inView) {
         new IntersectionObserver(function (entries) {
           inView = entries[0].isIntersecting;
-        }, { rootMargin: "20% 0px" }).observe(list);
+        }, { rootMargin: "20% 0px" }).observe(leanHost);
       }
 
       var lastY = window.scrollY, lastT = performance.now();
@@ -218,7 +228,7 @@
         var target = inView ? clamp((vel / VEL_AT_MAX) * MAX, -MAX, MAX) : 0;
         cur += (target - cur) * Math.min(1, dt * 7);
         if (Math.abs(cur) < 0.01 && !vel) cur = 0;
-        list.style.setProperty("--nl-lean", cur.toFixed(3) + "deg");
+        leanHost.style.setProperty("--nl-lean", cur.toFixed(3) + "deg");
         if (vel || Math.abs(cur) > 0.005) raf = requestAnimationFrame(tick);
         else prevT = 0; // settled — loop stops until the next scroll
       };

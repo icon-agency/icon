@@ -256,6 +256,55 @@
   display: block;
 }
 
+/* ---- media parallax — the homepage cards' drift, on the article bands ----
+   The news-card.css recipe verbatim: a NAMED view-timeline declared on the
+   frame (never bare view() on the img — the overflow:hidden frame is the
+   img's nearest scroll container and the drift would read 0, LESSONS.md),
+   3%-a-side overscan covering a ±2% vertical drift. Composes with the
+   .media-reveal entrance the same way the cards do: the reveal animates
+   clip-path/scale/opacity, the drift owns transform. The tiled hero sits
+   this out — its imgs OWN the cell geometry (aspect-ratio on the img), so
+   the absolute overscan would collapse the grid, and a diptych drifting as
+   one panel reads wrong anyway. */
+.news-article__media,
+.news-article__figure,
+.news-article__hero:not(.news-article__hero--tiled) {
+  position: relative;
+  view-timeline-name: --article-media;
+  view-timeline-axis: block;
+}
+
+@keyframes article-media-y {
+  from { transform: translateY(-2%); }
+  to { transform: translateY(2%); }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .news-article__media img,
+    .news-article__figure img,
+    .news-article__hero:not(.news-article__hero--tiled) img {
+      position: absolute;
+      top: -3%;
+      left: -3%;
+      width: 106%;
+      max-width: none; /* override preflight's img{max-width:100%} so 106% applies */
+      height: 106%;
+      animation: article-media-y linear both;
+      animation-timeline: --article-media;
+      animation-range: cover 0% cover 100%;
+    }
+  }
+}
+
+/* The rail's cards lean with scroll velocity like the homepage's — js/news.js
+   writes --nl-lean on this host (no GSAP here). The consumer lives in this
+   page layer because news-list.css scopes its copy to the listing's rows and
+   the homepage writes inline transforms instead. */
+.news-article__related .news-card {
+  rotate: var(--nl-lean, 0deg);
+}
+
 /* Mock-scale prose headings, scoped to this page: the section head
    ("Multi-Country Campaign Award") title-case at a moderate size, the
    partnership line a small bold subhead. Custom values from the mock. */
