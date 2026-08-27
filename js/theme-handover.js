@@ -34,12 +34,14 @@
   //       than the viewport (header B's stacked hero): such a head can
   //       never be 50% visible, so the page went light at load.
   //
-  //   "end" — the element's BOTTOM edge crossing the viewport top: the
-  //       dark opening holds while ANY of the marked section still shows
+  //   "end" — the marked section's END arriving at the FOLD: dark while
+  //       the element's bottom still sits below the viewport's bottom
+  //       edge, light the moment the content after it starts to show
   //       (/news, whose opening spans the masthead AND the sticky lead
-  //       band — user call: it changes once you get past the sticky
-  //       section, so the hook rides the lead item, whose three-row grid
-  //       area IS the band's scroll track).
+  //       band — user calls, twice refined: first "once you get past the
+  //       sticky section", then "swap to light when these [the rows after
+  //       the band] first appear". The hook rides the lead item, whose
+  //       three-row grid area IS the band's scroll track).
   //
   // The dense threshold array keeps callbacks firing while the element
   // scrolls, and each callback reads the true geometry.
@@ -53,10 +55,12 @@
       // the theme, or a chip tap would strip the dark opening under the
       // reader. Hold the current theme until real geometry arrives.
       if (!r.width && !r.height) return;
-      var pivot = e.target.getAttribute("data-theme-handover") === "end"
-        ? r.bottom
-        : r.top + r.height / 2;
-      document.documentElement.classList.toggle("dark", pivot > 0);
+      // rootBounds is null only for cross-document roots — never here
+      var fold = e.rootBounds ? e.rootBounds.height : window.innerHeight;
+      var dark = e.target.getAttribute("data-theme-handover") === "end"
+        ? r.bottom > fold
+        : r.top + r.height / 2 > 0;
+      document.documentElement.classList.toggle("dark", dark);
     });
   }, { threshold: steps });
 

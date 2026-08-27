@@ -1251,9 +1251,10 @@ plus a note: decorative effect knobs also live in <code class="ds-code">motion.c
                   its passenger. Since Aug 2026 the same span does double duty as the DARK
                   OPENING&rsquo;s track: the page ships <code class="ds-code">class="dark"</code> and the
                   lead item carries <code class="ds-code">data-theme-handover="end"</code>
-                  (<code class="ds-code">js/theme-handover.js</code>) &mdash; the theme holds while any of
-                  the sticky band still shows and hands over to light once its bottom clears the viewport
-                  top, both directions; filtering re-hosts the attribute onto the new first visible item
+                  (<code class="ds-code">js/theme-handover.js</code>) &mdash; the theme holds while the
+                  sticky band still runs past the fold and hands over to light the moment the rows
+                  after it first appear (its bottom crossing the viewport&rsquo;s bottom edge), both
+                  directions; filtering re-hosts the attribute onto the new first visible item
                   so the observer never aims at a hidden row. The pin (<code class="ds-code">calc(2rem + var(--logo-h) +
                   var(--space-sm))</code>) clears the fixed wordmark, which sits over this very column
                   and re-derives from the mark&rsquo;s fluid height. It all runs only above 1024:
