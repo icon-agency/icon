@@ -337,8 +337,11 @@
 /* Reuses the homepage .news block; only the seam above it is this page's. */
 .news-article__related {
   margin-top: var(--space-xl);
-  /* the rail self-pads too — on the homepage .u-container supplies this */
-  padding-inline: var(--gutter-page);
+  /* MARGIN, not padding (the homepage rail sits in .u-container instead):
+     the "Next up" rule is this section's border-top, and it must STOP at
+     the page margins like the head's rules do — so the gutter insets the
+     box itself, not just its content. */
+  margin-inline: var(--gutter-page);
 }
 
 

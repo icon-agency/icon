@@ -27,7 +27,9 @@
   --accent-foreground: oklch(0.205 0 0);
   --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
+  /* darker than the scaffold's 0.922 default: the site's every divider is
+     this token (via --rule), and at 0.922 the lines disappeared on white */
+  --border: oklch(0.72 0 0);
   --input: oklch(0.922 0 0);
   --ring: oklch(0.708 0 0);
   --chart-1: oklch(0.646 0.222 41.116);
@@ -89,7 +91,9 @@
   --accent-foreground: oklch(0.985 0 0);
   --destructive: oklch(0.396 0.141 25.723);
   --destructive-foreground: oklch(0.637 0.237 25.331);
-  --border: oklch(0.269 0 0);
+  /* stepped up with the light theme's darkening — the same visual distance
+     from this ground as 0.72 keeps from white */
+  --border: oklch(0.42 0 0);
   --input: oklch(0.269 0 0);
   --ring: oklch(0.439 0 0);
   --chart-1: oklch(0.488 0.243 264.376);
