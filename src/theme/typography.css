@@ -78,8 +78,10 @@
      --text-xs, which the homepage re-scopes larger (.page-home) — so the
      header changed size depending on which page you were on. Caps at the
      4xl horizon with the other voices. Companions: bold, uppercase;
-     tracking stays per-component. */
-  --voice-label: clamp(0.8125rem, 0.35rem + 0.55vw, 1.25rem);
+     tracking stays per-component. Trimmed ~10% across the range (user
+     call, Aug 2026: "a tad smaller" — pointed at the nav, applied at the
+     token so every label wearer steps down together). */
+  --voice-label: clamp(0.78125rem, 0.3rem + 0.5vw, 1.125rem);
 
   /* THE DISPLAY VOICE — the big caps mastheads (NEWS & INSIGHTS, WORK, the
      footer's LET'S TALK) and the /news page heading.
