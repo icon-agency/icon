@@ -189,12 +189,16 @@
   min-width: 0;
 }
 
-/* The reading column. Floor 46rem; past ~1840px it grows on the SAME curve
-   as the article's body type below (40vw ≈ 33.3em of the 1.2vw body), so
-   the measure holds ~67ch while both scale to the 4xl horizon. */
+/* The reading column SPANS THE FLOW — full width between the two rails,
+   the same edges the figures run to (user call, Aug 2026: the 46rem
+   classical measure read as a narrow strip lost in the page; the article
+   is an editorial spread, and the rails + gutter already shape the line).
+   The trade: lines run well past the ~67ch textbook measure on wide
+   screens — the 1.2vw body size and .content-page's 1.75 line-height are
+   what keep that walkable. If it ever reads too long, the lever is a
+   max-width back on this rule, not a narrower grid. */
 .news-article__prose {
   width: 100%;
-  max-width: clamp(46rem, 40vw, 64rem);
   margin-inline: auto;
 }
 

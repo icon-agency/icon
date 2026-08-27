@@ -118,6 +118,28 @@
   }
 }
 
+/* CENTRED IN THE 768–900 BAND TOO (user call, Aug 2026) — by making room
+   rather than moving the threshold: the pill compresses (link/pill padding
+   trimmed, the scroll-revealed home glyph suppressed so the scrolled width
+   equals the rest width), and the left offset is a max() of true centring
+   and the wordmark's clearance — centred wherever that fits, pinned at the
+   clearance where it doesn't, never flush right. 392px is the compressed
+   pill measured at these sizes; re-measure if the links change. */
+@media (min-width: 768px) and (max-width: 899.98px) {
+  .site-nav {
+    justify-content: flex-start;
+    padding-inline-end: 0;
+    padding-inline-start: max(calc((100vw - 379px) / 2), 13rem); /* 379 = midpoint of the pill's rest (365) and scrolled (393) widths, so both states sit within ±7px of true centre */
+  }
+  .site-nav__link { padding-inline: 0.3rem; }
+  .site-nav__pill { padding-inline: 0.6rem; }
+  .site-nav.show-home .site-nav__home {
+    max-width: 0;
+    padding-inline: 0;
+    opacity: 0;
+  }
+}
+
 /* Centred from 900, not 1024 — measured, and it clears the wordmark in the
    state that matters. The pill is 442px at rest and 470px once scrolled (the
    scrolled state pads out around its background), and the wordmark's right edge
