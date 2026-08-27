@@ -534,8 +534,11 @@ plus a note: decorative effect knobs also live in <code class="ds-code">motion.c
                   layer, <code class="ds-code">src/utilities/news-article.css</code>); the wide
                   figures and serif statements are body-embedded media/paragraphs; the
                   &ldquo;Next up&rdquo; rail is a Views block of three teasers wearing
-                  <code class="ds-code">news-card</code>. Share is the inert
-                  <code class="ds-code">[data-share]</code> hook until that behaviour ships.
+                  <code class="ds-code">news-card</code>. Share is LIVE: a caps
+                  label over two icon actions &mdash; copy link (async clipboard, execCommand
+                  fallback, a beat-long check + sr-only “Link copied”) and a mailto: enriched
+                  with the node&rsquo;s title and URL &mdash; sticking at the viewport&rsquo;s
+                  vertical centre from md (<code class="ds-code">js/share.js</code>).
                   Behaviours: the shared <code class="ds-code">Drupal.behaviors.iconThemeHandover</code>
                   via <code class="ds-code">icon/theme-handover</code> (the dark-opening theme
                   handover &mdash; also attached by the /news listing &mdash; colour-only

@@ -164,6 +164,7 @@ missing.
 | Global footer | `js/site-footer.js` | — | `iconFooter` → `icon/site-footer` |
 | News listing (filter + card motion) | `js/news.js` | — | `iconNews` → `icon/news` |
 | Dark-opening theme handover (news listing + both articles) | `js/theme-handover.js` | — | `iconThemeHandover` → `icon/theme-handover` |
+| Article Share rail (copy link + email) | `js/share.js` | — | `iconShare` → `icon/share` |
 | Work section (swipe, underline, hover-video) | `js/work.js` | — | `iconWork` → `icon/work` |
 | Work listing filter | `js/work-filter.js` | — | `iconWorkFilter` → `icon/work-filter` |
 | Home-A hero (prototype) | `js/hero.js` | gsap, ScrambleText | `iconHero` → `icon/hero` |

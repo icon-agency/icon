@@ -17,8 +17,8 @@
  * Drupal: the full node view of `news` — title/date/category from the
  * node, body rendered into .content-page, the wide figures and serif
  * statements as body-embedded media/paragraphs, the rail a Views block of
- * three teasers. Share shares the inert [data-share] hook until that
- * behaviour ships. */
+ * three teasers. Share is live — copy link + email via js/share.js
+ * (Drupal.behaviors.iconShare). */
 
 /* While the page is in its dark opening, every hairline here reads
    ON-COLOUR — the theme's border grey is invisible on the near-black
@@ -110,29 +110,72 @@
   color: var(--color-icon-black);
 }
 
-/* Share — the quiet meta voice, riding the body's left rail and STICKING
-   as the article scrolls (pinned clear of the fixed wordmark, the same
-   derivation as the page's own top padding). Plain <button> on the shared
-   inert [data-share] hook. */
+/* Share — the caps label over two LIVE icon actions (copy link + email,
+   js/share.js — two and no more, user call), riding the body's left rail.
+   From md the group STICKS at the viewport's vertical CENTRE (user call):
+   top is 50vh minus half the group's own ~7.25rem, so the stack reads
+   centred while the article scrolls past it. Below md there is no rail
+   column to hold it, so it stays in flow. */
 .news-article__share {
-  margin: 0;
-  padding: 0;
-  border: 0;
-  background: none;
-  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-2xs);
   align-self: start;
   justify-self: start;
-  position: sticky;
-  top: calc(2rem + var(--logo-h) + var(--space-sm));
-  font-family: inherit;
-  /* the head's caps voice (.news-article__meta--caps): the Share control
-     reads as one of the article's meta, not a different species */
+}
+
+@media (min-width: 768px) {
+  .news-article__share {
+    position: sticky;
+    top: calc(50vh - 3.6rem);
+  }
+}
+
+.news-article__share-label {
+  /* the head's caps voice (.news-article__meta--caps): the label reads as
+     one of the article's meta, not a different species */
   font-size: var(--voice-label);
   font-weight: var(--font-weight-bold);
   text-transform: uppercase;
   color: var(--color-icon-grey);
-  transition: color var(--duration-fast) var(--ease-standard);
 }
+
+.news-article__share-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  margin: 0;
+  padding: 0;
+  border: var(--rule-weight) solid var(--rule);
+  border-radius: var(--radius-icon);
+  background: none;
+  cursor: pointer;
+  color: var(--color-icon-grey);
+  transition:
+    color var(--duration-fast) var(--ease-standard),
+    border-color var(--duration-fast) var(--ease-standard);
+}
+
+.news-article__share-btn:hover,
+.news-article__share-btn:focus-visible {
+  color: var(--color-icon-black);
+  border-color: var(--color-icon-black);
+}
+
+.news-article__share-glyph {
+  width: 1.15rem;
+  height: 1.15rem;
+  display: block;
+}
+
+/* copy feedback: the link glyph hands over to the check for a beat
+   (js/share.js holds .is-copied for 1.8s) */
+.news-article__share-glyph--check { display: none; }
+.news-article__share-btn.is-copied .news-article__share-glyph--link { display: none; }
+.news-article__share-btn.is-copied .news-article__share-glyph--check { display: block; }
 
 @media (min-width: 768px) {
   .news-article__meta--date { margin-top: auto; }
@@ -143,11 +186,6 @@
 .news-article__related {
   border-top: var(--rule-weight) solid var(--rule);
   padding-top: var(--space-md);
-}
-
-.news-article__share:hover,
-.news-article__share:focus-visible {
-  color: var(--color-icon-black);
 }
 
 .news-article__media {

@@ -20,8 +20,8 @@ The canonical page is `templates/homeC.html` (light theme, fully fluid). The roo
 ├── experiments/          # self-contained one-off explorations (own inline CSS, not built);
 │                         #   approved ones get promoted into src/ + templates/
 ├── js/                   # one IIFE per behaviour → maps to a Drupal.behaviors entry
-│                         #   (header, hero-loader, home-c, news, reveal, site-footer,
-│                         #    theme-handover, work, work-filter · prototypes: hero,
+│                         #   (header, hero-loader, home-c, news, reveal, share,
+│                         #    site-footer, theme-handover, work, work-filter · prototypes: hero,
 │                         #    hero-sphere, tagline · dev-only: theme-toggle)
 ├── css/main.css          # build output (committed — GitHub Pages serves it)
 ├── assets/               # images + video (work portfolio, brand, banners)

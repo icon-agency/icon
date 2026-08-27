@@ -173,9 +173,8 @@
            Drupal: full node view of `news`. Title, date and category come
            from the node; the body renders into .content-page; the wide
            figures and serif statements are body-embedded media/paragraphs;
-           the rail below is a Views block of three teasers. Share shares the
-           inert [data-share] hook (behaviour ships with the newsletter
-           slice). Content links keep their real Drupal routes and 404 on the
+           the rail below is a Views block of three teasers. Share is live:
+           copy link + email via js/share.js. Content links keep their real Drupal routes and 404 on the
            static preview — deliberate, see docs/drupal-handoff.md. -->
       <article class="news-article news-article--header-b" aria-labelledby="article-title">
         <header class="news-article__head news-article__head--stacked" data-theme-handover>
@@ -204,9 +203,21 @@
         </header>
 
         <div class="news-article__body">
-          <!-- Share rides a sticky left rail beside the flow; the flow column
-               is what keeps the body media narrower than the head. -->
-          <button class="news-article__share" type="button" data-share>Share</button>
+          <!-- Share rides a sticky left rail beside the flow (centred at 50vh
+               from md up), two LIVE actions: copy link + email (js/share.js).
+               The flow column is what keeps the body media narrower than
+               the head. -->
+          <div class="news-article__share" data-share>
+            <span class="news-article__share-label" aria-hidden="true">Share</span>
+            <button class="news-article__share-btn" type="button" data-share-copy aria-label="Copy link">
+              <svg class="news-article__share-glyph news-article__share-glyph--link" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" /><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" /></svg>
+              <svg class="news-article__share-glyph news-article__share-glyph--check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5" /></svg>
+            </button>
+            <a class="news-article__share-btn" href="mailto:" data-share-email aria-label="Share by email">
+              <svg class="news-article__share-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2" /><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" /></svg>
+            </a>
+            <span class="sr-only" aria-live="polite" data-share-status></span>
+          </div>
           <div class="news-article__flow">
           <div class="content-page news-article__prose" data-animate>
             <p>Fresh from the PRCA APAC Awards in Singapore: ICON is proud to celebrate three award wins that reflect the breadth of work we create across audiences, industries and challenges.</p>
@@ -444,6 +455,7 @@
     <script src="../js/reveal.js"></script>
     <script src="../js/theme-handover.js"></script>
     <script src="../js/news.js"></script>
+    <script src="../js/share.js"></script>
     <script src="../js/site-footer.js"></script>
   </body>
 </html>
