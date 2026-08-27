@@ -115,6 +115,10 @@
      Caps at the same 4xl horizon (~2670px) as every voice. The stacked
      header-B title is this register at 1.5x (see news-article.css). */
   --voice-headline: clamp(2.25rem, 3.6vw, 6rem);
+  /* The same register at 1.5x — every term scaled together, same cap
+     horizon. Born as header B's stacked title; the /news masthead joined
+     it (user call: News & Insights = the article H1's size). */
+  --voice-headline-lg: clamp(3.375rem, 5.4vw, 9rem);
 
   /* Weights */
   --font-weight-normal: 400;

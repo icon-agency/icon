@@ -438,9 +438,9 @@
 
 .news-article__head--stacked .news-article__title {
   /* 1.5x the A title — doubled first on request, pulled back on sight
-     ("too big"); every term scaled together, still capping at the 4xl
-     horizon. */
-  font-size: clamp(3.375rem, 5.4vw, 9rem);
+     ("too big"). Now the named large headline register, shared with the
+     /news masthead (typography.css). */
+  font-size: var(--voice-headline-lg);
   max-width: 24ch; /* the mock breaks the headline over three lines, not the full bleed */
   margin-bottom: var(--space-md);
 }

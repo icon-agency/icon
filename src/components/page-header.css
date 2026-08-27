@@ -43,9 +43,11 @@
    uppercase settings — this variant is no longer "the caps voice". The base
    heading above keeps the mixed-case serif-accent voice for /work. */
 .page-header__heading--display {
-  /* the article headline's register (user call: the masthead matches the
-     article header's size and weight), Miller accent per-word as before */
-  font-size: var(--voice-headline);
+  /* the LARGE article headline register — header B's stacked title (user
+     calls, twice: first matched to the A title, then raised to the B H1:
+     "News & Insights the same font size as the H1"), Miller accent
+     per-word as before */
+  font-size: var(--voice-headline-lg);
   font-weight: var(--font-weight-bold); /* matches the homepage rail — see .news__heading */
   line-height: var(--voice-display-lh-sentence);
   letter-spacing: var(--tracking-caps);
