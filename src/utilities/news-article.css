@@ -286,6 +286,9 @@
 .news-article .content-page p,
 .news-article .content-page li {
   font-size: clamp(1.1875rem, 1.2vw, 1.875rem);
+  /* one step up from the base 400 (user call, with the size step above):
+     more ink at this size on the full-bleed page */
+  font-weight: var(--font-weight-medium);
 }
 
 /* the wide bands: full container width, uniform crop */
