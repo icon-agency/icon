@@ -325,10 +325,10 @@
 }
 
 .news-article__head--stacked .news-article__title {
-  /* TWICE the A title (user call) — the base clamp doubled term for term,
-     still capping at the 4xl horizon. At phone widths the doubled floor is
-     enormous by design; pull it back here if that reads wrong on a device. */
-  font-size: clamp(4.5rem, 7.2vw, 12rem);
+  /* 1.5x the A title — doubled first on request, pulled back on sight
+     ("too big"); every term scaled together, still capping at the 4xl
+     horizon. */
+  font-size: clamp(3.375rem, 5.4vw, 9rem);
   max-width: 24ch; /* the mock breaks the headline over three lines, not the full bleed */
   margin-bottom: var(--space-md);
 }
