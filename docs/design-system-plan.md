@@ -41,8 +41,10 @@ The plan below is kept as the working brief; this block records where it stands.
   control; the exception is recorded in `accessibility-checklist.md` until the
   DS clients section lands and makes the decision prose.
 - **Blueprint drift:** the sidebar gained an **Experiments** group (linking
-  `experiments/*` one-offs) between Template and Prototypes; `templates/news.html`
-  joined the Template group alongside Home C.
+  `experiments/*` one-offs); `templates/news.html` and the news article joined
+  the Template group alongside Home C. The **Prototypes group was removed**
+  (26 Aug 2026, user call) — home A/B and the work pages are legacy, stay in
+  the repo, and are no longer surfaced by the DS.
 
 ---
 
