@@ -172,8 +172,12 @@
     /* SYMMETRIC: the rail is mirrored by a phantom right column, so the
        flow's centre IS the page's centre — with only a left rail the prose
        sat visibly right of centre (user catch). Share takes the left cell;
-       the right stays empty on purpose. */
-    grid-template-columns: minmax(7rem, 12rem) minmax(0, 1fr) minmax(7rem, 12rem);
+       the right stays empty on purpose.
+       PROPORTIONAL rails, not fixed: minmax(7rem, 12rem) rails ate ~450px
+       at sub-desktop widths and left the flow a sliver (second user catch —
+       "why is it still so narrow"). 1fr/7fr/1fr gives the flow ~78% of the
+       page at every width; the 3.5rem floor is just enough for "Share". */
+    grid-template-columns: minmax(3.5rem, 1fr) minmax(0, 7fr) minmax(3.5rem, 1fr);
     gap: var(--space-lg) var(--space-md);
     align-items: start;
   }

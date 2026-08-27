@@ -62,11 +62,24 @@
      repeated across four files. */
   --voice-meta: clamp(1.0625rem, 1.1vw, 1.75rem); /* caps ~2545px, the 4xl horizon like the rest */
 
-  /* --logo-h — the wordmark's own stepped ladder (mirror of
-     .site-logo__mark; keep the two in step if that ladder ever moves). Still
-     consumed by the news listing's sticky lead card, which pins clear of the
-     fixed wordmark sitting over its column. */
-  --logo-h: 3.5rem;
+  /* --logo-h — THE wordmark height, single source: .site-logo__mark reads
+     it from md up, and the sticky offsets (news lead card, article and
+     listing mastheads) derive their wordmark clearance from it. FLUID now —
+     it was a four-rung stepped ladder duplicated by hand in site-header.css
+     ("keep the two in step"), the same drift-wart the colour raws ended.
+     Sized DOWN from the old ladder (user call, Aug 2026 — the mark
+     crowded the nav): ~50px @1024 → 59 @1536 → 68 at the 4xl horizon,
+     fluid like every other voice. */
+  --logo-h: clamp(2.75rem, 1.9rem + 1.5vw, 4.25rem);
+
+  /* THE LABEL VOICE — chrome and wayfinding: the nav pill links, the mobile
+     menu labels, the menu toggle, the arrow-links. One size wherever the UI
+     speaks in small bold labels. Named because the nav used to ride
+     --text-xs, which the homepage re-scopes larger (.page-home) — so the
+     header changed size depending on which page you were on. Caps at the
+     4xl horizon with the other voices. Companions: bold, uppercase;
+     tracking stays per-component. */
+  --voice-label: clamp(0.8125rem, 0.35rem + 0.55vw, 1.25rem);
 
   /* THE DISPLAY VOICE — the big caps mastheads (NEWS & INSIGHTS, WORK, the
      footer's LET'S TALK) and the /news page heading.
@@ -124,6 +137,3 @@
 }
 
 /* mirrors .site-logo__mark's steps — same breakpoints, same values */
-@media (min-width: 1024px) { :root { --logo-h: 3.75rem; } }
-@media (min-width: 1280px) { :root { --logo-h: 4.25rem; } }
-@media (min-width: 1536px) { :root { --logo-h: 4.5rem; } }

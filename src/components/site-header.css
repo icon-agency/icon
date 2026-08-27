@@ -62,16 +62,24 @@
   will-change: translate;
 }
 
-@media (min-width: 1024px) {
-  .site-logo { top: 1.5rem; } /* left comes from --header-gutter */
-  .site-logo__mark { height: 3.75rem; }
-}
-@media (min-width: 1280px) {
-  .site-logo { top: 2rem; }
-  .site-logo__mark { height: 4.25rem; }
-}
-@media (min-width: 1536px) {
-  .site-logo__mark { height: 4.5rem; }
+/* From md the mark reads --logo-h — the single fluid source in
+   theme/typography.css (this file used to carry its own stepped ladder,
+   hand-mirrored there; retired Aug 2026).
+
+   The anchor's top ALIGNS THE INK, not the boxes (user call): the ICON
+   letterforms start 18.4% below the SVG box top (the bubble glyph owns the
+   space above — the "I" runs y 9.2 of a 50 viewBox), and the nav text's
+   cap top sits ~13% of its font size below the link box (Kumbh's cap is
+   0.747 of the em on a line-height of 1). So: nav top (1rem) + pill
+   padding (0.75rem) + the cap offset − the mark's ink offset. Both terms
+   are token-derived, so the alignment survives any retune of either
+   voice. The sticky offsets elsewhere derive from "2rem + --logo-h",
+   which stays a safe over-estimate. */
+@media (min-width: 768px) {
+  .site-logo {
+    top: calc(1.75rem + var(--voice-label) * 0.13 - var(--logo-h) * 0.184);
+  }
+  .site-logo__mark { height: var(--logo-h); }
 }
 
 /* Hide the wordmark once you scroll past the hero, swapping it for the home
@@ -129,7 +137,7 @@
   .site-nav {
     justify-content: flex-start;
     padding-inline-end: 0;
-    padding-inline-start: max(calc((100vw - 379px) / 2), 13rem); /* 379 = midpoint of the pill's rest (365) and scrolled (393) widths, so both states sit within ±7px of true centre */
+    padding-inline-start: max(calc((100vw - 399px) / 2), 11rem); /* 399 = midpoint of the pill's rest (385) and scrolled (413) widths at the label voice (±7px of true centre); the 11rem floor clears the resized wordmark */
   }
   .site-nav__link { padding-inline: 0.3rem; }
   .site-nav__pill { padding-inline: 0.6rem; }
@@ -202,8 +210,8 @@
 .site-nav__link {
   display: flex;
   align-items: center;
-  padding: 0.5rem;
-  font-size: var(--text-xs);
+  padding: var(--spacing-xs);
+  font-size: var(--voice-label); /* the label voice — page-independent, scales to the horizon */
   font-weight: var(--font-weight-bold);
   line-height: 1;
   color: var(--color-foreground);
@@ -291,8 +299,8 @@
 
 .site-nav__submenu-link {
   display: block;
-  padding: 0.25rem 0;
-  font-size: var(--text-xs);
+  padding: var(--spacing-2xs) 0;
+  font-size: var(--voice-label);
   font-weight: var(--font-weight-bold);
   text-transform: uppercase; /* labels are authored natural-case */
   color: var(--color-foreground);
@@ -551,9 +559,9 @@
 .mobile-menu__social-link {
   border: 0;
   background: none;
-  font-size: var(--text-xs);
+  font-size: var(--voice-label);
   font-weight: var(--font-weight-bold);
-  letter-spacing: 0.025em;
+  letter-spacing: var(--letter-spacing-wide);
   text-transform: uppercase;
   color: var(--color-white);
   text-decoration: none;

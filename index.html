@@ -257,7 +257,7 @@
                 </p>
               </div>
             
-              <div class="ds-group"><h4 class="ds-group__title">Voice roles — reach for these before inventing a size</h4><p class="ds-group__note">Three named voices carry most of the canonical pages' running text. <code class="ds-code">--voice-mid</code> — THE "sentence" size (hero client label + counter, intro statement, expertise links, work tile titles, both "More" links, the footer's blurb / Subscribe / cities / socials): clamp(1.4rem, 2.1vw, 3.4rem), medium weight, −0.01em tracking, 1.2 line-height — titles and More links run one step heavier (semibold). <code class="ds-code">--voice-meta</code> — the quiet line under it (card categories and dates, work meta, footer place names, filter labels): clamp(1.0625rem, 1.1vw, 1.75rem). <code class="ds-code">--voice-display</code> — the big caps mastheads (WORK, NEWS &amp; INSIGHTS, LET'S TALK, the /news h1) AND the intro statement, one curve and literally one token (<code class="ds-code">.intro</code> aliases it, so the two can never drift): clamp(2.4rem, 5.6vw, 9rem), paired with <code class="ds-code">--voice-display-lh</code> (0.82) for stacked caps and <code class="ds-code">--voice-display-lh-sentence</code> (0.72) for the sentence-case mastheads. All three keep growing to the ~2545–2590px "4xl horizon" before capping. The display voice replaced a wordmark cap-height derivation (reasoning preserved in <code class="ds-code">src/theme/typography.css</code>); <code class="ds-code">--logo-h</code> survives for the wordmark ladder and the news lead's sticky offset.</p></div>
+              <div class="ds-group"><h4 class="ds-group__title">Voice roles — reach for these before inventing a size</h4><p class="ds-group__note">Three named voices carry most of the canonical pages' running text. <code class="ds-code">--voice-mid</code> — THE "sentence" size (hero client label + counter, intro statement, expertise links, work tile titles, both "More" links, the footer's blurb / Subscribe / cities / socials): clamp(1.4rem, 2.1vw, 3.4rem), medium weight, −0.01em tracking, 1.2 line-height — titles and More links run one step heavier (semibold). <code class="ds-code">--voice-meta</code> — the quiet line under it (card categories and dates, work meta, footer place names, filter labels): clamp(1.0625rem, 1.1vw, 1.75rem). <code class="ds-code">--voice-display</code> — the big caps mastheads (WORK, NEWS &amp; INSIGHTS, LET'S TALK, the /news h1) AND the intro statement, one curve and literally one token (<code class="ds-code">.intro</code> aliases it, so the two can never drift): clamp(2.4rem, 5.6vw, 9rem), paired with <code class="ds-code">--voice-display-lh</code> (0.82) for stacked caps and <code class="ds-code">--voice-display-lh-sentence</code> (0.72) for the sentence-case mastheads. All three keep growing to the ~2545–2590px "4xl horizon" before capping. The display voice replaced a wordmark cap-height derivation (reasoning preserved in <code class="ds-code">src/theme/typography.css</code>); <code class="ds-code">--logo-h</code> survives as the wordmark's own FLUID height (the stepped ladder is retired — the mark now scales with the page, ink-aligned to the nav) and the sticky offsets derive from it. A fourth voice joined Aug 2026: <code class="ds-code">--voice-label</code> — chrome and wayfinding (the nav pill, mobile menu labels, arrow-links): clamp(0.8125rem, 0.35rem + 0.55vw, 1.25rem), bold, uppercase — named because the nav used to ride <code class="ds-code">--text-xs</code>, which the homepage re-scopes larger, so the header changed size per page.</p></div>
             
               <div class="ds-specimen"><span class="ds-specimen__label">--card-subtitle</span><span class="ds-specimen__sample ds-fs-card-sub" data-type-px>Card subtitle</span><span class="ds-specimen__px"></span></div>
             </section>
@@ -577,11 +577,11 @@ plus a note: decorative effect knobs also live in <code class="ds-code">motion.c
                 scroll and never strands half-way) while the home glyph expands into the pill and the
                 mobile home button fades in. Pages without <code class="ds-code">header.js</code>
                 simply keep the wordmark. The pill right-aligns from 768 to clear the wordmark and
-                centres from 900 &mdash; measured, not guessed: the 442px resting pill centred at 900
-                starts 24.5px clear of the wordmark&rsquo;s 204.5px right edge, and the wider 470px
-                state only exists once scrolled, when <code class="ds-code">.is-faded</code> has
-                already slid the wordmark away; 900 is also where the work rows and the intro band
-                pick up their grid, so it&rsquo;s the site&rsquo;s breakpoint, not a new one. Over a
+                centres at EVERY desktop width now: in the 768&ndash;900 band it earns the centre by
+                compressing (tighter link padding, the scroll-revealed home glyph suppressed) with its
+                offset a max() of true centring and the wordmark&rsquo;s clearance &mdash; and the
+                wordmark itself is smaller and fluid (<code class="ds-code">--logo-h</code>), its
+                letterform tops ink-aligned to the nav text by calc, so the two scale together Over a
                 dark hero a page toggles <code class="ds-code">.is-over-hero</code>
                 (<code class="ds-code">js/home-c.js</code>, IntersectionObserver) to force
                 light-on-dark whatever the theme, and the frosted pill dark-tints so the white links
@@ -663,7 +663,7 @@ plus a note: decorative effect knobs also live in <code class="ds-code">motion.c
                 <p class="ds-group__note">
                   Everything else about the header is viewport-fixed, scroll-driven chrome: the
                   wordmark&rsquo;s masked slide-out and the glyph swap at the 100px line, the 10px
-                  frost, the centred-pill handover at 900, the over-hero inversion, and the
+                  frost, the band-earned centring, the over-hero inversion, and the
                   full-screen mobile menu &mdash; hamburger&rarr;X, body scroll lock
                   (<code class="ds-code">body.is-menu-open</code> also hides the page chrome that
                   would show through), 0.5s staggered slide-ins on the v0 delays (0.2&ndash;0.7s),
