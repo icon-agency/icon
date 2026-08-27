@@ -72,12 +72,20 @@
   padding-block: var(--space-sm);
 }
 
+/* The meta voice, split in two (user call): the CATEGORY eyebrow opens the
+   column above the headline; the DATE closes it on the photo's baseline at
+   md+ (margin-top: auto below). */
 .news-article__meta {
-  /* the meta line closes the column, on the photo's baseline at md+
-     (margin-top: auto below); Share opens it under the top rule */
-  margin: var(--space-md) 0 0;
   font-size: var(--voice-meta);
   color: var(--color-icon-grey);
+}
+
+.news-article__meta--eyebrow {
+  margin: 0 0 var(--space-sm);
+}
+
+.news-article__meta--date {
+  margin: var(--space-md) 0 0;
 }
 
 .news-article__meta a {
@@ -125,7 +133,7 @@
 }
 
 @media (min-width: 768px) {
-  .news-article__meta { margin-top: auto; }
+  .news-article__meta--date { margin-top: auto; }
 }
 
 /* the rail section: hairline above (host border, drawn by rules.css),
