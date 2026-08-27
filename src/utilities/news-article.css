@@ -193,20 +193,31 @@
   min-width: 0;
 }
 
-/* The reading column: full flow width at narrow and mid sizes (the 46rem
-   classical measure read as a strip lost in the page — user call), with a
-   FONT-PROPORTIONAL cap that takes over on wide screens (second user
-   call: text stops growing forever, images don't). The clamp is exactly
-   55x the body copy's own clamp (1.1875rem/1.2vw/1.875rem), term for
-   term — a constant ~55em (~110ch) measure once both ride their vw arms,
-   scaling in lockstep with the type to the 4xl horizon. Below ~1585px the
-   floor exceeds the flow, so the flow's own width governs and nothing
-   changes. The FIGURES are siblings, not children, of this rule — they
-   keep the full flow width by design. */
+/* The reading column, two regimes (settled after some back-and-forth —
+   the "too narrow" complaint was about TABLET only, and the first fix
+   flattened the desktop measure the design had right):
+
+   TABLET (below lg): the prose spans the flow. The old fixed rails left
+   it a skinny strip; the proportional grid above plus full width here is
+   the fix.
+
+   DESKTOP (lg up): the ORIGINAL classical measure returns — the same
+   clamp as before the detour, growing on the body type's curve to the
+   4xl horizon, holding ~67ch. The 46rem floor roughly equals the flow at
+   the lg boundary, so the hand-off between regimes is seamless.
+
+   The FIGURES are siblings, not children, of this rule — they keep the
+   full flow width in both regimes: text in a measure, images breaking
+   wide. */
 .news-article__prose {
   width: 100%;
-  max-width: clamp(65.3125rem, 66vw, 103.125rem);
   margin-inline: auto;
+}
+
+@media (min-width: 1024px) {
+  .news-article__prose {
+    max-width: clamp(46rem, 40vw, 64rem);
+  }
 }
 
 /* Article body copy grows to the 4xl horizon — the global .content-page p
