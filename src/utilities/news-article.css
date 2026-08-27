@@ -313,6 +313,12 @@
   letter-spacing: var(--letter-spacing-wide);
 }
 
+/* doubled eyebrow -> headline air (user call on the B head; A keeps the
+   tighter gap its ruled column was built around) */
+.news-article__head--stacked .news-article__meta--eyebrow {
+  margin-bottom: calc(var(--space-sm) * 2);
+}
+
 .news-article__head--stacked .news-article__title {
   max-width: 24ch; /* the mock breaks the headline over three lines, not the full bleed */
   margin-bottom: var(--space-md);
