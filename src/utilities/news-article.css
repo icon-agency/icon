@@ -381,7 +381,16 @@
 
 /* Mock-scale prose headings, scoped to this page: the section head
    ("Multi-Country Campaign Award") title-case at a moderate size, the
-   partnership line a small bold subhead. Custom values from the mock. */
+   partnership line a small bold subhead. Custom values from the mock.
+
+   THE RHYTHM (reviewed Aug 2026, user: "feels a bit tight"): EM margins,
+   not rem, so the air scales with the fluid type instead of staying at
+   phone-scale gaps under desktop-scale headings — and NESTED: the most
+   air enters the section (~3.75em of body before the h2), less between
+   the head and its subhead (~0.85em of the h2 / ~1.9em of the h3,
+   whichever collapse wins), the least from a heading into its own copy
+   (~0.75em) — each heading binds tighter to what it introduces than to
+   what it follows. */
 .news-article .content-page h2 {
   /* raised a register on request (Aug 2026) — floor and slope together, so
      it is bigger at every width; still clearly under the article title.
@@ -389,16 +398,23 @@
   font-size: clamp(1.75rem, 2.3vw, 3.7rem);
   font-weight: var(--font-weight-bold);
   text-transform: none;
-  margin-top: 0;
-  margin-bottom: 0.75rem;
+  margin-top: 0; /* the flow gap already spaces a chunk's first heading */
+  margin-bottom: 0.85em;
 }
 
 .news-article .content-page h3 {
   /* raised with h2 — same register step over the body copy */
   font-size: clamp(1.25rem, 1.5vw, 2.4rem); /* caps at the 4xl horizon */
   font-weight: var(--font-weight-bold);
-  margin-top: 2rem;
-  margin-bottom: 0.75rem;
+  margin-top: 1.9em;
+  margin-bottom: 0.75em;
+}
+
+/* the base .content-page gives a paragraph 4rem before any heading; on this
+   full-bleed page that stopped scaling with the body — em keeps the section
+   entrance proportionally airy at every width */
+.news-article .content-page p:has(+ h2) {
+  margin-bottom: 3.75em;
 }
 
 /* the one-line lede that sits directly under a section head */
