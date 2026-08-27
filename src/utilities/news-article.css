@@ -101,11 +101,9 @@
 
 .news-article__title {
   margin: 0;
-  /* Custom fluid value: the mock's article headline — a register under the
-     display voice, above the prose h1. The cap sits at the site's 4xl
-     horizon (~2670px), like every voice on this page: the type grows in
-     proportion to the frame all the way to a massive screen. */
-  font-size: clamp(2.25rem, 3.6vw, 6rem);
+  /* The mock's article headline, now the shared headline voice (the /news
+     masthead speaks it too — see typography.css). */
+  font-size: var(--voice-headline);
   font-weight: var(--font-weight-bold);
   line-height: 1.05;
   letter-spacing: -0.02em;

@@ -109,6 +109,12 @@
      setting at the same leading, so these close up further. Caps settings
      (WORK, LET'S TALK) keep the value above. */
   --voice-display-lh-sentence: 0.72;
+  /* The headline register — a step under the display voice, above the prose
+     h1: the article title's mock value, promoted to a named voice when the
+     /news masthead adopted it (user call: masthead = article headline).
+     Caps at the same 4xl horizon (~2670px) as every voice. The stacked
+     header-B title is this register at 1.5x (see news-article.css). */
+  --voice-headline: clamp(2.25rem, 3.6vw, 6rem);
 
   /* Weights */
   --font-weight-normal: 400;
