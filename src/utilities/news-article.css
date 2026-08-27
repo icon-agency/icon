@@ -313,10 +313,12 @@
   letter-spacing: var(--letter-spacing-wide);
 }
 
-/* doubled eyebrow -> headline air (user call on the B head; A keeps the
-   tighter gap its ruled column was built around) */
+/* the doubled air goes ABOVE the eyebrow (user correction: the eyebrow
+   moves down with the headline, keeping its tight pairing to it — the
+   first pass wrongly opened the gap between them instead). A keeps its
+   own rhythm. */
 .news-article__head--stacked .news-article__meta--eyebrow {
-  margin-bottom: calc(var(--space-sm) * 2);
+  margin-top: calc(var(--space-sm) * 2);
 }
 
 .news-article__head--stacked .news-article__title {
