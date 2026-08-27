@@ -193,16 +193,19 @@
   min-width: 0;
 }
 
-/* The reading column SPANS THE FLOW — full width between the two rails,
-   the same edges the figures run to (user call, Aug 2026: the 46rem
-   classical measure read as a narrow strip lost in the page; the article
-   is an editorial spread, and the rails + gutter already shape the line).
-   The trade: lines run well past the ~67ch textbook measure on wide
-   screens — the 1.2vw body size and .content-page's 1.75 line-height are
-   what keep that walkable. If it ever reads too long, the lever is a
-   max-width back on this rule, not a narrower grid. */
+/* The reading column: full flow width at narrow and mid sizes (the 46rem
+   classical measure read as a strip lost in the page — user call), with a
+   FONT-PROPORTIONAL cap that takes over on wide screens (second user
+   call: text stops growing forever, images don't). The clamp is exactly
+   55x the body copy's own clamp (1.1875rem/1.2vw/1.875rem), term for
+   term — a constant ~55em (~110ch) measure once both ride their vw arms,
+   scaling in lockstep with the type to the 4xl horizon. Below ~1585px the
+   floor exceeds the flow, so the flow's own width governs and nothing
+   changes. The FIGURES are siblings, not children, of this rule — they
+   keep the full flow width by design. */
 .news-article__prose {
   width: 100%;
+  max-width: clamp(65.3125rem, 66vw, 103.125rem);
   margin-inline: auto;
 }
 
