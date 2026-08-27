@@ -127,7 +127,11 @@
   position: sticky;
   top: calc(2rem + var(--logo-h) + var(--space-sm));
   font-family: inherit;
-  font-size: var(--voice-meta);
+  /* the head's caps voice (.news-article__meta--caps): the Share control
+     reads as one of the article's meta, not a different species */
+  font-size: var(--voice-label);
+  font-weight: var(--font-weight-bold);
+  text-transform: uppercase;
   color: var(--color-icon-grey);
   transition: color var(--duration-fast) var(--ease-standard);
 }
