@@ -101,6 +101,20 @@
       if (active) chip.setAttribute("aria-current", "true");
       else chip.removeAttribute("aria-current");
     });
+    // The dark opening's handover hook rides the first VISIBLE story — its
+    // grid area is the sticky band's track, and news-list.css re-picks the
+    // lead the same way — so filtering re-hosts the attribute and tells
+    // js/theme-handover.js to re-aim its observer. Without this, hiding the
+    // carrier hands the observer an all-zero rect (display:none) and the
+    // theme freezes. (Drupal: no JS needed — the filtered view simply
+    // renders the attribute on its own first row.)
+    var carrier = list.querySelector("[data-theme-handover]");
+    var lead = items.filter(function (li) { return !li.hasAttribute("hidden"); })[0];
+    if (carrier && lead && carrier !== lead) {
+      lead.setAttribute("data-theme-handover", carrier.getAttribute("data-theme-handover"));
+      carrier.removeAttribute("data-theme-handover");
+      window.dispatchEvent(new Event("icon:theme-rebind"));
+    }
     // announce the result (sr-only live region) and keep the pager status
     // honest — the static "Page 1 of 1 (12 stories)" is wrong once filtered
     var msg = slug === "all"

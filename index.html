@@ -536,8 +536,10 @@ plus a note: decorative effect knobs also live in <code class="ds-code">motion.c
                   &ldquo;Next up&rdquo; rail is a Views block of three teasers wearing
                   <code class="ds-code">news-card</code>. Share is the inert
                   <code class="ds-code">[data-share]</code> hook until that behaviour ships.
-                  Behaviours: <code class="ds-code">Drupal.behaviors.iconNewsArticle</code> (the
-                  theme handover &mdash; colour-only cross-fade, exempt from the reduced-motion
+                  Behaviours: the shared <code class="ds-code">Drupal.behaviors.iconThemeHandover</code>
+                  via <code class="ds-code">icon/theme-handover</code> (the dark-opening theme
+                  handover &mdash; also attached by the /news listing &mdash; colour-only
+                  cross-fade, exempt from the reduced-motion
                   guard per <code class="ds-code">base/typography.css</code>) and the shared
                   <code class="ds-code">iconReveal</code>. No-JS reads dark end to end &mdash; a
                   legitimate rendering, not a fallback apology.
@@ -1242,9 +1244,15 @@ plus a note: decorative effect knobs also live in <code class="ds-code">motion.c
                   track</strong>: sticky travels inside its nearest block-container ancestor, so the
                   item&rsquo;s three-row grid area is exactly the distance the card holds for while the
                   stories beside it scroll past; sticking the item itself would pin the track along with
-                  its passenger. The pin (<code class="ds-code">calc(2rem + var(--logo-h) +
+                  its passenger. Since Aug 2026 the same span does double duty as the DARK
+                  OPENING&rsquo;s track: the page ships <code class="ds-code">class="dark"</code> and the
+                  lead item carries <code class="ds-code">data-theme-handover="end"</code>
+                  (<code class="ds-code">js/theme-handover.js</code>) &mdash; the theme holds while any of
+                  the sticky band still shows and hands over to light once its bottom clears the viewport
+                  top, both directions; filtering re-hosts the attribute onto the new first visible item
+                  so the observer never aims at a hidden row. The pin (<code class="ds-code">calc(2rem + var(--logo-h) +
                   var(--space-sm))</code>) clears the fixed wordmark, which sits over this very column
-                  and re-derives with the mark&rsquo;s stepped ladder. It all runs only above 1024:
+                  and re-derives from the mark&rsquo;s fluid height. It all runs only above 1024:
                   in the 768&ndash;1024 band the column is still under the card&rsquo;s own 26rem
                   threshold, so every card already stacks and a lead would open a hole under itself.
                   Parity is why three-up is the tidy number &mdash; lead plus three is four slots, so the
@@ -1313,7 +1321,11 @@ plus a note: decorative effect knobs also live in <code class="ds-code">motion.c
                   no second view mode. The page is a Views page over <code class="ds-code">news</code>
                   nodes whose exposed filter honours the chip links server-side; behaviour js maps to
                   <code class="ds-code">Drupal.behaviors.iconNews</code>, attached via the
-                  <code class="ds-code">icon/news</code> library. The homepage&rsquo;s
+                  <code class="ds-code">icon/news</code> library, plus the shared
+                  <code class="ds-code">iconThemeHandover</code> via
+                  <code class="ds-code">icon/theme-handover</code> for the dark opening (the filtered
+                  view needs no re-host JS &mdash; it simply renders the attribute on its own first
+                  row). The homepage&rsquo;s
                   <code class="ds-code">.news</code> chrome is page-layer
                   (<code class="ds-code">home-c.css</code>), one of the promoted block names slated to
                   become SDC names in the Canvas build. Subscribe is the shared inert

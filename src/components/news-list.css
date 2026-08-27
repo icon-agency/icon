@@ -34,6 +34,13 @@
   .news-list { grid-template-columns: repeat(2, 1fr); }
 }
 
+/* While /news is in its DARK OPENING (the article pages' handover pattern,
+   js/theme-handover.js), the row hairlines read ON-COLOUR — the same
+   decision as .dark .news-article: the border grey is lost on near-black. */
+.dark .news-list {
+  --rule: var(--rule-on-color);
+}
+
 .news-list__item {
   border-top: var(--rule-weight) solid var(--rule);
   padding-block: var(--space-md);

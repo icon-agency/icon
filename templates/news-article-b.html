@@ -1,6 +1,7 @@
 <!doctype html>
 <!-- Opens DARK and hands over to light as the head scrolls away
-     (js/news-article.js — the homeC blue->light handover pattern, revived
+     (js/theme-handover.js — the shared dark-opening handover, homeC's
+     blue->light pattern revived
      for this page). Theme class on <html>, never <body> — see LESSONS.md. -->
 <html lang="en" class="dark">
   <head>
@@ -177,7 +178,7 @@
            slice). Content links keep their real Drupal routes and 404 on the
            static preview — deliberate, see docs/drupal-handoff.md. -->
       <article class="news-article news-article--header-b" aria-labelledby="article-title">
-        <header class="news-article__head news-article__head--stacked">
+        <header class="news-article__head news-article__head--stacked" data-theme-handover>
           <!-- Header B (experiments/News-header-2.png): caps eyebrow, the
                headline running the full measure with no side photo, a
                hairline, the date, then a wide hero. The theme handover
@@ -441,7 +442,7 @@
          news.js (category filter, card reveals, velocity lean). -->
     <script src="../js/header.js"></script>
     <script src="../js/reveal.js"></script>
-    <script src="../js/news-article.js"></script>
+    <script src="../js/theme-handover.js"></script>
     <script src="../js/news.js"></script>
     <script src="../js/site-footer.js"></script>
   </body>

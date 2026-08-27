@@ -121,9 +121,12 @@
   /* Icon grey, lightened to a wash: --color-icon-grey at full strength is
      icon-black at 80% and would read as a FILLED box — heavier than the blue
      it is meant to sit quieter than, inverting the checked/unchecked
-     hierarchy. Mixing it toward white keeps the brand grey's hue while
-     leaving the blue clearly dominant. */
-  background: color-mix(in srgb, var(--color-icon-grey) 18%, var(--color-white));
+     hierarchy. Mixed toward the THEME GROUND, not literal white: on the
+     /news dark opening a white-anchored mix rendered the unchecked squares
+     BRIGHTER than the checked one (dark flips icon-grey light), inverting
+     the hierarchy this formula exists to preserve. Against the background
+     the wash stays a quiet near-ground tint on every theme. */
+  background: color-mix(in srgb, var(--color-icon-grey) 18%, var(--color-background));
   transition: background var(--duration-normal) var(--ease-standard);
 }
 

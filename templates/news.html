@@ -1,5 +1,8 @@
 <!doctype html>
-<html lang="en">
+<!-- Opens DARK and hands over to light as the masthead scrolls away
+     (js/theme-handover.js — the article pages' opening, extended to the
+     listing). Theme class on <html>, never <body> — see LESSONS.md. -->
+<html lang="en" class="dark">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -200,7 +203,11 @@
       <section aria-label="News stories">
         <p class="sr-only" aria-live="polite" data-news-status></p>
         <ul class="news-list" data-news-list role="list">
-          <li class="news-list__item" data-rule="top" data-category="our-work" data-animate>
+          <!-- data-theme-handover="end": the dark opening holds until the
+               reader is PAST the sticky lead band — this item's grid area is
+               the band's scroll track (Drupal: attribute on the first Views
+               row in preprocess). -->
+          <li class="news-list__item" data-rule="top" data-category="our-work" data-animate data-theme-handover="end">
             <a class="news-card" href="/news/article" aria-label="ICON and Butterfly Foundation partner in new campaign to help Australians rethink negative self body talk">
               <figure class="news-card__figure media-reveal" data-reveal-img>
                 <img class="news-card__img" loading="lazy" src="../assets/News/Butterfly_BodyKind.jpg" alt="Three campaign talent standing together in a photography studio" />
@@ -478,6 +485,7 @@
          news.js (category filter, card reveals, velocity lean). -->
     <script src="../js/header.js"></script>
     <script src="../js/reveal.js"></script>
+    <script src="../js/theme-handover.js"></script>
     <script src="../js/news.js"></script>
     <script src="../js/site-footer.js"></script>
   </body>

@@ -34,6 +34,23 @@
   --rule-draw: 1;
 }
 
+/* Registered as a real <color> so it can TRANSITION. The border-drawn rules
+   below paint through a background-image gradient of var(--rule), and
+   background-image never animates — so at a theme handover every hairline
+   snapped between palettes while the base cross-fade eased all the
+   surrounding ink (base/typography.css). With --rule registered, the
+   custom property itself interpolates on any element that transitions it
+   (declared with the draw transition below) and the gradient re-resolves
+   each frame — the rules ride the same cross-fade as everything else.
+   Unsupported browsers keep today's snap. NB inherits: true is what the
+   whole hairline system already assumes (component overrides like
+   .dark .news-list re-declare it lower down and still win). */
+@property --rule {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: rgb(0 0 0 / 0);
+}
+
 /* ---- border-drawn rules ------------------------------------------------- */
 
 [data-rule] {
@@ -51,9 +68,17 @@
 [data-rule="top"] { background-position: left top; }
 [data-rule="bottom"] { background-position: left bottom; }
 
+/* the theme cross-fade for the gradient-drawn line (see @property above);
+   matches the base cross-fade's timing so the flip reads as one event */
+[data-rule] {
+  transition: --rule var(--duration-normal) var(--ease-standard);
+}
+
 .js-animations [data-rule] {
   background-size: 0 var(--rule-weight);
-  transition: background-size var(--rule-draw-dur) var(--ease-decelerate);
+  transition:
+    background-size var(--rule-draw-dur) var(--ease-decelerate),
+    --rule var(--duration-normal) var(--ease-standard);
 }
 
 .js-animations [data-rule].is-drawn {
@@ -95,7 +120,9 @@
   .js-animations [data-rule],
   .js-animations [data-rule].is-drawn {
     background-size: 100% var(--rule-weight);
-    transition: none;
+    /* the DRAW is motion and dies here; the --rule fade is colour-only and
+       stays — the same exemption the base cross-fade claims */
+    transition: --rule var(--duration-normal) var(--ease-standard);
   }
 
   .js-animations [data-rule="both"],

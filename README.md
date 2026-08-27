@@ -20,9 +20,9 @@ The canonical page is `templates/homeC.html` (light theme, fully fluid). The roo
 ├── experiments/          # self-contained one-off explorations (own inline CSS, not built);
 │                         #   approved ones get promoted into src/ + templates/
 ├── js/                   # one IIFE per behaviour → maps to a Drupal.behaviors entry
-│                         #   (header, hero-loader, home-c, news, reveal, site-footer, work,
-│                         #    work-filter · prototypes: hero, hero-sphere, tagline ·
-│                         #    dev-only: theme-toggle)
+│                         #   (header, hero-loader, home-c, news, reveal, site-footer,
+│                         #    theme-handover, work, work-filter · prototypes: hero,
+│                         #    hero-sphere, tagline · dev-only: theme-toggle)
 ├── css/main.css          # build output (committed — GitHub Pages serves it)
 ├── assets/               # images + video (work portfolio, brand, banners)
 ├── docs/                 # working conventions + Drupal handoff docs
@@ -43,7 +43,7 @@ Local preview: `node server.js`, then open http://localhost:4100. `/` serves `in
 
 ## Theming
 
-Three themes, all class-driven on `<html>` (never `<body>` — see `LESSONS.md`): **light is the default** (no class) on the canonical pages (`homeC`, `news`, the DS index); `.dark` and `.theme-blue` are full token re-themes. The older prototypes (`home`, `homeB`, `work`, `work-article`) still open in `.dark`. A dev-only toggle (`js/theme-toggle.js`, remove before shipping) cycles the three.
+Three themes, all class-driven on `<html>` (never `<body>` — see `LESSONS.md`): **light is the default** (no class) on `homeC` and the DS index, while the news pages (`news` and both article templates) **open dark** and hand over to light on scroll (`js/theme-handover.js`); `.dark` and `.theme-blue` are full token re-themes. The older prototypes (`home`, `homeB`, `work`, `work-article`) still open in `.dark`. A dev-only toggle (`js/theme-toggle.js`, remove before shipping) cycles the three.
 
 ## Conventions
 
