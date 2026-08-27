@@ -291,3 +291,54 @@
   /* the rail self-pads too — on the homepage .u-container supplies this */
   padding-inline: var(--gutter-page);
 }
+
+
+/* ==========================================================================
+ * Header B — the stacked head (templates/news-article-b.html;
+ * design: experiments/News-header-2.png)
+ * ==========================================================================
+ * Caps eyebrow, full-measure headline (no side photo), one hairline, the
+ * date, then a wide hero. Everything below the head is the A template
+ * verbatim; the theme handover observes the same __head element, so the
+ * dark opening hands over around the hero's midpoint. */
+
+.news-article__head--stacked {
+  display: block;
+}
+
+/* the small-caps register the mock sets the eyebrow and date in */
+.news-article__meta--caps {
+  font-size: var(--voice-label);
+  text-transform: uppercase;
+  letter-spacing: var(--letter-spacing-wide);
+}
+
+.news-article__head--stacked .news-article__title {
+  max-width: 24ch; /* the mock breaks the headline over three lines, not the full bleed */
+  margin-bottom: var(--space-md);
+}
+
+/* the one rule: between headline and date, drawn in like every hairline */
+.news-article__head--stacked .news-article__meta--date {
+  margin: 0 0 var(--space-md);
+  padding-top: var(--space-sm);
+  border-top: var(--rule-weight) solid var(--rule);
+}
+
+.news-article__hero {
+  margin: 0;
+  border-radius: var(--radius-icon);
+  overflow: hidden;
+  aspect-ratio: 3 / 2;
+}
+
+@media (min-width: 768px) {
+  .news-article__hero { aspect-ratio: 16 / 9; }
+}
+
+.news-article__hero img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
