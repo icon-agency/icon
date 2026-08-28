@@ -65,18 +65,18 @@
    both sides and expands to full bleed as you scroll into it.
    
    Uniform scale, so the CONTENT shrinks with the panel rather than reflowing
-   to a narrower measure. --container-pad's fluid term is 4.2vw, so insetting
-   by it on each side is exactly 1 - 2(0.042) = 0.916; the ratio drifts a
-   little where the clamp bottoms out (<~570px) or caps (>~2860px), which is
-   invisible at this scale. Anchored at the bottom edge so the panel stays
-   flush with the document end and grows upward — no gap can open beneath it.
+   to a narrower measure. Started at DOUBLE the wide gutter's inset (the
+   original 0.916 was one gutter each side — 1 - 2(0.042); the user wanted
+   the grow to read, so it now arrives at 1 - 4(0.042) ≈ 0.83 and travels
+   twice as far). Anchored at the bottom edge so the panel stays flush with
+   the document end and grows upward — no gap can open beneath it.
 
    A NAMED timeline is unnecessary here: nothing in the footer's ancestor
    chain is a scroll container (body is overflow-x: clip, which clips without
    becoming one — see LESSONS.md), so view() resolves to the document root.
    Verified moving, not frozen. */
 .site-footer {
-  --footer-inset-scale: 0.916;
+  --footer-inset-scale: 0.83;
 }
 
 /* Animates the `scale` PROPERTY, not `transform: scale()`, so the panel's
