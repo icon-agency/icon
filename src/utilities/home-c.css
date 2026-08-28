@@ -98,9 +98,9 @@
      than stranding a fixed-width block in a widening empty field. */
   /* --container-pad is declared once for .page-home AND the footer below. */
 
-  /* Shared 12-column grid gutter (clamp) — intro + work snap to the same columns
-     and gutters inside .u-container, so section edges line up down the page. */
-  --grid-gutter: clamp(1rem, 2.2vw, 3rem);
+  /* The 12-column gutter (--grid-gutter) is a FOUNDATION now — declared in
+     theme/spacing.css since the /work landing adopted the work pattern;
+     intro + work read it from :root. */
 
   /* Supporting type keeps scaling on wide screens. Same floor as the global scale
      on normal desktops (the global --text-* tokens sit near their MIN until

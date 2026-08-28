@@ -300,10 +300,9 @@
 }
 
 /* Home-page context for demos: components authored for the homepage read
-   page-layer tokens (.page-home). The demo stage supplies the same tokens —
-   exactly what the Drupal page template will do around the SDC. */
+   page-layer tokens (.page-home). --grid-gutter used to be supplied here;
+   it is a FOUNDATION now (theme/spacing.css), so the stage inherits it. */
 .ds-demo--home-context {
-  --grid-gutter: clamp(1rem, 2.2vw, 3rem);
 }
 
 /* Demo-stage neutralisers: the intro strip full-bleeds against the REAL
