@@ -126,6 +126,13 @@
   --container-pad: var(--container-pad-wide); /* the foundation wide gutter (theme/spacing.css) */
 }
 
+/* The BODY carries the same re-point for the chrome OUTSIDE main: the fixed
+   wordmark sits at var(--gutter-page) (site-header.css), and on this page
+   every left edge is the wide gutter (user call: consistent with /work). */
+.page-home-body {
+  --gutter-page: var(--container-pad-wide);
+}
+
 /* Drop the 90rem cap on Home C sections — they run edge-to-edge, held in only by
    the fluid --container-pad above. Unlayered here, so it beats .u-container's
    max-width in @layer utilities regardless of specificity. */
