@@ -45,7 +45,7 @@ Local preview: `node server.js`, then open http://localhost:4100. `/` serves `in
 
 ## Theming
 
-Three themes, all class-driven on `<html>` (never `<body>` — see `LESSONS.md`): **light is the default** (no class) on `homeC` and the DS index, while the news pages (`news`, both article templates) and `work-landing` **open dark** and hand over to light on scroll (`js/theme-handover.js`); `.dark` and `.theme-blue` are full token re-themes. The older prototypes (`home`, `homeB`, `work`, `work-article`) still open in `.dark`. A dev-only toggle (`js/theme-toggle.js`, remove before shipping) cycles the three.
+Three themes, all class-driven on `<html>` (never `<body>` — see `LESSONS.md`): **light is the default** (no class) on `homeC` and the DS index, while the news pages (`news`, `news-b`, the article templates) and `work-landing` **open dark** and hand over to light on scroll (`js/theme-handover.js`); `.dark` and `.theme-blue` are full token re-themes. The older prototypes (`home`, `homeB`, `work`, `work-article`) still open in `.dark`. A dev-only toggle (`js/theme-toggle.js`, remove before shipping) cycles the three.
 
 ## Conventions
 

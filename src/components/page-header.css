@@ -161,3 +161,80 @@
   font-family: inherit;
 }
 
+
+
+/* ==========================================================================
+ * --stack: the news landing HEADER B (user mock, Aug 2026)
+ * ==========================================================================
+ * The BASE centred anatomy, dressed in the system voices: a Miller "News"
+ * line over display caps — the two headline registers, so the pair scales
+ * 1:1.5 by construction — a centred Subscribe, and the ORIGINAL pill
+ * filter-bar (the legacy /work chips) framed by two drawn hairlines.
+ * Lives beside --row while both landing mastheads are candidates; the
+ * list below is news.html's, unchanged, and the dark opening + handover
+ * are identical (the hairlines re-point to the on-colour rule while
+ * dark, the news-list decision). */
+
+.page-header--stack {
+  /* same wordmark clearance as --row, same derivation */
+  padding-top: calc(2rem + var(--logo-h) + var(--space-xl));
+}
+
+.dark .page-header--stack {
+  --rule: var(--rule-on-color);
+}
+
+.page-header--stack .page-header__inner {
+  margin-bottom: var(--space-md);
+}
+
+/* the lockup: the serif line sits over the caps, both centred */
+.page-header__lockup-accent {
+  display: block;
+  font-size: var(--voice-headline);
+  line-height: 1.1;
+  /* .masthead-accent supplies Miller bold + the transform reset */
+}
+
+.page-header__lockup-caps {
+  display: block;
+  font-size: var(--voice-headline-lg);
+  font-weight: 900; /* the caps masthead ink (homepage WORK / LET'S TALK) */
+  line-height: var(--voice-display-lh);
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  /* the mock breaks after UPDATES: cap the measure so the caps hold two
+     balanced lines instead of running the full bleed */
+  max-width: 19ch;
+  margin-inline: auto;
+  text-wrap: balance;
+}
+
+.page-header--stack .page-header__subscribe {
+  margin-top: var(--space-sm);
+  font-size: var(--voice-mid);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: -0.01em;
+}
+
+/* the filter band: two hairlines frame the pills, drawn in by rules.css
+   ([data-rule="both"] in the markup); they span the padded content box, so
+   they stop at the page gutters like every rule on the site */
+.page-header--stack .page-header__filter-band {
+  border-top: var(--rule-weight) solid var(--rule);
+  border-bottom: var(--rule-weight) solid var(--rule);
+  padding-block: var(--space-sm);
+}
+
+.page-header--stack .page-header__filters {
+  margin-bottom: 0;
+}
+
+/* the pills at the system's label voice — the base recipe's fixed 10px
+   micro-caps stays with the legacy /work page — and fully round, per the
+   mock */
+.page-header--stack .filter-bar__chip {
+  font-size: var(--voice-label);
+  border-radius: 9999px;
+  padding: 0.5em 1.1em;
+}
