@@ -188,12 +188,22 @@
   }
 }
 
+/* THE COLUMN'S MEASURE, declared once so the blurb and the field are the
+   same width by construction (user call): it used to be 20ch on the blurb
+   while the field carried its own 24rem cap — two numbers that could never
+   agree, and didn't. `ch` resolves against THIS box's font, so the column
+   declares the mid voice to measure in; every child sets its own font-size,
+   so nothing inherits it. */
+.site-footer__newsletter {
+  font-size: var(--footer-voice-mid);
+  max-width: 20ch;
+}
+
 .site-footer__blurb {
   /* The blurb is its own group: a clear step above the field's internal
      gaps (user call: "more space" here) so the invitation reads separately
      from the control it introduces, rather than crowding it. */
   margin: 0 0 var(--space-sm);
-  max-width: 20ch;
   font-size: var(--footer-voice-mid);
   font-weight: var(--font-weight-medium);
   letter-spacing: -0.01em;
@@ -207,8 +217,7 @@
    the line brightens to full ink in place of the UA outline. */
 .site-footer__email {
   display: block;
-  width: 100%;
-  max-width: 24rem;
+  width: 100%; /* the column's measure above is the cap — see .site-footer__newsletter */
   /* EQUAL AIR EITHER SIDE OF THE HAIRLINE — optically, not just in boxes
      (user call). One token sets both gaps, but the INK sat closer above the
      line than below it: the line->Subscribe side clears Subscribe's much
