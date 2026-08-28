@@ -183,8 +183,27 @@
             <span class="page-header__lockup-accent masthead-accent">News</span>
             <span class="page-header__lockup-caps">The latest updates and insights</span>
           </h1>
-          <!-- data-subscribe is the shared inert hook (mobile menu + footer) -->
-          <button class="page-header__subscribe quiet-link" type="button" data-subscribe data-animate style="--animate-delay: 80ms">Subscribe</button>
+          <!-- Subscribe is a DISCLOSURE here (js/subscribe-reveal.js): the
+               footer-styled trigger swaps for the email form on click —
+               focused and typable immediately — and collapses back on
+               click-away, blur or Escape. Both states animate through the
+               0fr/1fr grid-row trick (the footer accordion's cousin), so
+               the masthead's height eases rather than jumping. The submit
+               stays the shared inert data-subscribe hook. -->
+          <div class="page-header__subscribe-slot" data-subscribe-slot data-animate style="--animate-delay: 80ms">
+            <div class="page-header__subscribe-closed">
+              <div class="page-header__slot-clip">
+                <button class="page-header__subscribe quiet-link invite-arrow" type="button" data-subscribe-open aria-expanded="false">Subscribe</button>
+              </div>
+            </div>
+            <div class="page-header__subscribe-reveal">
+              <div class="page-header__slot-clip">
+                <label class="sr-only" for="header-email">Email address</label>
+                <input class="page-header__email" id="header-email" type="email" name="email" placeholder="Your email" autocomplete="email" />
+                <button class="page-header__subscribe quiet-link invite-arrow" type="button" data-subscribe>Subscribe</button>
+              </div>
+            </div>
+          </div>
         </div>
 
         <div class="page-header__filter-band" data-rule="both">
@@ -498,6 +517,7 @@
     <script src="../js/velocity-lean.js"></script>
     <script src="../js/theme-handover.js"></script>
     <script src="../js/news.js"></script>
+    <script src="../js/subscribe-reveal.js"></script>
     <script src="../js/site-footer.js"></script>
   </body>
 </html>

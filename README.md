@@ -21,7 +21,7 @@ The canonical page is `templates/homeC.html` (light theme, fully fluid). The roo
 ├── experiments/          # self-contained one-off explorations (own inline CSS, not built);
 │                         #   approved ones get promoted into src/ + templates/
 ├── js/                   # one IIFE per behaviour → maps to a Drupal.behaviors entry
-│                         #   (header, hero-loader, home-c, news, reveal, share,
+│                         #   (header, hero-loader, home-c, news, reveal, share, subscribe-reveal,
 │                         #    site-footer, theme-handover, velocity-lean, work,
 │                         #    work-filter, work-landing · prototypes: hero,
 │                         #    hero-sphere, tagline · dev-only: theme-toggle)

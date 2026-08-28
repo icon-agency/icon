@@ -215,10 +215,99 @@
 }
 
 .page-header--stack .page-header__subscribe {
-  margin-top: var(--space-sm);
   font-size: var(--voice-mid);
   font-weight: var(--font-weight-medium);
   letter-spacing: -0.01em;
+}
+
+/* ---- the Subscribe disclosure (js/subscribe-reveal.js) -------------------
+   The lone button swaps for the email form on click. Each state sits in its
+   own 0fr/1fr grid wrap (the footer accordion's height trick, transition-
+   able without JS measuring): the open class collapses one and grows the
+   other, so the masthead's height EASES between the two instead of
+   jumping, while the pair cross-fade. The hidden half is kept `inert` by
+   the JS — collapsed is invisible, not untabbable, on its own. */
+.page-header__subscribe-slot {
+  margin-top: var(--space-sm);
+}
+
+.page-header__subscribe-closed,
+.page-header__subscribe-reveal {
+  display: grid;
+  grid-template-rows: 1fr;
+  transition:
+    grid-template-rows 0.45s var(--ease-decelerate),
+    opacity 0.3s var(--ease-standard);
+}
+
+.page-header__slot-clip {
+  overflow: hidden;
+  min-height: 0;
+}
+
+.page-header__subscribe-reveal {
+  grid-template-rows: 0fr;
+  opacity: 0;
+}
+
+.page-header__subscribe-slot.is-open .page-header__subscribe-closed {
+  grid-template-rows: 0fr;
+  opacity: 0;
+}
+
+.page-header__subscribe-slot.is-open .page-header__subscribe-reveal {
+  grid-template-rows: 1fr;
+  opacity: 1;
+}
+
+/* The form: the FOOTER's newsletter recipe (blurb-measure column, hairline
+   field, arrowed Subscribe) re-cut in THEME tokens — the footer's own are
+   fixed to its permanent near-black, this masthead flips light after the
+   handover. Centred as a column; the text stays left-aligned so it reads
+   as a form. Promote to a shared component at a third consumer. */
+.page-header__subscribe-reveal .page-header__slot-clip {
+  width: min(100%, 24rem);
+  margin-inline: auto;
+  text-align: left;
+}
+
+.page-header__email {
+  display: block;
+  width: 100%;
+  margin: 0.25rem 0 var(--space-2xs); /* a whisker of caret headroom above */
+  /* equal OPTICAL air either side of the hairline — the footer's measured
+     correction, same two voices (see site-footer.css for the derivation) */
+  padding: 0 0
+    calc(var(--space-2xs) + 0.215 * var(--voice-mid) - 0.244 * var(--voice-meta));
+  background: none;
+  border: 0;
+  border-bottom: var(--rule-weight) solid var(--rule);
+  border-radius: 0;
+  font-family: inherit;
+  font-size: var(--voice-meta);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+  color: var(--color-icon-black);
+  caret-color: var(--color-icon-black);
+  transition: border-color var(--duration-fast) var(--ease-standard);
+}
+
+.page-header__email::placeholder {
+  color: var(--color-icon-grey);
+  opacity: 1; /* Firefox dims placeholders on its own */
+}
+
+.page-header__email:focus {
+  outline: none;
+  border-bottom-color: var(--color-icon-black);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-header__subscribe-closed,
+  .page-header__subscribe-reveal {
+    transition: none;
+  }
 }
 
 /* the filter band: two hairlines frame the pills, drawn in by rules.css
