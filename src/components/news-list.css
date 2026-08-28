@@ -162,17 +162,21 @@
   }
 
   /* The rules BETWEEN the stories beside the lead (the 3rd and 4th visible
-     items' border-tops) hug their images (user annotation): those items
-     carry the arrangement's half-gutter as padding-LEFT, and a border-box
-     gradient overhung it into the empty gutter beside nothing. Content-box
-     starts the line at the image edge; the 2nd item's rule stays border-box
-     — it joins the lead's into the one full-width line under the masthead. */
+     items' border-tops) start AT their images' left edge (user annotation):
+     those items carry the arrangement's half-gutter as padding-LEFT, and a
+     border-box gradient overhung it into the empty gutter beside nothing.
+     content-box ORIGIN insets the line horizontally — but origin moves the
+     paint's y-zero to the content top too, which crashed the line into the
+     card (second annotation): the position backs it up past the item's own
+     padding-top to the border edge, and the clip stays border-box so it may
+     paint there. The 2nd item's rule stays fully border-box — it joins the
+     lead's into the one full-width line under the masthead. */
   .news-list:has(> .news-list__item:nth-child(3 of .news-list__item:not([hidden])))
     > .news-list__item:nth-child(3 of .news-list__item:not([hidden])),
   .news-list:has(> .news-list__item:nth-child(3 of .news-list__item:not([hidden])))
     > .news-list__item:nth-child(4 of .news-list__item:not([hidden])) {
     background-origin: content-box;
-    background-clip: content-box;
+    background-position: left calc(-1 * var(--space-md));
   }
 
   /* ---- three beside the lead (4+ visible) ---- */
