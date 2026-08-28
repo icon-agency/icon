@@ -29,7 +29,8 @@
 
 /* The hero lockup's gesture, packaged: each line waits below its own mask and
    rises on a stagger, rather than the whole block fading up as one. Used by
-   the two "News & Insights" mastheads (the homepage rail and the /news h1) so
+   the sentence-case landing mastheads (the homepage rail's and /news
+   "News & Insights", the /work landing's "Work") so
    they announce the section the way the hero announces the site.
  *
  * Rides the standard [data-animate] host for its trigger — put both on the

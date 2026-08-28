@@ -163,8 +163,9 @@ missing.
 | Hero loading screen | `js/hero-loader.js` | — (deliberately) | part of the hero SDC; its 16 rows become a Twig loop |
 | Global footer | `js/site-footer.js` | — | `iconFooter` → `icon/site-footer` |
 | News listing (filter + card motion) | `js/news.js` | — | `iconNews` → `icon/news` |
-| Dark-opening theme handover (news listing + both articles) | `js/theme-handover.js` | — | `iconThemeHandover` → `icon/theme-handover` |
+| Dark-opening theme handover (every dark-opening page: news listing, both articles, work landing) | `js/theme-handover.js` | — | `iconThemeHandover` → `icon/theme-handover` |
 | Article Share rail (copy link + email) | `js/share.js` | — | `iconShare` → `icon/share` |
+| Work landing (filter + card motion) | `js/work-landing.js` | — | `iconWorkLanding` → `icon/work-landing` |
 | Work section (swipe, underline, hover-video) | `js/work.js` | — | `iconWork` → `icon/work` |
 | Work listing filter | `js/work-filter.js` | — | `iconWorkFilter` → `icon/work-filter` |
 | Home-A hero (prototype) | `js/hero.js` | gsap, ScrambleText | `iconHero` → `icon/hero` |

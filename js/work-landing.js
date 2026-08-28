@@ -1,0 +1,181 @@
+/* work-landing.js — the /work landing behaviours: the news.js mechanics
+ * re-anchored (a deliberate THIRD fork beside work-filter.js and news.js —
+ * in Drupal every listing collapses into one Views exposed filter, so a JS
+ * abstraction here would outlive its usefulness; see news.js's header).
+ *
+ * The CARDS are the homepage's .work tiles (home-c.css) — parallax and
+ * reveal are self-contained there; this file supplies what GSAP drives on
+ * the homepage: the cursor tilt (--mx/--my) and the scroll-velocity lean.
+ *
+ * 1. CATEGORY FILTER — chips are real links (server-side fallback); JS
+ *    intercepts, toggles `hidden` per data-category, syncs the URL
+ *    (pushState /work or /work?category=slug) with popstate + deep links
+ *    honoured on load, and swaps inside a View Transition where supported.
+ *    (No theme-handover re-host here, unlike news.js: this page's dark
+ *    opening rides the MASTHEAD, which the filter can never hide.)
+ *
+ * Drupal: Drupal.behaviors.iconWorkLanding via `icon/work-landing`; the
+ * filter maps to a Views exposed filter, the card appearance is the Views
+ * display. */
+(function () {
+  "use strict";
+
+  var list = document.querySelector("[data-work-list]");
+
+  /* ---- 1. category filter ------------------------------------------------ */
+  if (list) (function () {
+  var items = Array.prototype.slice.call(list.querySelectorAll(".work-landing__item"));
+  var chips = Array.prototype.slice.call(document.querySelectorAll("[data-filter]"));
+  var slugs = chips.map(function (c) { return c.dataset.filter; });
+  var status = document.querySelector("[data-work-status]");
+  var pagerStatus = document.querySelector(".pager__status");
+  var current = "all";
+
+  var fluid =
+    typeof document.startViewTransition === "function" &&
+    !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  items.forEach(function (li, i) {
+    li.style.viewTransitionName = "wl-card-" + (i + 1);
+  });
+  chips.forEach(function (chip, i) {
+    chip.style.viewTransitionName = "wl-chip-" + (i + 1);
+  });
+
+  function transitionTo(slug) {
+    if (!fluid) { apply(slug); return; }
+    document.startViewTransition(function () { apply(slug); });
+  }
+
+  function apply(slug) {
+    // an unknown ?category must not silently empty the page — full list
+    if (slugs.indexOf(slug) === -1) slug = "all";
+    current = slug;
+    // move focus BEFORE hiding its holder, or Tab restarts at the skip link
+    var active = document.activeElement;
+    if (active && list.contains(active)) {
+      var owner = active.closest(".work-landing__item");
+      if (owner && !(slug === "all" || owner.dataset.category === slug)) {
+        var chip = chips.filter(function (c) { return c.dataset.filter === slug; })[0];
+        if (chip) chip.focus();
+      }
+    }
+
+    var shown = 0;
+    items.forEach(function (li) {
+      var show = slug === "all" || li.dataset.category === slug;
+      if (show) {
+        li.removeAttribute("hidden");
+        shown += 1;
+        // filtering is a re-layout, not an entrance: a card the scroll
+        // observer never reached must not arrive as a blank slot. The
+        // animate hosts here are INSIDE the item (the caption), unlike the
+        // news rows where the <li> is the host.
+        Array.prototype.slice.call(li.querySelectorAll("[data-animate]")).forEach(function (el) {
+          el.classList.add("is-visible");
+        });
+        var fig = li.querySelector("[data-reveal-img]");
+        if (fig) fig.classList.add("is-revealed");
+        // resume any card film the last filter paused
+        Array.prototype.slice.call(li.querySelectorAll("video")).forEach(function (v) {
+          v.play().catch(function () {});
+        });
+      } else {
+        li.setAttribute("hidden", "");
+        // display:none does NOT pause an HTMLMediaElement — without this a
+        // filtered-out film keeps playing and decoding offscreen forever
+        Array.prototype.slice.call(li.querySelectorAll("video")).forEach(function (v) {
+          v.pause();
+        });
+      }
+    });
+    chips.forEach(function (chip) {
+      var active = chip.dataset.filter === slug;
+      chip.classList.toggle("is-active", active);
+      if (active) chip.setAttribute("aria-current", "true");
+      else chip.removeAttribute("aria-current");
+    });
+    var msg = slug === "all"
+      ? "Showing all " + items.length + " projects"
+      : "Showing " + shown + " " + (shown === 1 ? "project" : "projects");
+    if (status) status.textContent = msg;
+    if (pagerStatus) {
+      pagerStatus.textContent = slug === "all"
+        ? "Page 1 of 1 (" + items.length + " projects)"
+        : "Page 1 of 1 (" + shown + " " + (shown === 1 ? "project" : "projects") + ")";
+    }
+  }
+
+  chips.forEach(function (chip) {
+    chip.addEventListener("click", function (e) {
+      if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
+      e.preventDefault();
+      var slug = chip.dataset.filter;
+      if (slug === current) return; // no duplicate history entries
+      transitionTo(slug);
+      try {
+        // NB pushes the Drupal path (/work): reloading it 404s on the
+        // static preview server — the accepted prototype trade
+        window.history.pushState(
+          { category: slug },
+          "",
+          slug === "all" ? "/work" : "/work?category=" + slug
+        );
+      } catch (err) {}
+    });
+  });
+
+  window.addEventListener("popstate", function () {
+    transitionTo(new URLSearchParams(window.location.search).get("category") || "all");
+  });
+
+  // honour a ?category deep link; correct the URL if the slug was unknown
+  var initial = new URLSearchParams(window.location.search).get("category");
+  if (initial && initial !== "all") {
+    apply(initial);
+    if (current !== initial) {
+      try {
+        window.history.replaceState({ category: current }, "", "/work");
+      } catch (err) {}
+    }
+  }
+  })();
+
+  /* ---- 2. card cursor tilt ------------------------------------------------
+     home-c.js 3f on the .work__item: feed --mx/--my (-1..1 across the card)
+     so home-c.css can lean the frame toward the cursor. rAF-coalesced;
+     pointer devices only; skipped under reduced motion. */
+  if (
+    !window.matchMedia("(prefers-reduced-motion: reduce)").matches &&
+    window.matchMedia("(hover: hover)").matches
+  ) {
+    Array.prototype.slice.call(document.querySelectorAll(".work__item")).forEach(function (card) {
+      var raf = 0, mx = 0, my = 0;
+      var write = function () {
+        raf = 0;
+        card.style.setProperty("--mx", mx.toFixed(3));
+        card.style.setProperty("--my", my.toFixed(3));
+      };
+      card.addEventListener("pointermove", function (e) {
+        var r = card.getBoundingClientRect();
+        if (!r.width || !r.height) return;
+        mx = ((e.clientX - r.left) / r.width) * 2 - 1;
+        my = ((e.clientY - r.top) / r.height) * 2 - 1;
+        if (!raf) raf = requestAnimationFrame(write);
+      }, { passive: true });
+      card.addEventListener("pointerleave", function () {
+        if (raf) { cancelAnimationFrame(raf); raf = 0; }
+        mx = my = 0;
+        write();
+      });
+    });
+  }
+
+  /* ---- 3. scroll-velocity lean -------------------------------------------
+     The SHARED engine (js/velocity-lean.js): one --wl-lean on the list per
+     frame, inherited via the page-layer consumer in work-landing.css.
+     MAX 1.2deg, with the news rows — half-container cards. */
+  if (list && !window.matchMedia("(prefers-reduced-motion: reduce)").matches &&
+      window.ICON && window.ICON.velocityLean) {
+    window.ICON.velocityLean(list, list, "--wl-lean", 1.2);
+  }
+})();

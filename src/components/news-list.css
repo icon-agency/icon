@@ -224,9 +224,11 @@
    side get the enter/exit keyframes below.
 
    These ::view-transition-* pseudos live on the root element, but scoping
-   them here keeps the choreography beside the component that owns it — the
-   news listing is the only page running view transitions. Reduced motion
-   needs no rules here: news.js never starts a transition in that case. */
+   them here keeps the choreography beside the component that FIRST owned
+   it; the selectors are universal, and the /work landing's filter
+   (js/work-landing.js, wl-card-* names) deliberately rides the same rules.
+   Reduced motion needs no rules here: neither filter starts a transition
+   in that case. */
 
 /* the page itself must not crossfade — only the named participants move */
 ::view-transition-old(root),

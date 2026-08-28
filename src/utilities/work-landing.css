@@ -1,0 +1,58 @@
+/* work-landing.css — PAGE layer for the /work landing
+ * (templates/work-landing.html).
+ *
+ * Nearly everything is reuse: the masthead is the /news page-header--row
+ * (component), the chips are filter-bar--checklist, and the cards are the
+ * homepage's .work tiles (home-c.css) — parallax, reveal, cursor tilt and
+ * hover all live with the card. This file only supplies the FLAT GRID the
+ * landing re-sets them in (the homepage's art-directed rows can't survive
+ * filtering; a uniform two-up can) and the lean consumer.
+ *
+ * Opens DARK and hands over like /news — but the hook rides the MASTHEAD
+ * on the default midpoint criterion (see the template + theme-handover.js);
+ * no project ever carries it, so the filter needs no re-host dance. No
+ * hairlines are drawn on this page, so no --rule re-point is needed while
+ * dark.
+ *
+ * Drupal: Views page over `work` nodes; this grid is the Views display. */
+
+.work-landing__list {
+  list-style: none;
+  margin: 0;
+  padding: 0 var(--gutter-page); /* self-pads, like .news-list */
+  display: grid;
+  grid-template-columns: 1fr;
+  /* row air ~ the homepage's inter-row rhythm. The column gutter is the
+     shared spacing step, NOT the homepage's --grid-gutter — that token is
+     scoped to .page-home's 12-column system, which this flat grid isn't. */
+  gap: var(--space-xl) var(--space-md);
+}
+
+@media (min-width: 768px) {
+  .work-landing__list { grid-template-columns: repeat(2, 1fr); }
+}
+
+.work-landing__item[hidden] {
+  display: none; /* grid items need the explicit rule */
+}
+
+/* Uniform crop for the filterable grid: the homepage's mixed ratios are a
+   composition device for its fixed rows; a filtered grid re-pairs
+   constantly, so every tile carries the split rows' 4/3. (Below md the
+   card's own square base rule stands — one stacked column, same width.) */
+@media (min-width: 768px) {
+  .work-landing__item .work__figure { aspect-ratio: 4 / 3; }
+}
+
+/* Scroll-velocity lean — the homepage card behaviour without GSAP:
+   js/work-landing.js writes ONE --wl-lean on the list per frame and every
+   card inherits it. The separate `rotate` property composes with the
+   figure's own cursor tilt (a transform), as on the news rows. */
+.work-landing__item .work__item {
+  rotate: var(--wl-lean, 0deg);
+}
+
+/* The fluid filter swap needs NO rules here: news-list.css's
+   view-transition choreography selects universally (root stilled,
+   ::view-transition-group(*) paced, :only-child enter/exit keyframes), so
+   this page's wl-card-* participants ride it as-is. */

@@ -15,13 +15,15 @@ The canonical page is `templates/homeC.html` (light theme, fully fluid). The roo
 │   │                     #   (home-c.css = the canonical homepage; rules.css = the hairline
 │   │                     #    system; design-system.css = the DS index chrome)
 │   └── components/       # BEM components, one block per file (22 files — see src/main.css)
-├── templates/            # homeC.html (canonical) · news.html · prototypes: home, homeB,
+├── templates/            # homeC.html (canonical) · news.html · work-landing.html ·
+│                         #   news-article(-b, -butterfly).html · prototypes: home, homeB,
 │                         #   work, work-article
 ├── experiments/          # self-contained one-off explorations (own inline CSS, not built);
 │                         #   approved ones get promoted into src/ + templates/
 ├── js/                   # one IIFE per behaviour → maps to a Drupal.behaviors entry
 │                         #   (header, hero-loader, home-c, news, reveal, share,
-│                         #    site-footer, theme-handover, work, work-filter · prototypes: hero,
+│                         #    site-footer, theme-handover, velocity-lean, work,
+│                         #    work-filter, work-landing · prototypes: hero,
 │                         #    hero-sphere, tagline · dev-only: theme-toggle)
 ├── css/main.css          # build output (committed — GitHub Pages serves it)
 ├── assets/               # images + video (work portfolio, brand, banners)
@@ -43,7 +45,7 @@ Local preview: `node server.js`, then open http://localhost:4100. `/` serves `in
 
 ## Theming
 
-Three themes, all class-driven on `<html>` (never `<body>` — see `LESSONS.md`): **light is the default** (no class) on `homeC` and the DS index, while the news pages (`news` and both article templates) **open dark** and hand over to light on scroll (`js/theme-handover.js`); `.dark` and `.theme-blue` are full token re-themes. The older prototypes (`home`, `homeB`, `work`, `work-article`) still open in `.dark`. A dev-only toggle (`js/theme-toggle.js`, remove before shipping) cycles the three.
+Three themes, all class-driven on `<html>` (never `<body>` — see `LESSONS.md`): **light is the default** (no class) on `homeC` and the DS index, while the news pages (`news`, both article templates) and `work-landing` **open dark** and hand over to light on scroll (`js/theme-handover.js`); `.dark` and `.theme-blue` are full token re-themes. The older prototypes (`home`, `homeB`, `work`, `work-article`) still open in `.dark`. A dev-only toggle (`js/theme-toggle.js`, remove before shipping) cycles the three.
 
 ## Conventions
 

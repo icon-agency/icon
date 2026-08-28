@@ -159,6 +159,8 @@ The entry file is the dependency graph, verbatim:
 @import "./utilities/home-page.css";
 @import "./utilities/work-article.css";
 @import "./utilities/rules.css";
+@import "./utilities/news-article.css";
+@import "./utilities/work-landing.css";
 @import "./utilities/home-c.css";
 @import "./utilities/design-system.css";
 ```

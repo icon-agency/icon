@@ -1,7 +1,8 @@
 /* page-header.css — the listing-page masthead: a large centred heading (with
  * serif-italic accents), an optional CTA button, and a horizontally-scrollable
- * filter row. Port of v40-1-icon/components/page-header.tsx. Used by /work
- * (and the future /news) listing pages.
+ * filter row. Port of v40-1-icon/components/page-header.tsx. Worn by the
+ * /news and /work landings (the --row arrangement) and the LEGACY work
+ * prototype (the centred base stack).
  *
  * The heading fades/rises via the shared [data-animate] host (js/reveal.js).
  * The filter chips are the .filter-bar component, sitting in the scroll
@@ -39,7 +40,8 @@
    same lockup: Kumbh 900 over a Miller accent (.masthead-accent), sentence
    case as authored, on --tracking-caps.
 
-   Used only by the /news h1. WORK and the footer's LET'S TALK keep their own
+   Worn by the /news h1 and the /work landing h1. The homepage's WORK
+   masthead and the footer's LET'S TALK keep their own
    uppercase settings — this variant is no longer "the caps voice". The base
    heading above keeps the mixed-case serif-accent voice for /work. */
 .page-header__heading--display {
@@ -74,8 +76,9 @@
  * one baseline. The heading wears --display, the same 900 caps the homepage
  * news masthead does, so the two pages announce the section identically.
  *
- * A modifier rather than a rewrite because /work still renders the centred
- * arrangement from the same component, and both are live.
+ * A modifier rather than a rewrite because the legacy work PROTOTYPE still
+ * renders the centred arrangement from the same component; the real /work
+ * route now belongs to the landing, which wears this --row form. */
  */
 
 .page-header--row {
