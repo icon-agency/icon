@@ -206,13 +206,15 @@
       </div>
 
       <!-- ================= PROJECTS ================= -->
-      <!-- The homepage's .work CARDS (figure + caption, parallax, tilt,
-           reveal — home-c.css), re-set as a flat filterable two-up grid: the
-           homepage's art-directed rows can't survive filtering, the cards
-           can. Filtering sets `hidden` on the <li> (items leave the a11y
-           tree). The dark opening's hook rides the MASTHEAD above, not a
-           project (see the note there). -->
-      <section aria-label="Work projects">
+      <!-- The homepage's .work section, made filterable: same cards, same
+           u-container, same 12-column --grid-gutter (a foundation now), and
+           the SAME five-slot rhythm — split pair / wide film / tall-left
+           pair — assigned by VISIBLE position (nth-child of :not([hidden]),
+           work-landing.css), so filtering re-forms the composition instead
+           of breaking it. Filtering sets `hidden` on the <li>. The dark
+           opening's hook rides the MASTHEAD above, not a project (see the
+           note there). -->
+      <section class="u-container" aria-label="Work projects">
         <p class="sr-only" aria-live="polite" data-work-status></p>
         <ul class="work-landing__list" data-work-list role="list">
           <li class="work-landing__item" data-category="behaviour-change">
@@ -223,28 +225,6 @@
               <div class="work__caption" data-animate>
                 <h2 class="work__title">Transforming the elephant in the room into conversations that change lives</h2>
                 <span class="work__meta">PHN North Western Melbourne</span>
-              </div>
-            </a>
-          </li>
-          <li class="work-landing__item" data-category="brand">
-            <a class="work__item" href="/work/article" aria-label="Celebrating movement in all its forms — The Athlete&rsquo;s Foot">
-              <figure class="work__figure media-reveal" data-reveal-img>
-                <video class="work__img" src="../assets/video/Banner-Fit%20For%20Every%20Run.mp4" autoplay loop muted playsinline preload="auto" aria-label="The Athlete&rsquo;s Foot — Fit for every run campaign film"></video>
-              </figure>
-              <div class="work__caption" data-animate style="--animate-delay: 60ms">
-                <h2 class="work__title">Celebrating movement in all its forms</h2>
-                <span class="work__meta">The Athlete&rsquo;s Foot</span>
-              </div>
-            </a>
-          </li>
-          <li class="work-landing__item" data-category="creative">
-            <a class="work__item" href="/work/article" aria-label="Democracy Cards – pre-election public education campaign — Museum of Australian Democracy (MoAD)">
-              <figure class="work__figure media-reveal" data-reveal-img>
-                <img class="work__img" loading="lazy" src="../assets/work/Democracy-Cards-Tile.jpg" alt="Democracy Cards — Museum of Australian Democracy" />
-              </figure>
-              <div class="work__caption" data-animate>
-                <h2 class="work__title">Democracy Cards &ndash; pre-election public education campaign</h2>
-                <span class="work__meta">Museum of Australian Democracy (MoAD)</span>
               </div>
             </a>
           </li>
@@ -259,14 +239,47 @@
               </div>
             </a>
           </li>
-          <li class="work-landing__item" data-category="reputation">
-            <a class="work__item" href="/work/article" aria-label="Shifting the conversation on alcohol and other drugs — Alcohol and Drug Foundation">
+          <li class="work-landing__item" data-category="brand">
+            <a class="work__item" href="/work/article" aria-label="Celebrating movement in all its forms — The Athlete&rsquo;s Foot">
               <figure class="work__figure media-reveal" data-reveal-img>
-                <video class="work__img" src="../assets/video/the%20Alcohol%20and%20Drug%20Foundation.mp4" autoplay loop muted playsinline preload="auto" aria-label="Alcohol and Drug Foundation — campaign film"></video>
+                <video class="work__img" src="../assets/video/Banner-Fit%20For%20Every%20Run.mp4" autoplay loop muted playsinline preload="auto" aria-label="The Athlete&rsquo;s Foot — Fit for every run campaign film"></video>
               </figure>
               <div class="work__caption" data-animate>
-                <h2 class="work__title">Shifting the conversation on alcohol and other drugs</h2>
-                <span class="work__meta">Alcohol and Drug Foundation</span>
+                <h2 class="work__title">Celebrating movement in all its forms</h2>
+                <span class="work__meta">The Athlete&rsquo;s Foot</span>
+              </div>
+            </a>
+          </li>
+          <li class="work-landing__item" data-category="behaviour-change">
+            <a class="work__item" href="/work/article" aria-label="iCanQuit is more than breaking a habit&mdash;it&rsquo;s an identity transformation — Cancer Institute NSW">
+              <figure class="work__figure media-reveal" data-reveal-img>
+                <img class="work__img" loading="lazy" src="../assets/work/iCanQuit.png" alt="iCanQuit — Cancer Institute NSW" />
+              </figure>
+              <div class="work__caption" data-animate>
+                <h2 class="work__title">iCanQuit is more than breaking a habit&mdash;it&rsquo;s an identity transformation</h2>
+                <span class="work__meta">Cancer Institute NSW</span>
+              </div>
+            </a>
+          </li>
+          <li class="work-landing__item" data-category="creative">
+            <a class="work__item" href="/work/article" aria-label="Democracy Cards &ndash; pre-election public education campaign — Museum of Australian Democracy (MoAD)">
+              <figure class="work__figure media-reveal" data-reveal-img>
+                <img class="work__img" loading="lazy" src="../assets/work/Democracy-Cards-Tile.jpg" alt="Democracy Cards — Museum of Australian Democracy" />
+              </figure>
+              <div class="work__caption" data-animate style="--animate-delay: 60ms">
+                <h2 class="work__title">Democracy Cards &ndash; pre-election public education campaign</h2>
+                <span class="work__meta">Museum of Australian Democracy (MoAD)</span>
+              </div>
+            </a>
+          </li>
+          <li class="work-landing__item" data-category="communications">
+            <a class="work__item" href="/work/article" aria-label="Connecting communities with care closer to home — Victorian Department of Health">
+              <figure class="work__figure media-reveal" data-reveal-img>
+                <img class="work__img" loading="lazy" src="../assets/work/health-services-campaign.png" alt="Health services campaign creative" />
+              </figure>
+              <div class="work__caption" data-animate>
+                <h2 class="work__title">Connecting communities with care closer to home</h2>
+                <span class="work__meta">Victorian Department of Health</span>
               </div>
             </a>
           </li>
@@ -281,25 +294,14 @@
               </div>
             </a>
           </li>
-          <li class="work-landing__item" data-category="behaviour-change">
-            <a class="work__item" href="/work/article" aria-label="iCanQuit is more than breaking a habit—it&rsquo;s an identity transformation — Cancer Institute NSW">
+          <li class="work-landing__item" data-category="reputation">
+            <a class="work__item" href="/work/article" aria-label="Shifting the conversation on alcohol and other drugs — Alcohol and Drug Foundation">
               <figure class="work__figure media-reveal" data-reveal-img>
-                <img class="work__img" loading="lazy" src="../assets/work/iCanQuit.png" alt="iCanQuit — Cancer Institute NSW" />
+                <video class="work__img" src="../assets/video/the%20Alcohol%20and%20Drug%20Foundation.mp4" autoplay loop muted playsinline preload="auto" aria-label="Alcohol and Drug Foundation — campaign film"></video>
               </figure>
               <div class="work__caption" data-animate>
-                <h2 class="work__title">iCanQuit is more than breaking a habit&mdash;it&rsquo;s an identity transformation</h2>
-                <span class="work__meta">Cancer Institute NSW</span>
-              </div>
-            </a>
-          </li>
-          <li class="work-landing__item" data-category="brand">
-            <a class="work__item" href="/work/article" aria-label="Giving a running festival wings across every channel — Melbourne Marathon Festival">
-              <figure class="work__figure media-reveal" data-reveal-img>
-                <img class="work__img" loading="lazy" src="../assets/work/running-wings-campaign.jpeg" alt="Running Wings campaign hero" />
-              </figure>
-              <div class="work__caption" data-animate style="--animate-delay: 60ms">
-                <h2 class="work__title">Giving a running festival wings across every channel</h2>
-                <span class="work__meta">Melbourne Marathon Festival</span>
+                <h2 class="work__title">Shifting the conversation on alcohol and other drugs</h2>
+                <span class="work__meta">Alcohol and Drug Foundation</span>
               </div>
             </a>
           </li>
@@ -314,25 +316,25 @@
               </div>
             </a>
           </li>
-          <li class="work-landing__item" data-category="communications">
-            <a class="work__item" href="/work/article" aria-label="Connecting communities with care closer to home — Victorian Department of Health">
-              <figure class="work__figure media-reveal" data-reveal-img>
-                <img class="work__img" loading="lazy" src="../assets/work/health-services-campaign.png" alt="Health services campaign creative" />
-              </figure>
-              <div class="work__caption" data-animate style="--animate-delay: 60ms">
-                <h2 class="work__title">Connecting communities with care closer to home</h2>
-                <span class="work__meta">Victorian Department of Health</span>
-              </div>
-            </a>
-          </li>
           <li class="work-landing__item" data-category="reputation">
             <a class="work__item" href="/work/article" aria-label="Turning scam awareness into a social-first movement — Meta">
               <figure class="work__figure media-reveal" data-reveal-img>
                 <img class="work__img" loading="lazy" src="../assets/work/money-man-news.png" alt="Is This Legit? — Meta scam awareness campaign" />
               </figure>
-              <div class="work__caption" data-animate>
+              <div class="work__caption" data-animate style="--animate-delay: 60ms">
                 <h2 class="work__title">Turning scam awareness into a social-first movement</h2>
                 <span class="work__meta">Meta</span>
+              </div>
+            </a>
+          </li>
+          <li class="work-landing__item" data-category="brand">
+            <a class="work__item" href="/work/article" aria-label="Giving a running festival wings across every channel — Melbourne Marathon Festival">
+              <figure class="work__figure media-reveal" data-reveal-img>
+                <img class="work__img" loading="lazy" src="../assets/work/running-wings-campaign.jpeg" alt="Running Wings campaign hero" />
+              </figure>
+              <div class="work__caption" data-animate>
+                <h2 class="work__title">Giving a running festival wings across every channel</h2>
+                <span class="work__meta">Melbourne Marathon Festival</span>
               </div>
             </a>
           </li>

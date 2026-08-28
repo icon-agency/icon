@@ -4,9 +4,9 @@
  * Nearly everything is reuse: the masthead is the /news page-header--row
  * (component), the chips are filter-bar--checklist, and the cards are the
  * homepage's .work tiles (home-c.css) — parallax, reveal, cursor tilt and
- * hover all live with the card. This file only supplies the FLAT GRID the
- * landing re-sets them in (the homepage's art-directed rows can't survive
- * filtering; a uniform two-up can) and the lean consumer.
+ * hover all live with the card. This file re-expresses the homepage's
+ * art-directed ROW PATTERN as one flat position-assigned grid (so the
+ * filter re-forms it) and supplies the lean consumer.
  *
  * Opens DARK and hands over like /news — but the hook rides the MASTHEAD
  * on the default midpoint criterion (see the template + theme-handover.js);
@@ -19,29 +19,72 @@
 .work-landing__list {
   list-style: none;
   margin: 0;
-  padding: 0 var(--gutter-page); /* self-pads, like .news-list */
+  padding: 0;
   display: grid;
   grid-template-columns: 1fr;
-  /* row air ~ the homepage's inter-row rhythm. The column gutter is the
-     shared spacing step, NOT the homepage's --grid-gutter — that token is
-     scoped to .page-home's 12-column system, which this flat grid isn't. */
-  gap: var(--space-xl) var(--space-md);
-}
-
-@media (min-width: 768px) {
-  .work-landing__list { grid-template-columns: repeat(2, 1fr); }
+  /* the homepage rows' stacked rhythm */
+  gap: var(--space-lg);
 }
 
 .work-landing__item[hidden] {
   display: none; /* grid items need the explicit rule */
 }
 
-/* Uniform crop for the filterable grid: the homepage's mixed ratios are a
-   composition device for its fixed rows; a filtered grid re-pairs
-   constantly, so every tile carries the split rows' 4/3. (Below md the
-   card's own square base rule stands — one stacked column, same width.) */
+/* THE HOMEPAGE WORK PATTERN, made filterable (user call: same repeating
+   pattern, same paddings — .work__row's recipe re-expressed as ONE flat
+   grid whose slots are assigned by VISIBLE position, the news-list
+   `of :not([hidden])` technique, so every filter re-forms the composition
+   instead of leaving holes).
+
+   The five-slot rhythm per cycle, exactly home-c.css's rows:
+     1|2  split pair    (900+: landscape 3/2 | taller square 1/1)
+     3    wide feature  (full 12 columns, the film's own 16/9)
+     4|5  tall-left pair (the split MIRRORED: square 1/1 | landscape 3/2)
+
+   Same 12 columns, same --grid-gutter (a foundation now), row air
+   --space-xl like the homepage's between-row margin. 768-899 keeps the
+   6+6 splits at the uniform 4/3 the homepage uses there (the base
+   .work__figure rule); below 768 everything stacks square. */
 @media (min-width: 768px) {
-  .work-landing__item .work__figure { aspect-ratio: 4 / 3; }
+  .work-landing__list {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: var(--grid-gutter);
+    row-gap: var(--space-xl);
+    align-items: start;
+  }
+
+  .work-landing__item:nth-child(5n + 1 of .work-landing__item:not([hidden])),
+  .work-landing__item:nth-child(5n + 4 of .work-landing__item:not([hidden])) {
+    grid-column: 1 / span 6;
+  }
+
+  .work-landing__item:nth-child(5n + 2 of .work-landing__item:not([hidden])),
+  .work-landing__item:nth-child(5n of .work-landing__item:not([hidden])) {
+    grid-column: 7 / span 6;
+  }
+
+  .work-landing__item:nth-child(5n + 3 of .work-landing__item:not([hidden])) {
+    grid-column: 1 / -1;
+  }
+
+  /* the feature slot carries the film's own frame at every grid width */
+  .work-landing__item:nth-child(5n + 3 of .work-landing__item:not([hidden])) .work__figure {
+    aspect-ratio: 16 / 9;
+  }
+}
+
+/* the split pairs' landscape|square stagger arrives with the desktop grid,
+   as on the homepage (768-899 stays uniform 4/3) */
+@media (min-width: 900px) {
+  .work-landing__item:nth-child(5n + 1 of .work-landing__item:not([hidden])) .work__figure,
+  .work-landing__item:nth-child(5n of .work-landing__item:not([hidden])) .work__figure {
+    aspect-ratio: 3 / 2;
+  }
+
+  .work-landing__item:nth-child(5n + 2 of .work-landing__item:not([hidden])) .work__figure,
+  .work-landing__item:nth-child(5n + 4 of .work-landing__item:not([hidden])) .work__figure {
+    aspect-ratio: 1 / 1;
+  }
 }
 
 /* Scroll-velocity lean — the homepage card behaviour without GSAP:
