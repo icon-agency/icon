@@ -16,6 +16,15 @@
  *
  * Drupal: Views page over `work` nodes; this grid is the Views display. */
 
+/* UNCAPPED like the homepage's work section (user call: "why is there
+   space either side") — the same lift .page-home makes, the same wide
+   fluid gutter, both via foundations. Unlayered page CSS, so max-width
+   beats .u-container's @layer utilities cap regardless of specificity. */
+.work-landing__projects {
+  max-width: none;
+  --container-pad: var(--container-pad-wide);
+}
+
 .work-landing__list {
   list-style: none;
   margin: 0;

@@ -53,6 +53,11 @@
   /* Layout container. */
   --container-max: 90rem; /* 1440px — refine per design during rebuild */
   --container-pad: clamp(1.5rem, 4vw, 4rem);
+  /* The WIDE fluid gutter — what holds an UNCAPPED composition off the
+     edges (~60px @1440 → 120px cap, matches theonecentre). Born on
+     .page-home; promoted to a foundation when the /work landing adopted
+     the homepage work pattern edge-to-edge (user call). */
+  --container-pad-wide: clamp(1.5rem, 4.2vw, 7.5rem);
   /* The FULL-BLEED page gutter — the edge padding a section carries when it
      runs viewport-wide instead of sitting in the capped .u-container (the
      listing pages, the article pages, the home work section). The same

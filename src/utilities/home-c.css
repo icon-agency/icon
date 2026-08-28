@@ -123,7 +123,7 @@
    clobber the footer's own background. */
 .page-home,
 .page-home + .site-footer {
-  --container-pad: clamp(1.5rem, 4.2vw, 7.5rem); /* ~60px @1440 → 120px cap (matches theonecentre) */
+  --container-pad: var(--container-pad-wide); /* the foundation wide gutter (theme/spacing.css) */
 }
 
 /* Drop the 90rem cap on Home C sections — they run edge-to-edge, held in only by
