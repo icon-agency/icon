@@ -22,10 +22,11 @@
  *
  * Why its own file rather than a section of home-c.js: the footer is global
  * and ships on pages that never load the homepage bundle (and have no GSAP),
- * so its behaviour has to travel with it. The velocity sampler below is
- * deliberately the same shape as the one in news.js — if a third consumer
- * appears, that is the moment to lift it into a shared primitive rather than
- * copy it again.
+ * so its behaviour has to travel with it. The velocity sampler this file
+ * once carried was deliberately the same shape as news.js's — and when the
+ * /work landing arrived as the third consumer, it was lifted into the shared
+ * js/velocity-lean.js exactly as this note used to promise. The skew is now
+ * one call in section 3.
  *
  * Drupal: Drupal.behaviors.iconFooter, attached via the `icon/site-footer`
  * library alongside the footer region template.
@@ -133,43 +134,11 @@
 
   if (reduce) return;
 
-  var MAX = 1.8; // deg — past ~2 the shear stops reading as motion and starts
-                 // reading as a broken layout, and the lockup multiplies it
-  var VEL_AT_MAX = 2600; // scroll px/s that reaches the full shear
-  var clamp = function (v, lo, hi) { return v < lo ? lo : v > hi ? hi : v; };
-
-  // idle the whole thing while the footer is off screen
-  var inView = !("IntersectionObserver" in window);
-  if (!inView) {
-    new IntersectionObserver(function (entries) {
-      inView = entries[0].isIntersecting;
-    }, { rootMargin: "20% 0px" }).observe(footer);
+  // The shared engine (js/velocity-lean.js — lifted from here at its third
+  // consumer, as this file's header promised). MAX 1.8deg: past ~2 the shear
+  // stops reading as motion and starts reading as a broken layout, and the
+  // lockup multiplies it.
+  if (window.ICON && window.ICON.velocityLean) {
+    window.ICON.velocityLean(footer, footer, "--footer-skew", 1.8);
   }
-
-  var lastY = window.scrollY, lastT = performance.now();
-  var vel = 0, cur = 0, raf = 0, prevT = 0;
-
-  var tick = function (now) {
-    raf = 0;
-    var dt = Math.min(0.05, (now - (prevT || now)) / 1000);
-    prevT = now;
-    // decay: the scroll event stops firing, so nothing else zeroes this
-    vel *= Math.pow(0.86, dt * 60);
-    if (Math.abs(vel) < 20) vel = 0;
-    var target = inView ? clamp((vel / VEL_AT_MAX) * MAX, -MAX, MAX) : 0;
-    cur += (target - cur) * Math.min(1, dt * 7);
-    if (Math.abs(cur) < 0.01 && !vel) cur = 0;
-    footer.style.setProperty("--footer-skew", cur.toFixed(3) + "deg");
-    if (vel || Math.abs(cur) > 0.005) raf = requestAnimationFrame(tick);
-    else prevT = 0; // settled — the loop stops until the next scroll
-  };
-
-  window.addEventListener("scroll", function () {
-    var now = performance.now();
-    var dt = (now - lastT) / 1000;
-    if (dt > 0) vel = clamp((window.scrollY - lastY) / dt, -12000, 12000);
-    lastY = window.scrollY;
-    lastT = now;
-    if (!raf) raf = requestAnimationFrame(tick);
-  }, { passive: true });
 })();

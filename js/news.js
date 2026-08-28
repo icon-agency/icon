@@ -208,53 +208,15 @@
      page) when the news article became its third consumer. */
 
   /* ---- 4. scroll-velocity lean -------------------------------------------
-     The homepage card lean (home-c.js 3e), ported without GSAP: sample scroll
-     velocity, decay it when scrolling stops, lerp toward a clamped lean and
-     write ONE custom property on the host per frame — every card inherits
-     var(--nl-lean). The host is the listing where there is one, else the
-     article's "Next up" rail (each page ships its own CSS consumer:
-     news-list.css rows / news-article.css rail cards). The rAF loop only
-     runs while there is motion to settle, and an observer idles the whole
-     thing when the host is offscreen. */
+     The homepage card lean (home-c.js 3e) via the SHARED engine
+     (js/velocity-lean.js — lifted at its third consumer): one --nl-lean on
+     the host per frame, every card inherits it. The host is the listing
+     where there is one, else the article's "Next up" rail (each page ships
+     its own CSS consumer: news-list.css rows / news-article.css rail
+     cards). MAX 1.2deg — full-width rows swing more px per degree. */
   var leanHost = list || document.querySelector(".news-article__related");
-  if (leanHost && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-    (function () {
-      var MAX = 1.2;          // deg — full-width rows swing more px per degree
-      var VEL_AT_MAX = 2600;  // scroll px/s that reaches the full lean
-      var clamp = function (v, lo, hi) { return v < lo ? lo : v > hi ? hi : v; };
-      var inView = !("IntersectionObserver" in window);
-      if (!inView) {
-        new IntersectionObserver(function (entries) {
-          inView = entries[0].isIntersecting;
-        }, { rootMargin: "20% 0px" }).observe(leanHost);
-      }
-
-      var lastY = window.scrollY, lastT = performance.now();
-      var vel = 0, cur = 0, raf = 0, prevT = 0;
-
-      var tick = function (now) {
-        raf = 0;
-        var dt = Math.min(0.05, (now - (prevT || now)) / 1000);
-        prevT = now;
-        // decay: the scroll event stops firing, so nothing else zeroes this
-        vel *= Math.pow(0.86, dt * 60);
-        if (Math.abs(vel) < 20) vel = 0;
-        var target = inView ? clamp((vel / VEL_AT_MAX) * MAX, -MAX, MAX) : 0;
-        cur += (target - cur) * Math.min(1, dt * 7);
-        if (Math.abs(cur) < 0.01 && !vel) cur = 0;
-        leanHost.style.setProperty("--nl-lean", cur.toFixed(3) + "deg");
-        if (vel || Math.abs(cur) > 0.005) raf = requestAnimationFrame(tick);
-        else prevT = 0; // settled — loop stops until the next scroll
-      };
-
-      window.addEventListener("scroll", function () {
-        var now = performance.now();
-        var dt = (now - lastT) / 1000;
-        if (dt > 0) vel = clamp((window.scrollY - lastY) / dt, -12000, 12000);
-        lastY = window.scrollY;
-        lastT = now;
-        if (!raf) raf = requestAnimationFrame(tick);
-      }, { passive: true });
-    })();
+  if (leanHost && !window.matchMedia("(prefers-reduced-motion: reduce)").matches &&
+      window.ICON && window.ICON.velocityLean) {
+    window.ICON.velocityLean(leanHost, leanHost, "--nl-lean", 1.2);
   }
 })();
