@@ -62,5 +62,11 @@
      runs viewport-wide instead of sitting in the capped .u-container (the
      listing pages, the article pages, the home work section). The same
      literal had spread across eight files before it was named. */
-  --gutter-page: clamp(1rem, 3vw, 3rem);
+  /* ONE page edge on EVERY page (user call, Aug 2026: "home page has
+     different padding to news" — it no longer does): the page gutter IS the
+     wide gutter. The old narrower clamp(1rem, 3vw, 3rem) is retired; the
+     self-padded sections (listings, articles, mastheads) and all the fixed
+     chrome (wordmark, mobile controls + menu, footer padding, dev toggle)
+     ride the same edge the uncapped compositions hold. */
+  --gutter-page: var(--container-pad-wide);
 }

@@ -25,13 +25,6 @@
   --container-pad: var(--container-pad-wide);
 }
 
-/* ONE left edge for the whole page (user calls, twice: masthead, then
-   the wordmark): the landing re-points the plain --gutter-page token at
-   BODY level, so the fixed logo, the masthead's padding and the uncapped
-   cards' wide gutter all resolve to --container-pad-wide together. */
-.page-work-landing {
-  --gutter-page: var(--container-pad-wide);
-}
 
 .work-landing__list {
   list-style: none;

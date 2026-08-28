@@ -56,10 +56,8 @@
   z-index: 1;
   background: var(--footer-bg);
   color: var(--footer-ink);
-  /* THE PAGE'S gutter, not the container pad (audit, Aug 2026): the footer
-     is a body child, so a page's body-level --gutter-page re-point (homepage,
-     /work landing -> the wide gutter) reaches it — its edges track whatever
-     edge the page above established, with no per-page footer rule. */
+  /* THE PAGE'S gutter, not the container pad (audit, Aug 2026): one page
+     edge site-wide, and the footer sits on it like everything else. */
   padding: var(--space-2xl) var(--gutter-page) var(--space-lg);
 }
 

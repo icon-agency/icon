@@ -115,20 +115,13 @@
   --text-lg: clamp(1.125rem, 1.25vw, 1.6rem);  /* 18px → 25.6px */
 }
 
-/* The footer no longer needs a rule here: it pads with --gutter-page
-   (site-footer.css), which .page-home-body re-points to the wide gutter at
-   BODY level — the footer, a body child, inherits it. This rule keeps the
-   homepage's own u-containers on the wide pad. */
+/* --gutter-page IS the wide gutter globally now (theme/spacing.css), so
+   the chrome and footer need no page rule at all; this one keeps the
+   homepage's own u-containers on the wide pad too. */
 .page-home {
   --container-pad: var(--container-pad-wide); /* the foundation wide gutter (theme/spacing.css) */
 }
 
-/* The BODY carries the same re-point for the chrome OUTSIDE main: the fixed
-   wordmark sits at var(--gutter-page) (site-header.css), and on this page
-   every left edge is the wide gutter (user call: consistent with /work). */
-.page-home-body {
-  --gutter-page: var(--container-pad-wide);
-}
 
 /* Drop the 90rem cap on Home C sections — they run edge-to-edge, held in only by
    the fluid --container-pad above. Unlayered here, so it beats .u-container's

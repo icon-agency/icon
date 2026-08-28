@@ -292,10 +292,10 @@
                   <code class="ds-code">--gutter-page</code> &mdash; the token the fixed wordmark, the
                   mobile chrome, the dev toggle and the global footer also read, so those edges align by
                   construction; an UNCAPPED composition re-points <code class="ds-code">--container-pad</code>
-                  on its sections and <code class="ds-code">--gutter-page</code> at BODY level
-                  (<code class="ds-code">.page-home-body</code>, <code class="ds-code">.page-work-landing</code>)
-                  to <code class="ds-code">--container-pad-wide</code>, so chrome, masthead, content and
-                  footer keep ONE edge; internal 12-column gutters are always
+                  on its sections to <code class="ds-code">--container-pad-wide</code> — and since
+                  Aug 2026 <code class="ds-code">--gutter-page</code> ALIASES the wide gutter globally
+                  (user call: the homepage read wider than /news; now every page holds one edge), so
+                  chrome, masthead, content and footer agree everywhere with no per-page re-point; internal 12-column gutters are always
                   <code class="ds-code">--grid-gutter</code>. All four are :root foundations in
                   <code class="ds-code">theme/spacing.css</code>.
                 </p>
@@ -305,7 +305,7 @@
                     <tr><td><code>--container-max</code></td><td>90rem</td><td>site-wide content cap (lifted on the homepage and the /work landing)</td></tr>
                     <tr><td><code>--container-pad</code></td><td>clamp(1.5rem, 4vw, 4rem)</td><td>the capped .u-container's side padding; the uncapped pages re-point it at the wide gutter</td></tr>
                     <tr><td><code>--container-pad-wide</code></td><td>clamp(1.5rem, 4.2vw, 7.5rem)</td><td>THE wide gutter (~60px @ 1440 → 120px cap) — what holds an uncapped composition off the edges; .page-home and the /work landing re-point --container-pad and (at body level) --gutter-page to it</td></tr>
-                    <tr><td><code>--gutter-page</code></td><td>clamp(1rem, 3vw, 3rem)</td><td>THE full-bleed page gutter: viewport-wide self-padded sections (listings, articles, mastheads) AND the fixed chrome — the wordmark, mobile controls and menu, the dev toggle, the global footer's padding — all read it, so page edges and chrome align by construction; body-level re-points carry it to the wide gutter on the uncapped pages</td></tr>
+                    <tr><td><code>--gutter-page</code></td><td>var(--container-pad-wide)</td><td>THE page gutter — one edge on every page (aliases the wide gutter; the old narrower clamp(1rem, 3vw, 3rem) is retired): viewport-wide self-padded sections (listings, articles, mastheads) AND the fixed chrome — wordmark, mobile controls and menu, dev toggle, the footer's padding — all read it, so edges align by construction</td></tr>
                     <tr><td><code>--grid-gutter</code></td><td>clamp(1rem, 2.2vw, 3rem)</td><td>THE 12-column gutter — a foundation (theme/spacing.css); homepage intro + work and the /work landing share it</td></tr>
                     <tr><td><code>--space-section</code></td><td>clamp(4rem, 8vw, 12rem)</td><td>vertical rhythm between major sections</td></tr>
                     <tr><td><code>--space-section-sm</code></td><td>clamp(2rem, 5vw, 6rem)</td><td>tighter section rhythm</td></tr>
@@ -579,8 +579,8 @@ plus a note: decorative effect knobs also live in <code class="ds-code">motion.c
                 exactly as tall as the buttons &mdash; and the wordmark sits at
                 <code class="ds-code">var(--gutter-page)</code> &mdash; THE page gutter (the old
                 stepped <code class="ds-code">--header-gutter</code> ladder is retired), so the logo
-                aligns with each page&rsquo;s content by construction, follows a page-level re-point
-                (the homepage and /work landing lift it to the wide gutter), and anything that must
+                aligns with each page&rsquo;s content by construction, since Aug 2026 aliases the wide
+                gutter globally (one page edge site-wide), and anything that must
                 line up with the wordmark (the hero&rsquo;s client name and counter) reads the same
                 token instead of re-deriving the number. Scroll
                 drives the chrome: past 10px the pill frosts
