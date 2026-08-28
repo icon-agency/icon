@@ -280,17 +280,32 @@
                 <h4 class="ds-group__title">Containers — a settled decision</h4>
                 <p class="ds-group__note">
                   The site default is <code class="ds-code">.u-container</code>: a 90rem (1440px) cap with a
-                  fluid gutter. The homepage deliberately breaks it —
-                  <code class="ds-code">.page-home</code> uncaps the container entirely
-                  (theonecentre-style: the composition keeps expanding on ultra-wide screens, held in only
-                  by a gutter that scales to ~120px, with type ceilings raised to match). Settled with the
-                  client-side of the build; do not re-cap the homepage.
+                  fluid gutter. Two pages deliberately break it &mdash; the homepage
+                  (<code class="ds-code">.page-home</code>) and the /work landing both uncap the container
+                  entirely (theonecentre-style: the composition keeps expanding on ultra-wide screens, held
+                  in only by the WIDE gutter that scales to ~120px, with type ceilings raised to match).
+                  Settled with the client-side of the build; do not re-cap them.
+                  <strong>WHICH GUTTER? The decision rule the code follows:</strong> a normal capped page
+                  sits in <code class="ds-code">.u-container</code> and gets
+                  <code class="ds-code">--container-pad</code>; a viewport-wide SELF-PADDED section
+                  (listing rows, article pages, mastheads) pads with
+                  <code class="ds-code">--gutter-page</code> &mdash; the token the fixed wordmark, the
+                  mobile chrome, the dev toggle and the global footer also read, so those edges align by
+                  construction; an UNCAPPED composition re-points <code class="ds-code">--container-pad</code>
+                  on its sections and <code class="ds-code">--gutter-page</code> at BODY level
+                  (<code class="ds-code">.page-home-body</code>, <code class="ds-code">.page-work-landing</code>)
+                  to <code class="ds-code">--container-pad-wide</code>, so chrome, masthead, content and
+                  footer keep ONE edge; internal 12-column gutters are always
+                  <code class="ds-code">--grid-gutter</code>. All four are :root foundations in
+                  <code class="ds-code">theme/spacing.css</code>.
                 </p>
                 <table class="ds-table">
                   <thead><tr><th>Token</th><th>Value</th><th>Role</th></tr></thead>
                   <tbody>
-                    <tr><td><code>--container-max</code></td><td>90rem</td><td>site-wide content cap (not on homepage)</td></tr>
-                    <tr><td><code>--container-pad</code></td><td>clamp(1.5rem, 4vw, 4rem)</td><td>side gutter (the homepage — and its adjacent footer, which sits outside <code>&lt;main&gt;</code> and cannot inherit it — re-declares it as clamp(1.5rem, 4.2vw, 7.5rem): ~60px @ 1440 → 120px cap)</td></tr>
+                    <tr><td><code>--container-max</code></td><td>90rem</td><td>site-wide content cap (lifted on the homepage and the /work landing)</td></tr>
+                    <tr><td><code>--container-pad</code></td><td>clamp(1.5rem, 4vw, 4rem)</td><td>the capped .u-container's side padding; the uncapped pages re-point it at the wide gutter</td></tr>
+                    <tr><td><code>--container-pad-wide</code></td><td>clamp(1.5rem, 4.2vw, 7.5rem)</td><td>THE wide gutter (~60px @ 1440 → 120px cap) — what holds an uncapped composition off the edges; .page-home and the /work landing re-point --container-pad and (at body level) --gutter-page to it</td></tr>
+                    <tr><td><code>--gutter-page</code></td><td>clamp(1rem, 3vw, 3rem)</td><td>THE full-bleed page gutter: viewport-wide self-padded sections (listings, articles, mastheads) AND the fixed chrome — the wordmark, mobile controls and menu, the dev toggle, the global footer's padding — all read it, so page edges and chrome align by construction; body-level re-points carry it to the wide gutter on the uncapped pages</td></tr>
                     <tr><td><code>--grid-gutter</code></td><td>clamp(1rem, 2.2vw, 3rem)</td><td>THE 12-column gutter — a foundation (theme/spacing.css); homepage intro + work and the /work landing share it</td></tr>
                     <tr><td><code>--space-section</code></td><td>clamp(4rem, 8vw, 12rem)</td><td>vertical rhythm between major sections</td></tr>
                     <tr><td><code>--space-section-sm</code></td><td>clamp(2rem, 5vw, 6rem)</td><td>tighter section rhythm</td></tr>
@@ -300,7 +315,6 @@
             
               <div class="ds-group"><h4 class="ds-group__title">Fluid ramp — one slope family</h4><p class="ds-group__note">Every margin/padding/gap picks a step from <code class="ds-code">--space-3xs</code> … <code class="ds-code">--space-2xl</code> instead of inventing its own clamp — previously ~18 ad-hoc slopes (several in vh, which collapsed on wide-short screens) froze by ~1400px while the type kept growing. The ramp's steps share a slope family and all reach their cap at ~2300px, so space and type grow together on big monitors. Global <code class="ds-code">:root</code>, not page-scoped, because the footer consumes it from OUTSIDE <code class="ds-code">&lt;main&gt;</code> — an undefined var() there silently invalidates whole shorthands.</p></div>
             
-              <tr><td><code>--gutter-page</code></td><td>clamp(1rem, 3vw, 3rem)</td><td>full-bleed page gutter — the edge padding a viewport-wide section carries when it skips the capped container (listings, articles, the home work section); the same literal had spread across eight files before it was named</td></tr>
             </section>
 
             <section class="ds-section" id="radius">
@@ -562,11 +576,13 @@ plus a note: decorative effect knobs also live in <code class="ds-code">motion.c
                 fixed wordmark top-left, desktop pill nav, mobile icon controls, full-screen mobile
                 menu. One token squares the corner &mdash; <code class="ds-code">--header-control</code>
                 (3.5rem) sizes the mobile button squares AND the wordmark, so the logo is always
-                exactly as tall as the buttons &mdash; and <code class="ds-code">--header-gutter</code>
-                (1.5&rarr;3rem across the breakpoints) is the header&rsquo;s own side gutter,
-                deliberately NOT <code class="ds-code">--container-pad</code>: the header hugs the edge
-                tighter than the content grid, and anything that must line up with the wordmark (the
-                hero&rsquo;s client name) reads the token instead of re-deriving the number. Scroll
+                exactly as tall as the buttons &mdash; and the wordmark sits at
+                <code class="ds-code">var(--gutter-page)</code> &mdash; THE page gutter (the old
+                stepped <code class="ds-code">--header-gutter</code> ladder is retired), so the logo
+                aligns with each page&rsquo;s content by construction, follows a page-level re-point
+                (the homepage and /work landing lift it to the wide gutter), and anything that must
+                line up with the wordmark (the hero&rsquo;s client name and counter) reads the same
+                token instead of re-deriving the number. Scroll
                 drives the chrome: past 10px the pill frosts
                 (<code class="ds-code">--nav-bg-scrolled</code> + 24px backdrop blur,
                 <code class="ds-code">-webkit-</code> first per LESSONS); past 100px the hero-exit swap
@@ -1737,11 +1753,13 @@ plus a note: decorative effect knobs also live in <code class="ds-code">motion.c
                 <code class="ds-code">--rule</code> at <code class="ds-code">--rule-on-color</code>,
                 and the focus ring overrides colour only to <code class="ds-code">--footer-ink</code>
                 (the checklist&rsquo;s sanctioned exception) &mdash; the global blue ring is invisible
-                on near-black. The panel arrives inset by the page gutter and <strong>grows to full
-                bleed</strong> within ~45vh of entry on a compositor-sampled
+                on near-black. The panel &mdash; padded by <code class="ds-code">--gutter-page</code>, so its
+                edges track whatever edge the page above established &mdash; arrives inset and
+                <strong>grows to full bleed</strong> within ~45vh of entry on a compositor-sampled
                 <code class="ds-code">view()</code> timeline, never a scroll handler &mdash;
-                scale 0.916 is exactly 1&nbsp;&minus;&nbsp;2&thinsp;&times;&thinsp;0.042,
-                <code class="ds-code">--container-pad</code>&rsquo;s fluid term, anchored at the
+                scale 0.83 is 1&nbsp;&minus;&nbsp;4&thinsp;&times;&thinsp;0.042 (double the wide
+                gutter&rsquo;s inset, <code class="ds-code">--container-pad-wide</code>&rsquo;s fluid
+                term, so the grow visibly reads), anchored at the
                 bottom edge so no gap can open beneath it. It animates the
                 <code class="ds-code">scale</code> <em>property</em>, not
                 <code class="ds-code">transform: scale()</code>, so the grow and the velocity skew

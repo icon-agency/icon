@@ -17,7 +17,7 @@
 - Use token-based spacing only. The named `--spacing-*` keys (`--spacing-3xs` through `--spacing-3xl`) generate utilities — reach for `gap-lg`, `p-md`, `m-xl` in markup. Tailwind's numeric scale (`p-4`, `gap-8`) is still available.
 - For large responsive vertical rhythm between major sections, use `var(--space-section)` (or `var(--space-section-sm)`) in component CSS.
 - The homepage's internal rhythm runs on one fluid clamp ramp, `--space-3xs … --space-2xl` (`src/theme/spacing.css`) — one curve, so retunes are one edit. Prefer it over bespoke clamps in page-layer CSS.
-- The canonical homepage (`.page-home`) is **uncapped and fully fluid**: `.u-container`'s 90rem cap is lifted and `--container-pad` widened per-page (see `utilities/home-c.css`), so type and space keep growing on wide screens; the rest of the site keeps the 90rem default.
+- The homepage (`.page-home`) **and the /work landing** are uncapped and fully fluid: `.u-container`'s 90rem cap is lifted and both `--container-pad` and (at body level) `--gutter-page` re-point to the named foundation `--container-pad-wide` (`theme/spacing.css`), so chrome, masthead, content and footer keep one edge; the rest of the site keeps the 90rem default. Which gutter to reach for: capped page → `--container-pad`; viewport-wide self-padded section → `--gutter-page` (aligns with the fixed wordmark by construction); uncapped composition → re-point both at `--container-pad-wide`; 12-column internals → `--grid-gutter`.
 - Avoid one-off spacing overrides unless documented inline with a `/* Custom value: <why> */` comment.
 
 ## Readability
