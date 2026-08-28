@@ -25,11 +25,11 @@
   --container-pad: var(--container-pad-wide);
 }
 
-/* The masthead joins the cards on the SAME wide gutter (user call:
-   consistency) — the news anatomy pads --gutter-page, but on this page
-   every edge belongs to the uncapped composition. Re-pointing the plain
-   token here re-resolves page-header's padding in place. */
-.work-landing__masthead {
+/* ONE left edge for the whole page (user calls, twice: masthead, then
+   the wordmark): the landing re-points the plain --gutter-page token at
+   BODY level, so the fixed logo, the masthead's padding and the uncapped
+   cards' wide gutter all resolve to --container-pad-wide together. */
+.page-work-landing {
   --gutter-page: var(--container-pad-wide);
 }
 

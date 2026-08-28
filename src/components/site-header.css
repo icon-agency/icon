@@ -27,16 +27,19 @@
      the same token instead of re-deriving the number. NB this is deliberately
      NOT --container-pad: the header hugs the edge tighter than the content
      grid does. */
-  --header-gutter: 1.5rem;
+  /* RETIRED: the logo used to ride a stepped --header-gutter ladder
+     (1.5/2/2.5/3rem) — its own edge, aligned to nothing. It now sits on
+     THE PAGE'S content gutter (user call: the wordmark, the masthead and
+     the cards share one left edge), so every page's logo aligns with that
+     page's content by construction — and a page that widens its gutter
+     (the /work landing re-points --gutter-page at body level) carries the
+     logo with it. */
 }
-@media (min-width: 768px)  { :root { --header-gutter: 2rem; } }
-@media (min-width: 1024px) { :root { --header-gutter: 2.5rem; } }
-@media (min-width: 1280px) { :root { --header-gutter: 3rem; } }
 
 .site-logo {
   position: fixed;
   top: 1rem; /* aligns with the mobile controls (also top: 1rem) */
-  left: var(--header-gutter);
+  left: var(--gutter-page);
   z-index: 10001;
   color: var(--color-foreground);
   display: inline-flex;
