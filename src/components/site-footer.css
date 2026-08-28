@@ -189,10 +189,10 @@
 }
 
 .site-footer__blurb {
-  /* 2xs, with the field's own gaps (user call: "move up a tad for even
-     spacing") — blurb, field, hairline and Subscribe read as one evenly-set
-     stack. */
-  margin: 0 0 var(--space-2xs);
+  /* The blurb is its own group: a clear step above the field's internal
+     gaps (user call: "more space" here) so the invitation reads separately
+     from the control it introduces, rather than crowding it. */
+  margin: 0 0 var(--space-sm);
   max-width: 20ch;
   font-size: var(--footer-voice-mid);
   font-weight: var(--font-weight-medium);
@@ -209,11 +209,20 @@
   display: block;
   width: 100%;
   max-width: 24rem;
-  /* EQUAL air above and below the hairline, in both states (user call):
-     padding-bottom is text->line, margin-bottom is line->Subscribe — one
-     token each side, and the box always hugs the current text. */
+  /* EQUAL AIR EITHER SIDE OF THE HAIRLINE — optically, not just in boxes
+     (user call). One token sets both gaps, but the INK sat closer above the
+     line than below it: the line->Subscribe side clears Subscribe's much
+     larger mid voice, whose half-leading and ascender gap are bigger than
+     this field's. Measured in-browser with canvas metrics (Kumbh at 1.2
+     leading): the dead space below this field's ink is 0.244em of its own
+     size, the dead space above Subscribe's ink is 0.215em of the mid voice
+     — so padding gains that difference and the two gaps land equal at every
+     width, both voices being fluid. (Ran 21.1 vs 24.7px; now 24.7 = 24.7.) */
   margin: 0 0 var(--space-2xs);
-  padding: 0 0 var(--space-2xs);
+  padding: 0 0
+    calc(
+      var(--space-2xs) + 0.215 * var(--footer-voice-mid) - 0.244 * var(--footer-voice-meta)
+    );
   background: none;
   border: 0;
   border-bottom: var(--rule-weight) solid var(--rule-on-color);
