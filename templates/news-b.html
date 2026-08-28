@@ -199,8 +199,14 @@
             <div class="page-header__subscribe-reveal">
               <div class="page-header__slot-clip">
                 <label class="sr-only" for="header-email">Email address</label>
-                <input class="page-header__email" id="header-email" type="email" name="email" placeholder="Your email" autocomplete="email" />
-                <button class="page-header__subscribe quiet-link invite-arrow" type="button" data-subscribe>Subscribe</button>
+                <!-- No Subscribe text in the open state (user sketch): THE
+                     ARROW is the submit — it slides in from where the
+                     trigger's arrow stood to the field's right end, so the
+                     swap reads as one arrow travelling. -->
+                <div class="page-header__email-row">
+                  <input class="page-header__email" id="header-email" type="email" name="email" placeholder="Your email" autocomplete="email" />
+                  <button class="page-header__email-go invite-arrow" type="button" data-subscribe aria-label="Subscribe"></button>
+                </div>
               </div>
             </div>
           </div>

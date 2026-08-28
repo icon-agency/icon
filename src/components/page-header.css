@@ -309,9 +309,60 @@
   border-bottom-color: var(--color-icon-black);
 }
 
+/* the field row: the input's hairline runs to the arrow, which sits just
+   past its right end — the submit, wordless (user sketch) */
+.page-header__email-row {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--space-xs);
+}
+
+.page-header__email-row .page-header__email {
+  flex: 1;
+  width: auto;
+}
+
+.page-header__email-go {
+  margin: 0;
+  border: 0;
+  padding: 0 0
+    calc(var(--space-2xs) + 0.215 * var(--voice-mid) - 0.244 * var(--voice-meta));
+  background: none;
+  cursor: pointer;
+  color: var(--color-icon-grey);
+  /* the trigger's arrow scale — it must read as the SAME arrow, arrived */
+  font-size: var(--voice-mid);
+  line-height: 1.2;
+  /* THE SLIDE (user sketch: the arrow travels right off the trigger text
+     into place): parked back where the trigger's arrow stood, gliding to
+     rest as the reveal opens. Its own transition, slightly behind the
+     height ease, so the arrow lands as the field settles. */
+  translate: -12rem 0;
+  opacity: 0;
+  transition:
+    translate 0.55s var(--ease-decelerate) 0.05s,
+    opacity 0.3s var(--ease-standard) 0.1s,
+    color var(--duration-fast) var(--ease-standard);
+}
+
+.page-header__email-go::before {
+  margin-right: 0; /* standalone glyph — no trailing text to space */
+}
+
+.page-header__subscribe-slot.is-open .page-header__email-go {
+  translate: 0 0;
+  opacity: 1;
+}
+
+.page-header__email-go:hover,
+.page-header__email-go:focus-visible {
+  color: var(--color-icon-black);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .page-header__subscribe-closed,
-  .page-header__subscribe-reveal {
+  .page-header__subscribe-reveal,
+  .page-header__email-go {
     transition: none;
   }
 }
