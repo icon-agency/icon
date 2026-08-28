@@ -57,8 +57,13 @@
       if (!r.width && !r.height) return;
       // rootBounds is null only for cross-document roots — never here
       var fold = e.rootBounds ? e.rootBounds.height : window.innerHeight;
+      // "end" carries a floor: a viewport tall enough to show PAST the
+      // marked section at rest (a big monitor vs the /news sticky band)
+      // must still OPEN dark — the handover needs somewhere to hand over
+      // FROM. At the exact top the opening always stands; the first real
+      // scroll lets the criterion speak.
       var dark = e.target.getAttribute("data-theme-handover") === "end"
-        ? r.bottom > fold
+        ? r.bottom > fold || window.scrollY < 1
         : r.top + r.height / 2 > 0;
       document.documentElement.classList.toggle("dark", dark);
     });

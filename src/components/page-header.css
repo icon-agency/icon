@@ -79,7 +79,6 @@
  * A modifier rather than a rewrite because the legacy work PROTOTYPE still
  * renders the centred arrangement from the same component; the real /work
  * route now belongs to the landing, which wears this --row form. */
- */
 
 .page-header--row {
   display: grid;
