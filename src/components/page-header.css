@@ -179,6 +179,9 @@
 .page-header--stack {
   /* same wordmark clearance as --row, same derivation */
   padding-top: calc(2rem + var(--logo-h) + var(--space-xl));
+  /* and --row's air below, so the content never starts against the filter
+     band's bottom hairline (user annotation on the work landing) */
+  padding-bottom: var(--space-md);
 }
 
 .dark .page-header--stack {
@@ -204,7 +207,10 @@
      font as the footer" — now literally, not approximately) */
   font-size: var(--voice-display);
   font-weight: 900;
-  line-height: var(--voice-display-lh);
+  /* a step looser than the display masthead's 0.82 (user call: "slightly
+     increased") — this lockup WRAPS to two caps lines, and the stacked
+     single-word mastheads' tightness read as touching here */
+  line-height: 0.9;
   letter-spacing: var(--tracking-caps);
   text-transform: uppercase;
   /* the mock breaks after UPDATES: cap the measure so the caps hold two
