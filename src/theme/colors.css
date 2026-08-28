@@ -73,9 +73,11 @@
 }
 
 .dark {
-  /* Near-black page ground for the dark theme. (The global footer is darker
-     still and fixed across themes — see the --footer-* block below.) */
-  --background: #1e1e1e;
+  /* THE Icon black (the raw --black) — the same ground the fixed footer
+     paints, so a dark opening runs into the footer as ONE unbroken black
+     (user call, Aug 2026: the scaffold's #1e1e1e read a step lighter than
+     the footer). */
+  --background: var(--black);
   --foreground: oklch(0.985 0 0);
   --card: oklch(0.145 0 0);
   --card-foreground: oklch(0.985 0 0);
