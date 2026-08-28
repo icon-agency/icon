@@ -115,14 +115,11 @@
   --text-lg: clamp(1.125rem, 1.25vw, 1.6rem);  /* 18px → 25.6px */
 }
 
-/* Declared for both: the global footer sits OUTSIDE <main> (contentinfo
-   landmark) and is a true adjacent sibling, so it can't inherit .page-home's
-   wider gutter — sharing one rule keeps the footer's edges tracking the page
-   content instead of silently stranding on the narrower global default.
-   A plain selector list, NOT :is() — that would raise specificity enough to
-   clobber the footer's own background. */
-.page-home,
-.page-home + .site-footer {
+/* The footer no longer needs a rule here: it pads with --gutter-page
+   (site-footer.css), which .page-home-body re-points to the wide gutter at
+   BODY level — the footer, a body child, inherits it. This rule keeps the
+   homepage's own u-containers on the wide pad. */
+.page-home {
   --container-pad: var(--container-pad-wide); /* the foundation wide gutter (theme/spacing.css) */
 }
 
@@ -492,7 +489,7 @@
    in) — quieter than a masked rise at this size and position. */
 .hero__client {
   position: absolute;
-  left: var(--header-gutter); /* lines up with the fixed wordmark above it */
+  left: var(--gutter-page); /* lines up with the fixed wordmark above it (the logo reads the same token) */
   bottom: var(--space-sm);
   z-index: 4;
   margin: 0;
@@ -529,7 +526,7 @@
    build it sits on the page, not on media. */
 .hero__count {
   position: absolute;
-  left: var(--header-gutter);
+  left: var(--gutter-page); /* the client name's exact spot — same token */
   bottom: var(--space-sm);
   z-index: 4;
   margin: 0;

@@ -121,7 +121,7 @@
   function injectStyle() {
     var style = document.createElement("style");
     style.textContent =
-      ".dev-theme-toggle{position:fixed;right:1rem;bottom:1rem;z-index:2147483647;" +
+      ".dev-theme-toggle{position:fixed;right:var(--gutter-page,1rem);bottom:1rem;z-index:2147483647;" +
       "display:inline-flex;align-items:center;justify-content:center;" +
       "width:2.75rem;height:2.75rem;padding:0;border:1px solid rgba(127,127,127,.45);" +
       "border-radius:9999px;background:rgba(127,127,127,.2);color:inherit;cursor:pointer;" +

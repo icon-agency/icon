@@ -56,7 +56,11 @@
   z-index: 1;
   background: var(--footer-bg);
   color: var(--footer-ink);
-  padding: var(--space-2xl) var(--container-pad) var(--space-lg);
+  /* THE PAGE'S gutter, not the container pad (audit, Aug 2026): the footer
+     is a body child, so a page's body-level --gutter-page re-point (homepage,
+     /work landing -> the wide gutter) reaches it — its edges track whatever
+     edge the page above established, with no per-page footer rule. */
+  padding: var(--space-2xl) var(--gutter-page) var(--space-lg);
 }
 
 /* Scroll-driven grow — the inverse of the hero's recede, and built the same
@@ -478,7 +482,7 @@
 .site-footer__lockup {
   /* Squares up with the column above it: same left and right edge as the
      blurb, the office rows, the socials and the acknowledgement, i.e. the
-     panel's own --container-pad and nothing else. The type lockup this
+     panel's own --gutter-page and nothing else. The type lockup this
      replaced DID break out to a tighter gutter, because its mock set the
      words wider than the body; footer2.png aligns the logo to the content
      instead, and a mark that overhangs the column by a few px only reads as
