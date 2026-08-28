@@ -195,6 +195,59 @@
   line-height: 1.2;
 }
 
+/* The email field — the site's first INPUT, so it speaks the house
+   language: no box, no fill, just THE hairline underneath (the footer
+   ground is fixed near-black, so the on-colour rule) wearing the blurb's
+   own voice. Focus makes the quiet->ink step every footer control makes —
+   the line brightens to full ink in place of the UA outline. */
+.site-footer__email {
+  display: block;
+  width: 100%;
+  max-width: 24rem;
+  /* EQUAL air above and below the hairline, in both states (user call):
+     padding-bottom is text->line, margin-bottom is line->Subscribe — one
+     token each side, and the box always hugs the current text. */
+  margin: 0 0 var(--space-2xs);
+  padding: 0 0 var(--space-2xs);
+  background: none;
+  border: 0;
+  border-bottom: var(--rule-weight) solid var(--rule-on-color);
+  border-radius: 0;
+  font-family: inherit;
+  /* Two sizes on purpose (user call): the INVITATION ("Your email") speaks
+     the blurb's mid voice — via :placeholder-shown below, so the BOX hugs
+     whichever text is current; what you TYPE is plumbing and runs the
+     acknowledgement's quiet meta size. */
+  font-size: var(--footer-voice-meta);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+  color: var(--footer-ink);
+  caret-color: var(--footer-ink);
+  transition: border-color var(--duration-fast) var(--ease-standard);
+}
+
+/* empty = the invitation: the INPUT wears the mid voice (the placeholder
+   inherits it), so the box sizes to the big text; the first keystroke swaps
+   to the meta size above and the hairline rides up to hug it — the two
+   gaps around the line stay identical either way */
+.site-footer__email:placeholder-shown {
+  font-size: var(--footer-voice-mid);
+}
+
+.site-footer__email::placeholder {
+  color: var(--footer-muted);
+  opacity: 1; /* Firefox dims placeholders on its own */
+}
+
+.site-footer__email:focus {
+  /* :focus, not :focus-visible — a text field is always visibly focused
+     (caret), and the brightened line must never depend on the browser's
+     keyboard heuristics */
+  outline: none;
+  border-bottom-color: var(--footer-ink);
+}
+
 /* Subscribe — same element + hook as the mobile menu's control, so one
    future behaviour serves both. */
 .site-footer__subscribe {

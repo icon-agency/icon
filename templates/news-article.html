@@ -345,6 +345,12 @@
       <div class="site-footer__body">
         <div class="site-footer__newsletter">
           <p class="site-footer__blurb">Join our newsletter for industry insights, news and our latest work</p>
+          <!-- No <form> yet, on purpose: the subscribe behaviour ships with
+               the newsletter slice, and a form here would let Enter fire a
+               phantom submit. Drupal: webform/newsletter block renders the
+               real form; these two stay its visual spec. -->
+          <label class="sr-only" for="footer-email">Email address</label>
+          <input class="site-footer__email" id="footer-email" type="email" name="email" placeholder="Your email" autocomplete="email" />
           <button class="site-footer__subscribe invite-arrow" type="button" data-subscribe>Subscribe</button>
         </div>
 
