@@ -15,7 +15,8 @@ The canonical page is `templates/homeC.html` (light theme, fully fluid). The roo
 │   │                     #   (home-c.css = the canonical homepage; rules.css = the hairline
 │   │                     #    system; design-system.css = the DS index chrome)
 │   └── components/       # BEM components, one block per file (22 files — see src/main.css)
-├── templates/            # homeC.html (canonical) · news.html · work-landing.html ·
+├── templates/            # homeC.html (canonical) · news-b.html · work-landing-b.html ·
+│                         #   (news.html / work-landing.html are the header-A alternates) ·
 │                         #   news-article(-b, -butterfly).html · prototypes: home, homeB,
 │                         #   work, work-article
 ├── experiments/          # self-contained one-off explorations (own inline CSS, not built);
