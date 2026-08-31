@@ -550,6 +550,9 @@
   // outline to its fill on its own timeline. GSAP DrawSVGPlugin (free since
   // 3.13, loaded beside SplitText) draws the outline; the fade is plain opacity.
   //
+  // TWO-WAY: the whole thing reverses when you scroll off the hero and plays
+  // forward again when you come back (user call, Aug 2026).
+  //
   // Per-letter is why the markup is grouped: a letter's fill is its subpath
   // plus its counters joined (so the winding keeps the holes open), and the
   // group pairs that fill with the strokes it replaces. One combined fill path
@@ -591,11 +594,14 @@
       window.gsap.set(lockupSvg.querySelectorAll(".hero__lockup-fill"), { opacity: 0 });
       window.gsap.set(strokes, { opacity: 1 });
 
-      var played = false;
-      var play = function () {
-        if (played) return;
-        played = true;
-        var tl = window.gsap.timeline();
+      // BUILT ONCE AND KEPT, paused — not replayed. Scrolling away reverses
+      // this timeline (each letter's fill hands back to its outline, the
+      // letters un-draw, the box un-draws) and scrolling back up plays it
+      // forward again from wherever the reversal reached. Reversing mid-flight
+      // is the same call, so a scroll that changes its mind halfway simply
+      // turns the playhead around instead of restarting.
+      var tl = window.gsap.timeline({ paused: true });
+      (function () {
         tl.to(box, { drawSVG: "100%", duration: 0.9, ease: "power2.inOut" })
           // Overlapping the box rather than waiting for it: the frame is still
           // closing as the first letters start, which reads as one gesture
@@ -611,32 +617,65 @@
         // THE FILL: every letter on its OWN timeline — a quick fade up of its
         // fill against a fade out of its own outline, the two crossing inside
         // that letter and nowhere else. Both tweens for a letter are placed at
-        // the SAME label offset, so the hand-off is per letter rather than one
-        // wipe travelling across all of them. Groups are in reading order, so
-        // the stagger runs Make -> what -> matters on its own.
-        var STEP = 0.045;   // letter-to-letter offset
-        var FADE = 0.28;    // one letter's cross-fade — quick, per the brief
+        // the SAME slot, so the hand-off is per letter rather than one wipe
+        // travelling across all of them.
+        //
+        // RANDOM ORDER (user call, Aug 2026), not the reading order the groups
+        // sit in. Shuffled explicitly rather than with GSAP's
+        // stagger:{from:"random"}: that shuffles per TWEEN, and a letter's fill
+        // and its outline are two tweens — they would each draw their own order
+        // and the hand-off would come apart. Assigning the slot once and giving
+        // it to both keeps every letter's pair welded together.
+        //
+        // Shuffled at BUILD time, so the order is fixed for the page: reversing
+        // retreats through the same order it arrived in, and scrolling back
+        // plays that same order forward. A fresh shuffle per replay would make
+        // the reverse contradict what you just watched.
+        // Tuned together (user call, Aug 2026: "slightly longer fade, random
+        // stagger tightened up"). The two pull in opposite directions on how
+        // many letters are in flight at once: a longer FADE and a shorter STEP
+        // both raise it. At 0.4 over 0.03 roughly thirteen of the fourteen
+        // overlap, so the lockup reads as one soft settle rather than a
+        // countable sequence — which is the point of randomising the order.
+        // Total is barely changed (13*0.03 + 0.4 = 0.79s against 0.87s before);
+        // it is the density that moved, not the length.
+        var STEP = 0.03;    // slot-to-slot offset — tighter
+        var FADE = 0.4;     // one letter's cross-fade — a touch longer
+        var slots = letters.map(function (_, i) { return i; });
+        for (var si = slots.length - 1; si > 0; si--) {   // Fisher-Yates
+          var sj = Math.floor(Math.random() * (si + 1));
+          var tmp = slots[si]; slots[si] = slots[sj]; slots[sj] = tmp;
+        }
         letters.forEach(function (g, i) {
-          var at = "fill+=" + (i * STEP).toFixed(3);
+          var at = "fill+=" + (slots[i] * STEP).toFixed(3);
           tl.to(g.querySelector(".hero__lockup-fill"),
                 { opacity: 1, duration: FADE, ease: "power1.out" }, at)
             .to(g.querySelectorAll(".hero__lockup-stroke"),
                 { opacity: 0, duration: FADE, ease: "power1.out" }, at);
         });
-      };
+      })();
 
+      // .is-exiting is the direction signal, and 2c already toggles it BOTH
+      // ways off a scroll threshold (~12svh) — it has had nothing responding
+      // to it since the word-rise rules it used to drive were replaced by the
+      // device. Forward while the hero is held, reversed once you scroll off.
+      //
+      // The observer never disconnects: unlike the one-shot it replaced, this
+      // has to keep listening for the life of the page. Both calls are
+      // idempotent, so the repeated class mutations the header and theme
+      // handover make on this same element cost nothing.
+      var sync = function () {
+        if (!hero.classList.contains("is-live")) return;
+        if (hero.classList.contains("is-exiting")) tl.reverse();
+        else tl.play();
+      };
+      new MutationObserver(sync).observe(hero, {
+        attributes: true,
+        attributeFilter: ["class"]
+      });
       // .is-live may already be set — the reduced-motion and Escape-skip paths
       // add it synchronously, and this block can run after either.
-      if (hero.classList.contains("is-live")) {
-        play();
-      } else {
-        var lo = new MutationObserver(function () {
-          if (!hero.classList.contains("is-live")) return;
-          lo.disconnect();
-          play();
-        });
-        lo.observe(hero, { attributes: true, attributeFilter: ["class"] });
-      }
+      sync();
     })();
   }
 
@@ -712,8 +751,12 @@
   // (or its momentum) is live the cards STRAIGHTEN out of their scattered
   // tilts and lean together with it, settling back once it dies — every card
   // rotation is owned by one per-card lerp here, so hover, drag and settle
-  // never fight. Hovering the strip stalls the autoplay and straightens the
-  // hovered card; a DRAG badge chases the cursor. In the band below, the
+  // never fight. A fling RE-POINTS the drift, so the strip carries on in the
+  // direction you threw it — the clients marquee's rule (3g), adopted here so
+  // the page's two marquees behave alike (user call, Aug 2026). Hovering a
+  // card straightens and lifts it; hovering no longer stalls the autoplay, and
+  // the DRAG badge is gone — the clients marquee never had either. In the band
+  // below, the
   // sticky "Our expertise" label locks in the viewport while the list scrolls
   // past it, and whichever item sits beside it is inked. Reduced motion: no
   // autoplay, lean, or badge; drag still works.
@@ -738,7 +781,6 @@
     var viewport = document.querySelector("[data-strip]");
     if (viewport && gsapOk) {
       var track = viewport.querySelector(".intro__track");
-      var badge = document.querySelector("[data-strip-badge]");
 
       // Duplicate the set once for a seamless half-width wrap.
       var originals = Array.prototype.slice.call(track.children);
@@ -770,14 +812,14 @@
       var SPEED = STRIP_SPEED; // autoplay px/s — shared with the clients marquee
       var vel = 0;         // momentum px/s after a drag
       var lean = 0;        // smoothed drag tilt
-      var stalled = false; // hover stall
+      var dir = 1;         // drift direction — a fling re-points it (3g's rule)
       var dragging = false;
       var dragVel = 0;
 
       window.gsap.ticker.add(function (time, deltaMS) {
         var dt = deltaMS / 1000;
         if (!dragging) {
-          var auto = (reduce || stalled) ? 0 : SPEED;
+          var auto = reduce ? 0 : SPEED * dir;
           pos += (auto + vel) * dt;
           vel *= Math.pow(0.9, dt * 60); // exponential decay, frame-rate independent
           if (Math.abs(vel) < 1) vel = 0;
@@ -823,6 +865,11 @@
         dragging = false;
         viewport.classList.remove("is-dragging");
         vel = reduce ? 0 : window.gsap.utils.clamp(-2200, 2200, dragVel);
+        // THE DRIFT FOLLOWS THE DRAG, the clients marquee's rule verbatim
+        // (3g): velocity decides it for a real fling, net displacement for a
+        // slow carry, and a tap — under either threshold — changes nothing.
+        if (Math.abs(vel) > 40) dir = vel > 0 ? 1 : -1;
+        else if (Math.abs(pos - startPos) > 6) dir = pos > startPos ? 1 : -1;
         dragVel = 0;
       };
       viewport.addEventListener("pointerup", endDrag);
@@ -832,14 +879,18 @@
         if (moved > 6) { e.preventDefault(); e.stopPropagation(); }
       }, true);
 
-      // Hover: stall the marquee + straighten the hovered card.
-      viewport.addEventListener("mouseenter", function () { stalled = true; });
-      viewport.addEventListener("mouseleave", function () { stalled = false; });
+      // Hover straightens the hovered card and lifts it. The marquee no
+      // longer STALLS on hover — removed with the DRAG badge (user call, Aug
+      // 2026), matching the clients marquee, which never had either.
       viewport.addEventListener("mouseover", function (e) {
         var card = e.target.closest(".intro__card");
         if (!card || dragging) return;
         hoverCard = card; // the ticker lerps its rotation to 0
-        window.gsap.to(card, { scale: 1.04, duration: reduce ? 0 : 0.45, ease: "power3.out" });
+        // Straighten AND zoom (user call, Aug 2026) — 1.04 was too slight to
+        // read next to the straightening, which is the louder half of the
+        // gesture. The card is already lifted to z-index 3 below, so it grows
+        // over its neighbours rather than into them.
+        window.gsap.to(card, { scale: 1.12, duration: reduce ? 0 : 0.45, ease: "power3.out" });
         card.style.zIndex = 3;
       });
       viewport.addEventListener("mouseout", function (e) {
@@ -854,19 +905,6 @@
         });
       });
 
-      // DRAG badge chases the cursor over the strip.
-      if (badge && !reduce) {
-        var bx = window.gsap.quickTo(badge, "x", { duration: 0.35, ease: "power3.out" });
-        var by = window.gsap.quickTo(badge, "y", { duration: 0.35, ease: "power3.out" });
-        viewport.addEventListener("pointermove", function (e) { bx(e.clientX); by(e.clientY); });
-        viewport.addEventListener("mouseenter", function (e) {
-          window.gsap.set(badge, { x: e.clientX, y: e.clientY });
-          window.gsap.to(badge, { opacity: 1, scale: 1, duration: 0.3, ease: "back.out(2)" });
-        });
-        viewport.addEventListener("mouseleave", function () {
-          window.gsap.to(badge, { opacity: 0, scale: 0.6, duration: 0.25, ease: "power2.in" });
-        });
-      }
     }
 
     // Expertise scroll-highlight: the "Our expertise" label is CSS-sticky, so

@@ -1954,12 +1954,13 @@ plus a note: decorative effect knobs also live in <code class="ds-code">motion.c
                   typed content or inline styles. Behaviours
                   (<code class="ds-code">Drupal.behaviors.iconHome</code>): the word-cascade on
                   <code class="ds-code">[data-reveal-words]</code>, the shared
-                  <code class="ds-code">[data-animate]</code> fade, the marquee + drag + hover on
-                  <code class="ds-code">[data-strip]</code> with its
-                  <code class="ds-code">[data-strip-badge]</code>, the autoplay kick on
+                  <code class="ds-code">[data-animate]</code> fade, the marquee + drag on
+                  <code class="ds-code">[data-strip]</code>, the autoplay kick on
                   <code class="ds-code">[data-intro-mark]</code>, and the expertise
-                  scroll-highlight (inks the list item beside the sticky label). All
-                  reduced-motion safe (no autoplay/lean/badge; drag still works); depends on gsap.
+                  scroll-highlight (inks the list item beside the sticky label). A fling
+                  RE-POINTS the drift, as on the clients marquee — the two behave alike, and
+                  neither stalls on hover or carries a DRAG badge any more (Aug 2026). All
+                  reduced-motion safe (no autoplay or lean; drag still works); depends on gsap.
                 </p>
               </div>
             </section>

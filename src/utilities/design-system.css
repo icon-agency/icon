@@ -313,9 +313,6 @@
   width: 100%;
   margin-inline: 0;
 }
-.ds-demo .intro__badge {
-  display: none;
-}
 /* The sticky expertise label would crawl against the DS page's own scroller;
    in the stage it just rests beside the first item. */
 .ds-demo .intro__expertise-label {

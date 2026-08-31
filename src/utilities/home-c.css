@@ -218,17 +218,38 @@
 /* The recede: anchored to the top edge, so shrinking lifts the hero's bottom
    edge away from the incoming intro — the gap closes fast and the intro reads
    as arriving quickly. Scale-only (compositor); the surround it reveals is the
-   page ground, which the theme handover cross-fades blue→light underneath. */
+   page ground, which the theme handover cross-fades blue→light underneath.
+
+   THE MIRROR OF THE FOOTER'S GROW (user call, Aug 2026: "the hero do the
+   same"). Same inset, derived the same way — the footer arrives at
+   1 - 4(0.042) ≈ 0.83, four wide gutters, and grows to full bleed; the hero
+   opens full bleed and recedes to exactly that. The page therefore starts and
+   ends on the same inset, from opposite directions. It was 0.88, which is
+   about half the travel and did not read.
+
+   Animates the `scale` PROPERTY, not `transform: scale()`, for the footer's
+   reason: scale/rotate/translate are independent properties that compose with
+   `transform`, so nothing here can collide with a transform added to .hero
+   later. transform-origin governs it either way. A uniform scale also means
+   the CONTENT scales with the panel rather than reflowing — the hero's media,
+   lockup and client label all travel together.
+
+   Range stays one viewport, unlike the footer's 45vh: the footer's window is
+   measured from its own entry, while the hero's recede is choreographed
+   against the INTRO arriving over it, which is one viewport of scroll away.
+   Finishing sooner would leave it sitting receded with nothing yet covering
+   it. */
 @keyframes hero-recede {
-  to { transform: scale(0.88); }
+  to { scale: var(--hero-inset-scale); }
 }
 @media (prefers-reduced-motion: no-preference) {
   @supports (animation-timeline: scroll()) {
     .hero {
+      --hero-inset-scale: 0.83; /* = the footer's --footer-inset-scale */
       transform-origin: 50% 0;
       animation: hero-recede linear both;
       animation-timeline: scroll(root);
-      animation-range: 0 100vh; /* done by one viewport of scroll */
+      animation-range: 0 100vh; /* tracks the intro's arrival */
     }
   }
 }
@@ -748,9 +769,32 @@ html:not(.js-animations) .hero__count { display: none; }
 }
 
 /* The two halves wear the shared .lockup-accent / .lockup-caps pair above;
-   only the caps line's balancing is particular to this long statement. */
+   what is particular to this statement is that it is the only lockup whose
+   caps WRAP — WORK and the news rail are one word each.
+
+   So its leading lives here, not on the shared pair, and it is set so the two
+   white bands in the lockup MATCH (user call, Aug 2026: "needs to be the same
+   as the top, not way less").
+
+   TWO KNOBS, because one cannot do it. Measured across a leading sweep, both
+   bands grow with the leading but the TOP grows faster — 0.877 gave 29.8/9.5
+   and 1.2 gave 61.2/36.1 — so no line-height equalises them. The leading sets
+   the BOTTOM band (lineHeight - inkHeight, and the caps ink is 62.7px tall);
+   the margin then closes the TOP band, which the leading has already moved.
+
+   At a 12px band on both ends: 0.908 * 82.264 - 62.7 = 12, and -0.208em pulls
+   the top to match. Verified 12.0 / 12.0.
+
+   Measuring this needs care and cost two wrong passes. .sw__i is INLINE-BLOCK
+   (the word-cascade mask), so its rect is a LINE box, not an em box — neither
+   "top + fontAscent" nor "top + halfLeading + fontAscent" locates the
+   baseline. Ink runs from top + halfLeading + (fontAscent - inkAscent), and
+   the check that it is right is that inkBottom - inkTop equals the font's
+   own inkAscent + inkDescent (62.7px here). */
 .intro__headline .lockup-caps {
   text-wrap: balance;
+  line-height: 0.908;
+  margin-top: -0.208em;
 }
 
 /* ---- The filmstrip ------------------------------------------------------ */
@@ -844,25 +888,6 @@ html:not(.js-animations) .hero__count { display: none; }
   letter-spacing: -0.01em;
 }
 
-/* DRAG badge — chases the cursor over the strip. */
-.intro__badge {
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 60;
-  padding: 0.5rem 0.9rem;
-  border-radius: 9999px;
-  background: var(--color-icon-blue);
-  color: var(--color-white);
-  font-size: 0.72rem;
-  font-weight: var(--font-weight-bold);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  pointer-events: none;
-  opacity: 0;
-  scale: 0.6;
-  translate: -50% -50%;
-}
 
 /* ---- The band ----------------------------------------------------------- */
 
@@ -1016,10 +1041,6 @@ html:not(.js-animations) .hero__count { display: none; }
 /* no-JS: the first item reads inked */
 html:not(.js-animations) .intro__expertise-list li:first-child a {
   color: var(--color-icon-black);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .intro__badge { display: none; }
 }
 
 /* ---- Word-cascade reveal primitive ([data-reveal-words]) ----------------
