@@ -308,45 +308,6 @@
  * at experiment size do not carry over, and any timing derived from run
  * widths has to be measured again at this size. js/hero-loader.js does.
  */
-/* THE BLUE SQUARE THAT POPS. A modifier, not a change to .text-box: the two
-   frozen hero experiments still render the old white room from this same
-   component, and repainting the base would repaint their loading screens too.
-
-   Animates the `scale` PROPERTY, not transform: scale(). .text-box--cover
-   already owns `translate` for its centring, and scale/rotate/translate are
-   independent properties that compose — one `transform` here would overwrite
-   that centring, and pairing translate with transform in a single rule is the
-   combination Lightning CSS is known to drop half of (LESSONS.md).
-
-   Origin is the default centre, so it opens out of the middle of the stage and
-   takes the screen — which is what the pile then lands on. */
-.text-box--pop {
-  background: var(--color-shader-blue);
-}
-
-@keyframes text-box-pop {
-  from {
-    scale: 0.18;
-    opacity: 0;
-  }
-  to {
-    scale: 1;
-    opacity: 1;
-  }
-}
-
-/* .is-lit is js/hero-loader.js's signal, published on the first frame — which
-   is the whole reason that file loads ahead of the CDN scripts. */
-.text-box--pop.is-lit {
-  animation: text-box-pop 0.56s var(--ease-decelerate) both;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .text-box--pop.is-lit {
-    animation: none;
-  }
-}
-
 .text-box--cover {
   position: absolute;
   top: 50%;
@@ -356,3 +317,88 @@
   /* aspect-ratio carries the height; stating it would let the two disagree */
   border-radius: 0;
 }
+
+/* ==========================================================================
+ * --pop: the blue square that takes the screen
+ * ==========================================================================
+ * A modifier, not a change to .text-box: the two frozen hero experiments still
+ * render the old white room from this same component, and repainting the base
+ * would repaint their loading screens too.
+ *
+ * MUST STAY AFTER --cover. Both are single-class selectors, so source order
+ * decides the sizing below; moved above --cover it would silently lose its
+ * width and height and the animation would go back to overshooting.
+ *
+ * VIEWPORT-SHAPED, NOT SQUARE — and this is the whole fix. --cover sizes a 1:1
+ * box to max(100svw, 100svh) because the room it was built for needed a square
+ * aperture. The room is gone, and on a landscape screen that square stands 154%
+ * of the viewport's height: growing it to scale 1 meant it covered the screen
+ * at scale 0.648 and spent the REST of the animation growing off-screen. In
+ * numbers, on a 1657x1074 viewport: covered at 171ms of 560ms, with 389ms of
+ * invisible growth after it, and only two frames in the whole run that were
+ * both visible and smaller than the screen. It read as starting full-height
+ * because it very nearly did.
+ *
+ * Sized to the viewport instead, scale 1 IS covered, so every millisecond is
+ * on screen and the cover moment lands on the last frame rather than a third of
+ * the way in. That second part matters beyond the look: .is-covered — the
+ * theme flip — fires on this animation's animationend, so before this the
+ * header sat in dark ink over a fully blue screen for 389ms.
+ *
+ * It still OPENS as a square. The start is a two-axis scale, --pop-sx/--pop-sy,
+ * which js/hero-loader.js sizes so the first frame is a square of equal sides;
+ * it grows into the viewport's shape on the way out. Falls back to a landscape
+ * guess if the script never ran.
+ *
+ * Animates the `scale` PROPERTY, not transform: scale(). --cover already owns
+ * `translate` for its centring, and scale/rotate/translate are independent
+ * properties that compose — one `transform` here would overwrite that centring,
+ * and pairing translate with transform in a single rule is the combination
+ * Lightning CSS is known to drop half of (LESSONS.md). Origin is the default
+ * centre, so it opens out of the middle of the stage.
+ */
+.text-box--pop {
+  background: var(--color-shader-blue);
+  /* cancels the base's 1:1 — see above */
+  aspect-ratio: auto;
+  width: 100svw;
+  height: 100svh;
+}
+
+@keyframes text-box-pop {
+  from { scale: var(--pop-sx, 0.12) var(--pop-sy, 0.18); }
+  to { scale: 1 1; }
+}
+
+/* The fade is its OWN animation, and a tenth of the length. Sharing the scale's
+   560ms was the other half of the bug: the square was transparent for exactly
+   the stretch it was small, so the small phase was never actually seen —
+   opacity only passed 0.5 at 138ms, by which point it stood at 93% of the
+   viewport's height. Resolve it early and the size, not the fade, is the
+   event. */
+@keyframes text-box-pop-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* .is-lit is js/hero-loader.js's signal, published on the first frame — which
+   is the whole reason that file loads ahead of the CDN scripts. */
+/* THE CURVE IS THE HERO'S OWN TAKEOVER CURVE (see .hero__stage in
+   home-c.css), so the loading screen and the takeover it hands off to move in
+   the same language. It is also the one that reads most like a pop: measured
+   against the alternatives on this viewport, it holds the square at 21% of the
+   screen's height at 200ms where --ease-standard was already at 45%, then
+   takes the screen between 200ms and 350ms and settles. Steady curves make it
+   grow; this one makes it arrive. */
+.text-box--pop.is-lit {
+  animation:
+    text-box-pop 0.56s cubic-bezier(0.87, 0, 0.13, 1) both,
+    text-box-pop-in 0.1s linear both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .text-box--pop.is-lit {
+    animation: none;
+  }
+}
+

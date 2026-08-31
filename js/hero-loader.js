@@ -44,6 +44,22 @@
 
   /* ---- 3. light it, and publish the clock -------------------------------- */
 
+  // THE POP OPENS AS A SQUARE. The box itself is viewport-SHAPED (text-box.css
+  // explains why: a square one covered the screen a third of the way through
+  // the animation and grew off-screen for the rest), so a single scale would
+  // start it as a small wide rectangle. A two-axis scale fixes that — sized so
+  // the first frame's rendered width and height are equal — and it grows into
+  // the viewport's shape on the way out.
+  //
+  // Measured here rather than expressed in CSS because it needs the viewport's
+  // two axes divided by each other, which calc() cannot do with lengths. Read
+  // once: a resize mid-pop would leave these stale, but the whole animation is
+  // 560ms and the values stop mattering the moment it lands.
+  var SIDE = 0.14; // the opening square, as a fraction of the short axis
+  var side = Math.min(window.innerWidth, window.innerHeight) * SIDE;
+  box.style.setProperty("--pop-sx", (side / window.innerWidth).toFixed(4));
+  box.style.setProperty("--pop-sy", (side / window.innerHeight).toFixed(4));
+
   box.classList.add("is-lit");
 
   // Mark the boot so home-c.js can clean up whichever way it ends.
@@ -62,10 +78,17 @@
   // to drift away from the animation it is meant to describe. If the animation
   // never runs the class never lands, which degrades to exactly the previous
   // behaviour — dark ink until .is-live — rather than to white-on-white.
+  //
+  // NAMED, and deliberately not { once: true }. The box runs TWO animations —
+  // the 0.56s scale and a 0.1s opacity fade split out from it — so animationend
+  // fires twice, and a once-listener takes the FIRST: the fade, at 100ms, with
+  // the square still small over a white page. That flips the header to white
+  // ink on white ground for the next 460ms. Match the scale by name instead.
   if (heroEl) {
-    box.addEventListener("animationend", function () {
+    box.addEventListener("animationend", function (e) {
+      if (e.animationName !== "text-box-pop") return;
       heroEl.classList.add("is-covered");
-    }, { once: true });
+    });
   }
 
   // T0 is the anchor the whole show hangs off — deliberately NOT
