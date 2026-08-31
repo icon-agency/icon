@@ -403,12 +403,170 @@
         .exp-news01__card { scroll-snap-align: start; width: max(17rem, calc(4 * var(--exp-news01-col) + 3 * var(--grid-gutter))); }
       }
 
+
+      /* ==================================================================
+         03 · BACK-UP — the homepage rail as it stands today, FROZEN.
+         An inlined, exp-news03-prefixed transcription of the production
+         .news rules (src/utilities/home-c.css) and the "Latest / NEWS"
+         lockup, so this record survives whatever production does next —
+         the same house pattern 01 uses. Do not "improve" these rules; their
+         job is to stay put.
+
+         Scope note: the SECTION layout and the masthead are frozen here.
+         The CARDS are still the live .news-card component — transcribing
+         277 lines of it would make this a fork rather than a record — so if
+         the card changes, this shows the new card in the old layout.
+         ================================================================== */
+      .exp-news03 { position: relative; padding-block: var(--space-xl); }
+      .exp-news03__inner {
+        display: grid;
+        gap: var(--space-lg) var(--space-md);
+        grid-template-columns: 1fr;
+      }
+      .exp-news03__head { display: contents; }
+      .exp-news03__rail { flex: 1 1 auto; align-self: stretch; min-width: 0; }
+      .exp-news03__heading { order: 1; margin: 0; color: var(--color-icon-black); }
+      .exp-news03__list { order: 2; }
+      .exp-news03__more { order: 3; }
+      /* the lockup pair, frozen (production: .lockup-accent / .lockup-caps) */
+      .exp-news03__accent {
+        display: block;
+        font-size: var(--voice-headline);
+        line-height: 1.3;
+        font-family: var(--font-serif);
+        font-weight: 700;
+        font-style: normal;
+      }
+      .exp-news03__caps {
+        display: block;
+        font-size: var(--voice-display);
+        font-weight: 900;
+        line-height: 1;
+        letter-spacing: var(--tracking-caps);
+        text-transform: uppercase;
+      }
+      .exp-news03__list,
+      .exp-news04__list,
+      .exp-news05__list,
+      .exp-news06__list {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-md);
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+      .exp-news03__list > li + li,
+      .exp-news04__list > li + li,
+      .exp-news05__list > li + li,
+      .exp-news06__list > li + li {
+        padding-top: var(--space-md);
+        border-top: var(--rule-weight) solid var(--rule);
+      }
+      .exp-news03__more,
+      .exp-news04__more,
+      .exp-news05__more,
+      .exp-news06__more {
+        position: relative;
+        display: inline-block;
+        font-size: var(--voice-mid);
+        font-weight: var(--font-weight-semibold);
+        line-height: 1.2;
+        letter-spacing: -0.01em;
+        color: var(--color-icon-black);
+        text-decoration: none;
+      }
+      @media (min-width: 1024px) {
+        .exp-news03__inner { grid-template-columns: 1fr 1fr; }
+        .exp-news03__head {
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+          align-items: flex-start;
+          gap: var(--space-md);
+        }
+        .exp-news03__heading,
+        .exp-news03__list,
+        .exp-news03__more { order: 0; }
+        .exp-news03__heading { position: sticky; top: 6rem; }
+      }
+
+      /* ==================================================================
+         04 · CENTRED — the empty left rail removed.
+         The two-column rail|list split is what leaves a tall blank column
+         beside the stories (the thing crossed out in the annotation). Here
+         the masthead sits centred above the stories and the list runs as one
+         centred column, so the section reads as a single stack.
+         ================================================================== */
+      .exp-news04,
+      .exp-news05,
+      .exp-news06 { position: relative; padding-block: var(--space-xl); }
+
+      .exp-news04__inner,
+      .exp-news06__inner {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: var(--space-lg);
+      }
+      /* head is the masthead alone now — More closes the section under the
+         stories, where the homepage rail also puts it (bottom of the rail). */
+      .exp-news04__head,
+      .exp-news06__head {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      .exp-news04__heading,
+      .exp-news06__heading { margin: 0; text-align: center; color: var(--color-icon-black); }
+      /* One measured column rather than the full bleed: the cards are a tile
+         beside a text block, and at full width the text line gets far too long. */
+      .exp-news04__list,
+      .exp-news06__list { width: min(100%, 68rem); }
+
+      /* ==================================================================
+         05 · BIGGER TYPE — card titles at the WORK-tile size.
+         .news-card__title ships at clamp(1.25rem, 1.5vw, 2.5rem); .work__title
+         runs the shared mid voice, clamp(1.4rem, 2.1vw, 3.4rem). This points
+         the card titles at --voice-mid so the two read at one size.
+
+         Watch the 5-line clamp: .news-card__title is -webkit-line-clamp: 5 to
+         keep the meta on the tile's baseline, and bigger type reaches five
+         lines sooner — the Butterfly headline is the one to check.
+         ================================================================== */
+      .exp-news05__inner {
+        display: grid;
+        gap: var(--space-lg) var(--space-md);
+        grid-template-columns: 1fr;
+      }
+      .exp-news05__head { display: contents; }
+      .exp-news05__rail { flex: 1 1 auto; align-self: stretch; min-width: 0; }
+      .exp-news05__heading { order: 1; margin: 0; color: var(--color-icon-black); }
+      .exp-news05__list { order: 2; }
+      .exp-news05__more { order: 3; }
+      @media (min-width: 1024px) {
+        .exp-news05__inner { grid-template-columns: 1fr 1fr; }
+        .exp-news05__head {
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+          align-items: flex-start;
+          gap: var(--space-md);
+        }
+        .exp-news05__heading,
+        .exp-news05__list,
+        .exp-news05__more { order: 0; }
+        .exp-news05__heading { position: sticky; top: 6rem; }
+      }
+
+      .exp-news05 .news-card__title,
+      .exp-news06 .news-card__title { font-size: var(--voice-mid); }
     </style>
   </head>
   <body class="exp-page">
     <div class="exp-topbar">
       <a href="../index.html">&larr; Design system</a>
-      <span class="exp-topbar__hint">Experiment — news section. 01 is the archived pinned scroller; 02 is what ships today.</span>
+      <span class="exp-topbar__hint">Experiment &mdash; news section. 01 archived · 02 ships today · 03 frozen back-up · 04&ndash;06 centred / bigger type.</span>
     </div>
 
     <!-- ================= 01 · ARCHIVED ================= -->
@@ -535,6 +693,231 @@
     </section>
 
     <!-- ================= 03+ · NEW DIRECTIONS ================= -->
+
+    <section class="exp-section" aria-label="Direction 03 — Back-up — today&rsquo;s rail">
+      <p class="exp-label"><b>03</b> Back-up — today&rsquo;s rail · FROZEN RECORD</p>
+      <p class="exp-note">
+        The homepage news section as it stands today, kept as a record. Its layout and masthead are an inlined <code>exp-news03</code>-prefixed copy of the production rules, so this stays put no matter what <code>.news</code> does next &mdash; the same freezing 01 uses. The CARDS are still the live <code>.news-card</code>; transcribing that component would make this a fork rather than a back-up.
+      </p>
+      <div class="page-home">
+        <section class="exp-news03 u-container" aria-label="Latest news (direction 03)">
+          <div class="exp-news03__inner">
+              <div class="exp-news03__head">
+                <div class="exp-news03__rail">
+                <h2 class="exp-news03__heading reveal-lines" data-animate>
+                  <span class="reveal-lines__line exp-news03__accent"><span class="reveal-lines__word" style="--w: 0">Latest</span></span>
+                  <span class="reveal-lines__line exp-news03__caps"><span class="reveal-lines__word" style="--w: 1">News</span></span>
+                </h2>
+                </div>
+                <a class="exp-news03__more invite-arrow" href="/news" aria-label="More news">More</a>
+              </div>
+            <ul class="exp-news03__list" role="list">
+              <li>
+                <a class="news-card" href="/news/article" aria-label="ICON and Butterfly Foundation partner in new campaign to help Australians rethink negative self body talk">
+                  <figure class="news-card__figure media-reveal" data-reveal-img>
+                    <img class="news-card__img" loading="lazy" src="../assets/News/Butterfly_BodyKind.jpg" alt="ICON and Butterfly Foundation BodyKind campaign" />
+                  </figure>
+                  <div class="news-card__body">
+                    <h3 class="news-card__title">ICON and Butterfly Foundation partner in new campaign to help Australians rethink negative self body talk</h3>
+                    <span class="news-card__meta">Insights / <time datetime="2026-08-09">9 Aug 2026</time></span>
+                  </div>
+                </a>
+              </li>
+              <li>
+                <a class="news-card" href="/news/article" aria-label="ICON launches new wellbeing agency website for veterans and families">
+                  <figure class="news-card__figure media-reveal" data-reveal-img>
+                    <img class="news-card__img" loading="lazy" src="../assets/News/Tile-DVA-Wellbeing.png" alt="Wellbeing website" />
+                  </figure>
+                  <div class="news-card__body">
+                    <h3 class="news-card__title">ICON launches new wellbeing agency website for veterans and families</h3>
+                    <span class="news-card__meta">Insights / <time datetime="2026-06-30">30 Jun 2026</time></span>
+                  </div>
+                </a>
+              </li>
+              <li>
+                <a class="news-card" href="/news/article" aria-label="ICON helps eSafety expose the tactics behind sextortion scams">
+                  <figure class="news-card__figure media-reveal" data-reveal-img>
+                    <img class="news-card__img" loading="lazy" src="../assets/News/tile-sextortion-campaign.jpg" alt="AI generated woman" />
+                  </figure>
+                  <div class="news-card__body">
+                    <h3 class="news-card__title">ICON helps eSafety expose the tactics behind sextortion scams</h3>
+                    <span class="news-card__meta">Insights / <time datetime="2026-06-29">29 Jun 2026</time></span>
+                  </div>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <section class="exp-section" aria-label="Direction 04 — Centred stack">
+      <p class="exp-label"><b>04</b> Centred stack · TRY</p>
+      <p class="exp-note">
+        The rail|list split is what leaves the tall empty column beside the stories. Here the masthead sits centred above them and the list runs as one centred column, so the section reads as a single stack. The list is held to <code>min(100%, 68rem)</code> rather than full bleed &mdash; the card is a tile beside a text block, and across the whole page the headline measure gets far too long.
+      </p>
+      <div class="page-home">
+        <section class="exp-news04 u-container" aria-label="Latest news (direction 04)">
+          <div class="exp-news04__inner">
+              <div class="exp-news04__head">
+                <h2 class="exp-news04__heading reveal-lines" data-animate>
+                  <span class="reveal-lines__line lockup-accent masthead-accent"><span class="reveal-lines__word" style="--w: 0">Latest</span></span>
+                  <span class="reveal-lines__line lockup-caps"><span class="reveal-lines__word" style="--w: 1">News</span></span>
+                </h2>
+              </div>
+            <ul class="exp-news04__list" role="list">
+              <li>
+                <a class="news-card" href="/news/article" aria-label="ICON and Butterfly Foundation partner in new campaign to help Australians rethink negative self body talk">
+                  <figure class="news-card__figure media-reveal" data-reveal-img>
+                    <img class="news-card__img" loading="lazy" src="../assets/News/Butterfly_BodyKind.jpg" alt="ICON and Butterfly Foundation BodyKind campaign" />
+                  </figure>
+                  <div class="news-card__body">
+                    <h3 class="news-card__title">ICON and Butterfly Foundation partner in new campaign to help Australians rethink negative self body talk</h3>
+                    <span class="news-card__meta">Insights / <time datetime="2026-08-09">9 Aug 2026</time></span>
+                  </div>
+                </a>
+              </li>
+              <li>
+                <a class="news-card" href="/news/article" aria-label="ICON launches new wellbeing agency website for veterans and families">
+                  <figure class="news-card__figure media-reveal" data-reveal-img>
+                    <img class="news-card__img" loading="lazy" src="../assets/News/Tile-DVA-Wellbeing.png" alt="Wellbeing website" />
+                  </figure>
+                  <div class="news-card__body">
+                    <h3 class="news-card__title">ICON launches new wellbeing agency website for veterans and families</h3>
+                    <span class="news-card__meta">Insights / <time datetime="2026-06-30">30 Jun 2026</time></span>
+                  </div>
+                </a>
+              </li>
+              <li>
+                <a class="news-card" href="/news/article" aria-label="ICON helps eSafety expose the tactics behind sextortion scams">
+                  <figure class="news-card__figure media-reveal" data-reveal-img>
+                    <img class="news-card__img" loading="lazy" src="../assets/News/tile-sextortion-campaign.jpg" alt="AI generated woman" />
+                  </figure>
+                  <div class="news-card__body">
+                    <h3 class="news-card__title">ICON helps eSafety expose the tactics behind sextortion scams</h3>
+                    <span class="news-card__meta">Insights / <time datetime="2026-06-29">29 Jun 2026</time></span>
+                  </div>
+                </a>
+              </li>
+            </ul>
+            <a class="exp-news04__more invite-arrow" href="/news" aria-label="More news">More</a>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <section class="exp-section" aria-label="Direction 05 — Bigger type &mdash; work-title size">
+      <p class="exp-label"><b>05</b> Bigger type &mdash; work-title size · TRY</p>
+      <p class="exp-note">
+        Card titles pointed at <code>--voice-mid</code>, the shared mid voice <code>.work__title</code> wears &mdash; clamp(1.4rem, 2.1vw, 3.4rem) against the card&rsquo;s shipping clamp(1.25rem, 1.5vw, 2.5rem). Layout is untouched &mdash; and that is the problem. <b>Measured at 1469px: the Butterfly headline TRUNCATES here</b> (content 321px into a 201px box), because <code>.news-card__title</code> is <code>-webkit-line-clamp: 5</code> to keep the meta on the tile&rsquo;s baseline, and bigger type reaches five lines sooner in the rail&rsquo;s 323px measure. The shipping size in the same column fits exactly (143px into 143px), so this direction only works if the clamp is raised or the measure grows &mdash; which is what 06 does.
+      </p>
+      <div class="page-home">
+        <section class="exp-news05 u-container" aria-label="Latest news (direction 05)">
+          <div class="exp-news05__inner">
+              <div class="exp-news05__head">
+                <div class="exp-news05__rail">
+                <h2 class="exp-news05__heading reveal-lines" data-animate>
+                  <span class="reveal-lines__line lockup-accent masthead-accent"><span class="reveal-lines__word" style="--w: 0">Latest</span></span>
+                  <span class="reveal-lines__line lockup-caps"><span class="reveal-lines__word" style="--w: 1">News</span></span>
+                </h2>
+                </div>
+                <a class="exp-news05__more invite-arrow" href="/news" aria-label="More news">More</a>
+              </div>
+            <ul class="exp-news05__list" role="list">
+              <li>
+                <a class="news-card" href="/news/article" aria-label="ICON and Butterfly Foundation partner in new campaign to help Australians rethink negative self body talk">
+                  <figure class="news-card__figure media-reveal" data-reveal-img>
+                    <img class="news-card__img" loading="lazy" src="../assets/News/Butterfly_BodyKind.jpg" alt="ICON and Butterfly Foundation BodyKind campaign" />
+                  </figure>
+                  <div class="news-card__body">
+                    <h3 class="news-card__title">ICON and Butterfly Foundation partner in new campaign to help Australians rethink negative self body talk</h3>
+                    <span class="news-card__meta">Insights / <time datetime="2026-08-09">9 Aug 2026</time></span>
+                  </div>
+                </a>
+              </li>
+              <li>
+                <a class="news-card" href="/news/article" aria-label="ICON launches new wellbeing agency website for veterans and families">
+                  <figure class="news-card__figure media-reveal" data-reveal-img>
+                    <img class="news-card__img" loading="lazy" src="../assets/News/Tile-DVA-Wellbeing.png" alt="Wellbeing website" />
+                  </figure>
+                  <div class="news-card__body">
+                    <h3 class="news-card__title">ICON launches new wellbeing agency website for veterans and families</h3>
+                    <span class="news-card__meta">Insights / <time datetime="2026-06-30">30 Jun 2026</time></span>
+                  </div>
+                </a>
+              </li>
+              <li>
+                <a class="news-card" href="/news/article" aria-label="ICON helps eSafety expose the tactics behind sextortion scams">
+                  <figure class="news-card__figure media-reveal" data-reveal-img>
+                    <img class="news-card__img" loading="lazy" src="../assets/News/tile-sextortion-campaign.jpg" alt="AI generated woman" />
+                  </figure>
+                  <div class="news-card__body">
+                    <h3 class="news-card__title">ICON helps eSafety expose the tactics behind sextortion scams</h3>
+                    <span class="news-card__meta">Insights / <time datetime="2026-06-29">29 Jun 2026</time></span>
+                  </div>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <section class="exp-section" aria-label="Direction 06 — Centred + bigger type">
+      <p class="exp-label"><b>06</b> Centred + bigger type · TRY</p>
+      <p class="exp-note">
+        04 and 05 together, since they are the obvious pair: the centred stack recovers the width the rail was spending on nothing, and the bigger title is what that recovered width buys. <b>This is the one that works.</b> Same measurement as 05: the title measure goes 323px &rarr; 552px, and the Butterfly headline now fits in four lines with no truncation (160px into 160px). So bigger type is not the trade-off it looks like in 05 &mdash; it is affordable, but only once the empty rail is gone.
+      </p>
+      <div class="page-home">
+        <section class="exp-news06 u-container" aria-label="Latest news (direction 06)">
+          <div class="exp-news06__inner">
+              <div class="exp-news06__head">
+                <h2 class="exp-news06__heading reveal-lines" data-animate>
+                  <span class="reveal-lines__line lockup-accent masthead-accent"><span class="reveal-lines__word" style="--w: 0">Latest</span></span>
+                  <span class="reveal-lines__line lockup-caps"><span class="reveal-lines__word" style="--w: 1">News</span></span>
+                </h2>
+              </div>
+            <ul class="exp-news06__list" role="list">
+              <li>
+                <a class="news-card" href="/news/article" aria-label="ICON and Butterfly Foundation partner in new campaign to help Australians rethink negative self body talk">
+                  <figure class="news-card__figure media-reveal" data-reveal-img>
+                    <img class="news-card__img" loading="lazy" src="../assets/News/Butterfly_BodyKind.jpg" alt="ICON and Butterfly Foundation BodyKind campaign" />
+                  </figure>
+                  <div class="news-card__body">
+                    <h3 class="news-card__title">ICON and Butterfly Foundation partner in new campaign to help Australians rethink negative self body talk</h3>
+                    <span class="news-card__meta">Insights / <time datetime="2026-08-09">9 Aug 2026</time></span>
+                  </div>
+                </a>
+              </li>
+              <li>
+                <a class="news-card" href="/news/article" aria-label="ICON launches new wellbeing agency website for veterans and families">
+                  <figure class="news-card__figure media-reveal" data-reveal-img>
+                    <img class="news-card__img" loading="lazy" src="../assets/News/Tile-DVA-Wellbeing.png" alt="Wellbeing website" />
+                  </figure>
+                  <div class="news-card__body">
+                    <h3 class="news-card__title">ICON launches new wellbeing agency website for veterans and families</h3>
+                    <span class="news-card__meta">Insights / <time datetime="2026-06-30">30 Jun 2026</time></span>
+                  </div>
+                </a>
+              </li>
+              <li>
+                <a class="news-card" href="/news/article" aria-label="ICON helps eSafety expose the tactics behind sextortion scams">
+                  <figure class="news-card__figure media-reveal" data-reveal-img>
+                    <img class="news-card__img" loading="lazy" src="../assets/News/tile-sextortion-campaign.jpg" alt="AI generated woman" />
+                  </figure>
+                  <div class="news-card__body">
+                    <h3 class="news-card__title">ICON helps eSafety expose the tactics behind sextortion scams</h3>
+                    <span class="news-card__meta">Insights / <time datetime="2026-06-29">29 Jun 2026</time></span>
+                  </div>
+                </a>
+              </li>
+            </ul>
+            <a class="exp-news06__more invite-arrow" href="/news" aria-label="More news">More</a>
+          </div>
+        </section>
+      </div>
+    </section>
+
     <!-- Next variants land here, each in its own .exp-section with an
          .exp-label / .exp-note pair and inline exp-news-* styles. -->
 
@@ -543,6 +926,11 @@
          because home-c.js registers SplitText at boot; every one of its other
          blocks (hero, intro strip, clients) is element-guarded and no-ops on a
          page that doesn't contain them. -->
+    <!-- reveal.js drives [data-animate], [data-reveal-img] and [data-rule].
+         Without it every .media-reveal figure stays clipped to inset(100%) and
+         the masthead words sit below their masks — i.e. this page rendered
+         with all seven images invisible until this line was added. -->
+    <script src="../js/reveal.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js"></script>
