@@ -180,6 +180,16 @@
  * ==================================================================== */
 
 .hero {
+  /* THE SQUARE'S SIZE, once. The pile cards and the headline device are the
+     same object at two moments of the show — the device leads the pile, then
+     returns as the headline once the takeover lands — so they read at one size
+     by construction rather than by two matching literals (user call, Aug 2026:
+     "the first pop one is the best size for the top one").
+     Bounded on BOTH axes: a 1:1 card is far taller than the old 16/10 at the
+     same width, so the height arm (svh) keeps the pile inside short viewports
+     instead of overflowing the stage. */
+  --hero-square: clamp(16rem, min(30vw, 52svh), 36rem);
+
   /* CURTAIN: the hero pins under the page (sticky at its own top) while every
      later section rides up OVER it — and a scroll-driven scale recedes it as
      the intro closes in. Compositor-sampled (animation-timeline), never a
@@ -246,10 +256,7 @@
 .hero__card {
   grid-area: 1 / 1; /* stacked — DOM order = pile order */
   margin: 0;
-  /* Square. Bounded on BOTH axes — a 1:1 card is far taller than the old
-     16/10 at the same width, so the height arm (svh) keeps the pile inside
-     short viewports instead of overflowing the stage. */
-  width: clamp(16rem, min(30vw, 52svh), 36rem); /* the pile reads big before the takeover */
+  width: var(--hero-square); /* the pile reads big before the takeover */
   aspect-ratio: 1 / 1;
   border-radius: var(--radius-icon);
   overflow: hidden;
@@ -267,6 +274,24 @@
    STRAIGHT (no tilt-then-straighten beat). Positional, so it survives
    reordering; after the nth-child list so source order wins. */
 .hero__card:last-child { --r: 0deg; }
+
+/* THE DEVICE CARD. Two departures from the work pieces, both deliberate.
+
+   NO GROUND: .hero__card paints --color-shader-blue as a fallback for media
+   still arriving, and this artwork's letters are transparent HOLES — over a
+   blue ground they fill with blue and vanish. With it off, the kinetic-text
+   loading screen and the cards behind show through the letterforms, which is
+   what the knockout is for.
+
+   NO TILT: it lands SQUARE (user call, Aug 2026) while the work pieces keep
+   their scattered angles. Written as a doubled class so it matches
+   .hero__card:nth-child(1)'s specificity, and placed after it so source order
+   decides — a single class would lose to the nth-child and the -4deg would
+   still apply. Same reason :last-child sits where it does, just above. */
+.hero__card.hero__card--device {
+  background: none;
+  --r: 0deg;
+}
 
 .js-animations [data-hero] .hero__card {
   opacity: 0;
@@ -400,6 +425,69 @@
   color: var(--color-white);
   text-align: center;
   text-wrap: pretty;
+}
+
+/* THE LOCKUP AS THE BRAND DEVICE, drawn. Inline SVG (DrawSVGPlugin cannot
+   reach inside an <img>) of the box and the letterforms as STROKES, so GSAP
+   has outlines to draw on. The FILLED knockout version still leads the pile —
+   see .hero__card--device; this is the same artwork inverted. Square, where the type setting it
+   replaced was 1.72:1 — so there is no height to match. It takes
+   --hero-square, the pile card's own size, because it IS the pile's leading
+   card returning after the takeover; sizing the two apart made them read as
+   two different objects.
+
+   No animation, by design (user call): nothing targets this on .is-live or
+   .is-exiting, so it is simply present from the first frame.
+
+   The .hero__lockup / __lockup-line / __word / __serif rules below are
+   currently UNUSED — no markup wears them — and are left in place on purpose
+   while the animation direction is decided. Delete them once it is settled;
+   git has them either way. */
+/* The headline device is HIDDEN until the takeover completes (user call): the
+   same artwork leads the pile during the load screen, and showing both at once
+   read as a duplicate. .is-live is the takeover's end, and it also lands
+   immediately on the reduced-motion and Escape-skip paths, so neither can
+   strand this hidden. Behind .js-animations, so a no-JS page just shows it.
+
+   A switch, not a fade — still no animation here by design. One transition
+   line turns it into an entrance when we get to that. */
+.js-animations [data-hero] .hero__lockup-svg { opacity: 0; }
+.js-animations [data-hero].is-live .hero__lockup-svg { opacity: 1; }
+
+.hero__lockup-svg {
+  display: block;
+  width: var(--hero-square);
+  height: auto;
+  margin-inline: auto;
+  /* The stroke scales with the artwork (1 user unit on a 300 viewBox) rather
+     than pinning to a device pixel, so the frame keeps its weight against the
+     letters at every size — same reasoning as the standalone outline file. */
+  overflow: visible;
+}
+
+/* RESTING STATE, and it is the one the markup already describes: fills opaque,
+   letter strokes transparent. A centred 1-unit stroke sitting under its own
+   fill puts half a unit outside every letterform, which reads as bloat — so
+   the outline is never present at rest, only while a letter is still drawing.
+   The animation hands each letter from one to the other. */
+.hero__lockup-fill {
+  fill: var(--color-white);
+}
+
+.hero__lockup-box,
+.hero__lockup-stroke {
+  fill: none;
+  stroke: var(--color-white);
+  stroke-width: 1;
+  /* Round joins keep the letterform corners from spiking at this weight, and
+     they are what a drawn line looks like as it travels. */
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* The BOX frame is permanent; only the letter outlines hand off to their fill. */
+.hero__lockup-stroke {
+  opacity: 0;
 }
 
 .hero__lockup {

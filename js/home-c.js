@@ -230,6 +230,11 @@
       var STAGGER = 270;  // next card starts this far in — opens overlap
       var HOLD = 800;     // beat on the finished pile
       var TAKEOVER = 1000; // matches the takeover transition in CSS
+      // The device leads the pile and gets a beat to itself before the work
+      // pieces follow (user call, Aug 2026: "pause a tad"). Added ON TOP of the
+      // normal STAGGER, so the first gap is STAGGER + LEAD_HOLD and every gap
+      // after it is the usual STAGGER.
+      var LEAD_HOLD = 600;
 
       // The cards start the moment their media allows — no mandatory beat for
       // the text box first (it had 1400ms; cut to 0 on request, Aug 2026 —
@@ -366,16 +371,23 @@
                 if (lastVid) lastVid.play().catch(function () {});
               }
               added += 1;
-              nextSlot = now + STAGGER;
+              // `added` was just incremented, so === 1 means "the device just
+              // popped" — hold before the work pieces start.
+              nextSlot = now + STAGGER + (added === 1 ? LEAD_HOLD : 0);
               if (t0 === null) t0 = now;
             }
           }
           if (count && !hero.classList.contains("is-live")) {
             count.textContent = "(" + loadPct + ")";
           }
+          // Progress of the LAST card's open. The subtrahend is the time the
+          // pile spent starting cards before it — every gap is STAGGER, plus
+          // the device's one-off LEAD_HOLD. Miss the LEAD_HOLD here and p hits
+          // 1 early, so the beat and the morph would start while the last card
+          // was still growing.
           var p = added < cards.length || t0 === null
             ? 0
-            : Math.min(1, (now - t0 - (cards.length - 1) * STAGGER) / DUR);
+            : Math.min(1, (now - t0 - ((cards.length - 1) * STAGGER + LEAD_HOLD)) / DUR);
           if (p < 1) {
             window.requestAnimationFrame(tick);
             return;
@@ -530,6 +542,102 @@
     };
     window.addEventListener("scroll", syncHeroExit, { passive: true });
     syncHeroExit();
+  }
+
+  // ---- 2d. Headline lockup — DrawSVG outline ------------------------------
+  // The lockup draws itself on when the takeover lands: the box travels first,
+  // the letterforms follow on a stagger, then each letter CROSS-FADES from its
+  // outline to its fill on its own timeline. GSAP DrawSVGPlugin (free since
+  // 3.13, loaded beside SplitText) draws the outline; the fade is plain opacity.
+  //
+  // Per-letter is why the markup is grouped: a letter's fill is its subpath
+  // plus its counters joined (so the winding keeps the holes open), and the
+  // group pairs that fill with the strokes it replaces. One combined fill path
+  // could only ever animate as a single object.
+  //
+  // Two things this depends on, both set up in the markup: the SVG is INLINE
+  // (DrawSVG animates stroke-dasharray on real nodes and cannot reach inside an
+  // <img>), and the letters are STROKED rather than filled (a fill has no
+  // stroke to draw). The fill is a separate question for later — right now the
+  // finished state is an outline.
+  //
+  // The strokes are zeroed at INIT, not at .is-live. The CSS gate flips the
+  // lockup's opacity to 1 the instant .is-live lands, so a lockup still sitting
+  // at full length would flash complete for a frame before the draw reset it.
+  //
+  // Everything degrades to "already drawn": no GSAP, no plugin, or reduced
+  // motion all leave the strokes alone, and a stroke with no dasharray is a
+  // finished line. Nothing here has to run for the lockup to be correct.
+  var lockupSvg = document.querySelector("[data-lockup-draw]");
+  var drawOk = gsapOk && typeof window.DrawSVGPlugin !== "undefined";
+  if (drawOk) { try { window.gsap.registerPlugin(window.DrawSVGPlugin); } catch (e) { drawOk = false; } }
+
+  if (hero && lockupSvg && drawOk && !reduce) {
+    (function () {
+      var box = lockupSvg.querySelector(".hero__lockup-box");
+      var strokes = Array.prototype.slice.call(
+        lockupSvg.querySelectorAll(".hero__lockup-stroke")
+      );
+      var letters = Array.prototype.slice.call(
+        lockupSvg.querySelectorAll(".hero__lockup-letter")
+      );
+      if (!box || !strokes.length || !letters.length) return;
+
+      window.gsap.set([box].concat(strokes), { drawSVG: "0%" });
+      // Init flips both to the OPPOSITE of the resting state, because the CSS
+      // rest is where the animation ends, not where it starts. The opacity gate
+      // opens on .is-live, so anything still at its finished value would show
+      // for a frame before the timeline reset it.
+      window.gsap.set(lockupSvg.querySelectorAll(".hero__lockup-fill"), { opacity: 0 });
+      window.gsap.set(strokes, { opacity: 1 });
+
+      var played = false;
+      var play = function () {
+        if (played) return;
+        played = true;
+        var tl = window.gsap.timeline();
+        tl.to(box, { drawSVG: "100%", duration: 0.9, ease: "power2.inOut" })
+          // Overlapping the box rather than waiting for it: the frame is still
+          // closing as the first letters start, which reads as one gesture
+          // instead of two queued ones.
+          .to(strokes, {
+            drawSVG: "100%",
+            duration: 0.7,
+            ease: "power2.out",
+            stagger: 0.045
+          }, "-=0.35")
+          .addLabel("fill", "-=0.15");
+
+        // THE FILL: every letter on its OWN timeline — a quick fade up of its
+        // fill against a fade out of its own outline, the two crossing inside
+        // that letter and nowhere else. Both tweens for a letter are placed at
+        // the SAME label offset, so the hand-off is per letter rather than one
+        // wipe travelling across all of them. Groups are in reading order, so
+        // the stagger runs Make -> what -> matters on its own.
+        var STEP = 0.045;   // letter-to-letter offset
+        var FADE = 0.28;    // one letter's cross-fade — quick, per the brief
+        letters.forEach(function (g, i) {
+          var at = "fill+=" + (i * STEP).toFixed(3);
+          tl.to(g.querySelector(".hero__lockup-fill"),
+                { opacity: 1, duration: FADE, ease: "power1.out" }, at)
+            .to(g.querySelectorAll(".hero__lockup-stroke"),
+                { opacity: 0, duration: FADE, ease: "power1.out" }, at);
+        });
+      };
+
+      // .is-live may already be set — the reduced-motion and Escape-skip paths
+      // add it synchronously, and this block can run after either.
+      if (hero.classList.contains("is-live")) {
+        play();
+      } else {
+        var lo = new MutationObserver(function () {
+          if (!hero.classList.contains("is-live")) return;
+          lo.disconnect();
+          play();
+        });
+        lo.observe(hero, { attributes: true, attributeFilter: ["class"] });
+      }
+    })();
   }
 
   // ---- 3. Image clip + scale reveals — MOVED to js/reveal.js -------------
