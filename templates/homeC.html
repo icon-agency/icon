@@ -215,8 +215,18 @@
           <source src="../assets/video/logo-long.webm" type="video/webm" />
         </video>
 
+        <!-- THE MASTHEAD LOCKUP, borrowed from the /news and /work landings
+             (user call, Aug 2026): a Miller accent line over the caps display
+             voice. The .lockup-accent / .lockup-caps pair is declared once in
+             utilities/home-c.css and worn three times on this page (here, the
+             WORK masthead, the news rail); it reads the same two tokens as the
+             landings' .page-header__lockup-accent / __caps, so every one of
+             them is one size by construction. The word-cascade splitter walks
+             TEXT NODES and recurses into elements, so the two spans keep one
+             continuous --w order. -->
         <h2 class="intro__headline" data-reveal-words>
-          A strategic communications agency for complex change
+          <span class="lockup-accent masthead-accent">A strategic</span>
+          <span class="lockup-caps">communications agency for complex change</span>
         </h2>
 
         <div class="intro__viewport" data-strip>
@@ -295,7 +305,13 @@
 
       <!-- ================= WORK ================= -->
       <section class="work u-container" aria-label="Selected work">
-        <h2 class="work__heading" data-reveal-words>Work</h2>
+        <!-- The masthead lockup, as the intro statement and the news rail wear
+             it: a Miller accent over the caps display voice. The word cascade
+             recurses into both spans, so --w runs Featured(0) -> Work(1). -->
+        <h2 class="work__heading" data-reveal-words>
+          <span class="lockup-accent masthead-accent">Featured</span>
+          <span class="lockup-caps">Work</span>
+        </h2>
 
         <div class="work__row work__row--split">
           <a class="work__item" href="/work/article" aria-label="Transforming the elephant in the room into conversations that change lives — PHN North Western Melbourne">
@@ -429,9 +445,12 @@
         <div class="news__inner">
           <div class="news__head">
             <div class="news__rail">
+                <!-- The lockup on the masked line-rise: the voice classes ride
+                     the LINE (the mask), whose descender clearance is in em, so
+                     each half's mask scales with its own type size. -->
                 <h2 class="news__heading reveal-lines" data-animate>
-                <span class="reveal-lines__line"><span class="reveal-lines__word" style="--w: 0">News</span></span>
-                <span class="reveal-lines__line"><span class="reveal-lines__word masthead-accent" style="--w: 1">&amp; Insights</span></span>
+                <span class="reveal-lines__line lockup-accent masthead-accent"><span class="reveal-lines__word" style="--w: 0">Latest</span></span>
+                <span class="reveal-lines__line lockup-caps"><span class="reveal-lines__word" style="--w: 1">News</span></span>
               </h2>
               </div>
             <a class="news__more invite-arrow" href="/news" aria-label="More news">More</a>

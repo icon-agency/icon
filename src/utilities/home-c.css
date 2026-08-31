@@ -83,6 +83,43 @@
 }
 
 /* ======================================================================
+ * The masthead lockup voices — ONE definition, three consumers
+ * ==================================================================== */
+
+/* A Miller accent line over the caps display voice. The homepage speaks this
+   pair three times — the intro statement ("A strategic" / COMMUNICATIONS
+   AGENCY...), the WORK masthead ("Featured" / WORK) and the news rail
+   ("Latest" / NEWS) — so it is declared once here rather than copied per
+   block (user calls, Aug 2026: "same font style as above", three times over;
+   copies are exactly how these drift apart).
+
+   Same two tokens the landings' .page-header__lockup-accent / __caps read, so
+   the homepage and /news + /work open at one size by construction. Those
+   component classes are the same two voices expressed in their own block and
+   can fold onto these whenever the landings are next touched.
+
+   .lockup-accent pairs with .masthead-accent (utilities/effects.css), which
+   supplies the serif face, bold and upright; .lockup-caps is complete alone. */
+.lockup-accent {
+  display: block;
+  font-size: var(--voice-headline);
+  /* 1.1, tighter than the landings' .page-header__lockup-accent (1.3) — a
+     deliberate divergence (user call, Aug 2026), not drift: the homepage
+     lockups sit directly above their caps line with no Subscribe between, so
+     the accent closes up. The two still share both SIZE tokens. */
+  line-height: 1.1;
+}
+
+.lockup-caps {
+  display: block;
+  font-size: var(--voice-display);
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+}
+
+/* ======================================================================
  * Page shell
  * ==================================================================== */
 
@@ -606,15 +643,25 @@ html:not(.js-animations) .hero__count { display: none; }
   filter: brightness(0) invert(1);
 }
 
+/* THE MASTHEAD LOCKUP on the homepage (user call, Aug 2026: "use this text
+   style here"): the Miller accent over the caps display voice, the pair the
+   /news and /work landings open with (.page-header__lockup-accent / __caps).
+   The two halves read the SAME tokens as that component rather than copied
+   literals, so the homepage and the landings cannot drift apart in size.
+   The host keeps only what belongs to the block: ink, centring, measure. */
 .intro__headline {
   margin: 0 auto;
-  max-width: 20ch;
-  font-size: var(--intro-display); /* shared with the logo mark; grows to ~2570px */
-  line-height: 1.04;
-  font-weight: var(--font-weight-bold);
-  letter-spacing: -0.02em;
+  /* No measure cap — the caps line balances itself, as the landings' lockup
+     now does (the 20ch that lived here was sized for the old single-voice
+     sentence and squeezed the caps into a narrow column). */
   color: var(--color-icon-black);
   text-align: center;
+  text-wrap: balance;
+}
+
+/* The two halves wear the shared .lockup-accent / .lockup-caps pair above;
+   only the caps line's balancing is particular to this long statement. */
+.intro__headline .lockup-caps {
   text-wrap: balance;
 }
 
@@ -933,17 +980,14 @@ html:not(.js-animations) .intro__expertise-list li:first-child a {
 
 /* ---- Display headings (WORK / MORE) ------------------------------------- */
 
-/* Plain display type in the shared caps voice (hero lockup, NEWS). No pin, no
-   fade — they scroll with the page and enter on the standard word cascade
-   ([data-reveal-words], same as every other headline). */
+/* The masthead lockup: "Featured" over WORK (user call, Aug 2026). The h2 owns
+   placement and ink; the two spans wear .lockup-accent / .lockup-caps, so this
+   is the intro statement's type exactly — it used to run --voice-display-lh
+   (0.82), the only thing that made it differ. No pin, no fade: it scrolls with
+   the page and enters on the standard word cascade ([data-reveal-words]). */
 .work__heading {
   margin: 0 0 var(--space-xl);
   text-align: center;
-  font-size: var(--voice-display);
-  font-weight: 900; /* Kumbh Sans Black — the heaviest cut; size eased back to suit */
-  line-height: var(--voice-display-lh);
-  letter-spacing: var(--tracking-caps);
-  text-transform: uppercase;
   color: var(--color-icon-black);
 }
 
@@ -1400,10 +1444,6 @@ html:not(.js-animations) .intro__expertise-list li:first-child a {
 .news {
   position: relative;
   padding-block: var(--space-xl);
-  /* The shared display-caps voice (WORK heading, footer LET'S TALK). The old
-     pinned version capped this at 14svh so the masthead + cards fit one
-     viewport; nothing is pinned now, so the plain clamp applies. */
-  --news-masthead: var(--voice-display);
 }
 
 .news__inner {
@@ -1488,24 +1528,19 @@ html:not(.js-animations) .intro__expertise-list li:first-child a {
   }
 }
 
-/* Sentence case, as authored — "News / & Insights", not the shouted version.
-   Tracking still comes from --tracking-caps: it is only -0.015em, which is a
-   display-type tightening rather than a caps-specific one, and it suits the
-   Kumbh 900 line and the Miller accent below it equally. */
+/* "Latest" over NEWS (user call, Aug 2026) — the masthead lockup, the same
+   pair the intro statement and the WORK masthead speak. This replaced a
+   sentence-case "News / & Insights" setting that had gone its own way (bold
+   rather than 900, --voice-display-lh-sentence leading, its own
+   --news-masthead alias); all three are retired, and the h2 now owns only ink
+   and placement.
+
+   The size classes sit on the .reveal-lines__line MASK, not the word inside
+   it: the mask's descender clearance is in em (animations.css), so it has to
+   resolve against the line's own type size or the taller caps line would be
+   clipped by an accent-sized pad. */
 .news__heading {
   margin: 0;
-  font-size: var(--news-masthead);
-  /* Bold — two steps back off Kumbh's Black, and the project's own token
-     rather than a numeric literal, so this masthead stops being the one place
-     a raw weight is hard-coded. It also puts the Kumbh line on the same
-     numeric weight as the Miller accent beneath it (.masthead-accent), which
-     is the only heavy cut that kit ships. WORK and the footer's LET'S TALK
-     stay at 900: they are caps settings, where the extra weight reads as
-     authority rather than heft, and this masthead has gone its own way
-     (sentence case over a serif accent). */
-  font-weight: var(--font-weight-bold);
-  line-height: var(--voice-display-lh-sentence);
-  letter-spacing: var(--tracking-caps);
   color: var(--color-icon-black);
 }
 

@@ -196,7 +196,7 @@
 .page-header__lockup-accent {
   display: block;
   font-size: var(--voice-headline);
-  line-height: 1.1;
+  line-height: 1.3;
   /* .masthead-accent supplies Miller bold + the transform reset */
 }
 
@@ -210,12 +210,15 @@
   /* a step looser than the display masthead's 0.82 (user call: "slightly
      increased") — this lockup WRAPS to two caps lines, and the stacked
      single-word mastheads' tightness read as touching here */
-  line-height: 0.9;
+  line-height: 1;
   letter-spacing: var(--tracking-caps);
   text-transform: uppercase;
-  /* the mock breaks after UPDATES: cap the measure so the caps hold two
-     balanced lines instead of running the full bleed */
-  max-width: 19ch;
+  /* The measure cap is OFF (user call, Aug 2026): the caps now run to the
+     container and let text-wrap: balance choose the break, so a longer
+     masthead is not forced into a narrow column. Kept, not deleted — the
+     reasoning for capping was: the mock breaks after UPDATES, and 19ch held
+     two balanced lines instead of running the full bleed. */
+  /* max-width: 19ch; */
   margin-inline: auto;
   text-wrap: balance;
 }

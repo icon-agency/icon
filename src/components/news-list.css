@@ -1,6 +1,11 @@
-/* news-list.css — the /news listing GRID: two stories per line, a hairline
- * above the first pair and between every group of two (design:
+/* news-list.css — the /news listing GRID: two stories per line (design:
  * experiments/rough-news-mockup.png).
+ *
+ * The per-story hairline (above the first pair and between every group of
+ * two) is now OPT-IN, carried by [data-rule] on the <li>: header A wears it
+ * because its stories are the page's only rules; the canonical header B does
+ * not, because its filter band's bottom rule is the one line under the chips
+ * (user call, Aug 2026 — matching the /work landing).
  *
  * The cards themselves are the SHARED components/news-card.css — the same
  * component the homepage news section renders, so hovers, parallax, tilt and
@@ -41,8 +46,29 @@
   --rule: var(--rule-on-color);
 }
 
-.news-list__item {
+/* UNRULED rows (the canonical header B): with no hairline to seat, the rows
+   space themselves the way the /work landing's do — ONE real row-gap, rather
+   than a pad above and below every story. That also stops the first story
+   adding a leading gap under the band's bottom rule: the page-header's own
+   margin is then the whole distance, so the two landings open identically.
+   The ruled variant keeps gap:0 and pads instead — see .news-list above: a
+   border spans only its own item and cannot join across a grid gap. */
+.news-list:not(:has(> .news-list__item[data-rule])) {
+  row-gap: var(--space-xl);
+}
+
+/* THE RULED VARIANT. The per-story hairline is opt-in on the markup's own
+   [data-rule] hook, not the default (user call, Aug 2026: the /news landing
+   drops the individual lines above each story and lets the filter band's
+   bottom rule be the one line under the chips, as the /work landing does).
+   Header A (templates/news.html) has no ruled band at all — its stories ARE
+   its only rules — so it keeps the attribute and this treatment. Everything
+   the rules need hangs off the same selector: the border below, the odd-count
+   stub carry, and the lead arrangement's gutter correction. Drop the attribute
+   and a story loses all three together. */
+.news-list__item[data-rule] {
   border-top: var(--rule-weight) solid var(--rule);
+  /* the pad that seats the hairline in the middle of the row gap */
   padding-block: var(--space-md);
 }
 
@@ -71,13 +97,13 @@
    `nth-last-child(1 of ...)` is "last VISIBLE item", the same `of S` trick the
    gutters use, so it re-evaluates as filtering changes what is on screen. */
 @media (min-width: 768px) {
-  .news-list__item:nth-child(odd of .news-list__item:not([hidden])):nth-last-child(
+  .news-list__item[data-rule]:nth-child(odd of .news-list__item:not([hidden])):nth-last-child(
       1 of .news-list__item:not([hidden])
     ) {
     position: relative;
   }
 
-  .news-list__item:nth-child(odd of .news-list__item:not([hidden])):nth-last-child(
+  .news-list__item[data-rule]:nth-child(odd of .news-list__item:not([hidden])):nth-last-child(
       1 of .news-list__item:not([hidden])
     )::after {
     content: "";
@@ -172,9 +198,9 @@
      paint there. The 2nd item's rule stays fully border-box — it joins the
      lead's into the one full-width line under the masthead. */
   .news-list:has(> .news-list__item:nth-child(3 of .news-list__item:not([hidden])))
-    > .news-list__item:nth-child(3 of .news-list__item:not([hidden])),
+    > .news-list__item[data-rule]:nth-child(3 of .news-list__item:not([hidden])),
   .news-list:has(> .news-list__item:nth-child(3 of .news-list__item:not([hidden])))
-    > .news-list__item:nth-child(4 of .news-list__item:not([hidden])) {
+    > .news-list__item[data-rule]:nth-child(4 of .news-list__item:not([hidden])) {
     background-origin: content-box;
     background-position: left calc(-1 * var(--space-md));
   }
@@ -218,7 +244,7 @@
      line off its right edge — but it sits in the RIGHT column here, where the
      line already ran the full width. */
   .news-list:has(> .news-list__item:nth-child(3 of .news-list__item:not([hidden]))):not(:has(> .news-list__item:nth-child(4 of .news-list__item:not([hidden]))))
-    > .news-list__item:nth-child(3 of .news-list__item:not([hidden]))::after {
+    > .news-list__item[data-rule]:nth-child(3 of .news-list__item:not([hidden]))::after {
     content: none;
   }
 }

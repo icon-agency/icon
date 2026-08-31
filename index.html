@@ -38,7 +38,7 @@
             <p class="ds-nav__group-title">Template</p>
             <ul class="ds-nav__list">
               <li><a class="ds-nav__link ds-nav__link--external" href="templates/homeC.html">Home <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7" /><path d="M8 7h9v9" /></svg></a></li>
-              <li><a class="ds-nav__link ds-nav__link--external" href="templates/news-b.html">News <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7" /><path d="M8 7h9v9" /></svg></a></li>
+              <li><a class="ds-nav__link ds-nav__link--external" href="templates/news-b.html">News landing <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7" /><path d="M8 7h9v9" /></svg></a></li>
               <li><a class="ds-nav__link ds-nav__link--external" href="templates/work-landing-b.html">Work landing <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7" /><path d="M8 7h9v9" /></svg></a></li>
               <li><a class="ds-nav__link ds-nav__link--external" href="templates/news-article.html">News article <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7" /><path d="M8 7h9v9" /></svg></a></li>
             </ul>
@@ -244,6 +244,44 @@
               </div>
 
               <div class="ds-group">
+                <h4 class="ds-group__title">Masthead lockup &mdash; the accent-over-caps pair</h4>
+                <p class="ds-group__note">
+                  Two voices stacked to open a page: a Miller accent line
+                  (<code class="ds-code">--voice-headline</code>, with the shared
+                  <code class="ds-code">.masthead-accent</code> markup class supplying the serif face,
+                  bold, upright) over the caps display voice (<code class="ds-code">--voice-display</code>,
+                  Kumbh 900, uppercase, on <code class="ds-code">--tracking-caps</code>). Three pages wear
+                  it: the <a href="templates/news-b.html">News landing</a> and
+                  <a href="templates/work-landing-b.html">Work landing</a> as
+                  <code class="ds-code">.page-header__lockup-accent</code> /
+                  <code class="ds-code">.page-header__lockup-caps</code>, and the homepage &mdash; three
+                  times over: the intro statement (&ldquo;A strategic&rdquo;), the WORK masthead
+                  (&ldquo;Featured&rdquo;) and the news rail (&ldquo;Latest&rdquo;) &mdash; as the shared
+                  <code class="ds-code">.lockup-accent</code> /
+                  <code class="ds-code">.lockup-caps</code> pair, declared once in
+                  <code class="ds-code">utilities/home-c.css</code> rather than per block. Both pairs read
+                  the SAME two tokens rather than copied literals, so nothing can drift apart in size. Leading is
+                  set per half &mdash; 1.1 on the homepage pair&rsquo;s accent and 1.3 on the landings&rsquo;, and 1
+                  on the caps &mdash; and the caps carry no measure cap (user call, Aug 2026):
+                  <code class="ds-code">text-wrap: balance</code> chooses the break, so a longer masthead
+                  is not forced into a narrow column. On the homepage the pair replaced a single
+                  sentence-case line, which is why the accent reads as the sentence&rsquo;s opening words
+                  (&ldquo;A strategic&rdquo;) rather than a standalone label.
+                  Drupal (Canvas / SDC): one <code class="ds-code">masthead</code> component with
+                  <code class="ds-code">accent</code> and <code class="ds-code">caps</code> string props
+                  &mdash; the accent optional, the wrapper element decided by the host (h1 on the
+                  landings, h2 on the homepage).
+                </p>
+                <div class="ds-demo">
+                  <h2 class="page-header__heading page-header__heading--lockup">
+                    <span class="page-header__lockup-accent masthead-accent">News</span>
+                    <span class="page-header__lockup-caps">The latest updates and insights</span>
+                  </h2>
+                  <p class="ds-demo__label">.page-header__lockup-accent.masthead-accent + .page-header__lockup-caps</p>
+                </div>
+              </div>
+
+              <div class="ds-group">
                 <h4 class="ds-group__title">Wrapping &amp; the lockup rule</h4>
                 <p class="ds-group__note">
                   <p class="ds-group__note">Theme-aware component roles also live in <code class="ds-code">colors.css</code> and are overridden per theme: <code class="ds-code">--nav-bg-scrolled</code> (the frosted nav pill), <code class="ds-code">--pager-surface</code> / <code class="ds-code">--pager-surface-strong</code> (pager prev + status pill), and the work-article accent pair <code class="ds-code">--work-article-text</code> / <code class="ds-code">--work-article-bg</code> (per-route override in the v0 build).</p>
@@ -445,8 +483,9 @@ plus a note: decorative effect knobs also live in <code class="ds-code">motion.c
               <p class="ds-section__intro">
                 <code class="ds-code">.intro</code> &mdash; the approved
                 <a href="experiments/intro-statement.html">Strip experiment</a> (weareboring.nl
-                reference): the transparent logo-mark video (tinted to ink), a centred
-                sentence-case headline, then a full-bleed draggable filmstrip of tilted photos.
+                reference): the transparent logo-mark video (tinted to ink), the centred
+                masthead lockup (Miller accent over caps display &mdash; the landings&rsquo; pair,
+                adopted here Aug 2026), then a full-bleed draggable filmstrip of tilted photos.
                 The strip drifts on an infinite GSAP marquee; dragging straightens the cards and
                 leans them with the drag velocity before momentum decays them back to their
                 scattered tilts; hover stalls the drift and straightens the hovered card while a
@@ -478,7 +517,8 @@ plus a note: decorative effect knobs also live in <code class="ds-code">motion.c
                       <source src="assets/video/logo-long.webm" type="video/webm" />
                     </video>
                     <h2 class="intro__headline">
-                      A strategic communications agency for complex change
+                      <span class="lockup-accent masthead-accent">A strategic</span>
+                      <span class="lockup-caps">communications agency for complex change</span>
                     </h2>
                     <div class="intro__viewport">
                       <div class="intro__track">
@@ -769,7 +809,10 @@ plus a note: decorative effect knobs also live in <code class="ds-code">motion.c
                 </p>
                 <div class="ds-demo ds-demo--home-context">
                   <section class="work u-container" aria-label="Selected work">
-                    <h2 class="work__heading">Work</h2>
+                    <h2 class="work__heading">
+                      <span class="lockup-accent masthead-accent">Featured</span>
+                      <span class="lockup-caps">Work</span>
+                    </h2>
 
                     <div class="work__row work__row--split">
                       <a class="work__item" href="#" aria-label="Transforming the elephant in the room into conversations that change lives &mdash; PHN North Western Melbourne">
@@ -1248,8 +1291,16 @@ plus a note: decorative effect knobs also live in <code class="ds-code">motion.c
               <div class="ds-group">
                 <h4 class="ds-group__title">/news listing &mdash; pairs, one unbroken rule, and the sticky lead</h4>
                 <p class="ds-group__note">
-                  <code class="ds-code">.news-list</code> runs two stories per line from 768 with a
-                  hairline above every pair. The pair rules can&rsquo;t cross a grid gap (a border spans
+                  <code class="ds-code">.news-list</code> runs two stories per line from 768. The
+                  per-story hairline above every pair is OPT-IN, carried by
+                  <code class="ds-code">[data-rule]</code> on the <code class="ds-code">&lt;li&gt;</code>:
+                  the canonical <a href="templates/news-b.html">News landing</a> leaves it off, so the
+                  filter band&rsquo;s bottom rule is the single line under the chips (matching the
+                  <a href="templates/work-landing-b.html">Work landing</a>) and the rows space themselves
+                  with a real <code class="ds-code">row-gap</code> instead; header A wears it, because
+                  its stories are that page&rsquo;s only rules. Drop the attribute and the border, the
+                  odd-count stub and the lead&rsquo;s gutter correction all go together.
+                  When ruled: the pair rules can&rsquo;t cross a grid gap (a border spans
                   only its own item), so the grid has NO gaps: the column gutter lives INSIDE the items
                   &mdash; half each side, assigned with
                   <code class="ds-code">:nth-child(odd of .news-list__item:not([hidden]))</code> so
@@ -1286,7 +1337,7 @@ plus a note: decorative effect knobs also live in <code class="ds-code">motion.c
                 </p>
                 <a class="ds-thumb-link" href="templates/news-b.html">
                   <figure>
-                    <figcaption>Open the News listing template, at full scale</figcaption>
+                    <figcaption>Open the News landing template, at full scale</figcaption>
                   </figure>
                 </a>
               </div>
@@ -1646,8 +1697,8 @@ plus a note: decorative effect knobs also live in <code class="ds-code">motion.c
                       <div class="news__head">
                         <div class="news__rail">
                           <h2 class="news__heading reveal-lines" data-animate>
-                            <span class="reveal-lines__line"><span class="reveal-lines__word" style="--w: 0">News</span></span>
-                            <span class="reveal-lines__line"><span class="reveal-lines__word masthead-accent" style="--w: 1">&amp; Insights</span></span>
+                            <span class="reveal-lines__line lockup-accent masthead-accent"><span class="reveal-lines__word" style="--w: 0">Latest</span></span>
+                            <span class="reveal-lines__line lockup-caps"><span class="reveal-lines__word" style="--w: 1">News</span></span>
                           </h2>
                         </div>
                         <a class="news__more invite-arrow" href="#" aria-label="More news">More</a>
