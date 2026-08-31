@@ -789,27 +789,38 @@
     }
   })();
 
-  // ---- 3e. Scroll-velocity card lean ------------------------------------
-  // The same fluid tilt as the intro strip's drag lean, but driven by SCROLL
-  // SPEED instead of pointer speed: cards lean into the movement and
-  // straighten as the scroll settles. Applied to the news rows and the work
-  // tiles, both capped low for the same reason — each is about half the
-  // container wide (at 1920: work tile ~858px, news row ~849px), so a bigger
-  // angle swings their corners into the neighbour and visibly rotates the
-  // headline and meta along with the media. (The news cap used to be 3.5,
-  // set when a news card was a ~558px tile inside the horizontal track; the
-  // editorial stack made the row half the container, so it matches work now.)
+  // ---- 3e. Scroll-velocity card SKEW ------------------------------------
+  // The GreenSock skew-on-scroll gesture (user call, Aug 2026, referencing
+  // codepen GreenSock/eYpGLYL): scroll speed drives a skewY on the cards and
+  // it springs back to flat as the scroll settles. This replaced a velocity
+  // ROTATION — the same sampler, the same decay, a different transform: a
+  // rotation twisted the whole card off-square, where a skew shears it and
+  // reads as speed rather than as a wonky tile.
+  //
+  // The cap is 3deg, NOT the reference's 20. That demo skews full-width text
+  // rows in a plain stack, where a big shear reads as motion blur; these are
+  // cards in a grid with hairlines between them, and skewY displaces the
+  // edges by width*tan(angle) — on a 649px card that is 34px edge-to-edge at
+  // 3deg and 91px at 8deg, which swings the corners into the neighbouring row.
+  // 3 sits a step above the 2.5deg rotation it replaces (the shear per degree
+  // is about the same as the old twist's, so the previous caps were already
+  // calibrated for this element width) — enough that the gesture reads as a
+  // shear rather than a wobble, without breaking the grid.
+  //
   // NB the news row also carries view-timeline-name: --news-card, so the
-  // rotation written here lands on the very element anchoring the image
-  // parallax — a second reason to keep the angle small.
+  // transform written here lands on the very element anchoring the image
+  // parallax — worth re-checking if the cap grows.
+  //
+  // gsap.quickSetter, as the reference uses: it skips the tween machinery
+  // and writes the transform directly, which matters on a per-frame setter.
   // One shared velocity sampler + one ticker drives every group.
   // Skipped under reduced motion / without gsap.
   (function () {
     if (!gsapOk || reduce) return;
 
     var GROUPS = [
-      { cards: ".news-card", within: ".news", max: 2.5 },
-      { cards: ".work__item", within: ".work", max: 2.5 }
+      { cards: ".news-card", within: ".news", max: 3 },
+      { cards: ".work__item", within: ".work", max: 3 }
     ];
 
     var groups = [];
@@ -818,7 +829,14 @@
       if (!host) return;
       var cards = Array.prototype.slice.call(host.querySelectorAll(cfg.cards));
       if (!cards.length) return;
-      var g = { cards: cards, max: cfg.max, cur: 0, inView: !hasIO };
+      // One setter for the whole group; transform-origin is set once so the
+      // shear pivots on the card's centre rather than a corner.
+      window.gsap.set(cards, { transformOrigin: "center center", force3D: true });
+      var g = {
+        cards: cards,
+        set: window.gsap.quickSetter(cards, "skewY", "deg"),
+        max: cfg.max, cur: 0, inView: !hasIO
+      };
       if (hasIO) {
         // Only lerp while the section is near the viewport.
         new IntersectionObserver(function (entries) {
@@ -829,7 +847,7 @@
     });
     if (!groups.length) return;
 
-    var VEL_AT_MAX = 2600;   // scroll px/s that reaches a group's full lean
+    var VEL_AT_MAX = 2600;   // scroll px/s that reaches a group's full skew
     var lastY = window.scrollY;
     var lastT = performance.now();
     var vel = 0;             // sampled scroll velocity, px/s
@@ -847,7 +865,7 @@
 
     window.gsap.ticker.add(function (time, deltaMS) {
       var dt = deltaMS / 1000;
-      // Decay the sampled velocity so the lean settles when scrolling stops
+      // Decay the sampled velocity so the skew settles when scrolling stops
       // (the scroll event stops firing, so nothing else would zero it).
       vel *= Math.pow(0.86, dt * 60);
       if (Math.abs(vel) < 20) vel = 0;
@@ -858,9 +876,7 @@
         var target = window.gsap.utils.clamp(-grp.max, grp.max, norm * grp.max);
         grp.cur += (target - grp.cur) * Math.min(1, dt * 7);
         if (Math.abs(grp.cur) < 0.01) grp.cur = 0;
-        for (var i = 0; i < grp.cards.length; i++) {
-          window.gsap.set(grp.cards[i], { rotation: grp.cur });
-        }
+        grp.set(grp.cur);
       }
     });
   })();

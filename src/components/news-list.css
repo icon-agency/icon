@@ -249,13 +249,19 @@
   }
 }
 
-/* Scroll-velocity lean — the homepage card behaviour, ported without GSAP:
-   js/news.js writes ONE --nl-lean on the list per frame and every card
+/* Scroll-velocity SKEW — the homepage card gesture, ported without GSAP:
+   js/news.js writes ONE --nl-skew on the list per frame and every card
    inherits it. The hook lives here, not in the component: on the homepage
-   GSAP drives the same effect with inline transforms instead. The separate
-   `rotate` property composes with the figure's own cursor tilt. */
+   GSAP's quickSetter writes the same skew inline.
+
+   `transform` is safe on this element: it carries no other transform of its
+   own — the cursor tilt lives on the child figure — so there is nothing here
+   for it to overwrite. (The property this replaced was the standalone
+   `rotate` precisely so it could compose with that tilt; a skew on the card
+   and a tilt on the frame are separate elements, so composition is moot.) */
 .news-list__item .news-card {
-  rotate: var(--nl-lean, 0deg);
+  transform: skewY(var(--nl-skew, 0deg));
+  transform-origin: center center;
 }
 
 /* ---- fluid filter swap (View Transitions) --------------------------------

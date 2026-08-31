@@ -7,9 +7,14 @@
  *
  * Lifted at the THIRD consumer — the moment docs/animation.md rule 4 and
  * site-footer.js's own header named in advance: the footer's skew
- * (--footer-skew), the /news rows' lean (--nl-lean) and the /work
- * landing's lean (--wl-lean) were three byte-identical engines differing
- * only in host, property name and angle cap.
+ * (--footer-skew), the /news rows' and the /work landing's leans were three
+ * byte-identical engines differing only in host, property name and cap.
+ *
+ * All three are SKEWS now (--footer-skew, --nl-skew, --wl-skew): the cards'
+ * velocity rotation became a skewY in Aug 2026, matching the GreenSock
+ * skew-on-scroll gesture the homepage drives through GSAP. The engine itself
+ * never cared — it samples a velocity and writes an angle; what consumes that
+ * angle is the consumer's business. The file name is historical.
  *
  * A tiny namespaced global rather than a module — the project is vanilla
  * one-IIFE-per-behaviour files; consumers simply load AFTER this one and

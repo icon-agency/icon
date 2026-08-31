@@ -209,14 +209,14 @@
 
   /* ---- 4. scroll-velocity lean -------------------------------------------
      The homepage card lean (home-c.js 3e) via the SHARED engine
-     (js/velocity-lean.js — lifted at its third consumer): one --nl-lean on
+     (js/velocity-lean.js — lifted at its third consumer): one --nl-skew on
      the host per frame, every card inherits it. The host is the listing
      where there is one, else the article's "Next up" rail (each page ships
      its own CSS consumer: news-list.css rows / news-article.css rail
-     cards). MAX 1.2deg — full-width rows swing more px per degree. */
+     cards). MAX 3deg — see home-c.js 3e for why not the reference's 20. */
   var leanHost = list || document.querySelector(".news-article__related");
   if (leanHost && !window.matchMedia("(prefers-reduced-motion: reduce)").matches &&
       window.ICON && window.ICON.velocityLean) {
-    window.ICON.velocityLean(leanHost, leanHost, "--nl-lean", 1.2);
+    window.ICON.velocityLean(leanHost, leanHost, "--nl-skew", 3);
   }
 })();

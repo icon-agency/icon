@@ -97,12 +97,19 @@
   }
 }
 
-/* Scroll-velocity lean — the homepage card behaviour without GSAP:
-   js/work-landing.js writes ONE --wl-lean on the list per frame and every
-   card inherits it. The separate `rotate` property composes with the
-   figure's own cursor tilt (a transform), as on the news rows. */
+/* Scroll-velocity SKEW — the homepage card gesture, ported without GSAP:
+   js/work-landing.js writes ONE --wl-skew on the list per frame and every card
+   inherits it. The hook lives here, not in the component: on the homepage
+   GSAP's quickSetter writes the same skew inline.
+
+   `transform` is safe on this element: it carries no other transform of its
+   own — the cursor tilt lives on the child figure — so there is nothing here
+   for it to overwrite. (The property this replaced was the standalone
+   `rotate` precisely so it could compose with that tilt; a skew on the card
+   and a tilt on the frame are separate elements, so composition is moot.) */
 .work-landing__item .work__item {
-  rotate: var(--wl-lean, 0deg);
+  transform: skewY(var(--wl-skew, 0deg));
+  transform-origin: center center;
 }
 
 /* The fluid filter swap needs NO rules here: news-list.css's

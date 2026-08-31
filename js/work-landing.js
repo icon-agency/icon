@@ -171,11 +171,11 @@
   }
 
   /* ---- 3. scroll-velocity lean -------------------------------------------
-     The SHARED engine (js/velocity-lean.js): one --wl-lean on the list per
+     The SHARED engine (js/velocity-lean.js): one --wl-skew on the list per
      frame, inherited via the page-layer consumer in work-landing.css.
      MAX 1.2deg, with the news rows — half-container cards. */
   if (list && !window.matchMedia("(prefers-reduced-motion: reduce)").matches &&
       window.ICON && window.ICON.velocityLean) {
-    window.ICON.velocityLean(list, list, "--wl-lean", 1.2);
+    window.ICON.velocityLean(list, list, "--wl-skew", 3);
   }
 })();
