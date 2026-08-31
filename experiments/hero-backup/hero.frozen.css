@@ -1,0 +1,443 @@
+/* hero.frozen.css — FROZEN COPY of the homepage hero's rules, lifted verbatim
+ * from src/utilities/home-c.css on 31 Aug 2026 (commit e51d8a3).
+ *
+ * DO NOT EDIT, and do not "keep it in sync". Its whole job is to stop moving
+ * while the homepage hero is reworked, so this page keeps showing what the
+ * hero looked like before that work started.
+ *
+ * The page loads production css/main.css FIRST (for the tokens, base layer and
+ * .page-home shell — those we want live) and this file after it, so every rule
+ * below out-cascades its production counterpart at equal specificity.
+ *
+ * KNOWN LIMIT, stated honestly: a production rule ADDED to .hero after this
+ * snapshot has no counterpart here to override it, so it would still reach
+ * this page. Edits to existing rules are fully shielded; brand-new selectors
+ * are not. Git is the exact record either way.
+ */
+
+/* ======================================================================
+ * Hero — stack takeover (promoted from the approved 02 experiment)
+ *
+ * The work pieces load in one by one: each POPS in at the viewport centre,
+ * then shrinks fast onto a small snapshot pile. When the last lands, a 0.5s
+ * beat — then it scales up into a full-screen takeover and hands off to a
+ * reel: 3s per piece, 0.1s cross-fades, videos playing, stills on a subtle
+ * Ken Burns, client name small in the bottom-left. "Make what matters" rises
+ * word-by-word the moment the takeover completes. All in js/home-c.js;
+ * reduced motion skips the choreography and just runs the reel.
+ * ==================================================================== */
+
+.hero {
+  /* CURTAIN: the hero pins under the page (sticky at its own top) while every
+     later section rides up OVER it — and a scroll-driven scale recedes it as
+     the intro closes in. Compositor-sampled (animation-timeline), never a
+     scroll handler — see LESSONS.md. The old hero-position signals in JS (2b
+     header inversion, 2d theme handover) are re-anchored to the INTRO's
+     position, since a pinned hero never scrolls away. */
+  position: sticky;
+  top: 0;
+  z-index: 0;
+  min-height: 100svh;
+  overflow: hidden;
+  /* Page ground (white in the light theme): the pile pops in against it, then
+     the takeover covers it with the work. The header rides this — light theme
+     over the white pile, inverted once the media takes over (see js 2b). */
+  background: var(--color-background);
+}
+
+/* Everything after the hero is the curtain: above it in paint order, carrying
+   the page ground so the pinned hero can't show through between elements. */
+.page-home > :not(.hero) {
+  position: relative;
+  z-index: 1;
+  background: var(--color-background);
+}
+
+/* The recede: anchored to the top edge, so shrinking lifts the hero's bottom
+   edge away from the incoming intro — the gap closes fast and the intro reads
+   as arriving quickly. Scale-only (compositor); the surround it reveals is the
+   page ground, which the theme handover cross-fades blue→light underneath. */
+@keyframes hero-recede {
+  to { transform: scale(0.88); }
+}
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: scroll()) {
+    .hero {
+      transform-origin: 50% 0;
+      animation: hero-recede linear both;
+      animation-timeline: scroll(root);
+      animation-range: 0 100vh; /* done by one viewport of scroll */
+    }
+  }
+}
+
+/* ---- the pop-and-stack pile ---- */
+.hero__stage {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: grid;
+  place-items: center; /* every card shares the centre cell */
+}
+.js-animations [data-hero].is-live .hero__stage {
+  /* Soft handover: the full-screen takeover card blur-fades into the reel's
+     identical first slide beneath it (k95's loader exit). One-shot, so the
+     full-screen blur cost is paid once. */
+  opacity: 0;
+  filter: blur(28px);
+  transition:
+    opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1),
+    filter 1.1s cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: none;
+}
+
+.hero__card {
+  grid-area: 1 / 1; /* stacked — DOM order = pile order */
+  margin: 0;
+  /* Square. Bounded on BOTH axes — a 1:1 card is far taller than the old
+     16/10 at the same width, so the height arm (svh) keeps the pile inside
+     short viewports instead of overflowing the stage. */
+  width: clamp(16rem, min(30vw, 52svh), 36rem); /* the pile reads big before the takeover */
+  aspect-ratio: 1 / 1;
+  border-radius: var(--radius-icon);
+  overflow: hidden;
+  background: var(--color-shader-blue); /* ground while a frame's media is still arriving */
+  will-change: transform, opacity;
+}
+/* the snapshot tilts each card settles into (echoes the intro strip) */
+.hero__card:nth-child(1) { --r: -4deg; }
+.hero__card:nth-child(2) { --r: 3deg; }
+.hero__card:nth-child(3) { --r: -2deg; }
+.hero__card:nth-child(4) { --r: 4.5deg; }
+.hero__card:nth-child(5) { --r: -3deg; }
+.hero__card:nth-child(6) { --r: 2.5deg; }
+/* The LAST card is the one the takeover window continues from — it lands
+   STRAIGHT (no tilt-then-straighten beat). Positional, so it survives
+   reordering; after the nth-child list so source order wins. */
+.hero__card:last-child { --r: 0deg; }
+
+.js-animations [data-hero] .hero__card {
+  opacity: 0;
+  transform: scale(0.25) rotate(0deg); /* grows up from here */
+}
+/* open: one continuous eased growth to full size + tilt (k95-style) — no
+   overshoot; expo-out starts fast and lands long and soft. Opacity resolves
+   early so the size, not the fade, is the event. Opens OVERLAP via the JS
+   stagger, so the pile builds as a wave rather than discrete pops. */
+.js-animations [data-hero] .hero__card.is-pop {
+  opacity: 1;
+  transform: scale(1) rotate(var(--r, 0deg));
+  transition:
+    opacity 0.18s ease-out,
+    transform 0.68s cubic-bezier(0.16, 1, 0.3, 1);
+}
+/* same pose — kept as a state so the reduced-motion branch and any older
+   callers remain valid */
+.js-animations [data-hero] .hero__card.is-stacked {
+  transform: scale(1) rotate(var(--r, 0deg));
+}
+/* The takeover is the REEL ITSELF, pre-scaled down into the card's mask and
+   then scaled back up as the mask expands — one element, one video, zero
+   swap. Uniform scale + clip reproduces object-fit: cover framing exactly
+   (both show the centred max slice), so at the hand-off moment the reel's
+   visible pixels are IDENTICAL to the card's, and during the morph the
+   framing continuously widens from the card slice to full bleed. JS computes
+   the start transform/inset from the card's hero-local offsets (transform-
+   independent) and time-syncs the reel video to the card's, which has been
+   playing since it landed on the pile. expo.inOut keeps the swallow's
+   temperament. z-3 lifts the reel over the stage; the lockup (also z-3 but
+   later in DOM) and the client label (z-4) stay above it. */
+/* During the morph the OUTER is the window (overflow hidden, transformed to
+   the card's rect) and the INNER counter-transforms so the media stays
+   undistorted — both written per-frame from ONE eased progress (GSAP), so
+   they can never drift apart. Transforms only: no clip-path animation, which
+   runs on the main thread and desynced against the compositor-driven scale
+   (the earlier jerk). */
+[data-hero].is-opening .hero__show {
+  z-index: 3;
+  overflow: hidden;
+  will-change: transform;
+}
+[data-hero].is-opening .hero__show-inner {
+  will-change: transform;
+}
+/* CSS fallback when GSAP is absent: transition both transforms with the same
+   curve. (The two ease independently here — a slight mid-flight breathing —
+   but this path only runs without GSAP.) */
+[data-hero].is-opening--css .hero__show,
+[data-hero].is-opening--css .hero__show-inner {
+  transition: transform 1s cubic-bezier(0.87, 0, 0.13, 1);
+}
+
+
+.hero__card img,
+.hero__card video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* ---- the full-screen reel ---- */
+.hero__show {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  transform-origin: 0 0; /* morph maths assume a top-left origin */
+}
+
+.hero__show-inner {
+  position: absolute;
+  inset: 0;
+  transform-origin: 0 0;
+}
+
+.hero__slide {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 0.1s linear; /* the super-quick cross-fade */
+}
+.hero__slide.is-active { opacity: 1; }
+
+/* subtle Ken Burns on the stills only, direction alternating */
+@keyframes hero-kb-in {
+  from { transform: scale(1); }
+  to { transform: scale(1.08) translate3d(1.2%, -0.8%, 0); }
+}
+@keyframes hero-kb-out {
+  from { transform: scale(1.08) translate3d(-1%, 0.8%, 0); }
+  to { transform: scale(1); }
+}
+.js-animations img.hero__slide.is-active { animation: hero-kb-in 3.4s ease-out both; }
+.js-animations img.hero__slide.is-active:nth-of-type(even) { animation-name: hero-kb-out; }
+
+/* Scrim so the lockup reads on any reel frame: a light overall dim plus the
+   top/bottom gradients, fading in with the takeover. */
+.hero__scrim {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(rgb(0 0 0 / 0.18), rgb(0 0 0 / 0.18)),
+    linear-gradient(to bottom, rgb(0 0 0 / 0.45) 0%, transparent 30%, transparent 55%, rgb(0 0 0 / 0.65) 100%);
+  opacity: 0;
+  transition: opacity 0.5s var(--ease-standard);
+}
+[data-hero].is-live .hero__scrim { opacity: 1; }
+
+/* ---- the lockup ---- */
+.hero__inner {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-inline: var(--container-pad);
+  pointer-events: none;
+}
+
+/* Real-text "Make what matters" lockup, in our fonts: Miller Text italic for
+   "Make", heavy Kumbh Sans uppercase for "WHAT MATTERS". Rebuilds the brand
+   SVG as live, responsive, accessible type. */
+.hero__headline {
+  margin: 0;
+  color: var(--color-white);
+  text-align: center;
+  text-wrap: pretty;
+}
+
+.hero__lockup {
+  /* Extra breathing room between the three lines, on top of the leading. */
+  --lead: 0.1em;
+  /* The serif line sits on a different baseline within its line box than the
+     Kumbh caps do (different ascent/descent metrics), so equal BOX steps leave
+     unequal INK gaps. Measured with canvas TextMetrics — baseline of one line
+     to cap-top of the next, which is the gap the eye actually reads: at 0.06em
+     it came out 20.7px above WHAT and 15.6px below. The 0.053em difference is
+     folded in here, so the correction is 0.113em and the two gaps match. */
+  --serif-fix: 0.113em;
+  display: inline-block;
+  text-align: center;
+  /* Same scale as the WORK / NEWS display headings through tablet, then the
+     intro headline's slower curve on big screens. */
+  font-size: clamp(3rem, min(7vw, clamp(6rem, 5.6vw, 9rem)), 9rem);
+  font-weight: 900; /* Kumbh Sans Black. Size untouched — it is matched to the logo mark. */
+  line-height: 0.8;
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+}
+
+/* The mask needs vertical padding so the tight leading never clips an
+   ascender — but that padding must not open the lines back up. Adjacent
+   negative margins COLLAPSE (the most negative wins, they don't sum), so
+   cancelling 0.32em of padding between two lines takes -0.32em on the bottom
+   edge alone; the outer edges only need -0.16em. */
+.hero__lockup-line {
+  display: block;
+  overflow: hidden;
+  padding-block: 0.16em;
+  margin-block: -0.16em calc(-0.32em + var(--lead));
+  /* The mask exists to clip the word-rise VERTICALLY, but overflow cannot be
+     hidden on one axis and visible on the other — asking for that computes the
+     visible axis to auto — so it clips sideways too, and the italic serif's T
+     was losing its overhang. Measured at 0.109em past the advance width.
+     Same trick as the vertical padding: widen the clip box, take the space
+     straight back with a negative margin. The content edge does not move, so
+     WHAT still right-aligns exactly to MATTERS. */
+  padding-inline: 0.14em;
+  margin-inline: -0.14em;
+}
+/* the serif line needs the metric correction on top of the lead */
+/* MAKE centred, WHAT hard right to MATTERS' edge, MATTERS the widest line and
+   so the block's own width — the arrangement in the reference. The words are
+   display:block and fill the line, so aligning the LINE aligns the glyphs. */
+.hero__lockup-line:nth-child(2) {
+  text-align: right;
+  margin-bottom: calc(-0.32em + var(--lead) + var(--serif-fix));
+}
+
+/* The correction has to go on BOTH sides of the gap, and that is not
+   belt-and-braces — it is the only thing that works. Adjacent negative margins
+   COLLAPSE to the most negative of the pair rather than summing (the same rule
+   the padding-cancelling margins above are built around), so raising line 2's
+   margin-bottom alone did nothing at all: line 3's -0.16em was still the more
+   negative and still won. Measured before and after — the gap did not move a
+   pixel until this rule existed. */
+.hero__lockup-line:nth-child(3) {
+  margin-top: calc(-0.16em + var(--serif-fix));
+}
+.hero__lockup-line:last-child {
+  margin-bottom: -0.16em; /* trim the block's bottom padding only */
+}
+
+/* The serif italic reads smaller at the same size, so it is scaled up — which
+   would also scale its (unitless) line-height and open a wider gap under it.
+   Dividing the leading by the same factor keeps every step identical. */
+/* The serif line: Miller Text, bold, italic, and CAPS like its neighbours —
+   note there is no `text-transform: none` here any more. It used to sit on
+   "Make" in sentence case; the reference puts the serif on WHAT and sets all
+   three lines in caps.
+   The serif reads smaller than Kumbh at the same nominal size, so it is
+   scaled up — and its (unitless) line-height divided by the same factor, or
+   the scale would reopen the gap under it. */
+.hero__serif {
+  --serif-scale: 1.06;
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: var(--font-weight-bold);
+  font-size: calc(1em * var(--serif-scale));
+  line-height: calc(0.8 / var(--serif-scale));
+  letter-spacing: 0;
+}
+
+/* block, not inline-block: an inline-block sits on the parent's baseline, so
+   the strut's descender space would pad each line out again. One word per
+   line here, so block costs nothing. */
+.hero__word {
+  display: block;
+  will-change: transform;
+}
+
+/* The words wait below their masks and rise word-by-word on a 0.2s stagger the
+   moment the takeover completes (.is-live), then play OUT in the same order
+   (Make → What → Matters) once you scroll past the hero (.is-exiting, set in
+   js). Entry rides `transform` and exit rides `translate` — separate
+   properties, so the two never fight. */
+.js-animations [data-hero] .hero__word {
+  transform: translateY(125%);
+  transition:
+    transform 0.62s var(--ease-decelerate) calc(var(--w, 0) * 0.2s),
+    translate 0.62s var(--ease-decelerate) calc(var(--w, 0) * 0.2s);
+}
+.js-animations [data-hero].is-live .hero__word {
+  transform: translateY(0);
+}
+.js-animations [data-hero].is-exiting .hero__word {
+  /* 150%, not 125%: the mask box is padded taller than the word, and at -125%
+     the serif "Make" line's bottom edge still peeked inside the clip. */
+  translate: 0 -150%;
+}
+
+/* Client name — small, bottom-left, appears with the takeover. On each reel
+   advance the JS swaps the inner span with a fast snap-fade (out, swap text,
+   in) — quieter than a masked rise at this size and position. */
+.hero__client {
+  position: absolute;
+  left: var(--gutter-page); /* lines up with the fixed wordmark above it (the logo reads the same token) */
+  bottom: var(--space-sm);
+  z-index: 4;
+  margin: 0;
+  /* Same voice as the intro statement + "Our expertise" label. */
+  font-size: var(--voice-mid);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+  color: var(--color-white);
+  text-shadow: 0 1px 12px rgb(0 0 0 / 0.35);
+  opacity: 0;
+  transition: opacity 0.4s var(--ease-standard) 0.2s;
+}
+[data-hero].is-live .hero__client { opacity: 1; }
+
+.hero__client-text {
+  transition: opacity 0.15s var(--ease-standard);
+}
+.hero__client-text.is-out {
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero__client-text,
+  .hero__client-text.is-out {
+    opacity: 1;
+    transition: none;
+  }
+}
+
+/* Build counter — [0]→[100] during the pile build, in the client name's exact
+   spot and voice; the two crossfade at .is-live (counter out, client in).
+   Ink follows the page ground (white on the blue open), since during the
+   build it sits on the page, not on media. */
+.hero__count {
+  position: absolute;
+  left: var(--gutter-page); /* the client name's exact spot — same token */
+  bottom: var(--space-sm);
+  z-index: 4;
+  margin: 0;
+  font-size: var(--voice-mid);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-icon-black);
+  transition: opacity 0.3s var(--ease-standard);
+}
+[data-hero].is-live .hero__count { opacity: 0; }
+/* Only meaningful while the JS choreography runs. */
+html:not(.js-animations) .hero__count { display: none; }
+@media (prefers-reduced-motion: reduce) {
+  .hero__count { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .js-animations [data-hero] .hero__card,
+  .js-animations [data-hero] .hero__card.is-pop,
+  .js-animations [data-hero] .hero__card.is-stacked {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .js-animations img.hero__slide.is-active { animation: none; }
+  .hero__slide { transition: none; }
+  .js-animations [data-hero] .hero__word,
+  .js-animations [data-hero].is-exiting .hero__word {
+    transform: none;
+    translate: none;
+    transition: none;
+  }
+  .hero__scrim { opacity: 1; transition: none; }
+}
