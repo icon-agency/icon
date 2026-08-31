@@ -1,3 +1,9 @@
+/* FROZEN COPY — js/home-c.js as it stood on 31 Aug 2026 (commit 622b927),
+ * for experiments/hero-device.html. Do not edit; do not sync.
+ *
+ * Copied whole rather than trimmed to the hero: every other block in
+ * home-c.js is element-guarded and no-ops on a page without its markup.
+ */
 /* home-c.js — Home C prototype behaviours (zypsy-inspired). One IIFE:
  *   1. Lenis smooth (momentum) scroll — off under reduced motion / if absent.
  *   2. Hero load sequence: masked "Make what matters" reveal, image zoom-settle,
@@ -33,10 +39,6 @@
   }
 
   // ---- 2. Hero — stack takeover (k95-timed build) ------------------------
-  // NB the kinetic loading screen this was choreographed against is gone (user
-  // call, Aug 2026) — T0 now falls back to this file's own clock, which is the
-  // path reduced motion always took. The pile, the beat, the morph and the
-  // reel are unchanged.
   // One continuous clock (k95.it's loader rhythm): media preloads in parallel
   // (each raced against a timeout so one slow file can't stall the start),
   // then every card opens on a fixed schedule — 680ms eased growth, next card
@@ -234,21 +236,22 @@
       var STAGGER = 270;  // next card starts this far in — opens overlap
       var HOLD = 800;     // beat on the finished pile
       var TAKEOVER = 1000; // matches the takeover transition in CSS
-      // The pile holds until the BLUE SQUARE has landed. This lever went 1400
-      // -> 0 when the loading screen became something that played under the
-      // pops rather than before them; the screen is now a square that pops to
-      // full screen FIRST, so the beat is back and this is its length.
-      // Matches the 0.56s animation on .text-box--pop (text-box.css) — the two
-      // are one number in two files, so move them together.
-      var MIN_TEXT = 560;
+      // The device leads the pile and gets a beat to itself before the work
+      // pieces follow (user call, Aug 2026: "pause a tad"). Added ON TOP of the
+      // normal STAGGER, so the first gap is STAGGER + LEAD_HOLD and every gap
+      // after it is the usual STAGGER.
+      var LEAD_HOLD = 600;
+
+      // The cards start the moment their media allows — no mandatory beat for
+      // the text box first (it had 1400ms; cut to 0 on request, Aug 2026 —
+      // the box now plays under and between the pops rather than before
+      // them). The lever stays because the show's shape is one edit away.
+      var MIN_TEXT = 0;
       // ...and nobody waits forever. This cap carries the whole "no skip
-      // button" decision: past it the cards pop regardless of what has loaded,
-      // so the worst case is ~5.5s on the page ground before the show
-      // proceeds. That used to be 5.5s of kinetic text, which was the point of
-      // the cap; with the loading screen gone it is 5.5s of nothing, so this
-      // is now the number most worth revisiting if the open feels slow. A card
-      // whose media never arrived degrades to its blue ground rather than a
-      // hole (.hero__card paints --color-shader-blue).
+      // button" decision: past it the cards pop regardless of what has
+      // loaded, so the worst-case hold is ~5.5s of kinetic text before the
+      // show proceeds. A card whose media never arrived degrades to its blue
+      // ground rather than a hole (.hero__card paints --color-shader-blue).
       var MAX_WAIT = 5500;
 
       // T0 is the frame the copy actually started moving on, published by
@@ -374,7 +377,9 @@
                 if (lastVid) lastVid.play().catch(function () {});
               }
               added += 1;
-              nextSlot = now + STAGGER;
+              // `added` was just incremented, so === 1 means "the device just
+              // popped" — hold before the work pieces start.
+              nextSlot = now + STAGGER + (added === 1 ? LEAD_HOLD : 0);
               if (t0 === null) t0 = now;
             }
           }
@@ -382,12 +387,13 @@
             count.textContent = "(" + loadPct + ")";
           }
           // Progress of the LAST card's open. The subtrahend is the time the
-          // pile spent starting cards before it — one STAGGER per gap. Get it
-          // wrong and p hits 1 early, so the beat and the morph would start
-          // while the last card was still growing.
+          // pile spent starting cards before it — every gap is STAGGER, plus
+          // the device's one-off LEAD_HOLD. Miss the LEAD_HOLD here and p hits
+          // 1 early, so the beat and the morph would start while the last card
+          // was still growing.
           var p = added < cards.length || t0 === null
             ? 0
-            : Math.min(1, (now - t0 - (cards.length - 1) * STAGGER) / DUR);
+            : Math.min(1, (now - t0 - ((cards.length - 1) * STAGGER + LEAD_HOLD)) / DUR);
           if (p < 1) {
             window.requestAnimationFrame(tick);
             return;
@@ -499,13 +505,10 @@
   }
 
   // ---- 2b. Header inversion over the hero --------------------------------
-  // The header flips to light-on-dark (.is-over-hero) for as long as something
-  // full-bleed and blue is behind it, and back once the intro curtain has
-  // ridden up past it. TWO things qualify, which is why this reads both
-  // classes: .is-covered, the frame the loading screen's blue square finishes
-  // taking the screen (hero-loader.js), and .is-live, the takeover's end. The
-  // hero opens on the PAGE ground for the half-second before the first of
-  // those, and the header reads in the normal theme there. The hero is PINNED
+  // The hero opens on the PAGE ground while the pile builds, so the header
+  // reads in the normal theme there — it flips to light-on-dark
+  // (.is-over-hero) once the takeover has covered the screen (.is-live), and
+  // back once the intro curtain has ridden up past it. The hero is PINNED
   // (sticky curtain), so "past the hero" is measured off the INTRO's top
   // edge, not the hero's — a pinned hero never scrolls away. Class-toggle
   // scroll listener (header.js pattern); the colour cross-fade is CSS.
@@ -518,9 +521,7 @@
         : hero.getBoundingClientRect().bottom <= 80;
       siteHeader.classList.toggle(
         "is-over-hero",
-        !covered &&
-          (hero.classList.contains("is-covered") ||
-            hero.classList.contains("is-live"))
+        !covered && hero.classList.contains("is-live")
       );
     };
     window.addEventListener("scroll", syncOverHero, { passive: true });

@@ -308,6 +308,45 @@
  * at experiment size do not carry over, and any timing derived from run
  * widths has to be measured again at this size. js/hero-loader.js does.
  */
+/* THE BLUE SQUARE THAT POPS. A modifier, not a change to .text-box: the two
+   frozen hero experiments still render the old white room from this same
+   component, and repainting the base would repaint their loading screens too.
+
+   Animates the `scale` PROPERTY, not transform: scale(). .text-box--cover
+   already owns `translate` for its centring, and scale/rotate/translate are
+   independent properties that compose — one `transform` here would overwrite
+   that centring, and pairing translate with transform in a single rule is the
+   combination Lightning CSS is known to drop half of (LESSONS.md).
+
+   Origin is the default centre, so it opens out of the middle of the stage and
+   takes the screen — which is what the pile then lands on. */
+.text-box--pop {
+  background: var(--color-shader-blue);
+}
+
+@keyframes text-box-pop {
+  from {
+    scale: 0.18;
+    opacity: 0;
+  }
+  to {
+    scale: 1;
+    opacity: 1;
+  }
+}
+
+/* .is-lit is js/hero-loader.js's signal, published on the first frame — which
+   is the whole reason that file loads ahead of the CDN scripts. */
+.text-box--pop.is-lit {
+  animation: text-box-pop 0.56s var(--ease-decelerate) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .text-box--pop.is-lit {
+    animation: none;
+  }
+}
+
 .text-box--cover {
   position: absolute;
   top: 50%;

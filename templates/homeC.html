@@ -151,15 +151,28 @@
            reel plays each piece for 3s with a 0.1s cross-fade (stills get a
            subtle Ken Burns) while "Make what matters" rises word-by-word. -->
       <section class="hero" data-hero>
-        <!-- THE LOADING SCREEN. A kinetic-text room filling the viewport,
-             under the pile and the reel, while the hero's media loads. Built
-             and lit by js/hero-loader.js (loaded ahead of the CDN scripts so
-             it paints on the first frame), and torn down the moment .is-live
-             lands — the reel covers it by then, and 28 marquees are not
-             something to leave running behind an opaque video.
-             Decorative: aria-hidden, and absent entirely without JS or under
-             reduced motion. -->
-        <div class="text-box text-box--cover" data-text-box data-line="Make What Matters" aria-hidden="true"></div>
+        <!-- THE LOADING SCREEN. Two beats (user call, Aug 2026): a BLUE SQUARE
+             pops and takes the full screen, then the work images and videos
+             pop onto the pile over it. It was a perspective room of marquees
+             before that, latterly one device layer per side; the kinetic went
+             and this replaced it. A Make-what-matters device led the pile for
+             a few passes and has been taken back out — the headline device,
+             further down, is the only one left.
+
+             THE BLUE LANDING IS A THEME EVENT, not just a backdrop: the ground
+             goes from page-white to full-bleed blue, so js/hero-loader.js marks
+             the hero .is-covered on the pop's animationend and the header and
+             the build counter flip to white ink there. Event-driven, so the
+             flip cannot drift from the animation that causes it.
+
+             js/hero-loader.js owns the box, and publishes the T0 the whole show
+             hangs off — which is why the file is loaded ahead of the CDN
+             scripts. Torn down the moment .is-live lands.
+
+             The room lives on in experiments/hero-backup.html (as type) and
+             experiments/hero-device.html (as the device), both frozen with
+             their own copies of the loader. -->
+        <div class="text-box text-box--cover text-box--pop" data-text-box aria-hidden="true"></div>
 
         <!-- the reel — sits under the pile, revealed by the takeover -->
         <div class="hero__show" aria-hidden="true">
@@ -175,16 +188,6 @@
 
         <!-- the pop-and-stack pile -->
         <div class="hero__stage" aria-hidden="true">
-          <!-- THE DEVICE LEADS (user call, Aug 2026): it pops first, holds a beat
-               of its own, then the work pieces follow. It is a real .hero__card,
-               so it takes the same open transition and the same positional tilt
-               as the rest — nth-child(1), -4deg. The tilt list already ran to six
-               and :last-child still claims the morph card, so adding one at the
-               front only re-deals the middle angles; the Nike video is still last
-               and still lands straight. -->
-          <figure class="hero__card hero__card--device">
-            <img src="../assets/brand/mwm-device-transparent.svg" alt="" width="300" height="300" />
-          </figure>
           <figure class="hero__card"><video src="../assets/Banner/NWMPHN.mp4" muted playsinline preload="auto"></video></figure>
           <figure class="hero__card"><img src="../assets/Banner/MoAD%20Question%20of%20the%20day.jpg" alt="" /></figure>
           <figure class="hero__card"><img src="../assets/Banner/iCanQuit-Banner.jpg" alt="" /></figure>
@@ -746,8 +749,8 @@
     <!-- GSAP core + SplitText (line-mask text reveals). SplitText is free in
          GSAP 3.13. Lenis provides the smooth momentum scroll. (Prototype deps —
          like homeB's Three.js; not part of the core stack yet.) -->
-    <!-- Ahead of the CDN scripts on purpose: the loading screen must not wait
-         on two third-party round-trips to appear. See js/hero-loader.js. -->
+    <!-- Ahead of the CDN scripts on purpose: the loading screen must paint on
+         the first frame, and it publishes the show's T0. See js/hero-loader.js. -->
     <script src="../js/hero-loader.js"></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js"></script>

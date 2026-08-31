@@ -9,14 +9,22 @@
  * and running on the first frame regardless of what the CDNs are doing.
  *
  * It owns three things and nothing else:
- *   1. building the room (16 rows: a 4-step depth ramp on each of 4 panels),
- *   2. timing it so the copy travels at one constant speed and the whole
- *      composition has arrived before the hero's cards start popping,
- *   3. handing js/home-c.js a start time to hang the rest of the show off.
+ *   1. lighting the loading screen and marking the hero as booting,
+ *   2. marking the frame the blue finishes covering the screen, which is the
+ *      page's theme event (header + counter flip to white ink there),
+ *   3. handing js/home-c.js the start time the rest of the show hangs off.
  *
- * The rows are built here rather than authored into the template because they
- * are pure geometry — a Twig loop in Drupal, per docs/drupal-handoff.md — and
- * 64 nodes of hand-written markup would be a liability in a page anyone edits.
+ * IT USED TO BUILD A ROOM. A perspective tunnel of marquees played under the
+ * pile while the media loaded — 16 rows of type on a four-step depth ramp,
+ * latterly one device layer per side. Removed Aug 2026 (user call: "remove the
+ * kinetic from the load, keep it simple"); the loader and the pops stay, so the
+ * load is now the cards popping onto their pile over a clean ground, with the
+ * (0)-(100) counter running in the client name's spot.
+ *
+ * Both rooms are preserved and still running in experiments/hero-backup.html
+ * (as type) and experiments/hero-device.html (as the device), each with its own
+ * frozen copy of this file — which is why none of that geometry is kept here.
+ *
  * The box is decorative (aria-hidden) and never present without JS, so nothing
  * is lost from the no-JS baseline: the CSS keeps it display:none there.
  */
@@ -28,136 +36,37 @@
 
   var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  // A tunnel of 16 marquees receding through a perspective camera is exactly
-  // the vestibular trigger the media query exists for. Not built, not lit.
+  // Nothing here is vestibular any more — the tunnel that justified this guard
+  // is gone. It stays because under reduced motion js/home-c.js skips the whole
+  // boot and goes straight to the reel, so there is no loading phase to cover:
+  // lighting a screen torn down on the same frame would only flash.
   if (reduce) return;
-
-  /* ---- 1. the room ------------------------------------------------------- */
-
-  // The depth ramp: each band's share of the depth. Four steps, biggest at
-  // the open end, converging inward on the same near:far ratio (~2.9) the
-  // original seven kept. Every panel shares them, which is what makes the
-  // bands line up all the way round the box at every depth. Sum is 100.
-  var BANDS = [{ h: 37.3 }, { h: 29.1 }, { h: 20.9 }, { h: 12.7 }];
-
-  // The line-height lever: glyph em as a fraction of its band. Above 1 the em
-  // overshoots the band — deliberately. Kumbh 900's caps ink is 0.762em and
-  // sits nearly centred in the em (0.123em above, 0.115 below — measured), so
-  // at 1.12 the INK fills 85% of the band with ~7% clearance each side, and
-  // the rows read near-touching. Clipping against the row's overflow:hidden
-  // starts at ~1.30; keep well under it, the 3D projection has no subpixel
-  // mercy.
-  var FILL = 1.12;
-
-  // Rings arrive INSIDE OUT: the small ring at the vanishing point first,
-  // growing outward to the big near rows at the frame's edges. See --zr below.
-  //
-  // ONE CONSTANT VELOCITY, not the original's speed ramp.
-  //
-  // A row's entry covers one panel-length at its marquee's own rate, and that
-  // rate is half the run's width per --d seconds. Run width scales with the
-  // band's font size, so holding --d proportional to --fs makes every row —
-  // near or deep — travel at the same px/s AND finish its entry at the same
-  // moment. The original varied --d independently, which at cover size meant
-  // the near ring arrived at 4.7s and the last at 19.2s: fine as a slow burn
-  // on its own page, useless as a loading screen with a ~5s budget, where it
-  // would read as unfinished rather than as deliberate.
-  //
-  // Direction still alternates by depth, so it stays kinetic rather than one
-  // conveyor; only the pace is now uniform.
-  var K = 70; // seconds per unit of --fs — sets the single shared speed
-  var PANEL_OFFSET = [0, 0.6, 0.9, 1.4]; // so the four walls do not beat as one
-  var PANELS = ["ceiling", "right", "floor", "left"];
-
-  var room = document.createElement("div");
-  room.className = "text-box__room";
-  room.setAttribute("aria-hidden", "true");
-
-  var line = box.getAttribute("data-line") || "Make What Matters";
-  var run = line + " " + line;
-
-  PANELS.forEach(function (name, p) {
-    var panel = document.createElement("div");
-    panel.className = "text-box__panel text-box__panel--" + name;
-    // The band dimension follows the panel's axis: ceiling/floor stack their
-    // bands vertically (height), the walls run them horizontally along the
-    // depth (width). Emitting height for all four collapsed the wall rows to
-    // zero width — their runs are absolutely positioned, so the flex items
-    // had no content to size against, and both walls vanished entirely.
-    var dim = name === "left" || name === "right" ? "width" : "height";
-    BANDS.forEach(function (band, z) {
-      var fs = (band.h / 100) * FILL; // glyph em as a fraction of --D
-      var row = document.createElement("div");
-      // Alternate depths travel the other way — via the --flip class, which
-      // mirrors the row's geometry, NOT animation-direction: reverse. Reverse
-      // made the entry and the loop disagree: the line slid in one way and
-      // then set off the other. The flipped row runs the same entry and the
-      // same marquee in mirrored space, so it arrives already travelling the
-      // direction it keeps. (Glyphs are un-mirrored in text-box.css.)
-      row.className = "text-box__row" + (z % 2 ? " text-box__row--flip" : "");
-      row.style.cssText =
-        "--z:" + z +
-        // distance from the vanishing point — the cascade runs inside out,
-        // so the back ring goes first. Kept separate from --z so the band
-        // geometry and the entry order can differ without renumbering.
-        ";--zr:" + (BANDS.length - 1 - z) +
-        ";" + dim + ":" + band.h + "%" +
-        ";--fs:calc(var(--D) * " + fs.toFixed(4) + ")" +
-        ";--d:" + (K * fs + PANEL_OFFSET[p]).toFixed(2) + "s";
-      // two copies: the marquee travels exactly half the run, so the loop is
-      // seamless and "half a width" is one whole line
-      row.innerHTML =
-        '<span class="text-box__run" aria-hidden="true"><span>' +
-        run + "</span><span>" + run + "</span></span>";
-      panel.appendChild(row);
-    });
-    room.appendChild(panel);
-  });
-
-  var back = document.createElement("div");
-  back.className = "text-box__back";
-  room.appendChild(back);
-  box.appendChild(room);
-
-  /* ---- 2. speed-match every entry to its own marquee ---------------------- */
-
-  // CSS cannot read the run's width, and the marquee's rate is defined against
-  // it, so the entry duration has to be measured. Recomputed on resize because
-  // both the run width and the panel length are container-relative and their
-  // ratio does not survive a reflow.
-  var rows = [].slice.call(box.querySelectorAll(".text-box__row"));
-
-  function retime() {
-    var dist = Math.max(box.clientWidth, box.clientHeight);
-    rows.forEach(function (row) {
-      var el = row.querySelector(".text-box__run");
-      if (!el) return;
-      var d = parseFloat(getComputedStyle(row).getPropertyValue("--d")) || 8;
-      var speed = (el.offsetWidth * 0.5) / d; // px per second
-      if (!speed) return;
-      el.style.setProperty("--in-dur", (dist / speed).toFixed(2) + "s");
-    });
-  }
-  retime();
-
-  var rt;
-  var onResize = function () {
-    clearTimeout(rt);
-    rt = setTimeout(retime, 200);
-  };
-  window.addEventListener("resize", onResize, { passive: true });
 
   /* ---- 3. light it, and publish the clock -------------------------------- */
 
   box.classList.add("is-lit");
 
-  // Mark the boot so home-c.js can clean up whichever way it ends. (The
-  // header keeps its normal dark ink over the loading screen — the box is
-  // white now — so unlike an earlier draft this does NOT drive the header's
-  // light-on-dark inversion; that stays keyed to .is-live, when the video
-  // actually covers the screen.)
+  // Mark the boot so home-c.js can clean up whichever way it ends.
   var heroEl = box.closest("[data-hero]");
   if (heroEl) heroEl.classList.add("is-booting");
+
+  // THE THEME EVENT. The loading screen is a blue square that grows to cover
+  // the viewport, so for its first half-second the page ground is still
+  // showing around it and dark ink is correct; the moment it lands the whole
+  // screen is --color-shader-blue and the header and the build counter have to
+  // be white. .is-covered is that moment, and home-c.js's header sync (2b)
+  // and .hero__count (home-c.css) both key off it.
+  //
+  // Taken from the pop's own animationend rather than a timer: the duration
+  // lives in text-box.css, and a second copy of it here would be a number free
+  // to drift away from the animation it is meant to describe. If the animation
+  // never runs the class never lands, which degrades to exactly the previous
+  // behaviour — dark ink until .is-live — rather than to white-on-white.
+  if (heroEl) {
+    box.addEventListener("animationend", function () {
+      heroEl.classList.add("is-covered");
+    }, { once: true });
+  }
 
   // T0 is the anchor the whole show hangs off — deliberately NOT
   // performance.timeOrigin, which would include the HTML, the stylesheet and
@@ -173,19 +82,16 @@
   window.__heroLoaderT0 = performance.now();
 
   // Teardown is CSS-driven off .is-live (see home-c.css) so no path can forget
-  // it; this only reclaims the DOM afterwards. display:none has already
-  // cancelled all 32 animations and dropped the layers by the time this runs.
+  // it; this only reclaims the DOM afterwards.
   window.__heroLoaderTeardown = function () {
-    window.removeEventListener("resize", onResize);
-    clearTimeout(rt);
     var idle = window.requestIdleCallback || function (f) { return setTimeout(f, 200); };
     idle(function () {
       if (box.parentNode) box.parentNode.removeChild(box);
     });
   };
 
-  // Backstop: nothing should ever leave 16 marquees running behind an opaque
-  // reel. CONDITIONAL on the hero actually being live — an unconditional
+  // Backstop: the box should never be left sitting behind an opaque reel.
+  // CONDITIONAL on the hero actually being live — an unconditional
   // timer here once removed the loading screen mid-show on a slow load, which
   // is the one moment it exists for. While the show is still running the box
   // is doing its job; check again later.

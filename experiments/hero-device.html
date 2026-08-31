@@ -1,0 +1,386 @@
+<!doctype html>
+<html lang="en" class="js-animations">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Experiment — Hero back-up (device + draw)</title>
+    <meta name="robots" content="noindex" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Kumbh+Sans:wght@400..900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://use.typekit.net/bhv7yrj.css" />
+
+    <!-- THE SECOND HERO FREEZE, taken 31 Aug 2026 at commit 622b927, before the
+         next round of changes. experiments/hero-backup.html holds the hero from
+         BEFORE the device rework — three-line type lockup, no device, no draw.
+         This one holds it after: the MWM device leads the pile and returns as
+         the headline, its box and letterforms draw on with DrawSVGPlugin, and
+         each letter cross-fades from outline to fill in a random order.
+
+         Frozen the same way as the first: the FILES are copied
+         (hero-device/hero.frozen.css, home-c.frozen.js, hero-loader.frozen.js)
+         and this page loads those instead of production's, so nothing needed
+         renaming and nothing could be renamed wrong. Production css/main.css
+         still loads first for tokens, base and the .page-home shell; the frozen
+         sheet follows and out-cascades every hero rule it holds. The one gap,
+         same as before: a brand-new .hero rule added later has no counterpart
+         here to override it. -->
+    <link rel="stylesheet" href="../css/main.css" />
+    <link rel="stylesheet" href="hero-device/hero.frozen.css" />
+
+    <style>
+      .exp-topbar {
+        position: fixed;
+        top: 0;
+        inset-inline: 0;
+        z-index: 2000;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        padding: 0.7rem clamp(1rem, 3vw, 2.5rem);
+        font-size: 0.72rem;
+        font-weight: var(--font-weight-bold);
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        background: color-mix(in srgb, var(--color-background) 82%, transparent);
+        -webkit-backdrop-filter: blur(14px);
+        backdrop-filter: blur(14px);
+        border-bottom: 1px solid var(--color-border);
+      }
+      .exp-topbar a { color: var(--color-icon-black); text-decoration: none; }
+      .exp-topbar a:hover { color: var(--color-icon-blue); }
+      .exp-topbar__hint {
+        color: var(--color-icon-grey);
+        font-weight: var(--font-weight-normal);
+        letter-spacing: 0.04em;
+        text-transform: none;
+      }
+
+      /* The hero is a CURTAIN — it sticks at its own top while the page rides
+         over it, and it recedes on a scroll timeline. With nothing below there
+         is no travel for either to show, so this supplies it. */
+      .exp-runout {
+        position: relative;
+        z-index: 1;
+        min-height: 160vh;
+        background: var(--color-background);
+        padding: clamp(3rem, 8vw, 7rem) var(--gutter-page) 0;
+      }
+      .exp-runout p {
+        margin: 0;
+        max-width: 62ch;
+        font-size: var(--text-sm);
+        line-height: 1.6;
+        color: var(--color-icon-grey);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="exp-topbar">
+      <a href="../index.html">&larr; Design system</a>
+      <span class="exp-topbar__hint">Hero back-up &mdash; device + draw, frozen at 622b927. Loads its own copies of the CSS and JS, not production&rsquo;s.</span>
+    </div>
+
+    <header class="site-header">
+        <!-- PROTOTYPE PATH. All four "home" controls in this header (this
+             wordmark, the nav pill's home glyph, the mobile home button and
+             the logo inside the mobile menu) point at ../index.html — the
+             design-system index — so the prototype is browsable on GitHub
+             Pages, where the site lives under /icon/ and an href="/" lands on
+             the org root instead. In Drupal every one of them is the site
+             front page: href="/". See docs/drupal-handoff.md. -->
+      <a class="site-logo" href="../index.html" aria-label="ICON Agency — home">
+        <svg class="site-logo__mark" viewBox="0 0 154 50" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
+          <path d="M153.042 18.4117L148.607 14.7183H142.101C140.042 14.7183 138.367 13.0435 138.367 10.9848V0H149.309C151.367 0 153.042 1.67487 153.042 3.73356V18.4117ZM139.902 1.53434V10.9848C139.902 12.1974 140.888 13.184 142.101 13.184H149.162L151.508 15.1374V3.73356C151.508 2.52088 150.521 1.53434 149.309 1.53434H139.902Z" fill="currentColor" />
+          <path d="M80.7421 29.5428C80.7421 34.619 76.6127 38.7489 71.5366 38.7489C66.4604 38.7489 62.3305 34.619 62.3305 29.5428C62.3305 24.4665 66.4602 20.3372 71.5366 20.3372C76.6129 20.3372 80.7421 24.4668 80.7421 29.5428ZM91.8734 29.543C91.8734 18.3293 82.7503 9.20605 71.5363 9.20605C60.3222 9.20605 51.1992 18.3293 51.1992 29.543C51.1992 40.7567 60.3222 49.8802 71.5363 49.8802C82.7503 49.8802 91.8734 40.7567 91.8734 29.543Z" fill="currentColor" />
+          <path d="M37.7394 9.20606C26.5256 9.20606 17.4023 18.3293 17.4023 29.5431C17.4023 40.7569 26.5256 49.8802 37.7394 49.8802C42.5976 49.8802 47.3 48.115 51.009 44.9045L44.4842 36.366C42.67 38.1648 40.2872 39.1512 37.7394 39.1512C32.4416 39.1512 28.1316 34.841 28.1316 29.5431C28.1316 24.2453 32.4416 19.935 37.7394 19.935C40.3244 19.935 42.7325 20.9469 44.5542 22.7911L51.1997 14.3433C47.4621 11.0286 42.6924 9.20606 37.7394 9.20606Z" fill="currentColor" />
+          <path d="M12.8008 9.20605H0V49.8802H12.8008V9.20605Z" fill="currentColor" />
+          <path d="M121.726 9.20605V28.158L107.498 9.20605H96.4766V49.8802H108.513V30.9753L123.827 49.8802H133.763V9.20605H121.726Z" fill="currentColor" />
+        </svg>
+      </a>
+
+      <div class="site-nav" data-nav>
+        <nav class="site-nav__pill" aria-label="Primary">
+          <div class="site-nav__row">
+            <a class="site-nav__home" href="../index.html" aria-label="Home">
+              <svg class="site-nav__home-glyph" viewBox="0 0 64 80" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <path d="M63.5616 80L44.3508 63.9521H16.1712C7.25435 63.9521 0 56.6747 0 47.7297V0H47.3305C56.3073 0 63.5616 7.27741 63.5616 16.2226V80ZM6.64572 6.6668V47.7297C6.64572 52.9987 10.9187 57.2853 16.1712 57.2853H46.7556L56.916 65.7731V16.2226C56.916 10.9534 52.6429 6.6668 47.3905 6.6668H6.64572Z" fill="currentColor" />
+              </svg>
+            </a>
+            <ul class="site-nav__list">
+              <li class="site-nav__item"><a class="site-nav__link" href="/about">AGENCY</a></li>
+              <li class="site-nav__item site-nav__item--has-submenu" data-submenu-item>
+                <a class="site-nav__link" href="/services" data-submenu-trigger aria-haspopup="true" aria-expanded="false" aria-controls="nav-services">EXPERTISE</a>
+              </li>
+              <li class="site-nav__item"><a class="site-nav__link" href="/work">WORK</a></li>
+              <li class="site-nav__item"><a class="site-nav__link" href="/news">NEWS</a></li>
+              <li class="site-nav__item"><a class="site-nav__link" href="/contact">CONTACT</a></li>
+            </ul>
+          </div>
+          <div class="site-nav__drawer" id="nav-services" data-submenu-drawer>
+            <div class="site-nav__drawer-inner">
+              <ul class="site-nav__submenu-list">
+                <li><a class="site-nav__submenu-link" href="/services">Interdisciplinary</a></li>
+                <li><a class="site-nav__submenu-link" href="/services#creative">Creative</a></li>
+                <li><a class="site-nav__submenu-link" href="/services#communications">Communications</a></li>
+                <li><a class="site-nav__submenu-link" href="/services/digital">Digital</a></li>
+                <li><a class="site-nav__submenu-link" href="/services#reputation">Reputation</a></li>
+                <li><a class="site-nav__submenu-link" href="/services#behaviour-change">Behaviour change</a></li>
+                <li><a class="site-nav__submenu-link" href="/services#production">Production</a></li>
+              </ul>
+            </div>
+          </div>
+        </nav>
+      </div>
+
+      <div class="site-header__mobile-home" data-mobile-home>
+        <a class="icon-button" href="../index.html" aria-label="Home">
+          <svg class="icon-button__icon" viewBox="0 0 64 80" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M63.5616 80L44.3508 63.9521H16.1712C7.25435 63.9521 0 56.6747 0 47.7297V0H47.3305C56.3073 0 63.5616 7.27741 63.5616 16.2226V80ZM6.64572 6.6668V47.7297C6.64572 52.9987 10.9187 57.2853 16.1712 57.2853H46.7556L56.916 65.7731V16.2226C56.916 10.9534 52.6429 6.6668 47.3905 6.6668H6.64572Z" fill="currentColor" />
+          </svg>
+        </a>
+      </div>
+
+      <div class="site-header__mobile-actions">
+        <a class="icon-button" href="/contact" aria-label="Contact">
+          <svg class="icon-button__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0Z" />
+            <circle cx="12" cy="10" r="3" />
+          </svg>
+        </a>
+        <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="mobile-menu" aria-label="Open menu" data-menu-toggle>
+          <span class="menu-toggle__bar"></span>
+          <span class="menu-toggle__bar"></span>
+        </button>
+      </div>
+
+      <div class="mobile-menu" id="mobile-menu" data-mobile-menu hidden>
+        <div class="mobile-menu__bg" aria-hidden="true"></div>
+        <div class="mobile-menu__inner">
+          <a class="mobile-menu__logo" href="../index.html" aria-label="ICON Agency — home">
+            <svg class="site-logo__mark" viewBox="0 0 154 50" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M153.042 18.4117L148.607 14.7183H142.101C140.042 14.7183 138.367 13.0435 138.367 10.9848V0H149.309C151.367 0 153.042 1.67487 153.042 3.73356V18.4117ZM139.902 1.53434V10.9848C139.902 12.1974 140.888 13.184 142.101 13.184H149.162L151.508 15.1374V3.73356C151.508 2.52088 150.521 1.53434 149.309 1.53434H139.902Z" fill="currentColor" />
+              <path d="M80.7421 29.5428C80.7421 34.619 76.6127 38.7489 71.5366 38.7489C66.4604 38.7489 62.3305 34.619 62.3305 29.5428C62.3305 24.4665 66.4602 20.3372 71.5366 20.3372C76.6129 20.3372 80.7421 24.4668 80.7421 29.5428ZM91.8734 29.543C91.8734 18.3293 82.7503 9.20605 71.5363 9.20605C60.3222 9.20605 51.1992 18.3293 51.1992 29.543C51.1992 40.7567 60.3222 49.8802 71.5363 49.8802C82.7503 49.8802 91.8734 40.7567 91.8734 29.543Z" fill="currentColor" />
+              <path d="M37.7394 9.20606C26.5256 9.20606 17.4023 18.3293 17.4023 29.5431C17.4023 40.7569 26.5256 49.8802 37.7394 49.8802C42.5976 49.8802 47.3 48.115 51.009 44.9045L44.4842 36.366C42.67 38.1648 40.2872 39.1512 37.7394 39.1512C32.4416 39.1512 28.1316 34.841 28.1316 29.5431C28.1316 24.2453 32.4416 19.935 37.7394 19.935C40.3244 19.935 42.7325 20.9469 44.5542 22.7911L51.1997 14.3433C47.4621 11.0286 42.6924 9.20606 37.7394 9.20606Z" fill="currentColor" />
+              <path d="M12.8008 9.20605H0V49.8802H12.8008V9.20605Z" fill="currentColor" />
+              <path d="M121.726 9.20605V28.158L107.498 9.20605H96.4766V49.8802H108.513V30.9753L123.827 49.8802H133.763V9.20605H121.726Z" fill="currentColor" />
+            </svg>
+          </a>
+          <div class="mobile-menu__cols">
+            <nav class="mobile-menu__nav" aria-label="Mobile primary">
+              <a class="mobile-menu__link" href="/about">About</a>
+              <a class="mobile-menu__link" href="/services">Services</a>
+              <a class="mobile-menu__link" href="/work">Work</a>
+              <a class="mobile-menu__link" href="/news">News</a>
+              <a class="mobile-menu__link" href="/contact">Contact</a>
+            </nav>
+            <nav class="mobile-menu__services" aria-label="Services">
+              <a class="mobile-menu__service" href="/services/creative">CREATIVE</a>
+              <a class="mobile-menu__service" href="/services/communications">COMMUNICATIONS</a>
+              <a class="mobile-menu__service" href="/services/digital">DIGITAL</a>
+              <a class="mobile-menu__service" href="/services/reputation">REPUTATION</a>
+              <a class="mobile-menu__service" href="/services/behaviour-change">BEHAVIOUR CHANGE</a>
+              <a class="mobile-menu__service" href="/services/production">PRODUCTION</a>
+            </nav>
+          </div>
+          <div class="mobile-menu__social">
+            <button class="mobile-menu__social-link" type="button" data-subscribe>Subscribe</button>
+            <a class="mobile-menu__social-link" href="https://www.linkedin.com/company/iconagency" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+            <a class="mobile-menu__social-link" href="https://www.instagram.com/iconagency" target="_blank" rel="noopener noreferrer">Instagram</a>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="page-home" id="main">
+      <section class="hero" data-hero>
+        <!-- THE LOADING SCREEN. A kinetic-text room filling the viewport,
+             under the pile and the reel, while the hero's media loads. Built
+             and lit by js/hero-loader.js (loaded ahead of the CDN scripts so
+             it paints on the first frame), and torn down the moment .is-live
+             lands — the reel covers it by then, and 28 marquees are not
+             something to leave running behind an opaque video.
+             Decorative: aria-hidden, and absent entirely without JS or under
+             reduced motion. -->
+        <div class="text-box text-box--cover" data-text-box data-line="Make What Matters" aria-hidden="true"></div>
+
+        <!-- the reel — sits under the pile, revealed by the takeover -->
+        <div class="hero__show" aria-hidden="true">
+          <!-- inner carries the counter-transform during the takeover morph -->
+          <div class="hero__show-inner">
+            <video class="hero__slide" data-client="PHN North Western Melbourne" src="../assets/Banner/NWMPHN.mp4" muted playsinline loop preload="auto"></video>
+            <img class="hero__slide" data-client="Museum of Australian Democracy (MoAD)" src="../assets/Banner/MoAD%20Question%20of%20the%20day.jpg" alt="" />
+            <img class="hero__slide" data-client="Cancer Institute NSW" src="../assets/Banner/iCanQuit-Banner.jpg" alt="" />
+            <video class="hero__slide" data-client="Nike Melbourne Marathon Festival" src="../assets/Banner/banner-vid-nike-mara.mp4" muted playsinline loop preload="auto"></video>
+            <div class="hero__scrim"></div>
+          </div>
+        </div>
+
+        <!-- the pop-and-stack pile -->
+        <div class="hero__stage" aria-hidden="true">
+          <!-- THE DEVICE LEADS (user call, Aug 2026): it pops first, holds a beat
+               of its own, then the work pieces follow. It is a real .hero__card,
+               so it takes the same open transition and the same positional tilt
+               as the rest — nth-child(1), -4deg. The tilt list already ran to six
+               and :last-child still claims the morph card, so adding one at the
+               front only re-deals the middle angles; the Nike video is still last
+               and still lands straight. -->
+          <figure class="hero__card hero__card--device">
+            <img src="../assets/brand/mwm-device-transparent.svg" alt="" width="300" height="300" />
+          </figure>
+          <figure class="hero__card"><video src="../assets/Banner/NWMPHN.mp4" muted playsinline preload="auto"></video></figure>
+          <figure class="hero__card"><img src="../assets/Banner/MoAD%20Question%20of%20the%20day.jpg" alt="" /></figure>
+          <figure class="hero__card"><img src="../assets/Banner/iCanQuit-Banner.jpg" alt="" /></figure>
+          <figure class="hero__card"><video src="../assets/Banner/banner-vid-nike-mara.mp4" muted playsinline preload="auto"></video></figure>
+        </div>
+
+        <div class="hero__inner">
+          <h1 class="hero__headline">
+            <span class="sr-only">Make what matters</span>
+            <!-- The lockup as BRAND ARTWORK (user call, Aug 2026), replacing the
+                 three-line type setting. Decorative: the h1's real text is the
+                 sr-only span above it, so the accessible name is unchanged.
+                 STATIC for now, deliberately — the word-rise and word-exit rules
+                 in home-c.css target .hero__word, which no longer exists here, so
+                 they have nothing to animate. 2c still toggles .is-exiting on the
+                 hero; nothing responds to it. Animation is the next conversation.
+
+                 THE DEVICE, not a wordmark: a 300x300 blue square with "Make what
+                 matters" KNOCKED OUT of it, so the reel plays through the letters
+                 themselves. That is why it is square where the type setting it
+                 replaced was 1.72:1 — the old height-matching does not apply and
+                 the size below is a first placement, not a derived value. -->
+            <!-- INLINE, not an <img>: DrawSVGPlugin animates stroke-dasharray on
+                 real nodes, and it cannot reach inside an <img>. Same reason the
+                 letters are STROKED rather than filled — DrawSVG draws strokes,
+                 so the letterforms have to be outlines for there to be anything
+                 to draw. Each of the 19 subpaths is its own <path> so they can
+                 stagger; counters are subpaths too, which is why some letters
+                 draw their inside separately.
+
+                 Fully drawn is the DEFAULT state (no dasharray until GSAP sets
+                 one), so no-JS, no-plugin and reduced-motion all land on a
+                 complete outline rather than an empty box. -->
+            <svg
+              class="hero__lockup-svg"
+              viewBox="0 0 300 300"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              aria-hidden="true"
+              data-lockup-draw
+            >
+              <rect class="hero__lockup-box" x="0.5" y="0.5" width="299" height="299" />
+              <!-- ONE GROUP PER LETTER, in reading order (Make / what / matters —
+                   lines and left-to-right order measured off getBBox, not guessed).
+                   Each group holds its own strokes AND its own fill, so a letter can
+                   fade its fill up while fading its outline out on its OWN timeline;
+                   a single combined fill path could only animate as one object.
+
+                   A group's fill is that letter's subpath PLUS its counters joined,
+                   so the winding still resolves the holes in the a's and e's. Five of
+                   the nineteen subpaths are counters (6->1, 7->2, 12->8, 17->14,
+                   18->13), which is why fourteen groups cover fifteen letters.
+
+                   Resting state is the MARKUP state: fills opaque, strokes
+                   transparent. No-JS, no-plugin and reduced motion all land on clean
+                   filled letterforms with no doubled edge. -->
+                <g class="hero__lockup-letter">
+                  <path class="hero__lockup-stroke" d="M98.8291 102.87H77.8125C77.1225 104.634 76.3546 106.632 74.5127 109.47L54.4844 139.938L47.8848 102.87H28.3906L27.7012 105.402C29.6932 105.48 32.5372 106.092 33.9951 107.55C34.7631 108.318 35.1465 109.315 35.1465 110.772C35.1464 111.618 34.9905 112.614 34.6846 113.766L27.623 140.01C25.9371 146.148 24.4012 149.22 22.3252 150.522C20.7893 151.44 16.4155 152.592 14.5732 152.826L13.8828 155.28H37.9785L38.6689 152.826C37.211 152.67 32.6814 151.368 31.5293 150.138C30.8393 149.448 30.5332 148.374 30.5332 146.682C30.5333 145.451 31.0727 142.08 31.6846 139.698L38.2852 115.062L43.2705 143.766C43.8105 147.065 44.2667 151.212 44.3447 154.434H48.9473L75.1191 115.218L66.7549 148.296C66.3709 149.91 65.4468 151.368 63.4551 152.058C62.3811 152.442 59.3088 152.748 58.0068 152.826L57.3945 155.28H85.4092L86.0205 152.826C84.5624 152.748 81.341 152.136 80.417 151.674C79.2651 151.134 78.8028 150.6 78.8027 149.526C78.8027 149.142 78.8813 148.452 79.0312 147.99L88.7744 110.154C89.2364 108.234 90.1547 106.933 92.1523 106.314C93.6103 105.93 96.6826 105.468 98.1406 105.396L98.8291 102.87H98.8428L98.8311 102.864L98.8291 102.87Z" />
+                  <path class="hero__lockup-fill" d="M98.8291 102.87H77.8125C77.1225 104.634 76.3546 106.632 74.5127 109.47L54.4844 139.938L47.8848 102.87H28.3906L27.7012 105.402C29.6932 105.48 32.5372 106.092 33.9951 107.55C34.7631 108.318 35.1465 109.315 35.1465 110.772C35.1464 111.618 34.9905 112.614 34.6846 113.766L27.623 140.01C25.9371 146.148 24.4012 149.22 22.3252 150.522C20.7893 151.44 16.4155 152.592 14.5732 152.826L13.8828 155.28H37.9785L38.6689 152.826C37.211 152.67 32.6814 151.368 31.5293 150.138C30.8393 149.448 30.5332 148.374 30.5332 146.682C30.5333 145.451 31.0727 142.08 31.6846 139.698L38.2852 115.062L43.2705 143.766C43.8105 147.065 44.2667 151.212 44.3447 154.434H48.9473L75.1191 115.218L66.7549 148.296C66.3709 149.91 65.4468 151.368 63.4551 152.058C62.3811 152.442 59.3088 152.748 58.0068 152.826L57.3945 155.28H85.4092L86.0205 152.826C84.5624 152.748 81.341 152.136 80.417 151.674C79.2651 151.134 78.8028 150.6 78.8027 149.526C78.8027 149.142 78.8813 148.452 79.0312 147.99L88.7744 110.154C89.2364 108.234 90.1547 106.933 92.1523 106.314C93.6103 105.93 96.6826 105.468 98.1406 105.396L98.8291 102.87H98.8428L98.8311 102.864L98.8291 102.87Z" />
+                </g>
+                <g class="hero__lockup-letter">
+                  <path class="hero__lockup-stroke" d="M113.117 119.052C99.3052 119.052 91.7812 134.862 91.7812 143.916C91.7813 153.588 97.151 156.426 102.293 156.426C107.129 156.426 110.507 153.738 113.267 149.214L113.495 149.292C113.573 154.434 117.485 156.276 121.781 156.276C129.533 156.276 132.677 151.596 135.365 144.69L132.917 143.772C131.153 148.302 128.465 152.213 125.321 152.214C123.941 152.214 123.479 151.602 123.479 149.526C123.479 148.602 123.941 146.688 124.631 144.69L133.223 119.898H122.171L120.407 124.734H120.179C119.567 120.745 116.417 119.052 113.117 119.052Z" />
+                  <path class="hero__lockup-stroke" d="M114.725 122.442C116.489 122.442 118.715 123.36 119.405 127.968L113.729 145.536C111.347 149.298 108.665 151.908 106.283 151.908C105.671 151.908 103.367 151.374 103.367 145.002C103.367 136.254 109.043 122.443 114.725 122.442Z" />
+                  <path class="hero__lockup-fill" d="M113.117 119.052C99.3052 119.052 91.7812 134.862 91.7812 143.916C91.7813 153.588 97.151 156.426 102.293 156.426C107.129 156.426 110.507 153.738 113.267 149.214L113.495 149.292C113.573 154.434 117.485 156.276 121.781 156.276C129.533 156.276 132.677 151.596 135.365 144.69L132.917 143.772C131.153 148.302 128.465 152.213 125.321 152.214C123.941 152.214 123.479 151.602 123.479 149.526C123.479 148.602 123.941 146.688 124.631 144.69L133.223 119.898H122.171L120.407 124.734H120.179C119.567 120.745 116.417 119.052 113.117 119.052ZM114.725 122.442C116.489 122.442 118.715 123.36 119.405 127.968L113.729 145.536C111.347 149.298 108.665 151.908 106.283 151.908C105.671 151.908 103.367 151.374 103.367 145.002C103.367 136.254 109.043 122.443 114.725 122.442Z" />
+                </g>
+                <g class="hero__lockup-letter">
+                  <path class="hero__lockup-stroke" d="M142.9 99.1016V101.484C144.82 101.562 146.045 101.712 147.509 101.946C149.195 102.252 150.347 102.864 150.347 104.556C150.347 105.474 149.885 107.7 149.429 109.236L134.999 155.28H145.895L151.727 136.092C154.871 136.092 156.562 137.088 156.562 140.082C156.562 142.386 155.026 147.066 155.026 149.448C155.027 154.206 160.553 156.126 163.547 156.126L164.421 156.112C173.355 155.822 175.667 151.084 178.271 144.69L175.816 143.844C173.512 149.214 171.52 152.052 168.526 152.052C167.219 152.052 166.073 151.589 166.073 149.52C166.074 148.367 167.068 144.989 167.068 141.846C167.068 137.394 163.385 135.786 160.547 134.784V134.322C164.387 133.248 165.845 131.25 167.225 128.412C169.223 124.344 169.529 121.35 172.445 121.35C173.981 121.35 173.981 121.962 174.209 123.042C173.981 123.888 173.212 124.272 172.522 124.806C171.215 125.73 170.681 126.804 170.681 128.874C170.681 130.944 173.063 132.096 174.905 132.096C178.127 132.095 180.509 129.258 180.509 125.958C180.509 122.658 178.973 119.052 172.757 119.052C166.541 119.052 164.087 122.352 162.395 125.808C160.169 130.182 159.323 133.788 152.417 133.788L163.931 98.334L142.9 99.1016Z" />
+                  <path class="hero__lockup-fill" d="M142.9 99.1016V101.484C144.82 101.562 146.045 101.712 147.509 101.946C149.195 102.252 150.347 102.864 150.347 104.556C150.347 105.474 149.885 107.7 149.429 109.236L134.999 155.28H145.895L151.727 136.092C154.871 136.092 156.562 137.088 156.562 140.082C156.562 142.386 155.026 147.066 155.026 149.448C155.027 154.206 160.553 156.126 163.547 156.126L164.421 156.112C173.355 155.822 175.667 151.084 178.271 144.69L175.816 143.844C173.512 149.214 171.52 152.052 168.526 152.052C167.219 152.052 166.073 151.589 166.073 149.52C166.074 148.367 167.068 144.989 167.068 141.846C167.068 137.394 163.385 135.786 160.547 134.784V134.322C164.387 133.248 165.845 131.25 167.225 128.412C169.223 124.344 169.529 121.35 172.445 121.35C173.981 121.35 173.981 121.962 174.209 123.042C173.981 123.888 173.212 124.272 172.522 124.806C171.215 125.73 170.681 126.804 170.681 128.874C170.681 130.944 173.063 132.096 174.905 132.096C178.127 132.095 180.509 129.258 180.509 125.958C180.509 122.658 178.973 119.052 172.757 119.052C166.541 119.052 164.087 122.352 162.395 125.808C160.169 130.182 159.323 133.788 152.417 133.788L163.931 98.334L142.9 99.1016Z" />
+                </g>
+                <g class="hero__lockup-letter">
+                  <path class="hero__lockup-stroke" d="M205.055 119.064C189.323 119.065 181.187 132.726 181.187 143.622C181.187 151.836 187.865 156.437 195.305 156.438C201.827 156.438 208.043 153.138 212.495 144.006L210.041 142.854C207.509 148.074 202.75 152.676 198.604 152.676C194.843 152.676 192.617 150.222 192.617 145.152C192.617 143.616 192.695 142.08 193.079 140.316C201.983 139.32 213.803 135.33 213.803 125.502L213.793 125.158C213.599 121.581 210.408 119.064 205.055 119.064Z" />
+                  <path class="hero__lockup-stroke" d="M202.595 121.896C203.441 121.896 204.209 123.894 204.209 125.658C204.209 129.498 202.061 136.17 193.463 138.012C195.305 129.648 199.679 121.896 202.595 121.896Z" />
+                  <path class="hero__lockup-fill" d="M205.055 119.064C189.323 119.065 181.187 132.726 181.187 143.622C181.187 151.836 187.865 156.437 195.305 156.438C201.827 156.438 208.043 153.138 212.495 144.006L210.041 142.854C207.509 148.074 202.75 152.676 198.604 152.676C194.843 152.676 192.617 150.222 192.617 145.152C192.617 143.616 192.695 142.08 193.079 140.316C201.983 139.32 213.803 135.33 213.803 125.502L213.793 125.158C213.599 121.581 210.408 119.064 205.055 119.064ZM202.595 121.896C203.441 121.896 204.209 123.894 204.209 125.658C204.209 129.498 202.061 136.17 193.463 138.012C195.305 129.648 199.679 121.896 202.595 121.896Z" />
+                </g>
+                <g class="hero__lockup-letter">
+                  <path class="hero__lockup-stroke" d="M109.602 190.62C111.828 190.926 114.132 192.306 115.05 194.454C120.192 206.886 121.728 210.726 127.02 224.31H132.161C133.085 221.238 134.004 218.634 135 216.024C136.842 211.188 138.684 206.892 140.292 202.824H140.754C143.592 209.502 145.128 214.104 148.968 224.31H153.953C154.949 220.932 155.795 218.556 156.869 216.024C160.169 207.966 162.701 201.906 165.773 194.844C167.003 192.006 169.23 190.854 171.3 190.47L171.306 188.238H157.26V190.542C158.49 190.698 162.552 191.694 162.552 193.38C162.552 193.992 162.473 194.916 162.245 195.528C159.713 202.206 158.022 206.352 155.724 211.95H155.262C152.346 204.738 149.736 197.598 148.434 194.07C148.05 193.147 147.972 192.612 147.972 192.456C147.972 191.226 150.732 190.77 152.502 190.692V188.238H132.09V190.62C134.088 190.926 136.08 191.85 137.231 194.454C137.999 196.296 138.611 197.754 139.151 199.29C137.465 203.82 135.852 207.576 134.01 211.956H133.47C130.554 204.744 127.866 197.604 126.563 194.076C126.179 193.152 126.102 192.54 126.102 192.462C126.102 191.232 128.483 190.698 129.863 190.62V188.238H109.602V190.62Z" />
+                  <path class="hero__lockup-fill" d="M109.602 190.62C111.828 190.926 114.132 192.306 115.05 194.454C120.192 206.886 121.728 210.726 127.02 224.31H132.161C133.085 221.238 134.004 218.634 135 216.024C136.842 211.188 138.684 206.892 140.292 202.824H140.754C143.592 209.502 145.128 214.104 148.968 224.31H153.953C154.949 220.932 155.795 218.556 156.869 216.024C160.169 207.966 162.701 201.906 165.773 194.844C167.003 192.006 169.23 190.854 171.3 190.47L171.306 188.238H157.26V190.542C158.49 190.698 162.552 191.694 162.552 193.38C162.552 193.992 162.473 194.916 162.245 195.528C159.713 202.206 158.022 206.352 155.724 211.95H155.262C152.346 204.738 149.736 197.598 148.434 194.07C148.05 193.147 147.972 192.612 147.972 192.456C147.972 191.226 150.732 190.77 152.502 190.692V188.238H132.09V190.62C134.088 190.926 136.08 191.85 137.231 194.454C137.999 196.296 138.611 197.754 139.151 199.29C137.465 203.82 135.852 207.576 134.01 211.956H133.47C130.554 204.744 127.866 197.604 126.563 194.076C126.179 193.152 126.102 192.54 126.102 192.462C126.102 191.232 128.483 190.698 129.863 190.62V188.238H109.602V190.62Z" />
+                </g>
+                <g class="hero__lockup-letter">
+                  <path class="hero__lockup-stroke" d="M168.911 167.52V169.824C170.291 169.902 173.208 170.285 174.132 170.897C175.362 171.743 176.201 173.892 176.201 175.35V217.56C176.201 219.246 175.661 220.475 174.203 220.938C173.129 221.243 172.205 221.4 170.825 221.478V223.86H191.55V221.478C190.554 221.4 189.552 221.094 188.712 220.56C187.56 219.948 187.176 218.874 187.176 217.182V197.538C187.866 195.774 190.247 192.624 194.621 192.624C197.153 192.624 199.302 195.39 199.302 200.454V217.566C199.302 219.252 198.996 220.482 197.922 220.944C197.076 221.25 196.158 221.406 195.084 221.484V223.866H215.573L215.586 223.848V221.466C214.206 221.388 213.282 221.082 212.208 220.62C210.828 220.008 210.365 218.934 210.365 217.242V199.362C210.365 192.072 207.066 187.236 199.926 187.236C193.326 187.236 190.254 190.692 187.338 193.53H187.182V167.13L186.642 166.596L168.911 167.52Z" />
+                  <path class="hero__lockup-fill" d="M168.911 167.52V169.824C170.291 169.902 173.208 170.285 174.132 170.897C175.362 171.743 176.201 173.892 176.201 175.35V217.56C176.201 219.246 175.661 220.475 174.203 220.938C173.129 221.243 172.205 221.4 170.825 221.478V223.86H191.55V221.478C190.554 221.4 189.552 221.094 188.712 220.56C187.56 219.948 187.176 218.874 187.176 217.182V197.538C187.866 195.774 190.247 192.624 194.621 192.624C197.153 192.624 199.302 195.39 199.302 200.454V217.566C199.302 219.252 198.996 220.482 197.922 220.944C197.076 221.25 196.158 221.406 195.084 221.484V223.866H215.573L215.586 223.848V221.466C214.206 221.388 213.282 221.082 212.208 220.62C210.828 220.008 210.365 218.934 210.365 217.242V199.362C210.365 192.072 207.066 187.236 199.926 187.236C193.326 187.236 190.254 190.692 187.338 193.53H187.182V167.13L186.642 166.596L168.911 167.52Z" />
+                </g>
+                <g class="hero__lockup-letter">
+                  <path class="hero__lockup-stroke" d="M235.938 187.242C229.182 187.242 220.818 190.77 220.817 195.605C220.817 198.137 222.276 200.748 226.344 200.748C230.412 200.748 232.481 198.06 232.481 196.374C232.481 194.304 231.563 192.462 231.485 191.31C232.253 190.62 233.406 189.852 235.397 189.852C239.849 189.852 240.155 195.071 240.155 197.604V201.06C237.239 202.674 231.252 204.132 226.8 205.818C222.888 207.276 219.126 209.58 219.126 216.18C219.126 221.244 223.193 225.006 228.485 225.006C234.545 225.006 237.539 222.63 240.071 219.864H240.3C241.836 222.858 244.062 224.928 249.048 224.928C255.492 224.928 258.719 221.244 259.025 213.954L256.266 213.948C256.188 216.786 255.498 220.086 253.506 220.086C251.052 220.086 250.745 217.476 250.745 216.558C250.745 214.025 251.208 205.968 251.208 198.984C251.208 188.622 244.38 187.242 235.938 187.242Z" />
+                  <path class="hero__lockup-stroke" d="M239.916 216.714C238.686 218.328 237.462 219.552 234.852 219.552C232.548 219.552 230.706 217.866 230.706 214.026C230.706 208.038 234.774 206.196 240.222 204.126L239.916 216.714Z" />
+                  <path class="hero__lockup-fill" d="M235.938 187.242C229.182 187.242 220.818 190.77 220.817 195.605C220.817 198.137 222.276 200.748 226.344 200.748C230.412 200.748 232.481 198.06 232.481 196.374C232.481 194.304 231.563 192.462 231.485 191.31C232.253 190.62 233.406 189.852 235.397 189.852C239.849 189.852 240.155 195.071 240.155 197.604V201.06C237.239 202.674 231.252 204.132 226.8 205.818C222.888 207.276 219.126 209.58 219.126 216.18C219.126 221.244 223.193 225.006 228.485 225.006C234.545 225.006 237.539 222.63 240.071 219.864H240.3C241.836 222.858 244.062 224.928 249.048 224.928C255.492 224.928 258.719 221.244 259.025 213.954L256.266 213.948C256.188 216.786 255.498 220.086 253.506 220.086C251.052 220.086 250.745 217.476 250.745 216.558C250.745 214.025 251.208 205.968 251.208 198.984C251.208 188.622 244.38 187.242 235.938 187.242ZM239.916 216.714C238.686 218.328 237.462 219.552 234.852 219.552C232.548 219.552 230.706 217.866 230.706 214.026C230.706 208.038 234.774 206.196 240.222 204.126L239.916 216.714Z" />
+                </g>
+                <g class="hero__lockup-letter">
+                  <path class="hero__lockup-stroke" d="M264.09 188.388H257.334V191.916H263.934V213.942C263.934 220.926 267.462 224.838 274.907 224.838C283.349 224.838 285.803 219.695 286.109 213.479L283.199 213.486C283.043 216.864 282.125 219.702 279.438 219.702C275.598 219.702 274.907 217.014 274.907 212.64V191.916H284.964V188.388H274.836V177.492H264.09V188.388Z" />
+                  <path class="hero__lockup-fill" d="M264.09 188.388H257.334V191.916H263.934V213.942C263.934 220.926 267.462 224.838 274.907 224.838C283.349 224.838 285.803 219.695 286.109 213.479L283.199 213.486C283.043 216.864 282.125 219.702 279.438 219.702C275.598 219.702 274.907 217.014 274.907 212.64V191.916H284.964V188.388H274.836V177.492H264.09V188.388Z" />
+                </g>
+                <g class="hero__lockup-letter">
+                  <path class="hero__lockup-stroke" d="M65.9932 248.424C59.3932 248.424 56.2488 251.88 53.1768 254.946H52.8711C51.4131 250.956 48.1129 248.424 43.127 248.424C36.527 248.424 33.8389 251.724 30.9229 254.562H30.7666V249.498L30.2266 248.958L13.8828 249.882V252.187C15.2627 252.265 16.7986 252.648 17.7227 253.26C18.9527 254.106 19.643 255.714 19.793 257.328V278.742C19.7929 280.428 19.2528 281.658 17.7949 282.12C16.721 282.426 15.7969 282.582 14.417 282.66V285.036H34.8291V282.66C33.8331 282.582 33.0647 282.276 32.2188 281.736C31.0668 281.124 30.7608 280.05 30.7607 278.358V258.558C31.4509 256.794 33.599 253.8 37.9727 253.8C40.5046 253.8 42.4248 256.56 42.4248 261.63V278.742C42.4248 280.428 42.2683 281.658 41.1943 282.12C40.3485 282.426 39.4303 282.582 38.3564 282.66V285.036H57.5449V282.66C56.5489 282.582 55.7806 282.276 54.9346 281.736C53.7827 281.124 53.4766 280.05 53.4766 278.358V258.558C54.1667 256.794 56.3149 253.8 60.6885 253.8C63.2205 253.8 65.1406 256.56 65.1406 261.63V278.742C65.1406 280.428 64.9849 281.658 63.9111 282.12C63.0652 282.426 62.1471 282.582 61.0732 282.66V285.036H81.4131L81.4189 285.03V282.654C80.039 282.576 79.115 282.27 78.041 281.808C76.661 281.196 76.1992 280.122 76.1992 278.43V260.7C76.1992 253.41 73.1269 248.424 65.9932 248.424Z" />
+                  <path class="hero__lockup-fill" d="M65.9932 248.424C59.3932 248.424 56.2488 251.88 53.1768 254.946H52.8711C51.4131 250.956 48.1129 248.424 43.127 248.424C36.527 248.424 33.8389 251.724 30.9229 254.562H30.7666V249.498L30.2266 248.958L13.8828 249.882V252.187C15.2627 252.265 16.7986 252.648 17.7227 253.26C18.9527 254.106 19.643 255.714 19.793 257.328V278.742C19.7929 280.428 19.2528 281.658 17.7949 282.12C16.721 282.426 15.7969 282.582 14.417 282.66V285.036H34.8291V282.66C33.8331 282.582 33.0647 282.276 32.2188 281.736C31.0668 281.124 30.7608 280.05 30.7607 278.358V258.558C31.4509 256.794 33.599 253.8 37.9727 253.8C40.5046 253.8 42.4248 256.56 42.4248 261.63V278.742C42.4248 280.428 42.2683 281.658 41.1943 282.12C40.3485 282.426 39.4303 282.582 38.3564 282.66V285.036H57.5449V282.66C56.5489 282.582 55.7806 282.276 54.9346 281.736C53.7827 281.124 53.4766 280.05 53.4766 278.358V258.558C54.1667 256.794 56.3149 253.8 60.6885 253.8C63.2205 253.8 65.1406 256.56 65.1406 261.63V278.742C65.1406 280.428 64.9849 281.658 63.9111 282.12C63.0652 282.426 62.1471 282.582 61.0732 282.66V285.036H81.4131L81.4189 285.03V282.654C80.039 282.576 79.115 282.27 78.041 281.808C76.661 281.196 76.1992 280.122 76.1992 278.43V260.7C76.1992 253.41 73.1269 248.424 65.9932 248.424Z" />
+                </g>
+                <g class="hero__lockup-letter">
+                  <path class="hero__lockup-stroke" d="M101.759 248.424C95.0028 248.424 86.6387 251.952 86.6387 256.788C86.6387 259.32 88.0971 261.93 92.165 261.93C96.2329 261.93 98.3027 259.242 98.3027 257.556C98.3026 255.486 97.3787 253.644 97.3066 252.492C98.0746 251.802 99.2268 251.034 101.219 251.034C105.671 251.034 105.977 256.254 105.977 258.786V262.242C103.061 263.856 97.0729 265.314 92.6211 267C88.7091 268.458 84.9473 270.762 84.9473 277.362C84.9474 282.426 89.0148 286.188 94.3066 286.188C100.373 286.188 103.361 283.812 105.893 281.046H106.121C107.657 284.04 109.883 286.11 114.869 286.11C121.313 286.11 124.541 282.426 124.847 275.136L122.093 275.13C122.015 277.968 121.325 281.267 119.333 281.268C116.879 281.268 116.566 278.658 116.566 277.74C116.566 275.208 117.028 267.15 117.028 260.166C117.028 249.804 110.201 248.424 101.759 248.424Z" />
+                  <path class="hero__lockup-stroke" d="M105.749 277.896C104.519 279.51 103.294 280.734 100.685 280.734C98.3807 280.734 96.5391 279.048 96.5391 275.208C96.5391 269.22 100.607 267.378 106.055 265.308L105.749 277.896Z" />
+                  <path class="hero__lockup-fill" d="M101.759 248.424C95.0028 248.424 86.6387 251.952 86.6387 256.788C86.6387 259.32 88.0971 261.93 92.165 261.93C96.2329 261.93 98.3027 259.242 98.3027 257.556C98.3026 255.486 97.3787 253.644 97.3066 252.492C98.0746 251.802 99.2268 251.034 101.219 251.034C105.671 251.034 105.977 256.254 105.977 258.786V262.242C103.061 263.856 97.0729 265.314 92.6211 267C88.7091 268.458 84.9473 270.762 84.9473 277.362C84.9474 282.426 89.0148 286.188 94.3066 286.188C100.373 286.188 103.361 283.812 105.893 281.046H106.121C107.657 284.04 109.883 286.11 114.869 286.11C121.313 286.11 124.541 282.426 124.847 275.136L122.093 275.13C122.015 277.968 121.325 281.267 119.333 281.268C116.879 281.268 116.566 278.658 116.566 277.74C116.566 275.208 117.028 267.15 117.028 260.166C117.028 249.804 110.201 248.424 101.759 248.424ZM105.749 277.896C104.519 279.51 103.294 280.734 100.685 280.734C98.3807 280.734 96.5391 279.048 96.5391 275.208C96.5391 269.22 100.607 267.378 106.055 265.308L105.749 277.896Z" />
+                </g>
+                <g class="hero__lockup-letter">
+                  <path class="hero__lockup-stroke" d="M129.923 249.582H123.167V253.11H129.767V275.136C129.767 282.12 133.295 286.032 140.741 286.032C149.183 286.032 151.637 280.89 151.949 274.674H149.033C148.883 278.052 147.959 280.89 145.271 280.89C141.431 280.89 140.741 278.202 140.741 273.828V253.11H156.551V275.136C156.551 282.12 160.079 286.032 167.524 286.032C175.966 286.032 178.42 280.89 178.732 274.674H175.816C175.66 278.052 174.743 280.89 172.055 280.89C168.215 280.89 167.524 278.202 167.524 273.828V253.11H177.581V249.582H167.453V238.687H156.707V249.582H140.669V238.687H129.923V249.582Z" />
+                  <path class="hero__lockup-fill" d="M129.923 249.582H123.167V253.11H129.767V275.136C129.767 282.12 133.295 286.032 140.741 286.032C149.183 286.032 151.637 280.89 151.949 274.674H149.033C148.883 278.052 147.959 280.89 145.271 280.89C141.431 280.89 140.741 278.202 140.741 273.828V253.11H156.551V275.136C156.551 282.12 160.079 286.032 167.524 286.032C175.966 286.032 178.42 280.89 178.732 274.674H175.816C175.66 278.052 174.743 280.89 172.055 280.89C168.215 280.89 167.524 278.202 167.524 273.828V253.11H177.581V249.582H167.453V238.687H156.707V249.582H140.669V238.687H129.923V249.582Z" />
+                </g>
+                <g class="hero__lockup-letter">
+                  <path class="hero__lockup-stroke" d="M199.379 248.424C187.253 248.424 180.881 257.328 180.881 267.072C180.881 277.74 186.941 286.182 200.219 286.182C207.665 286.182 213.803 281.886 216.875 276.438L214.343 274.596C211.811 278.892 208.667 281.196 204.059 281.196C196.151 281.196 192.623 275.748 192.623 265.771H215.879V263.622C215.879 255.486 211.505 248.424 199.379 248.424Z" />
+                  <path class="hero__lockup-stroke" d="M198.917 251.268C203.369 251.268 204.287 256.873 204.287 262.854L192.623 263.01C192.779 255.18 195.311 251.268 198.917 251.268Z" />
+                  <path class="hero__lockup-fill" d="M199.379 248.424C187.253 248.424 180.881 257.328 180.881 267.072C180.881 277.74 186.941 286.182 200.219 286.182C207.665 286.182 213.803 281.886 216.875 276.438L214.343 274.596C211.811 278.892 208.667 281.196 204.059 281.196C196.151 281.196 192.623 275.748 192.623 265.771H215.879V263.622C215.879 255.486 211.505 248.424 199.379 248.424ZM198.917 251.268C203.369 251.268 204.287 256.873 204.287 262.854L192.623 263.01C192.779 255.18 195.311 251.268 198.917 251.268Z" />
+                </g>
+                <g class="hero__lockup-letter">
+                  <path class="hero__lockup-stroke" d="M246.575 248.58C242.813 248.58 239.513 250.65 236.291 254.646H236.141V249.504L235.601 248.964L219.257 249.888V252.192C220.637 252.27 222.173 252.654 223.091 253.266C224.321 254.112 225.011 255.72 225.161 257.334V278.748C225.161 280.434 224.621 281.664 223.163 282.126C222.089 282.432 221.171 282.588 219.785 282.666V285.042H243.347V282.666C242.117 282.588 239.507 282.282 238.283 281.742C236.903 281.13 236.135 280.056 236.135 278.364V257.952C236.825 256.878 239.207 254.04 242.657 253.962C242.501 254.496 242.045 256.032 242.045 257.724C242.045 261.18 244.577 262.638 247.727 262.638C251.183 262.638 253.48 259.644 253.48 255.96L253.473 255.542C253.302 251.39 250.516 248.58 246.575 248.58Z" />
+                  <path class="hero__lockup-fill" d="M246.575 248.58C242.813 248.58 239.513 250.65 236.291 254.646H236.141V249.504L235.601 248.964L219.257 249.888V252.192C220.637 252.27 222.173 252.654 223.091 253.266C224.321 254.112 225.011 255.72 225.161 257.334V278.748C225.161 280.434 224.621 281.664 223.163 282.126C222.089 282.432 221.171 282.588 219.785 282.666V285.042H243.347V282.666C242.117 282.588 239.507 282.282 238.283 281.742C236.903 281.13 236.135 280.056 236.135 278.364V257.952C236.825 256.878 239.207 254.04 242.657 253.962C242.501 254.496 242.045 256.032 242.045 257.724C242.045 261.18 244.577 262.638 247.727 262.638C251.183 262.638 253.48 259.644 253.48 255.96L253.473 255.542C253.302 251.39 250.516 248.58 246.575 248.58Z" />
+                </g>
+                <g class="hero__lockup-letter">
+                  <path class="hero__lockup-stroke" d="M280.181 250.578C277.955 249.504 274.193 248.43 270.665 248.43C261.917 248.43 256.774 253.416 256.774 259.404C256.775 266.544 262.301 269.304 267.209 270.918C272.579 272.682 276.185 273.912 276.185 277.824C276.184 281.352 274.037 283.428 270.125 283.428C264.137 283.428 259.457 276.75 258.077 272.376H255.772L256.157 285.498H258.688L259.841 283.044C261.455 284.196 265.751 286.266 270.659 286.266C279.023 286.266 285.778 282.048 285.778 274.296L285.772 273.709C285.51 267.791 281.216 264.634 275.194 262.704C269.135 260.784 266.369 259.866 266.369 256.026C266.369 253.338 268.595 251.346 271.895 251.346C276.191 251.346 280.259 255.492 281.717 260.4H284.021L283.48 248.43H281.026L280.181 250.578Z" />
+                  <path class="hero__lockup-fill" d="M280.181 250.578C277.955 249.504 274.193 248.43 270.665 248.43C261.917 248.43 256.774 253.416 256.774 259.404C256.775 266.544 262.301 269.304 267.209 270.918C272.579 272.682 276.185 273.912 276.185 277.824C276.184 281.352 274.037 283.428 270.125 283.428C264.137 283.428 259.457 276.75 258.077 272.376H255.772L256.157 285.498H258.688L259.841 283.044C261.455 284.196 265.751 286.266 270.659 286.266C279.023 286.266 285.778 282.048 285.778 274.296L285.772 273.709C285.51 267.791 281.216 264.634 275.194 262.704C269.135 260.784 266.369 259.866 266.369 256.026C266.369 253.338 268.595 251.346 271.895 251.346C276.191 251.346 280.259 255.492 281.717 260.4H284.021L283.48 248.43H281.026L280.181 250.578Z" />
+                </g>
+            </svg>
+          </h1>
+        </div>
+
+        <p class="hero__client" data-client-label></p>
+        <p class="hero__count" data-boot-count aria-hidden="true"></p>
+      </section>
+
+      <section class="exp-runout" aria-label="Scroll run-out">
+        <p>
+          Scroll: the hero above is a curtain &mdash; it pins at its own top while this
+          panel rides over it, and it recedes to the footer&rsquo;s inset as you go. Scroll
+          back up and the lockup draws itself on again; scroll away and it reverses.
+          This block only supplies the travel those need, and is not part of the hero.
+        </p>
+      </section>
+    </main>
+
+    <!-- Ahead of the CDN scripts, as the homepage loads it: the kinetic loading
+         screen must not wait on a round-trip. FROZEN copy. -->
+    <script src="hero-device/hero-loader.frozen.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js"></script>
+    <!-- DrawSVGPlugin: the lockup's outline draw depends on it. -->
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/DrawSVGPlugin.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js"></script>
+
+    <!-- Not the hero, so these stay PRODUCTION. -->
+    <script src="../js/header.js"></script>
+    <script src="../js/reveal.js"></script>
+    <script src="../js/velocity-lean.js"></script>
+
+    <!-- FROZEN copy of the hero choreography. -->
+    <script src="hero-device/home-c.frozen.js"></script>
+  </body>
+</html>

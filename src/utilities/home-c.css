@@ -180,11 +180,12 @@
  * ==================================================================== */
 
 .hero {
-  /* THE SQUARE'S SIZE, once. The pile cards and the headline device are the
-     same object at two moments of the show — the device leads the pile, then
-     returns as the headline once the takeover lands — so they read at one size
-     by construction rather than by two matching literals (user call, Aug 2026:
-     "the first pop one is the best size for the top one").
+  /* THE SQUARE'S SIZE, once. The pile cards and the headline device read at
+     one size by construction rather than by two matching literals (user call,
+     Aug 2026: "the first pop one is the best size for the top one"). The
+     device used to lead the pile, which made this a single object at two
+     moments; it no longer does, but the sizing stayed — the headline still has
+     to land at the size the pile just left the screen at.
      Bounded on BOTH axes: a 1:1 card is far taller than the old 16/10 at the
      same width, so the height arm (svh) keeps the pile inside short viewports
      instead of overflowing the stage. */
@@ -295,24 +296,6 @@
    STRAIGHT (no tilt-then-straighten beat). Positional, so it survives
    reordering; after the nth-child list so source order wins. */
 .hero__card:last-child { --r: 0deg; }
-
-/* THE DEVICE CARD. Two departures from the work pieces, both deliberate.
-
-   NO GROUND: .hero__card paints --color-shader-blue as a fallback for media
-   still arriving, and this artwork's letters are transparent HOLES — over a
-   blue ground they fill with blue and vanish. With it off, the kinetic-text
-   loading screen and the cards behind show through the letterforms, which is
-   what the knockout is for.
-
-   NO TILT: it lands SQUARE (user call, Aug 2026) while the work pieces keep
-   their scattered angles. Written as a doubled class so it matches
-   .hero__card:nth-child(1)'s specificity, and placed after it so source order
-   decides — a single class would lose to the nth-child and the -4deg would
-   still apply. Same reason :last-child sits where it does, just above. */
-.hero__card.hero__card--device {
-  background: none;
-  --r: 0deg;
-}
 
 .js-animations [data-hero] .hero__card {
   opacity: 0;
@@ -450,12 +433,11 @@
 
 /* THE LOCKUP AS THE BRAND DEVICE, drawn. Inline SVG (DrawSVGPlugin cannot
    reach inside an <img>) of the box and the letterforms as STROKES, so GSAP
-   has outlines to draw on. The FILLED knockout version still leads the pile —
-   see .hero__card--device; this is the same artwork inverted. Square, where the type setting it
-   replaced was 1.72:1 — so there is no height to match. It takes
-   --hero-square, the pile card's own size, because it IS the pile's leading
-   card returning after the takeover; sizing the two apart made them read as
-   two different objects.
+   has outlines to draw on. Square, where the type setting it replaced was
+   1.72:1 — so there is no height to match. It takes --hero-square, the pile
+   card's own size: the filled knockout version of this artwork used to lead
+   the pile, and even now that it doesn't, sizing the two apart made the
+   headline read as a different object from the cards it lands over.
 
    No animation, by design (user call): nothing targets this on .is-live or
    .is-exiting, so it is simply present from the first frame.
@@ -464,9 +446,10 @@
    currently UNUSED — no markup wears them — and are left in place on purpose
    while the animation direction is decided. Delete them once it is settled;
    git has them either way. */
-/* The headline device is HIDDEN until the takeover completes (user call): the
-   same artwork leads the pile during the load screen, and showing both at once
-   read as a duplicate. .is-live is the takeover's end, and it also lands
+/* The headline device is HIDDEN until the takeover completes (user call: "you
+   can hide the top one until the full screen take over"). It was also the fix
+   for a duplicate reading, back when the same artwork led the pile; that twin
+   is gone and this still holds on its own. .is-live is the takeover's end, and it also lands
    immediately on the reduced-motion and Escape-skip paths, so neither can
    strand this hidden. Behind .js-animations, so a no-JS page just shows it.
 
@@ -661,8 +644,13 @@
 
 /* Build counter — [0]→[100] during the pile build, in the client name's exact
    spot and voice; the two crossfade at .is-live (counter out, client in).
-   Ink follows the page ground (white on the blue open), since during the
-   build it sits on the page, not on media. */
+
+   INK FOLLOWS THE GROUND UNDER IT, which changes once during the build: the
+   counter starts on the page ground in normal ink, and goes white the frame
+   the loading screen's blue square finishes covering the screen (.is-covered,
+   set by js/hero-loader.js off the pop's own animationend). Transitioned, so
+   it cross-fades with the header's inversion rather than snapping a beat
+   apart from it. */
 .hero__count {
   position: absolute;
   left: var(--gutter-page); /* the client name's exact spot — same token */
@@ -675,8 +663,11 @@
   line-height: 1.2;
   font-variant-numeric: tabular-nums;
   color: var(--color-icon-black);
-  transition: opacity 0.3s var(--ease-standard);
+  transition:
+    opacity 0.3s var(--ease-standard),
+    color var(--duration-normal) var(--ease-standard);
 }
+[data-hero].is-covered .hero__count { color: var(--color-white); }
 [data-hero].is-live .hero__count { opacity: 0; }
 /* Only meaningful while the JS choreography runs. */
 html:not(.js-animations) .hero__count { display: none; }
@@ -772,29 +763,34 @@ html:not(.js-animations) .hero__count { display: none; }
    what is particular to this statement is that it is the only lockup whose
    caps WRAP — WORK and the news rail are one word each.
 
-   So its leading lives here, not on the shared pair, and it is set so the two
-   white bands in the lockup MATCH (user call, Aug 2026: "needs to be the same
-   as the top, not way less").
+   So its spacing lives here, and the aim is that the two white bands in the
+   lockup MATCH (user call, Aug 2026: "needs to be the same as the top").
 
-   TWO KNOBS, because one cannot do it. Measured across a leading sweep, both
-   bands grow with the leading but the TOP grows faster — 0.877 gave 29.8/9.5
-   and 1.2 gave 61.2/36.1 — so no line-height equalises them. The leading sets
-   the BOTTOM band (lineHeight - inkHeight, and the caps ink is 62.7px tall);
-   the margin then closes the TOP band, which the leading has already moved.
+   WITH margin: 0 THE LINE BOXES ALWAYS TOUCH — consecutive blocks, gap 0 at
+   every leading. So the visible band is only ever the LEADING inside each box:
 
-   At a 12px band on both ends: 0.908 * 82.264 - 62.7 = 12, and -0.208em pulls
-   the top to match. Verified 12.0 / 12.0.
+     caps -> caps    = the caps box's whole leading, G = lineHeight - inkHeight
+     accent -> caps  = the accent's bottom half-leading + the caps' top half
+                       (G/2) + whatever margin is added
 
-   Measuring this needs care and cost two wrong passes. .sw__i is INLINE-BLOCK
-   (the word-cascade mask), so its rect is a LINE box, not an em box — neither
-   "top + fontAscent" nor "top + halfLeading + fontAscent" locates the
-   baseline. Ink runs from top + halfLeading + (fontAscent - inkAscent), and
-   the check that it is right is that inkBottom - inkTop equals the font's
-   own inkAscent + inkDescent (62.7px here). */
+   Equalising therefore needs a POSITIVE margin — G = accentHalf + G/2 + M
+   solves with M above zero — which is the part three earlier passes got wrong.
+   They drove it NEGATIVE, and a negative margin here does not open a gap, it
+   OVERLAPS the boxes: at -0.3563em the caps box began 29px above the accent
+   box ended and "A strategic" sat on the caps with no space at all.
+
+   Those passes were chasing a canvas-TextMetrics model of where the ink sits.
+   It disagreed with the render every time — fontBoundingBoxAscent/Descent are
+   not the metrics the browser lays these webfonts out with — and it reported a
+   healthy 30px gap for the setting that was visibly colliding. The leading
+   arithmetic above needs no font metrics at all, which is why it is what is
+   left here.
+
+   The leading is the component's own (the shared pair's line-height: 1); only
+   the margin is particular to this block. */
 .intro__headline .lockup-caps {
   text-wrap: balance;
-  line-height: 0.908;
-  margin-top: -0.208em;
+  margin-top: 0.08em;
 }
 
 /* ---- The filmstrip ------------------------------------------------------ */
