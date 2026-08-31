@@ -41,6 +41,25 @@
  * hangs off .is-revealed (which re-arms every time the panel is entered)
  * rather than [data-animate] (which fires once). Same values, different clock.
  */
+/* THE MASKS MUST NOT COLLAPSE THEIR MARGINS. Each line below pads for
+   ascenders/descenders and takes the same amount straight back off in margin,
+   so a stacked lockup reads exactly as an unmasked one. That cancellation was
+   silently only half-applying: adjacent siblings COLLAPSE their vertical
+   margins, and two negative margins collapse to the MOST negative rather than
+   summing — so between any two lines the paddings applied in full while only
+   the larger margin came off, opening the lockup by the smaller one every
+   time. Measured on the homepage news rail: 25.80px of padding against a
+   collapsed -14.28px margin left an 11.52px gap the plain-span lockups
+   (.work__heading, .intro__headline) do not have.
+
+   Flex items do not collapse margins, so the pair cancels in full and the gap
+   returns to 0. Nothing else about the layout changes: the lines were
+   block-level and full-width already, and stretch keeps them that way. */
+.reveal-lines {
+  display: flex;
+  flex-direction: column;
+}
+
 .reveal-lines__line {
   display: block;
   overflow: hidden;

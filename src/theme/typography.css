@@ -117,6 +117,19 @@
      Caps at the same 4xl horizon (~2670px) as every voice. The stacked
      header-B title is this register at 1.5x (see news-article.css). */
   --voice-headline: clamp(2.25rem, 3.6vw, 6rem);
+  /* THE ACCENT VOICE — the Miller line at the top of a masthead lockup
+     ("A strategic", "Featured", "Latest", the landings' "News" / "Work").
+
+     Its own voice as of Aug 2026 (user call: "a tad smaller"), because it
+     had been borrowing --voice-headline and that token is ALSO the news
+     article's H1 — trimming there would have shrunk a headline nobody asked
+     to change. The two roles only ever coincided; they are not the same
+     decision.
+
+     The headline curve at 0.9, every term scaled together, so it keeps the
+     same ~2670px 4xl horizon as the voice it came from — the same ~10% trim
+     --voice-label took when that was called "a tad smaller" too. */
+  --voice-accent: clamp(2.025rem, 3.24vw, 5.4rem);
   /* The same register at 1.5x — every term scaled together, same cap
      horizon. Born as header B's stacked title; the /news masthead joined
      it (user call: News & Insights = the article H1's size). */

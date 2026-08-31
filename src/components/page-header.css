@@ -195,7 +195,7 @@
 /* the lockup: the serif line sits over the caps, both centred */
 .page-header__lockup-accent {
   display: block;
-  font-size: var(--voice-headline);
+  font-size: var(--voice-accent);
   line-height: 1.3;
   /* .masthead-accent supplies Miller bold + the transform reset */
 }
