@@ -193,7 +193,8 @@
 }
 
 /* the rail section: hairline above (host border, drawn by rules.css),
-   masthead reads "Next up" */
+   masthead reads "Next up / NEWS" — the homepage rail's two-voice lockup
+   (.lockup-accent + .lockup-caps), so the two rails speak alike */
 .news-article__related {
   border-top: var(--rule-weight) solid var(--rule);
   padding-top: var(--space-md);

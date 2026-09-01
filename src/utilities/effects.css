@@ -62,11 +62,48 @@
     mask-position: center;
   }
 
-  /* The BACK variant — the same corner arrow mirrored to point the way you
-     came (the article eyebrow's News link). One transform: the mask flips
-     with the box, so the glyph needs no second data URI. */
+  /* The BACK variant — a PLAIN left arrow (user call, Sep 2026: "make this a
+     normal arrow"). It was the corner glyph above mirrored with scaleX(-1),
+     which cost nothing but read as a return-key hook rather than "back".
+
+     A second data URI is the price of that: mirroring reused one mask, and a
+     straight arrow is not the corner one at any rotation. Only this variant
+     changes — the corner ↳ is the site's INVITATION mark and still prefixes
+     the footer's Subscribe and Get in touch and both More links, which point
+     onward, not back.
+
+     The base's -0.04em nudge still applies and is still right: it lifts the
+     corner glyph, whose ink sits low in its box, and this arrow's shaft is on
+     the box's centre line, which lands on the caps' optical middle. */
   .invite-arrow--back::before {
-    transform: scaleX(-1);
+    transform: none;
+    /* SIZED TO THE TEXT (user call, Sep 2026). The arrow read small next to the
+       eyebrow because only 14 of the glyph's 24 viewBox units are ink: at the
+       shared 0.8em box that is 0.466em of arrow against a 0.747em cap height —
+       62% of the text it sits in.
+
+       Fixed by cropping the viewBox to the PAINTED bounds rather than by
+       growing the box. The shaft runs x 5..19 and the chevron y 5..19, and the
+       round caps and join add the half-stroke, so the ink is exactly 4..20 on
+       both axes — hence '4 4 16 16', which makes the glyph fill its box. The
+       box is then simply the size you want the arrow to be.
+
+       Growing the box instead would have needed 1.28em to land the same ink,
+       and an inline-block taller than the line box grows the line and nudges
+       everything under the eyebrow down. This way the box gets SMALLER than the
+       0.8em it replaces, so the eyebrow's line box is untouched. The stroke
+       scales with the crop too, which is wanted: it now carries the weight of
+       the uppercase text beside it.
+
+       0.75em is the measured cap height (0.747em), so the arrow stands exactly
+       as tall as the caps. On the baseline, since a box whose ink fills it and
+       whose height IS the cap height needs no nudge — unlike the corner glyph
+       above, whose ink sits low in its box. */
+    width: 0.75em;
+    height: 0.75em;
+    vertical-align: 0;
+    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='4 4 16 16' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M19 12H5'/%3E%3Cpath d='m12 19-7-7 7-7'/%3E%3C/svg%3E");
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='4 4 16 16' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M19 12H5'/%3E%3Cpath d='m12 19-7-7 7-7'/%3E%3C/svg%3E");
   }
 
   .fluid-heading {

@@ -275,8 +275,14 @@
         <div class="news__inner">
           <div class="news__head">
             <div class="news__rail">
+              <!-- The lockup on the masked line-rise, exactly as the homepage
+                   rail wears it: the voice classes ride the LINE (the mask),
+                   whose descender clearance is in em, so each half's mask
+                   scales with its own type size. .lockup-caps supplies the
+                   uppercasing, so the word stays sentence case in the source. -->
               <h2 class="news__heading reveal-lines" data-animate>
-                <span class="reveal-lines__line"><span class="reveal-lines__word" style="--w: 0">Next up</span></span>
+                <span class="reveal-lines__line lockup-accent masthead-accent"><span class="reveal-lines__word" style="--w: 0">Next up</span></span>
+                <span class="reveal-lines__line lockup-caps"><span class="reveal-lines__word" style="--w: 1">News</span></span>
               </h2>
             </div>
             <a class="news__more invite-arrow" href="/news" aria-label="More news">More</a>
