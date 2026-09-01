@@ -89,9 +89,30 @@
    supplies the face; markup carries the class). */
 .work-article__head {
   text-align: center;
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
+}
+
+/* The back eyebrow — "← Work" above the project name (user call, matching
+   the news article's head IDENTICALLY): the same doubled air above, the same
+   --space-sm to the title below, the same caps label voice in the quiet
+   meta grey, the same straight back arrow. Centred because this head is —
+   the one departure from the news head's left rail. */
+.work-article__eyebrow {
+  margin: calc(var(--space-sm) * 2) 0 var(--space-sm);
+  font-size: var(--voice-label);
+  font-weight: var(--font-weight-bold);
+  text-transform: uppercase;
+  color: var(--color-icon-grey);
+}
+
+.work-article__eyebrow a {
+  color: inherit;
+  text-decoration: none;
+  transition: color var(--duration-fast) var(--ease-standard);
+}
+
+.work-article__eyebrow a:hover,
+.work-article__eyebrow a:focus-visible {
+  color: var(--color-icon-black);
 }
 
 .work-article__project {
@@ -104,7 +125,7 @@
 }
 
 .work-article__client {
-  margin: 0;
+  margin: 0.4rem 0 0; /* the tight project/client pairing the flex gap used to carry */
   font-size: clamp(1.375rem, 1.7vw, 2.6rem);
   line-height: 1.2;
 }
@@ -129,6 +150,17 @@
   height: 100%;
   object-fit: cover;
   display: block;
+}
+
+/* The statement rides the page rhythm, not its own (user call, Sep 2026):
+   .pull-quote ships a clamp(2rem, 6vw, 6rem) padding-block for pages that
+   drop it into prose flows, but this page spaces its sections with the
+   frame's one flex gap — so the component's padding would DOUBLE the air
+   around the statement and nothing else. Zeroed here, the three gaps the
+   comp marks (head→banner, banner→statement, statement→rule) are all the
+   same --space-lg by construction. */
+.work-article > .pull-quote {
+  padding-block: 0;
 }
 
 /* The facts row under the feature statement: categories | deliverables, two
@@ -159,6 +191,20 @@
   line-height: 1.7;
 }
 
+/* The category links wear the list's own ink (already full-strength, unlike
+   the grey meta links elsewhere), so hover speaks through an underline —
+   the prose link's affordance in the caps voice. */
+.work-article__facts a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.work-article__facts a:hover,
+.work-article__facts a:focus-visible {
+  text-decoration: underline;
+  text-underline-offset: 0.25em;
+}
+
 /* The flow: same rhythm as the news article, without its Share rail — the
    comp centres the column on the page itself. Prose in the measure, media
    full width between the chunks. */
@@ -180,11 +226,16 @@
   }
 }
 
-/* Body copy and section-head registers: the news article's, verbatim. */
+/* Body copy and section-head registers: the news article's sizes, with the
+   leading pulled in (user call, Sep 2026): the prose base sets 1.75, right
+   for long news reading but loose against this page's tighter frame — 1.6
+   holds the paragraph together at every size on the clamp. The one knowing
+   divergence from the news body; fold back if the news page follows. */
 .work-article .content-page p,
 .work-article .content-page li {
   font-size: clamp(1.1875rem, 1.2vw, 1.875rem);
   font-weight: var(--font-weight-medium);
+  line-height: 1.6;
 }
 
 .work-article .content-page h2 {
@@ -229,6 +280,19 @@
 .work-gallery img {
   display: block;
   width: 100%;
+}
+
+/* Scroll-velocity skew — the /work landing's gesture on this page's media
+   (user call, Sep 2026): js/work-article.js writes one --wa-skew on the
+   article root per frame (shared engine, 3deg cap, reduced-motion guarded in
+   the JS); the banner, every gallery figure and the rail's cards inherit it.
+   These wrappers carry no transform of their own — the reveal is clip-path,
+   the card tilt is a landing-only behaviour — so `transform` is free here. */
+.work-article__banner,
+.work-gallery figure,
+.work-article__next .work__item {
+  transform: skewY(var(--wa-skew, 0deg));
+  transform-origin: center center;
 }
 
 /* ---- 4. Next up — on the CLIENT theme, under a drawn line ---------------- */

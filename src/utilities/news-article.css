@@ -372,11 +372,18 @@
   }
 }
 
-/* The rail's cards skew with scroll velocity like the homepage's — js/news.js
-   writes --nl-skew on this host (no GSAP here). The consumer lives in this
-   page layer because news-list.css scopes its copy to the listing's rows and
-   the homepage writes the same skew inline through GSAP. */
-.news-article__related .news-card {
+/* The rail's cards AND the article's media skew with scroll velocity like the
+   homepage's — js/news.js writes --nl-skew (on <main> for article pages, so
+   both reach it; no GSAP here). The consumer lives in this page layer because
+   news-list.css scopes its copy to the listing's rows and the homepage writes
+   the same skew inline through GSAP.
+
+   The figure wrappers are transform-free by design — the parallax drift
+   translates the IMG inside them — so skewY on the wrapper composes with the
+   drift rather than fighting it. */
+.news-article__related .news-card,
+.news-article__hero,
+.news-article__figure {
   transform: skewY(var(--nl-skew, 0deg));
   transform-origin: center center;
 }

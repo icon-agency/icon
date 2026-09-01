@@ -179,13 +179,16 @@
       <article class="work-article" aria-labelledby="project-title">
         <!-- ============ head: project / client, centred ============ -->
         <header class="work-article__head">
-          <h1 class="work-article__project" id="project-title" data-animate>iCanQuit</h1>
-          <p class="work-article__client masthead-accent" data-animate style="--animate-delay: 60ms">Cancer Institute NSW</p>
+          <p class="work-article__eyebrow" data-animate>
+            <a class="invite-arrow invite-arrow--back" href="/work">Work</a>
+          </p>
+          <h1 class="work-article__project" id="project-title" data-animate style="--animate-delay: 60ms">iCanQuit</h1>
+          <p class="work-article__client masthead-accent" data-animate style="--animate-delay: 120ms">Cancer Institute NSW</p>
         </header>
 
         <!-- ============ hero banner — image or looping video ============ -->
         <figure class="work-article__banner media-reveal" data-reveal-img>
-          <img src="../assets/work-article/icq-banner.png" alt="iCanQuit app interface showing daily check-in and progress tracking, surrounded by illustrated people going about their day" />
+          <img src="../assets/work/iCQ/iCQ%20Banner%204.jpg" alt="Illustrated people going about their day around the iCanQuit app — walking, cycling, checking in" />
         </figure>
 
         <!-- ============ feature statement — the news article's serif
@@ -196,10 +199,13 @@
 
         <!-- ============ facts: categories | deliverables ============ -->
         <section class="work-article__facts" data-rule="top" aria-label="Project facts">
+          <!-- The categories are LIVE (user call): Work → the landing, the
+               rest → its filters. work-filter.js honours the ?category= deep
+               links; slugs are the filter-bar's own. Drupal: term links. -->
           <ul data-animate>
-            <li>Work</li>
-            <li>Website design and development</li>
-            <li>Behaviour change</li>
+            <li><a href="/work">Work</a></li>
+            <li><a href="/work?category=websites">Website design and development</a></li>
+            <li><a href="/work?category=behaviour-change">Behaviour change</a></li>
           </ul>
           <ul data-animate style="--animate-delay: 60ms">
             <li>Behavioural research &amp; strategy</li>
@@ -238,10 +244,10 @@
           <div class="work-gallery">
             <div class="work-gallery__row work-gallery__row--cols-2">
               <figure class=" media-reveal" data-reveal-img>
-              <img loading="lazy" src="../assets/work-article/icq-features.png" alt="A hand holding a phone showing the iCanQuit app dashboard" />
+              <img loading="lazy" src="../assets/work/iCQ/iCQ%20Dashboard%2051.png" alt="A hand holding a phone showing the iCanQuit dashboard: time smoke free, money saved, cigarettes avoided" />
             </figure>
               <figure class=" media-reveal" data-reveal-img style="--animate-delay: 60ms">
-              <img loading="lazy" src="../assets/work-article/icq-dashboard.png" alt="iCanQuit app screens: congratulations message and community profile" />
+              <img loading="lazy" src="../assets/work/iCQ/Congratulations%20and%20Forum.png" alt="iCanQuit app screens: smoke-free congratulations message and a community profile" />
             </figure>
             </div>
           </div>
@@ -272,15 +278,15 @@
           <div class="work-gallery">
             <div class="work-gallery__row">
               <figure class=" media-reveal" data-reveal-img>
-              <img loading="lazy" src="../assets/work-article/icq-app-screens.png" alt="A collage of iCanQuit app screens: dashboard, calendar, quit goals, mood tracking and community profiles" />
+              <img loading="lazy" src="../assets/work/iCQ/icq-app-screens-100.png" alt="A collage of iCanQuit app screens: dashboard, calendar, quit goals, mood tracking and community profiles" />
             </figure>
             </div>
             <div class="work-gallery__row work-gallery__row--cols-2">
               <figure class=" media-reveal" data-reveal-img>
-              <img loading="lazy" src="../assets/work-article/icq-topics.png" alt="iCanQuit Topics page with cards covering preparing to quit, health, pregnancy and more" />
+              <img loading="lazy" src="../assets/work/iCQ/Savings%20and%20Withdrawl%20timeline.png" alt="iCanQuit support tools: nicotine withdrawal timeline and savings results calculator" />
             </figure>
               <figure class=" media-reveal" data-reveal-img style="--animate-delay: 60ms">
-              <img loading="lazy" src="../assets/work-article/icq-forum.png" alt="iCanQuit community forums page with discussion categories and success stories" />
+              <img loading="lazy" src="../assets/work/iCQ/iCQ%20mood%2051.png" alt="A hand holding a phone showing daily check-ins: your mood is trending up since you quit" />
             </figure>
             </div>
           </div>
@@ -317,15 +323,15 @@
           <div class="work-gallery">
             <div class="work-gallery__row">
               <figure class=" media-reveal" data-reveal-img>
-              <img loading="lazy" src="../assets/work-article/icq-homepage.png" alt="iCanQuit responsive website homepage shown across desktop and mobile" />
+              <img loading="lazy" src="../assets/work/iCQ/website%20screens,%20topics,%20forum,%20descision%20tree.png" alt="Three iCanQuit website screens: topics, community forums and the I-want-to-quit decision tree" />
             </figure>
             </div>
             <div class="work-gallery__row work-gallery__row--cols-2">
               <figure class=" media-reveal" data-reveal-img>
-              <img loading="lazy" src="../assets/work-article/icq-i-want-to-quit.png" alt="iCanQuit &lsquo;I want to quit&rsquo; page with ways-to-quit options" />
+              <img loading="lazy" src="../assets/work/iCQ/iCQ%20Sign%20up%2050.png" alt="iCanQuit sign-in screen beside an illustration of people out walking" />
             </figure>
               <figure class=" media-reveal" data-reveal-img style="--animate-delay: 60ms">
-              <img loading="lazy" src="../assets/Banner/iCanQuit-Banner.jpg" alt="iCanQuit campaign banner artwork" />
+              <img loading="lazy" src="../assets/work/iCQ/iCQ%20homepage%20desktop%20and%20mobile.png" alt="iCanQuit responsive website homepage shown on desktop and mobile" />
             </figure>
             </div>
           </div>
@@ -510,9 +516,12 @@
 
     <!-- Behaviours: header.js (nav scroll state + menus), reveal.js
          ([data-animate] fade-rise, .media-reveal, reveal-lines, [data-rule]),
+         velocity-lean.js + work-article.js (the scroll-velocity skew),
          site-footer.js. No GSAP on article pages. -->
     <script src="../js/header.js"></script>
     <script src="../js/reveal.js"></script>
+    <script src="../js/velocity-lean.js"></script>
+    <script src="../js/work-article.js"></script>
     <script src="../js/site-footer.js"></script>
   </body>
 </html>

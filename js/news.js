@@ -215,8 +215,14 @@
      its own CSS consumer: news-list.css rows / news-article.css rail
      cards). MAX 3deg — see home-c.js 3e for why not the reference's 20. */
   var leanHost = list || document.querySelector(".news-article__related");
+  // On ARTICLE pages the property lands on <main>, not the rail: the rail is
+  // the article's SIBLING, so a rail-hosted property never reached the body
+  // figures — which now skew too (user call, Sep 2026, with the work
+  // article). <main> is always in view, so the IO gate never idles the
+  // engine there; the settle logic is what stops it.
+  var leanWrite = list ? leanHost : document.querySelector("main") || leanHost;
   if (leanHost && !window.matchMedia("(prefers-reduced-motion: reduce)").matches &&
       window.ICON && window.ICON.velocityLean) {
-    window.ICON.velocityLean(leanHost, leanHost, "--nl-skew", 3);
+    window.ICON.velocityLean(list ? leanHost : leanWrite, leanWrite, "--nl-skew", 3);
   }
 })();
