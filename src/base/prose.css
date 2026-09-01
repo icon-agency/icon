@@ -154,6 +154,39 @@
     list-style-type: decimal;
   }
 
+  /* The SLASH LIST — an authoring option for BOTH article bodies (born on
+     the Work article comp, promoted to the News article master on the same
+     user call, Sep 2026). Each item opens with a slash in the page ink and
+     sits between hairlines: the ruled rhythm of the site's lists, in prose.
+     A ul carries it as a class, so the plain disc list above stays the
+     default. Drupal: a text-format style editors pick, not a new field. */
+  .content-page ul.list-slash {
+    list-style: none;
+    padding-left: 0;
+  }
+
+  .content-page ul.list-slash li {
+    position: relative;
+    padding: 0.9em 0 0.9em 1.6em;
+    margin: 0;
+    border-top: var(--rule-weight) solid var(--rule);
+  }
+
+  .content-page ul.list-slash li:not(:last-child) {
+    margin-bottom: 0; /* the rules carry the rhythm, not the gap */
+  }
+
+  .content-page ul.list-slash li:last-child {
+    border-bottom: var(--rule-weight) solid var(--rule);
+  }
+
+  .content-page ul.list-slash li::before {
+    content: "/";
+    position: absolute;
+    left: 0;
+    font-weight: var(--font-weight-bold);
+  }
+
   /* Animated underline-grow link (brand blue → ink). */
   .content-page a {
     position: relative;

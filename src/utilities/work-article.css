@@ -1,34 +1,55 @@
-/* work-article.css — PAGE-SPECIFIC layer for the /work/article case study.
- * Imported LAST in src/main.css so it cascades over everything.
+/* work-article.css — PAGE layer for the Work article (folio case study)
+ * template (templates/work-article.html; design: experiments/Work-article.png,
+ * stepped through by the user, Sep 2026).
  *
- * Holds three concerns:
- *  1. .theme-work-article — a per-route LIGHT theme. This prototype page still
- *     runs dark (.dark on <html> — the canonical pages are light-default now);
- *     the scope sits on the SAME <html> element (class="dark
- *     theme-work-article") and re-binds the brand vars to the work-article
- *     palette (already in colors.css as --work-article-*). It must be on <html>,
- *     not <body>: Tailwind v4 registers the --color-* aliases and resolves them
- *     at :root, so a body-level rebind would re-theme the raw vars (prose) but
- *     NOT the --color-* aliases / utilities. On <html> it reaches both. No inline
- *     styles, no rebuild — the same mechanism .dark uses; it wins over .dark by
- *     source order. The reveal swipe is unaffected (FIXED --color-brand-blue).
- *  2. .case-study — the article layout: centred hero, featured media, two-column
- *     text rows.
- *  3. Compositor parallax (animation-timeline: view(), intensity 8) on the
- *     featured image — never a scroll handler (see LESSONS.md / docs/animation.md).
+ * THE SHAPE IS THE NEWS ARTICLE'S. This page is deliberately the news
+ * article's calm, centred editorial structure wearing the client's colours:
+ * centred head, one hero band, centred prose measure with wide media breaking
+ * out between the chunks, the same .content-page prose, the same
+ * .pull-quote--upright statements, the same .media-reveal entrances and
+ * [data-rule] hairlines. Where a measure or register matches
+ * news-article.css it matches ON PURPOSE (the user: "share all styles") —
+ * unify the two under one scope at the Drupal handoff rather than fork them
+ * now.
  *
- * Drupal: a case_study node. template_preprocess_html adds the theme-work-article
- * body class for the node type; the body renders inside .content-page.
- */
+ * Holds:
+ *   1. .theme-work-article — the CHAMELEON: whole-page client theming from a
+ *      two-value background + text pair;
+ *   2. the article frame — centred head (project / client), hero banner,
+ *      facts row, centred flow;
+ *   3. .work-gallery — 1- or 2-column image rows, mixed freely (CMS-nominated
+ *      eventually);
+ *   4. the Next up rail — back on the SITE theme, growing in like the footer,
+ *      wearing the work-landing cards.
+ *
+ * Drupal: the full node view of `case_study` — project/client/palette from
+ * node fields (template_preprocess_html emits the .theme-work-article class
+ * and the two custom properties inline on <html>), body rendered into
+ * .content-page, galleries as paragraph-embedded media, the rail a Views
+ * block of two work teasers. */
 
-/* ---- 1. Per-route light theme ------------------------------------------- */
+/* ---- 1. The chameleon ---------------------------------------------------- */
+/* Each client gets a unique background + text PAIR (user call, Sep 2026):
+ * NDIS #6a2875/#ffffff, iCanQuit #ebe5fe/#441170 (the pair below, which also
+ * lives in colors.css as the --work-article-* defaults). The pairs are
+ * re-pitched per client for the new design, never scraped from the old site.
+ *
+ * The scope sits on <html>, not <body>: Tailwind v4 registers the --color-*
+ * aliases and resolves them at :root, so a body-level rebind would re-theme
+ * the raw vars (prose) but NOT the aliases / utilities. On <html> it reaches
+ * both. Per node, Drupal emits the two properties inline on the same element;
+ * everything here derives from --wa-surface / --wa-ink and never states a
+ * client colour of its own.
+ *
+ * Scope of the effect (user calls, Sep 2026): the whole page wears the pair —
+ * logo and nav included, both already reading --color-foreground — and hands
+ * back to the site theme at the Next up rail (per the comp) and the footer
+ * (by construction: it paints --footer-bg, aliased to the raw black no
+ * rebind touches). */
 
 .theme-work-article {
-  /* Two role pointers (ink + surface) so everything below derives from them and
-   * the dev toggle can swap the two override colours by flipping the pointers
-   * (.is-inverted). The raw values still live only in colors.css. */
-  --wa-ink: var(--work-article-text);    /* #441170 purple */
-  --wa-surface: var(--work-article-bg);  /* #ebe5fe lilac  */
+  --wa-ink: var(--work-article-text);
+  --wa-surface: var(--work-article-bg);
 
   --background: var(--wa-surface);
   --foreground: var(--wa-ink);
@@ -41,119 +62,220 @@
    * illegible under the folio nav links). */
   --nav-bg-scrolled: color-mix(in srgb, var(--wa-surface) 78%, transparent);
   background-color: var(--wa-surface);
-  /* Default ink for inherited text (section-title label, more-link) — prose
-   * elements set their own brand-token colours on top of this. */
   color: var(--wa-ink);
 }
 
-/* Inverted folio — the dev toggle swaps the two override colours: light ink on
- * the dark purple surface. Everything re-themes because it all reads --wa-*. */
-.theme-work-article.is-inverted {
-  --wa-ink: var(--work-article-bg);    /* #ebe5fe lilac  */
-  --wa-surface: var(--work-article-text); /* #441170 purple */
-}
-
-/* The fixed wordmark inherits the article ink (v0 used an inline colorOverride). */
+/* The fixed wordmark inherits the article ink. */
 .theme-work-article .site-logo {
   color: var(--wa-ink);
 }
 
-/* ---- 2. Layout ----------------------------------------------------------- */
+/* ---- 2. The article frame ------------------------------------------------ */
 
-.case-study {
+.work-article {
+  /* Full-bleed like the news article — self-padded on the shared gutter, the
+     centred measure below keeps the reading column honest. Same wordmark
+     clearance derivation, so the two article pages breathe alike. */
   padding-inline: var(--gutter-page);
-  padding-top: clamp(8rem, 12vw, 10rem);
-  padding-bottom: var(--space-section);
+  padding-top: calc(2rem + var(--logo-h) + var(--space-sm));
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
 }
 
-.case-study__hero {
+/* Centred head: the project name in the display voice at its BRAND casing
+   (no uppercase — "iCanQuit" is the client's mark, not our shout), the
+   client's name under it in the serif accent voice (.masthead-accent
+   supplies the face; markup carries the class). */
+.work-article__head {
   text-align: center;
-  margin-bottom: clamp(3rem, 6vw, 6rem);
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
 }
 
-.case-study__eyebrow {
-  margin: 0 0 var(--spacing-lg);
-  font-size: var(--text-xs);
-  font-weight: var(--font-weight-bold);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--color-icon-black);
-}
-
-.case-study__title {
-  max-width: 24ch;
-  margin: 0 auto;
-  /* Custom fluid value: matches v0's clamp(3rem, 6vw, 4.5rem) case-study headline. */
-  font-size: clamp(3rem, 6vw, 4.5rem);
-  font-weight: var(--font-weight-semibold);
+.work-article__project {
+  margin: 0;
+  font-size: var(--voice-display);
+  font-weight: 900;
   line-height: 1;
-  letter-spacing: -0.025em;
-  color: var(--color-icon-black);
+  letter-spacing: -0.02em;
+  text-wrap: balance;
 }
 
-/* Featured image — reveal-wrapped frame with compositor parallax (intensity 8). */
-.case-study__featured {
-  margin: 0 0 clamp(3rem, 6vw, 6rem);
+.work-article__client {
+  margin: 0;
+  font-size: clamp(1.375rem, 1.7vw, 2.6rem);
+  line-height: 1.2;
 }
 
-.case-study__featured-frame {
-  position: relative;
-  aspect-ratio: 16 / 9;
+/* The hero band — image OR looping video, one wide crop (the news figure's
+   band, one step taller per the comp). The .media-reveal wrapper in markup
+   carries the entrance. */
+.work-article__banner {
+  margin: 0;
+  border-radius: var(--radius-icon);
   overflow: hidden;
-  border-radius: var(--radius-icon);
+  aspect-ratio: 3 / 2;
 }
 
-.case-study__featured-media {
-  position: absolute;
-  inset-inline: 0;
-  top: -11%;
+@media (min-width: 768px) {
+  .work-article__banner { aspect-ratio: 16 / 9; }
+}
+
+.work-article__banner img,
+.work-article__banner video {
   width: 100%;
-  height: 117%; /* 101 + intensity(8) * 2 — oversized so ±8% travel never exposes an edge */
+  height: 100%;
   object-fit: cover;
-  will-change: transform;
-}
-
-@keyframes case-study-parallax {
-  from { transform: translateY(8%); }
-  to { transform: translateY(-8%); }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  @supports (animation-timeline: view()) {
-    .case-study__featured-media {
-      animation: case-study-parallax linear both;
-      animation-timeline: --card-parallax; /* named timeline on the .reveal ancestor */
-    }
-  }
-}
-
-/* Standalone autoplaying video — reveal-wrapped, no parallax. Native muted-loop
- * autoplay (no JS); the reveal swipe covers the first frames during load. */
-.case-study__video {
-  margin: 0 0 clamp(3rem, 6vw, 6rem);
-}
-
-.case-study__video-media {
   display: block;
-  width: 100%;
-  aspect-ratio: 16 / 9;
-  object-fit: cover;
-  border-radius: var(--radius-icon);
 }
 
-/* Two-column text rows: heading left, body right (stacks below lg). Pair with
- * .content-page so the h2 / p / h3 / ul inside get the prose treatment. */
-.content-columns {
+/* The facts row under the feature statement: categories | deliverables, two
+   stacks of the caps label voice over one drawn hairline ([data-rule] in
+   markup). */
+.work-article__facts {
+  padding-top: var(--space-sm);
   display: grid;
   grid-template-columns: 1fr;
-  gap: var(--spacing-xl);
-  margin-block: clamp(2rem, 5vw, 6rem);
-  text-align: left;
+  gap: var(--spacing-lg);
+}
+
+@media (min-width: 768px) {
+  .work-article__facts { grid-template-columns: 1fr 1fr; }
+}
+
+.work-article__facts ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.work-article__facts li {
+  font-size: var(--voice-label);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  line-height: 1.7;
+}
+
+/* The flow: same rhythm as the news article, without its Share rail — the
+   comp centres the column on the page itself. Prose in the measure, media
+   full width between the chunks. */
+.work-article__flow {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+/* Same measure as .news-article__prose — shared by intent, see header. */
+.work-article__prose {
+  width: 100%;
+  margin-inline: auto;
 }
 
 @media (min-width: 1024px) {
-  .content-columns {
-    grid-template-columns: 1fr 1fr;
-    gap: clamp(2rem, 4vw, 3rem);
+  .work-article__prose {
+    max-width: clamp(46rem, 40vw, 64rem);
   }
 }
+
+/* Body copy and section-head registers: the news article's, verbatim. */
+.work-article .content-page p,
+.work-article .content-page li {
+  font-size: clamp(1.1875rem, 1.2vw, 1.875rem);
+  font-weight: var(--font-weight-medium);
+}
+
+.work-article .content-page h2 {
+  font-size: clamp(1.75rem, 2.3vw, 3.7rem);
+  font-weight: var(--font-weight-bold);
+  text-transform: none;
+}
+
+.work-article .content-page h3 {
+  font-size: clamp(1.25rem, 1.5vw, 2.4rem);
+  font-weight: var(--font-weight-bold);
+}
+
+/* ---- 3. The gallery ------------------------------------------------------ */
+/* One or more images, rows of one or two columns, mixed freely — eventually
+   CMS-nominated (Drupal: a gallery paragraph with a per-row column count).
+   Images keep their intrinsic height; the row just divides the width. */
+
+.work-gallery {
+  display: grid;
+  gap: var(--spacing-md);
+}
+
+.work-gallery__row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-md);
+}
+
+@media (min-width: 768px) {
+  .work-gallery__row--cols-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.work-gallery figure {
+  margin: 0;
+  border-radius: var(--radius-icon);
+  overflow: hidden;
+}
+
+.work-gallery img {
+  display: block;
+  width: 100%;
+}
+
+/* ---- 4. Next up — on the CLIENT theme, under a drawn line ---------------- */
+/* Settled over three passes (white → site-dark → this, all user calls): the
+   rail STAYS in the chameleon — no hand-back, the client pair runs to the
+   footer, which alone returns to the site theme. The boundary is a LINE: the
+   site's drawn hairline ([data-rule="top"] in markup) across the rail's
+   full-bleed width, in the pair's own rule tint. One page, one palette, one
+   rule — the footer's raw black is the only other ground.
+
+   WITHIN THE MARGINS (user call): no full-bleed here. The bleed existed for
+   the earlier ground changes; once the rail inherited the page ground its
+   only visible effect was pushing the rule out to the viewport edges. With
+   the section sitting in the article's own gutters, the line spans
+   gutter-to-gutter like every other rule on the page.
+
+   No grow here either (user call): the footer-style scale entrance was built
+   for a panel whose GROUND arrives — on a rail that shares the page ground
+   there is no edge to see, so the move only jiggled the content. The footer
+   keeps that entrance for itself; the rail's cards and lockup already carry
+   their own ([data-animate], reveal-lines, media-reveal). */
+
+.work-article__next {
+  padding-block: var(--space-section);
+}
+
+/* The rail masthead: the two-voice lockup, centred as the comp has it. */
+.work-article__next-heading {
+  margin: 0 0 var(--space-md);
+  text-align: center;
+}
+
+/* The cards are the work landing's own (.work__item / __figure / __caption);
+   only the rail's geometry lives here. The comp pairs a landscape tile with
+   a square one — the landing's own masonry feel at rail scale. */
+.work-article__next-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-md);
+  align-items: start;
+}
+
+@media (min-width: 768px) {
+  .work-article__next-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.work-article__next-grid .work__figure { aspect-ratio: 3 / 2; }
+.work-article__next-grid .work__item:nth-child(2) .work__figure { aspect-ratio: 1; }
