@@ -126,10 +126,19 @@
      to change. The two roles only ever coincided; they are not the same
      decision.
 
-     The headline curve at 0.9, every term scaled together, so it keeps the
-     same ~2670px 4xl horizon as the voice it came from — the same ~10% trim
-     --voice-label took when that was called "a tad smaller" too. */
-  --voice-accent: clamp(2.025rem, 3.24vw, 5.4rem);
+     RATIO-LOCKED to the display voice (user call, Sep 2026): as its own
+     clamp the two floors met at mobile — accent 32.4px against the caps'
+     38.4px, a 1.19 ratio where desktop holds ~1.73 — so every lockup pair
+     ("Featured/WORK", "Next up/NEWS", the article heads) flipped hierarchy
+     on small screens. Deriving it as display x 0.58 holds the desktop ratio
+     at EVERY width: identical at the design midpoint (62.4px at 1920, was
+     62.2), ~3% trimmer at the 4xl cap, and mobile falls to 22.3px where the
+     caps keep 38.4. The floor only guards sub-320px widths.
+
+     (Historical: born Aug 2026 as the headline curve x 0.9 — "a tad
+     smaller" — when it stopped borrowing --voice-headline, which is also
+     the news article's H1.) */
+  --voice-accent: clamp(1.25rem, calc(var(--voice-display) * 0.58), 5.4rem);
   /* The same register at 1.5x — every term scaled together, same cap
      horizon. Born as header B's stacked title; the /news masthead joined
      it (user call: News & Insights = the article H1's size). */

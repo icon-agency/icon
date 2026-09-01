@@ -1,0 +1,652 @@
+<!doctype html>
+<!-- ============================================================================
+     WORK ARTICLE (MASTER) — the Drupal developer's reference build.
+
+     Every component a folio case study is built from, once, in the canonical
+     order. Real pages (templates/work-icanquit.html, work-nike-marathon.html)
+     are THIS file with content swapped: every block below can be used,
+     skipped, repeated or reordered per article.
+
+     THE COMPONENT MENU (top to bottom):
+       1  work-article__eyebrow   — "← Work" back link (spacing = news head)
+       2  work-article__head      — project name (display voice, brand casing)
+                                    + client (serif accent)
+       3  work-article__banner    — ONE wide media: image OR looping video
+       4  pull-quote--upright     — the feature statement (+ optional __cite —
+                                    shared with the News article)
+       5  work-article__facts     — categories (LIVE links to /work filters)
+                                    | deliverables, under a drawn hairline
+       6  work-article__prose     — content block: h2 + prose (news measure,
+                                    1.6 leading). Repeat per chapter.
+       7  ul.list-slash           — the slash list (shared prose option, both
+                                    article types; plain ul stays default)
+       8  work-gallery            — rows of 1 or 2 columns, mixed freely;
+                                    images or looping video per figure
+       8b work-stats              — results as numbers: a ruled band of
+                                    {value, label} pairs (figures only —
+                                    qualitative results stay prose)
+       9  work-article__next      — "Next up / Work" rail: client theme, drawn
+                                    line within the margins, work-landing cards
+     THE CHAMELEON: the two inline custom properties on <html> are the entire
+     client theme (background + text pair; Drupal: template_preprocess_html
+     from case_study node fields). Sample pairs: iCanQuit #ebe5fe/#441170 ·
+     NDIS #6a2875/#ffffff · Nike #df453e/#ffffff.
+     See src/utilities/work-article.css for every measure's provenance.
+     ========================================================================= -->
+<html lang="en" class="theme-work-article" style="--work-article-bg: #ebe5fe; --work-article-text: #441170">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Work article (MASTER) — ICON Agency</title>
+    <meta
+      name="description"
+      content="The Work article MASTER — every component a folio case study is built from, in the canonical order. The Drupal developer's reference."
+    />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Kumbh+Sans:wght@400..900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://use.typekit.net/bhv7yrj.css" />
+    <link rel="stylesheet" href="../css/main.css" />
+
+    <!-- Mark JS-on before first paint so scroll-reveal elements start hidden
+         (no flash) yet remain visible if JS is disabled. -->
+    <script>
+      document.documentElement.classList.add("js-animations");
+    </script>
+
+    <!-- TEMPORARY dev-only light/dark toggle (bottom-right). Remove this tag +
+         js/theme-toggle.js before shipping. -->
+    <script src="../js/theme-toggle.js"></script>
+  </head>
+  <body>
+    <!-- ================= HEADER (global region) ================= -->
+    <header class="site-header">
+      <!-- Wordmark, fixed top-left -->
+        <!-- PROTOTYPE PATH. All four "home" controls in this header (this
+             wordmark, the nav pill's home glyph, the mobile home button and
+             the logo inside the mobile menu) point at ../index.html — the
+             design-system index — so the prototype is browsable on GitHub
+             Pages, where the site lives under /icon/ and an href="/" lands on
+             the org root instead. In Drupal every one of them is the site
+             front page: href="/". See docs/drupal-handoff.md. -->
+      <a class="site-logo" href="../index.html" aria-label="ICON Agency — home">
+        <svg
+          class="site-logo__mark"
+          viewBox="0 0 154 50"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          role="img"
+          aria-hidden="true"
+        >
+          <path d="M153.042 18.4117L148.607 14.7183H142.101C140.042 14.7183 138.367 13.0435 138.367 10.9848V0H149.309C151.367 0 153.042 1.67487 153.042 3.73356V18.4117ZM139.902 1.53434V10.9848C139.902 12.1974 140.888 13.184 142.101 13.184H149.162L151.508 15.1374V3.73356C151.508 2.52088 150.521 1.53434 149.309 1.53434H139.902Z" fill="currentColor" />
+          <path d="M80.7421 29.5428C80.7421 34.619 76.6127 38.7489 71.5366 38.7489C66.4604 38.7489 62.3305 34.619 62.3305 29.5428C62.3305 24.4665 66.4602 20.3372 71.5366 20.3372C76.6129 20.3372 80.7421 24.4668 80.7421 29.5428ZM91.8734 29.543C91.8734 18.3293 82.7503 9.20605 71.5363 9.20605C60.3222 9.20605 51.1992 18.3293 51.1992 29.543C51.1992 40.7567 60.3222 49.8802 71.5363 49.8802C82.7503 49.8802 91.8734 40.7567 91.8734 29.543Z" fill="currentColor" />
+          <path d="M37.7394 9.20606C26.5256 9.20606 17.4023 18.3293 17.4023 29.5431C17.4023 40.7569 26.5256 49.8802 37.7394 49.8802C42.5976 49.8802 47.3 48.115 51.009 44.9045L44.4842 36.366C42.67 38.1648 40.2872 39.1512 37.7394 39.1512C32.4416 39.1512 28.1316 34.841 28.1316 29.5431C28.1316 24.2453 32.4416 19.935 37.7394 19.935C40.3244 19.935 42.7325 20.9469 44.5542 22.7911L51.1997 14.3433C47.4621 11.0286 42.6924 9.20606 37.7394 9.20606Z" fill="currentColor" />
+          <path d="M12.8008 9.20605H0V49.8802H12.8008V9.20605Z" fill="currentColor" />
+          <path d="M121.726 9.20605V28.158L107.498 9.20605H96.4766V49.8802H108.513V30.9753L123.827 49.8802H133.763V9.20605H121.726Z" fill="currentColor" />
+        </svg>
+      </a>
+
+      <!-- Desktop pill nav — expands downward into a drawer for SERVICES -->
+      <div class="site-nav" data-nav>
+        <nav class="site-nav__pill" aria-label="Primary">
+          <div class="site-nav__row">
+            <a class="site-nav__home" href="../index.html" aria-label="Home">
+              <svg class="site-nav__home-glyph" viewBox="0 0 64 80" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <path d="M63.5616 80L44.3508 63.9521H16.1712C7.25435 63.9521 0 56.6747 0 47.7297V0H47.3305C56.3073 0 63.5616 7.27741 63.5616 16.2226V80ZM6.64572 6.6668V47.7297C6.64572 52.9987 10.9187 57.2853 16.1712 57.2853H46.7556L56.916 65.7731V16.2226C56.916 10.9534 52.6429 6.6668 47.3905 6.6668H6.64572Z" fill="currentColor" />
+              </svg>
+            </a>
+            <ul class="site-nav__list">
+              <li class="site-nav__item"><a class="site-nav__link" href="/about">AGENCY</a></li>
+              <li class="site-nav__item site-nav__item--has-submenu" data-submenu-item>
+                <a
+                  class="site-nav__link"
+                  href="/services"
+                  data-submenu-trigger
+                  aria-haspopup="true"
+                  aria-expanded="false"
+                  aria-controls="nav-services"
+                  >SERVICES</a
+                >
+              </li>
+              <li class="site-nav__item"><a class="site-nav__link" href="/work" aria-current="page">WORK</a></li>
+              <li class="site-nav__item"><a class="site-nav__link" href="/news">NEWS</a></li>
+              <li class="site-nav__item"><a class="site-nav__link" href="/contact">CONTACT</a></li>
+            </ul>
+          </div>
+
+          <!-- Drawer: grows the pill downward; items align under SERVICES -->
+          <div class="site-nav__drawer" id="nav-services" data-submenu-drawer>
+            <div class="site-nav__drawer-inner">
+              <ul class="site-nav__submenu-list">
+                <!-- Interdisciplinary = the /services landing (all services / how they work together) -->
+                <li><a class="site-nav__submenu-link" href="/services">Interdisciplinary</a></li>
+                <li><a class="site-nav__submenu-link" href="/services#creative">Creative</a></li>
+                <li><a class="site-nav__submenu-link" href="/services#communications">Communications</a></li>
+                <li><a class="site-nav__submenu-link" href="/services/digital">Digital</a></li>
+                <li><a class="site-nav__submenu-link" href="/services#reputation">Reputation</a></li>
+                <li><a class="site-nav__submenu-link" href="/services#behaviour-change">Behaviour change</a></li>
+                <li><a class="site-nav__submenu-link" href="/services#production">Production</a></li>
+              </ul>
+            </div>
+          </div>
+        </nav>
+      </div>
+
+      <!-- Mobile home glyph (appears on scroll) -->
+      <div class="site-header__mobile-home" data-mobile-home>
+        <a class="icon-button" href="../index.html" aria-label="Home">
+          <svg class="icon-button__icon" viewBox="0 0 64 80" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M63.5616 80L44.3508 63.9521H16.1712C7.25435 63.9521 0 56.6747 0 47.7297V0H47.3305C56.3073 0 63.5616 7.27741 63.5616 16.2226V80ZM6.64572 6.6668V47.7297C6.64572 52.9987 10.9187 57.2853 16.1712 57.2853H46.7556L56.916 65.7731V16.2226C56.916 10.9534 52.6429 6.6668 47.3905 6.6668H6.64572Z" fill="currentColor" />
+          </svg>
+        </a>
+      </div>
+
+      <!-- Mobile contact + hamburger -->
+      <div class="site-header__mobile-actions">
+        <a class="icon-button" href="/contact" aria-label="Contact">
+          <svg class="icon-button__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0Z" />
+            <circle cx="12" cy="10" r="3" />
+          </svg>
+        </a>
+        <button
+          class="menu-toggle"
+          type="button"
+          aria-expanded="false"
+          aria-controls="mobile-menu"
+          aria-label="Open menu"
+          data-menu-toggle
+        >
+          <span class="menu-toggle__bar"></span>
+          <span class="menu-toggle__bar"></span>
+        </button>
+      </div>
+
+      <!-- Full-screen mobile menu -->
+      <div class="mobile-menu" id="mobile-menu" data-mobile-menu hidden>
+        <div class="mobile-menu__bg" aria-hidden="true"></div>
+        <div class="mobile-menu__inner">
+          <a class="mobile-menu__logo" href="../index.html" aria-label="ICON Agency — home">
+            <svg class="site-logo__mark" viewBox="0 0 154 50" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M153.042 18.4117L148.607 14.7183H142.101C140.042 14.7183 138.367 13.0435 138.367 10.9848V0H149.309C151.367 0 153.042 1.67487 153.042 3.73356V18.4117ZM139.902 1.53434V10.9848C139.902 12.1974 140.888 13.184 142.101 13.184H149.162L151.508 15.1374V3.73356C151.508 2.52088 150.521 1.53434 149.309 1.53434H139.902Z" fill="currentColor" />
+              <path d="M80.7421 29.5428C80.7421 34.619 76.6127 38.7489 71.5366 38.7489C66.4604 38.7489 62.3305 34.619 62.3305 29.5428C62.3305 24.4665 66.4602 20.3372 71.5366 20.3372C76.6129 20.3372 80.7421 24.4668 80.7421 29.5428ZM91.8734 29.543C91.8734 18.3293 82.7503 9.20605 71.5363 9.20605C60.3222 9.20605 51.1992 18.3293 51.1992 29.543C51.1992 40.7567 60.3222 49.8802 71.5363 49.8802C82.7503 49.8802 91.8734 40.7567 91.8734 29.543Z" fill="currentColor" />
+              <path d="M37.7394 9.20606C26.5256 9.20606 17.4023 18.3293 17.4023 29.5431C17.4023 40.7569 26.5256 49.8802 37.7394 49.8802C42.5976 49.8802 47.3 48.115 51.009 44.9045L44.4842 36.366C42.67 38.1648 40.2872 39.1512 37.7394 39.1512C32.4416 39.1512 28.1316 34.841 28.1316 29.5431C28.1316 24.2453 32.4416 19.935 37.7394 19.935C40.3244 19.935 42.7325 20.9469 44.5542 22.7911L51.1997 14.3433C47.4621 11.0286 42.6924 9.20606 37.7394 9.20606Z" fill="currentColor" />
+              <path d="M12.8008 9.20605H0V49.8802H12.8008V9.20605Z" fill="currentColor" />
+              <path d="M121.726 9.20605V28.158L107.498 9.20605H96.4766V49.8802H108.513V30.9753L123.827 49.8802H133.763V9.20605H121.726Z" fill="currentColor" />
+            </svg>
+          </a>
+          <div class="mobile-menu__cols">
+            <nav class="mobile-menu__nav" aria-label="Mobile primary">
+              <a class="mobile-menu__link" href="/about">About</a>
+              <a class="mobile-menu__link" href="/services">Services</a>
+              <a class="mobile-menu__link" href="/work" aria-current="page">Work</a>
+              <a class="mobile-menu__link" href="/news">News</a>
+              <a class="mobile-menu__link" href="/contact">Contact</a>
+            </nav>
+            <nav class="mobile-menu__services" aria-label="Services">
+              <a class="mobile-menu__service" href="/services/creative">CREATIVE</a>
+              <a class="mobile-menu__service" href="/services/communications">COMMUNICATIONS</a>
+              <a class="mobile-menu__service" href="/services/digital">DIGITAL</a>
+              <a class="mobile-menu__service" href="/services/reputation">REPUTATION</a>
+              <a class="mobile-menu__service" href="/services/behaviour-change">BEHAVIOUR CHANGE</a>
+              <a class="mobile-menu__service" href="/services/production">PRODUCTION</a>
+            </nav>
+          </div>
+          <div class="mobile-menu__social">
+            <button class="mobile-menu__social-link" type="button" data-subscribe>Subscribe</button>
+            <a class="mobile-menu__social-link" href="https://www.linkedin.com/company/iconagency" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+            <a class="mobile-menu__social-link" href="https://www.instagram.com/iconagency" target="_blank" rel="noopener noreferrer">Instagram</a>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main id="main">
+      <article class="work-article" aria-labelledby="project-title">
+        <!-- ============ head: project / client, centred ============ -->
+        <header class="work-article__head">
+          <p class="work-article__eyebrow" data-animate>
+            <a class="invite-arrow invite-arrow--back" href="/work">Work</a>
+          </p>
+          <h1 class="work-article__project" id="project-title" data-animate style="--animate-delay: 60ms">iCanQuit</h1>
+          <p class="work-article__client masthead-accent" data-animate style="--animate-delay: 120ms">Cancer Institute NSW</p>
+        </header>
+
+        <!-- ============ hero banner — image or looping video ============ -->
+        <figure class="work-article__banner media-reveal" data-reveal-img>
+          <img src="../assets/work/iCQ/iCQ%20Banner%204.jpg" alt="Illustrated people going about their day around the iCanQuit app — walking, cycling, checking in" />
+        </figure>
+
+        <!-- ============ feature statement — the news article's serif
+             statement, shared on purpose ============ -->
+        <blockquote class="pull-quote pull-quote--upright" data-animate>
+          <p class="pull-quote__text">iCanQuit is more than breaking a habit&mdash;it&rsquo;s an identity transformation.</p>
+        </blockquote>
+
+        <!-- ============ facts: categories | deliverables ============ -->
+        <section class="work-article__facts" data-rule="top" aria-label="Project facts">
+          <!-- The categories are LIVE (user call): Work → the landing, the
+               rest → its filters. work-filter.js honours the ?category= deep
+               links; slugs are the filter-bar's own. Drupal: term links. -->
+          <ul data-animate>
+            <li><a href="/work">Work</a></li>
+            <li><a href="/work?category=websites">Website design and development</a></li>
+            <li><a href="/work?category=behaviour-change">Behaviour change</a></li>
+          </ul>
+          <ul data-animate style="--animate-delay: 60ms">
+            <li>Behavioural research &amp; strategy</li>
+            <li>Information architecture</li>
+            <li>Content design &amp; writing</li>
+            <li>UX/UI design</li>
+            <li>Clickable prototypes</li>
+            <li>User interviews &amp; usability testing</li>
+            <li>Custom illustrations</li>
+            <li>Video production</li>
+          </ul>
+        </section>
+
+        <!-- ============ the flow: reusable content blocks ============ -->
+        <div class="work-article__body">
+          <div class="work-article__flow">
+          <div class="work-article__chunk">
+          <div class="work-article__share-rail">
+          <div class="news-article__share" data-share>
+            <span class="news-article__share-label" aria-hidden="true">Share</span>
+            <button class="news-article__share-btn" type="button" data-share-copy aria-label="Copy link">
+              <svg class="news-article__share-glyph news-article__share-glyph--link" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" /><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" /></svg>
+              <svg class="news-article__share-glyph news-article__share-glyph--check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5" /></svg>
+            </button>
+            <a class="news-article__share-btn" href="mailto:" data-share-email aria-label="Share by email">
+              <svg class="news-article__share-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2" /><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" /></svg>
+            </a>
+            <span class="sr-only" aria-live="polite" data-share-status></span>
+          </div>
+          </div>
+          <div class="content-page work-article__prose" data-animate>
+            <h2>Overview</h2>
+            <p>
+              ICON partnered with Cancer Institute NSW to design and validate the next evolution of
+              the iCanQuit digital service, supporting people across NSW to quit smoking through a
+              connected website and mobile app experience.
+            </p>
+            <p>
+              The project focused on establishing a robust, evidence-based UX foundation that could
+              scale across platforms, support diverse user needs, and integrate behaviour change
+              principles from the outset.
+            </p>
+            <p>
+              Our role was to lead the end-to-end UX design and testing program, working closely with
+              the Cancer Institute team to test early, test often, and reduce delivery risk before
+              build.
+            </p>
+          </div>
+          </div>
+
+          <!-- gallery: a two-column row -->
+          <div class="work-gallery">
+            <div class="work-gallery__row work-gallery__row--cols-2">
+              <figure class=" media-reveal" data-reveal-img>
+              <img loading="lazy" src="../assets/work/iCQ/iCQ%20Dashboard%2051.png" alt="A hand holding a phone showing the iCanQuit dashboard: time smoke free, money saved, cigarettes avoided" />
+            </figure>
+              <figure class=" media-reveal" data-reveal-img style="--animate-delay: 60ms">
+              <img loading="lazy" src="../assets/work/iCQ/Congratulations%20and%20Forum.png" alt="iCanQuit app screens: smoke-free congratulations message and a community profile" />
+            </figure>
+            </div>
+          </div>
+
+          <div class="work-article__chunk">
+          <div class="work-article__share-rail">
+          <div class="news-article__share" data-share>
+            <span class="news-article__share-label" aria-hidden="true">Share</span>
+            <button class="news-article__share-btn" type="button" data-share-copy aria-label="Copy link">
+              <svg class="news-article__share-glyph news-article__share-glyph--link" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" /><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" /></svg>
+              <svg class="news-article__share-glyph news-article__share-glyph--check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5" /></svg>
+            </button>
+            <a class="news-article__share-btn" href="mailto:" data-share-email aria-label="Share by email">
+              <svg class="news-article__share-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2" /><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" /></svg>
+            </a>
+            <span class="sr-only" aria-live="polite" data-share-status></span>
+          </div>
+          </div>
+          <div class="content-page work-article__prose" data-animate>
+            <h2>Background</h2>
+            <p>
+              Smoking remains one of the leading preventable causes of illness and death in NSW.
+              While many people want to quit, the journey is rarely linear. It is shaped by habit,
+              stress, social context, and access to timely, trusted support.
+            </p>
+            <p>
+              iCanQuit is a long-standing digital service designed to support people through that
+              journey. As user expectations, devices, and digital behaviours evolved, Cancer
+              Institute NSW identified the need to reassess how the service worked across web and
+              mobile, and whether it was genuinely meeting users where they were.
+            </p>
+            <p>
+              The challenge was not simply to redesign an interface. The service needed to support
+              people at moments of vulnerability, encourage sustained behaviour change over time,
+              and work seamlessly across platforms. It also needed to be inclusive by design,
+              recognising the different cultural, accessibility, and health contexts in which people
+              attempt to quit.
+            </p>
+          </div>
+          </div>
+
+          <!-- gallery: a one-column row, then a two-column row — mixed freely -->
+          <div class="work-gallery">
+            <div class="work-gallery__row">
+              <figure class=" media-reveal" data-reveal-img>
+              <img loading="lazy" src="../assets/work/iCQ/icq-app-screens-100.png" alt="A collage of iCanQuit app screens: dashboard, calendar, quit goals, mood tracking and community profiles" />
+            </figure>
+            </div>
+            <div class="work-gallery__row work-gallery__row--cols-2">
+              <figure class=" media-reveal" data-reveal-img>
+              <img loading="lazy" src="../assets/work/iCQ/Savings%20and%20Withdrawl%20timeline.png" alt="iCanQuit support tools: nicotine withdrawal timeline and savings results calculator" />
+            </figure>
+              <figure class=" media-reveal" data-reveal-img style="--animate-delay: 60ms">
+              <img loading="lazy" src="../assets/work/iCQ/iCQ%20mood%2051.png" alt="A hand holding a phone showing daily check-ins: your mood is trending up since you quit" />
+            </figure>
+            </div>
+          </div>
+
+          <!-- gallery row variant: a LOOPING VIDEO figure (image or video per
+               figure, same row grammar). SAMPLE MEDIA. -->
+          <div class="work-gallery">
+            <div class="work-gallery__row">
+              <figure class="media-reveal" data-reveal-img>
+                <video autoplay muted loop playsinline preload="auto" src="../assets/Banner/NWMPHN.mp4" aria-label="Sample looping film"></video>
+              </figure>
+            </div>
+          </div>
+
+          <div class="work-article__chunk">
+          <div class="work-article__share-rail">
+          <div class="news-article__share" data-share>
+            <span class="news-article__share-label" aria-hidden="true">Share</span>
+            <button class="news-article__share-btn" type="button" data-share-copy aria-label="Copy link">
+              <svg class="news-article__share-glyph news-article__share-glyph--link" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" /><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" /></svg>
+              <svg class="news-article__share-glyph news-article__share-glyph--check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5" /></svg>
+            </button>
+            <a class="news-article__share-btn" href="mailto:" data-share-email aria-label="Share by email">
+              <svg class="news-article__share-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2" /><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" /></svg>
+            </a>
+            <span class="sr-only" aria-live="polite" data-share-status></span>
+          </div>
+          </div>
+          <div class="content-page work-article__prose" data-animate>
+            <h2>What we made</h2>
+            <p>We delivered a comprehensive UX design and validation program across three stages:</p>
+            <ul class="list-slash">
+              <li>
+                Project kickoff and discovery workshops to align on goals, review existing research
+                and information architecture, and confirm functional and behavioural requirements.
+              </li>
+              <li>
+                Low-fidelity wireframes for the full iCanQuit ecosystem, including onboarding,
+                dashboards, behaviour tracking, quit activities, forums, notifications, calculators,
+                and support tools, tested iteratively across desktop, mobile web, and app contexts.
+              </li>
+              <li>
+                High-fidelity UI prototypes for both website and app, refined through structured
+                usability testing to validate flows, content hierarchy, and interaction patterns
+                before development.
+              </li>
+              <li>
+                User testing was central to the approach. ICON recruited and managed 48 participants
+                across multiple rounds of testing, including Aboriginal and Torres Strait Islander
+                people, culturally and linguistically diverse audiences, and health professionals
+                for referral pathways. This ensured the service was inclusive, culturally informed,
+                and practical for real-world use.
+              </li>
+            </ul>
+          </div>
+          </div>
+
+          <!-- gallery: one wide, then two up -->
+          <div class="work-gallery">
+            <div class="work-gallery__row">
+              <figure class=" media-reveal" data-reveal-img>
+              <img loading="lazy" src="../assets/work/iCQ/website%20screens,%20topics,%20forum,%20descision%20tree.png" alt="Three iCanQuit website screens: topics, community forums and the I-want-to-quit decision tree" />
+            </figure>
+            </div>
+            <div class="work-gallery__row work-gallery__row--cols-2">
+              <figure class=" media-reveal" data-reveal-img>
+              <img loading="lazy" src="../assets/work/iCQ/iCQ%20Sign%20up%2050.png" alt="iCanQuit sign-in screen beside an illustration of people out walking" />
+            </figure>
+              <figure class=" media-reveal" data-reveal-img style="--animate-delay: 60ms">
+              <img loading="lazy" src="../assets/work/iCQ/iCQ%20homepage%20desktop%20and%20mobile.png" alt="iCanQuit responsive website homepage shown on desktop and mobile" />
+            </figure>
+            </div>
+          </div>
+
+          <div class="work-article__chunk">
+          <div class="work-article__share-rail">
+          <div class="news-article__share" data-share>
+            <span class="news-article__share-label" aria-hidden="true">Share</span>
+            <button class="news-article__share-btn" type="button" data-share-copy aria-label="Copy link">
+              <svg class="news-article__share-glyph news-article__share-glyph--link" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" /><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" /></svg>
+              <svg class="news-article__share-glyph news-article__share-glyph--check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5" /></svg>
+            </button>
+            <a class="news-article__share-btn" href="mailto:" data-share-email aria-label="Share by email">
+              <svg class="news-article__share-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2" /><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" /></svg>
+            </a>
+            <span class="sr-only" aria-live="polite" data-share-status></span>
+          </div>
+          </div>
+          <div class="content-page work-article__prose" data-animate>
+            <h2>Why it mattered</h2>
+            <p>
+              Quitting smoking is a complex, emotional, and highly personal journey. For iCanQuit,
+              getting the experience right was critical to trust, engagement, and long-term
+              behaviour change.
+            </p>
+            <p>
+              By validating the service design before build, the project reduced delivery risk,
+              avoided costly rework, and gave Cancer Institute NSW confidence that the platform
+              would meet user needs across devices and contexts. The structured testing approach
+              ensured that accessibility, inclusion, and clarity were embedded early rather than
+              retrofitted later.
+            </p>
+            <p>
+              Most importantly, the work laid a strong UX foundation for a public health service
+              that supports people at moments of vulnerability, helping them navigate cravings,
+              track progress, and access support in ways that feel human, supportive, and
+              achievable.
+            </p>
+          </div>
+
+          <!-- ============ work-stats — results as numbers ============
+               SAMPLE VALUES (process facts). Figures only; the qualitative
+               tail of a results story stays prose or slash list. -->
+          <section class="work-stats" data-animate aria-label="Results at a glance">
+            <dl class="work-stats__grid">
+              <div class="work-stats__stat">
+                <dt class="work-stats__label">Design stages</dt>
+                <dd class="work-stats__value">03</dd>
+              </div>
+              <div class="work-stats__stat">
+                <dt class="work-stats__label">Disciplines</dt>
+                <dd class="work-stats__value">08</dd>
+              </div>
+              <div class="work-stats__stat">
+                <dt class="work-stats__label">Screens designed</dt>
+                <dd class="work-stats__value">50+</dd>
+              </div>
+              <div class="work-stats__stat">
+                <dt class="work-stats__label">Usability testing</dt>
+                <dd class="work-stats__value">1:1</dd>
+              </div>
+            </dl>
+          </section>
+
+          </div>
+          </div>
+        </div>
+
+        <!-- ============ Next up — back on the site theme, the footer's grow,
+             the work landing's cards ============ -->
+        <section class="work-article__next" data-rule="top" aria-label="Next up">
+          <h2 class="work-article__next-heading reveal-lines" data-animate>
+            <span class="reveal-lines__line lockup-accent masthead-accent"><span class="reveal-lines__word" style="--w: 0">Next up</span></span>
+            <span class="reveal-lines__line lockup-caps"><span class="reveal-lines__word" style="--w: 1">Work</span></span>
+          </h2>
+
+          <div class="work-article__next-grid">
+            <a class="work__item" href="/work/article" aria-label="Transforming the elephant in the room into conversations that change lives — PHN North Western Melbourne">
+              <figure class="work__figure media-reveal" data-reveal-img>
+                <video class="work__img" src="../assets/video/NWMPHN_RAISEIT_30s_16-9_h264_2.mp4" autoplay loop muted playsinline preload="auto" aria-label="PHN North Western Melbourne — Raise It campaign film"></video>
+              </figure>
+              <div class="work__caption" data-animate>
+                <h3 class="work__title">Transforming the elephant in the room into conversations that change lives</h3>
+                <span class="work__meta">PHN North Western Melbourne</span>
+              </div>
+            </a>
+            <a class="work__item" href="/work/article" aria-label="Changing CALD community conversations on protection visas — Permanent Protection Visa">
+              <figure class="work__figure media-reveal" data-reveal-img>
+                <img class="work__img" loading="lazy" src="../assets/work/PPV.jpg" alt="Permanent Protection Visa community campaign portrait" />
+              </figure>
+              <div class="work__caption" data-animate style="--animate-delay: 60ms">
+                <h3 class="work__title">Changing CALD community conversations on protection visas</h3>
+                <span class="work__meta">Permanent Protection Visa</span>
+              </div>
+            </a>
+          </div>
+        </section>
+      </article>
+    </main>
+
+    <!-- ================= FOOTER (site theme, untouched by the chameleon) ==== -->
+    <footer class="site-footer">
+      <h2 class="site-footer__cta">
+        <a class="site-footer__cta-link" href="/contact">
+          <!-- Split per word only so each can rise out of its own mask; the
+               space between the spans is real, so the link still reads
+               "Let's talk Get in touch". -->
+          <span class="site-footer__talk"
+            ><span class="site-footer__talk-line"><span class="site-footer__talk-word" style="--w: 0">Let&rsquo;s</span></span>
+            <span class="site-footer__talk-line"><span class="site-footer__talk-word" style="--w: 1">talk</span></span
+          ></span>
+          <span class="site-footer__touch invite-arrow">Get in touch</span>
+        </a>
+      </h2>
+
+      <div class="site-footer__body">
+        <div class="site-footer__newsletter">
+          <p class="site-footer__blurb">Join our newsletter for industry insights, news and our latest work</p>
+          <!-- No <form> yet, on purpose: the subscribe behaviour ships with
+               the newsletter slice, and a form here would let Enter fire a
+               phantom submit. Drupal: webform/newsletter block renders the
+               real form; these two stay its visual spec. -->
+          <label class="sr-only" for="footer-email">Email address</label>
+          <input class="site-footer__email" id="footer-email" type="email" name="email" placeholder="Your email" autocomplete="email" />
+          <button class="site-footer__subscribe invite-arrow" type="button" data-subscribe>Subscribe</button>
+        </div>
+
+        <div class="site-footer__locations">
+          <h3 class="sr-only">Our offices</h3>
+          <ul class="site-footer__offices" role="list">
+            <li class="site-footer__office-item" data-rule="top">
+              <details class="site-footer__office">
+                <summary class="site-footer__office-summary">
+                  <!-- footer-melbourne-icon.tsx, inlined; fill follows currentColor -->
+                  <svg class="site-footer__office-icon" viewBox="0 0 278 278" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M243.62,97.25l-7.01-60.45h-15.78l-3.63-22.98L60.7.06l-4.26,36.74h-15.06l-7.01,60.45h14.37l25.68,180.69h129.15l25.68-180.69h14.37ZM52.08,48.8h15.06l4.15-35.77,135.53,11.92,3.76,23.85h15.35l4.23,36.45H47.85l4.23-36.45ZM193.16,265.94h-108.32l-23.98-168.69h156.27l-23.98,168.69Z" /></svg>
+                  <span class="site-footer__office-city">Melbourne</span>
+                  <span class="site-footer__office-place">Naarm</span>
+                  <span class="site-footer__office-toggle" aria-hidden="true"></span>
+                </summary>
+                <address class="site-footer__office-details">
+                  <p>Suite 1, Level 2<br />132 Gwynne Street<br />Cremorne VIC 3121 Australia</p>
+                  <p class="site-footer__office-contact">Phone <a href="tel:+61396424107">03 9642 4107</a><br /><a href="mailto:melbourne@iconagency.com.au">melbourne@iconagency.com.au</a></p>
+                </address>
+              </details>
+            </li>
+            <li class="site-footer__office-item" data-rule="top">
+              <details class="site-footer__office">
+                <summary class="site-footer__office-summary">
+                  <!-- footer-sydney-icon.tsx, inlined; fill follows currentColor -->
+                  <svg class="site-footer__office-icon" viewBox="0 0 278 278" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M230.52,104.99h-19.73v-53.65h-65.79V0h-12v51.34h-65.79v53.65h-19.73l14.24,100.92h31.04v72.1h92.47v-72.1h31.05l14.24-100.92ZM79.21,63.34h119.59v41.65h-119.59v-41.65ZM216.71,116.99l-4.58,32.44H65.87l-4.58-32.44h155.41ZM173.23,266h-68.47v-60.1h68.47v60.1ZM72.15,193.9l-4.58-32.47h142.87l-4.58,32.47H72.15Z" /></svg>
+                  <span class="site-footer__office-city">Sydney</span>
+                  <span class="site-footer__office-place">Gadigal</span>
+                  <span class="site-footer__office-toggle" aria-hidden="true"></span>
+                </summary>
+                <address class="site-footer__office-details">
+                  <p>Suite 5, Level 6<br />2&ndash;12 Foveaux Street<br />Surry Hills NSW 2010 Australia</p>
+                  <p class="site-footer__office-contact">Phone <a href="tel:+61261852860">02 6185 2860</a><br /><a href="mailto:sydney@iconagency.com.au">sydney@iconagency.com.au</a></p>
+                </address>
+              </details>
+            </li>
+            <li class="site-footer__office-item" data-rule="top">
+              <details class="site-footer__office">
+                <summary class="site-footer__office-summary">
+                  <!-- footer-brisbane-icon.tsx, inlined; fill follows currentColor -->
+                  <svg class="site-footer__office-icon" viewBox="0 0 278 278" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M270.05,73.68c-2.07-7.73-7.03-14.19-13.95-18.19-6.93-4-15-5.06-22.73-2.99-3.9,1.04-7.48,2.82-10.64,5.28l-.49.4c-12.77,10.25-27.24,17.58-43,21.81-35.31,9.46-72.99,1.86-103.88-20.82-1.17-1.76-2.5-3.42-4.03-4.94-2.28-2.28-4.82-4.14-7.52-5.58,3.12-6.12,5.43-13.44,6.62-21.18,1.5-9.78,1.11-19.5-1.1-27.37l-11.55,3.24c1.76,6.27,2.04,14.19.79,22.32-1.13,7.36-3.4,14.15-6.45,19.42-9.22-.97-18.78,2.06-25.82,9.1-2.45,2.45-4.47,5.26-6,8.37-.67,1.36-1.25,2.78-1.72,4.21-11.27,28.9-14.45,59.74-9.21,89.2,5.41,30.41,19.61,57.81,41.05,79.25,23.92,23.93,54.79,38.62,89.25,42.49l.49.06c.98.09,1.95.14,2.92.14,7.93,0,15.53-3.12,21.19-8.78,11.71-11.71,11.68-30.79-.06-42.52-2.86-2.87-6.21-5.09-9.93-6.61l-.59-.23c-6.38-2.49-12.46-5.49-18.23-8.98,10.98,2.58,22.09,3.86,33.2,3.86,20.38,0,40.76-4.31,60.27-12.87l.44-.19c8.16-3.73,14.16-10.83,16.48-19.49,4.27-15.95-5.23-32.41-21.18-36.68-3.9-1.04-7.89-1.29-11.85-.74l-.62.1c-.36.05-.71.1-1.07.15,21.12-10.42,39.52-25.91,54.09-45.73l.29-.39c5.2-7.31,6.85-16.46,4.53-25.12ZM149.82,231.13c2.21.91,4.21,2.24,5.92,3.96,7.06,7.06,7.09,18.53.06,25.56-3.81,3.81-9.09,5.7-14.43,5.18l-.35-.04c-31.73-3.57-60.13-17.07-82.11-39.05-19.7-19.7-32.74-44.89-37.72-72.87-4.87-27.35-1.88-56.01,8.63-82.9l.13-.36c.3-.93.67-1.85,1.1-2.73.95-1.93,2.21-3.68,3.73-5.2,3.85-3.85,8.91-5.77,13.98-5.77s10.2,1.95,14.09,5.83c1.16,1.16,2.15,2.44,2.98,3.81l-.25.32c.24.19.49.36.74.55,2.1,3.92,2.86,8.49,2.05,12.99l-.05.3c-3.91,21.79-2.84,44.17,3.09,64.71,5.72,19.8,15.59,37.36,29.32,52.29l-.05.09c.08.04.16.08.23.12,1.19,1.28,2.39,2.56,3.64,3.8,12.8,12.8,27.86,22.64,44.76,29.24l.5.19ZM214.03,156.63l.52-.08c2.35-.32,4.71-.16,7.03.46,9.56,2.56,15.25,12.42,12.69,21.98-1.39,5.19-4.99,9.45-9.92,11.7l-.23.1c-29.08,12.75-60.21,15.27-90.03,7.28-8.92-2.39-17.57-5.71-25.77-9.87-23.78-26.67-34.21-62.36-29.09-99.67,6.81,12.37,15.33,23.62,25.24,33.18,16.1,15.52,35.1,26.3,56.49,32.03,17.38,4.65,35.23,5.63,53.07,2.88ZM255.72,91.88l-.15.2c-18.81,25.58-44.51,43.33-74.32,51.32-1.76.47-3.52.9-5.27,1.29-3.99-.64-7.96-1.48-11.91-2.54-32.37-8.67-58.9-30.32-75.02-60.57,29.25,14.65,62.1,18.35,93.3,9.99,17.38-4.66,33.33-12.75,47.39-24.03l.41-.34c1.88-1.45,4-2.5,6.32-3.12,4.63-1.24,9.47-.6,13.62,1.79,4.15,2.4,7.12,6.27,8.36,10.9,1.39,5.19.4,10.68-2.75,15.09Z" /></svg>
+                  <span class="site-footer__office-city">Brisbane</span>
+                  <span class="site-footer__office-place">Meanjin</span>
+                  <span class="site-footer__office-toggle" aria-hidden="true"></span>
+                </summary>
+                <address class="site-footer__office-details">
+                  <p>25 King Street<br />Bowen Hills<br />Brisbane QLD 4006 Australia</p>
+                  <p class="site-footer__office-contact">Phone <a href="tel:+61731556528">07 3155 6528</a><br /><a href="mailto:brisbane@iconagency.com.au">brisbane@iconagency.com.au</a></p>
+                </address>
+              </details>
+            </li>
+            <li class="site-footer__office-item" data-rule="both">
+              <details class="site-footer__office">
+                <summary class="site-footer__office-summary">
+                  <!-- footer-fiji-icon.tsx, inlined; fill follows currentColor -->
+                  <svg class="site-footer__office-icon" viewBox="0 0 278 278" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M100.58,251.4C45.12,251.4,0,206.28,0,150.82,0,82.33,55.73,26.6,124.22,26.6c84.79,0,153.78,68.98,153.78,153.78v6h-97.46c-7.71,37.08-40.63,65.02-79.96,65.02ZM124.22,38.6c-61.88,0-112.22,50.34-112.22,112.22,0,48.84,39.74,88.58,88.58,88.58,38.41,0,69.66-31.25,69.66-69.66,0-30.07-24.46-54.53-54.53-54.53-23.39,0-42.42,19.03-42.42,42.42,0,18.05,14.69,32.74,32.74,32.74,13.78,0,24.99-11.21,24.99-24.99h12c0,20.4-16.59,36.99-36.99,36.99-24.67,0-44.74-20.07-44.74-44.74,0-30.01,24.41-54.42,54.42-54.42,36.68,0,66.53,29.84,66.53,66.53,0,1.56-.04,3.1-.13,4.64h83.76c-3.15-75.41-65.48-135.78-141.65-135.78Z" /></svg>
+                  <span class="site-footer__office-city">Fiji</span>
+                  <span class="site-footer__office-place">Suva</span>
+                  <span class="site-footer__office-toggle" aria-hidden="true"></span>
+                </summary>
+                <address class="site-footer__office-details">
+                  <p>Suva Business Center<br />177&ndash;181 Victoria Parade<br />Suva, Fiji</p>
+                  <p class="site-footer__office-contact"><a href="mailto:fiji@iconagency.com.au">fiji@iconagency.com.au</a></p>
+                </address>
+              </details>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="site-footer__base">
+        <ul class="site-footer__social" role="list">
+          <li><a class="site-footer__social-link" href="https://www.linkedin.com/company/iconagency" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
+          <li><a class="site-footer__social-link" href="https://www.instagram.com/iconagency" target="_blank" rel="noopener noreferrer">Instagram</a></li>
+        </ul>
+        <p class="site-footer__ack">ICON recognises the First Peoples of this nation and their ongoing connection to culture and country. We acknowledge First Nations Peoples as the Traditional Owners, Custodians and Lore Keepers of the world&rsquo;s oldest living culture and pay respects to their Elders past, present and emerging.</p>
+      </div>
+
+      <!-- The brand lockup closes every page: the ICON logo at full width, with
+           the hero's banner films playing inside it (see site-footer.css — the
+           mark is a mask over a fill layer, so its contents are swappable).
+           One clean string for assistive tech; the mark itself is decorative.
+
+           preload="none" is deliberate: these are the hero's files, so on the
+           homepage they are already cached, but on every other template they
+           would be a multi-megabyte download for a footer decoration. Nothing
+           is fetched until js/site-footer.js starts playback, which it only
+           does once the panel is on screen. -->
+      <p class="site-footer__lockup">
+        <span class="sr-only">ICON</span>
+        <span class="site-footer__lockup-line" aria-hidden="true">
+          <span class="site-footer__logo">
+            <video class="site-footer__slide is-current" src="../assets/Banner/NWMPHN.mp4" muted playsinline loop preload="none"></video>
+            <video class="site-footer__slide" src="../assets/Banner/banner-vid-nike-mara.mp4" muted playsinline loop preload="none"></video>
+          </span>
+        </span>
+      </p>
+    </footer>
+
+    <!-- Behaviours: header.js (nav scroll state + menus), reveal.js
+         ([data-animate] fade-rise, .media-reveal, reveal-lines, [data-rule]),
+         velocity-lean.js + work-article.js (the scroll-velocity skew),
+         site-footer.js. No GSAP on article pages. -->
+    <script src="../js/header.js"></script>
+    <script src="../js/reveal.js"></script>
+    <script src="../js/share.js"></script>
+    <script src="../js/velocity-lean.js"></script>
+    <script src="../js/work-article.js"></script>
+    <script src="../js/site-footer.js"></script>
+  </body>
+</html>

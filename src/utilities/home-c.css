@@ -1678,7 +1678,7 @@ html:not(.js-animations) .intro__expertise-list li:first-child a {
    No named timeline or JS needed, and nothing in the chain (.news,
    .news__inner, .news__head, .news__rail) sets overflow, so it resolves
    against the viewport. 6rem clears the nav pill, which ends at 1rem +
-   --header-control (3.5rem), with room to spare. */
+   --header-control (2.75rem), with room to spare. */
 @media (min-width: 1024px) {
   .news__heading {
     position: sticky;

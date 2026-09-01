@@ -126,7 +126,13 @@
 
 .work-article__client {
   margin: 0.4rem 0 0; /* the tight project/client pairing the flex gap used to carry */
-  font-size: clamp(1.375rem, 1.7vw, 2.6rem);
+  /* RATIO-LOCKED to the project name (user call, Sep 2026): the old clamp's
+     floor met the display floor at mobile and the client line read nearly
+     as big as the project — the desktop hierarchy inverted. display x 0.3
+     is the desktop relationship (32px against 107 at 1920), now held at
+     every width; the 15px floor guards legibility on the smallest screens
+     (a shallower dip than the old 22px floor's flattening). */
+  font-size: clamp(0.9375rem, calc(var(--voice-display) * 0.3), 2.7rem);
   line-height: 1.2;
 }
 
@@ -160,6 +166,14 @@
    comp marks (head→banner, banner→statement, statement→rule) are all the
    same --space-lg by construction. */
 .work-article > .pull-quote {
+  /* The HERO statement — the frame-level quote under the banner — stays
+     UNRULED (user call, Sep 2026: the lines belong to quotes IN the flow,
+     like the testimonial; the opening statement reads clean between the
+     banner and the facts row's own drawn rule). Back to the pre-lines state:
+     no borders, no padding — the frame's flex gap is its whole rhythm, so the
+     equalised beats (head→banner→statement→rule) hold untouched. The child
+     combinator is the scope: flow-level quotes never match it. */
+  border-block: none;
   padding-block: 0;
 }
 
@@ -205,9 +219,54 @@
   text-underline-offset: 0.25em;
 }
 
-/* The flow: same rhythm as the news article, without its Share rail — the
-   comp centres the column on the page itself. Prose in the measure, media
-   full width between the chunks. */
+/* Body = flow at FULL width with the Share OVERLAID (user call, Sep 2026:
+   the news grid's narrowed flow "wasn't working great" here — this page's
+   galleries earn the whole container). The Share block is still the news
+   component reused as-is with js/share.js; what changed is the geometry: an
+   absolutely-positioned zero-footprint rail spans the body's height at the
+   left content edge, and the share STICKS inside it (the sticky offsets come
+   from the component's own md rule) — so it travels with the reading without
+   costing the flow a single pixel of measure. It floats over wide media as
+   they pass; that is the accepted trade of the overlay. Below md the rail is
+   static and the share simply leads the flow, as on news. */
+.work-article__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+/* Each RUN of consecutive prose sections is a chunk carrying ONE share rail
+   (user calls, Sep 2026: "start and stop in each section that there is
+   room", then "there should only be one — the share can continue to the
+   next block"): the rail spans the whole run, so the share sticks beside the
+   text, travels across adjacent sections, and parks at the run's end — never
+   riding over the full-width media that breaks one run from the next, and
+   never doubling up beside back-to-back text. share.js wires every instance.
+   The flex column carries the flow's own rhythm between a run's sections. */
+.work-article__chunk {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+@media (min-width: 768px) {
+  .work-article__share-rail {
+    position: absolute;
+    inset-block: 0;
+    left: 0;
+  }
+}
+
+/* Below md there is no rail column: ONE share leads the flow (the first
+   chunk's); the repeats would read as clutter. */
+@media (max-width: 767.98px) {
+  .work-article__chunk .work-article__share-rail { display: none; }
+  .work-article__flow > .work-article__chunk:first-child .work-article__share-rail { display: block; }
+}
+
+/* The flow: same rhythm as the news article. Prose in the measure, media
+   wide between the chunks (narrowed by the rail, exactly as on news). */
 .work-article__flow {
   display: flex;
   flex-direction: column;
@@ -277,9 +336,24 @@
   overflow: hidden;
 }
 
-.work-gallery img {
+.work-gallery img,
+.work-gallery video {
   display: block;
   width: 100%;
+}
+
+/* Portrait media in a row — a phone-shaped crop (7:10) so a 9:16 reel and a
+   tall clipping sit as a matched pair instead of towering at their intrinsic
+   heights (the Nike race-day reel is 720x1280; uncropped it ran half again
+   the viewport). Apply to BOTH figures in the row so the pair lines up. */
+.work-gallery__figure--portrait {
+  aspect-ratio: 7 / 10;
+}
+
+.work-gallery__figure--portrait img,
+.work-gallery__figure--portrait video {
+  height: 100%;
+  object-fit: cover;
 }
 
 /* Scroll-velocity skew — the /work landing's gesture on this page's media
@@ -293,6 +367,64 @@
 .work-article__next .work__item {
   transform: skewY(var(--wa-skew, 0deg));
   transform-origin: center center;
+}
+
+/* ---- The stats band ------------------------------------------------------ */
+/* Results as NUMBERS (born on the MoAD example, user call Sep 2026): a ruled
+   band — the same hairlines the flow's quotes wear, so the two read as
+   siblings — holding stat items on an auto-fit grid. The VALUE speaks in the
+   headline register at the site's 900; the LABEL answers in the caps label
+   voice at the quiet meta grey. Everything reads the chameleon ink, so the
+   band re-pitches with the client pair like every other component.
+
+   PADDED IN to the prose measure (user call, Sep 2026): full-bleed it broke
+   a run in two and doubled the share; on the reading column it lives INSIDE
+   a run — heading, stats, tail, one share travelling past all three — and
+   its rules align with the text edges. Qualitative results that resist a
+   number stay prose or slash-list beside it; the band is for figures only.
+
+   Drupal: a work_stats paragraph — repeating {value, label} pairs. */
+.work-stats {
+  width: 100%;
+  margin-inline: auto;
+  padding-block: clamp(1.5rem, 3vw, 3rem);
+  border-block: var(--rule-weight) solid var(--rule);
+}
+
+@media (min-width: 1024px) {
+  .work-stats {
+    max-width: clamp(46rem, 40vw, 64rem); /* the prose measure, verbatim */
+  }
+}
+
+.work-stats__grid {
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+  gap: clamp(1.25rem, 2.5vw, 2.5rem);
+}
+
+.work-stats__stat {
+  margin: 0;
+}
+
+.work-stats__value {
+  display: block;
+  font-size: var(--voice-headline);
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+.work-stats__label {
+  display: block;
+  margin-top: 0.5em;
+  font-size: var(--voice-label);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--color-icon-grey);
 }
 
 /* ---- 4. Next up — on the CLIENT theme, under a drawn line ---------------- */

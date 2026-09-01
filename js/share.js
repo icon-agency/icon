@@ -17,8 +17,14 @@
 (function () {
   "use strict";
 
-  var root = document.querySelector("[data-share]");
-  if (!root) return;
+  // EVERY root, not the first: the work article repeats the block per prose
+  // section (the share starts and stops where there is room — user call,
+  // Sep 2026), so each instance wires its own copy state and mailto. The
+  // news article's single block is the loop's degenerate case.
+  var roots = document.querySelectorAll("[data-share]");
+  if (!roots.length) return;
+
+  roots.forEach(function (root) {
 
   var status = root.querySelector("[data-share-status]");
 
@@ -65,4 +71,5 @@
       }
     });
   }
+  });
 })();

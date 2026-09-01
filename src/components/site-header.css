@@ -11,9 +11,12 @@
  */
 
 /* Shared control size: the mobile button squares AND the wordmark height both
-   read from this, so the logo is always exactly as tall as the buttons. */
+   read from this, so the logo is always exactly as tall as the buttons.
+   2.75rem = 44px (user call, Sep 2026: the mobile chrome read too big at
+   3.5rem) — the tap-target floor exactly, so it cannot go lower. Desktop is
+   untouched: from md the buttons hide and the mark reads --logo-h. */
 .site-header {
-  --header-control: 3.5rem;
+  --header-control: 2.75rem;
 }
 
 /* ---- Wordmark logo (fixed top-left) ------------------------------------- */

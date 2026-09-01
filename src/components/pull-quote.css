@@ -17,6 +17,12 @@
   margin: 0;
   padding-block: clamp(2rem, 6vw, 6rem);
   text-align: center;
+  /* Ruled top and bottom (user call, Sep 2026, global): the statement sits
+     between two hairlines, the site's own rule tint — which re-pitches with
+     the chameleon on work articles. Static borders, not [data-rule]: that
+     mechanism draws ONE edge per element, and the component should not need
+     two wrapper elements to be ruled. */
+  border-block: var(--rule-weight) solid var(--rule);
 }
 
 .pull-quote__text {
@@ -31,6 +37,23 @@
   line-height: 1.2;
   color: var(--color-icon-black);
   text-wrap: balance;
+}
+
+/* Attribution — a quote that signs itself (the Nike testimonial): small caps
+   under the statement, page ink at reduced strength. Optional; statements
+   without a speaker simply omit the element. Drupal: field_attribution. */
+.pull-quote__cite {
+  display: block;
+  margin-top: 1.2em;
+  font-family: var(--font-sans);
+  font-style: normal;
+  /* The body copy's own register, one weight up (user call: caps label out,
+     body voice in) — the articles' shared body clamp at semibold, where the
+     body reads medium. Sentence case, full ink. */
+  font-size: clamp(1.1875rem, 1.2vw, 1.875rem);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: normal;
+  text-transform: none;
 }
 
 /* Upright variant — the News-article mock sets its centred serif statements

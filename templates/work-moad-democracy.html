@@ -1,19 +1,19 @@
 <!doctype html>
-<!-- WORK ARTICLE — the folio case study (design: experiments/Work-article.png,
-     stepped through by the user, Sep 2026). The news article's centred
-     editorial structure wearing the client's colours: see
-     src/utilities/work-article.css for the chameleon and every shared-measure
-     note. Content blocks between the facts row and the Next up rail are
-     REUSABLE and reorderable: prose chunk, gallery row (1 or 2 columns, mixed
-     freely), statement — the same body grammar as the news article. -->
-<html lang="en" class="theme-work-article" style="--work-article-bg: #ebe5fe; --work-article-text: #441170">
+<!-- WORK ARTICLE EXAMPLE — Democracy Cards, Museum of Australian Democracy.
+     Built from templates/work-article-master.html; copy from the old folio
+     (iconagency.com.au/work/museum-australian-democracy-...). The pair is a
+     re-pitch of MoAD's sky #58b4e4 with a deep petrol ink (the old site ran
+     pale-blue-on-sky, unreadable by our contrast rules). First outing of the
+     work-stats band; the film is the YouTube embed via the news article's
+     shared video figure. Assets: assets/work/moad-democracy/. -->
+<html lang="en" class="theme-work-article" style="--work-article-bg: #58b4e4; --work-article-text: #08283c">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>iCanQuit — Cancer Institute NSW — ICON Agency Work</title>
+    <title>Democracy Cards — Museum of Australian Democracy — ICON Agency Work</title>
     <meta
       name="description"
-      content="iCanQuit for the Cancer Institute NSW — designing and validating the next evolution of NSW's quit-smoking service. A case study by ICON Agency."
+      content="Democracy Cards for the Museum of Australian Democracy — countering election mis and disinformation. A case study by ICON Agency."
     />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -177,190 +177,236 @@
 
     <main id="main">
       <article class="work-article" aria-labelledby="project-title">
-        <!-- ============ head: project / client, centred ============ -->
         <header class="work-article__head">
           <p class="work-article__eyebrow" data-animate>
             <a class="invite-arrow invite-arrow--back" href="/work">Work</a>
           </p>
-          <h1 class="work-article__project" id="project-title" data-animate style="--animate-delay: 60ms">iCanQuit</h1>
-          <p class="work-article__client masthead-accent" data-animate style="--animate-delay: 120ms">Cancer Institute NSW</p>
+          <h1 class="work-article__project" id="project-title" data-animate style="--animate-delay: 60ms">Democracy Cards</h1>
+          <p class="work-article__client masthead-accent" data-animate style="--animate-delay: 120ms">Museum of Australian Democracy (MoAD)</p>
         </header>
 
-        <!-- ============ hero banner — image or looping video ============ -->
         <figure class="work-article__banner media-reveal" data-reveal-img>
-          <img src="../assets/work/iCQ/iCQ%20Banner%204.jpg" alt="Illustrated people going about their day around the iCanQuit app — walking, cycling, checking in" />
+          <img src="../assets/work/moad-democracy/hero-women-with-cards.png" alt="Two women holding Democracy Cards on the street" />
         </figure>
 
-        <!-- ============ feature statement — the news article's serif
-             statement, shared on purpose ============ -->
         <blockquote class="pull-quote pull-quote--upright" data-animate>
-          <p class="pull-quote__text">iCanQuit is more than breaking a habit&mdash;it&rsquo;s an identity transformation.</p>
+          <p class="pull-quote__text">Countering election campaign mis and disinformation.</p>
         </blockquote>
 
-        <!-- ============ facts: categories | deliverables ============ -->
         <section class="work-article__facts" data-rule="top" aria-label="Project facts">
-          <!-- The categories are LIVE (user call): Work → the landing, the
-               rest → its filters. work-filter.js honours the ?category= deep
-               links; slugs are the filter-bar's own. Drupal: term links. -->
           <ul data-animate>
             <li><a href="/work">Work</a></li>
-            <li><a href="/work?category=websites">Website design and development</a></li>
-            <li><a href="/work?category=behaviour-change">Behaviour change</a></li>
+            <li><a href="/work?category=creative">Content &amp; creative</a></li>
+            <li><a href="/work?category=communications">PR &amp; communications</a></li>
           </ul>
           <ul data-animate style="--animate-delay: 60ms">
-            <li>Behavioural research &amp; strategy</li>
-            <li>Information architecture</li>
-            <li>Content design &amp; writing</li>
-            <li>UX/UI design</li>
-            <li>Clickable prototypes</li>
-            <li>User interviews &amp; usability testing</li>
-            <li>Custom illustrations</li>
-            <li>Video production</li>
+            <li>Campaign strategy and creative concept development</li>
+            <li>Design and production of Democracy Cards</li>
+            <li>Vox-pop street interviews and video production</li>
+            <li>Social media content creation and targeted media placement</li>
+            <li>Strategic media counsel and issues management</li>
           </ul>
         </section>
 
-        <!-- ============ the flow: reusable content blocks ============ -->
         <div class="work-article__flow">
+          <div class="work-article__chunk">
+          <div class="work-article__share-rail">
+          <div class="news-article__share" data-share>
+            <span class="news-article__share-label" aria-hidden="true">Share</span>
+            <button class="news-article__share-btn" type="button" data-share-copy aria-label="Copy link">
+              <svg class="news-article__share-glyph news-article__share-glyph--link" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" /><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" /></svg>
+              <svg class="news-article__share-glyph news-article__share-glyph--check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5" /></svg>
+            </button>
+            <a class="news-article__share-btn" href="mailto:" data-share-email aria-label="Share by email">
+              <svg class="news-article__share-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2" /><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" /></svg>
+            </a>
+            <span class="sr-only" aria-live="polite" data-share-status></span>
+          </div>
+          </div>
           <div class="content-page work-article__prose" data-animate>
             <h2>Overview</h2>
             <p>
-              ICON partnered with Cancer Institute NSW to design and validate the next evolution of
-              the iCanQuit digital service, supporting people across NSW to quit smoking through a
-              connected website and mobile app experience.
+              The Museum of Australian Democracy (MoAD) engaged ICON to create a pre-election public
+              education campaign tackling misinformation ahead of the federal election.
             </p>
             <p>
-              The project focused on establishing a robust, evidence-based UX foundation that could
-              scale across platforms, support diverse user needs, and integrate behaviour change
-              principles from the outset.
+              ICON conceived and delivered Democracy Cards &mdash; a tactile, conversation-driven
+              intervention paired with authentic digital storytelling to encourage Australians,
+              particularly first-time and younger voters, to think critically about the information
+              they consume.
             </p>
             <p>
-              Our role was to lead the end-to-end UX design and testing program, working closely with
-              the Cancer Institute team to test early, test often, and reduce delivery risk before
-              build.
+              The campaign reached over 2.2 million people, exceeded engagement benchmarks and
+              strengthened MoAD&rsquo;s position as a trusted voice on democratic participation.
             </p>
           </div>
+          </div>
 
-          <!-- gallery: a two-column row -->
+          <!-- gallery: the cards in hand and on the street — a portrait pair -->
           <div class="work-gallery">
             <div class="work-gallery__row work-gallery__row--cols-2">
-              <figure class=" media-reveal" data-reveal-img>
-              <img loading="lazy" src="../assets/work/iCQ/iCQ%20Dashboard%2051.png" alt="A hand holding a phone showing the iCanQuit dashboard: time smoke free, money saved, cigarettes avoided" />
-            </figure>
-              <figure class=" media-reveal" data-reveal-img style="--animate-delay: 60ms">
-              <img loading="lazy" src="../assets/work/iCQ/Congratulations%20and%20Forum.png" alt="iCanQuit app screens: smoke-free congratulations message and a community profile" />
-            </figure>
+              <figure class="work-gallery__figure--portrait media-reveal" data-reveal-img>
+                <img loading="lazy" src="../assets/work/moad-democracy/hand-holding-democracy-cards.jpg" alt="A hand holding a fan of Democracy Cards" />
+              </figure>
+              <figure class="work-gallery__figure--portrait media-reveal" data-reveal-img style="--animate-delay: 60ms">
+                <img loading="lazy" src="../assets/work/moad-democracy/men-posing-with-cards.jpg" alt="Four young men posing with Democracy Cards" />
+              </figure>
             </div>
           </div>
 
+          <div class="work-article__chunk">
+          <div class="work-article__share-rail">
+          <div class="news-article__share" data-share>
+            <span class="news-article__share-label" aria-hidden="true">Share</span>
+            <button class="news-article__share-btn" type="button" data-share-copy aria-label="Copy link">
+              <svg class="news-article__share-glyph news-article__share-glyph--link" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" /><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" /></svg>
+              <svg class="news-article__share-glyph news-article__share-glyph--check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5" /></svg>
+            </button>
+            <a class="news-article__share-btn" href="mailto:" data-share-email aria-label="Share by email">
+              <svg class="news-article__share-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2" /><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" /></svg>
+            </a>
+            <span class="sr-only" aria-live="polite" data-share-status></span>
+          </div>
+          </div>
           <div class="content-page work-article__prose" data-animate>
             <h2>Background</h2>
             <p>
-              Smoking remains one of the leading preventable causes of illness and death in NSW.
-              While many people want to quit, the journey is rarely linear. It is shaped by habit,
-              stress, social context, and access to timely, trusted support.
+              In the lead-up to the federal election, misinformation was spreading rapidly online,
+              risking confusion and polarisation. MoAD&rsquo;s brief called for a progressive,
+              inclusive and data-informed approach to counter this trend, with a strong emphasis on
+              engaging younger and first-time voters.
             </p>
             <p>
-              iCanQuit is a long-standing digital service designed to support people through that
-              journey. As user expectations, devices, and digital behaviours evolved, Cancer
-              Institute NSW identified the need to reassess how the service worked across web and
-              mobile, and whether it was genuinely meeting users where they were.
+              Recognising the need to get Australians questioning and more deeply engaging with what
+              they see and read, we saw the value in something tangible &mdash; a thought-provoking
+              tool designed to spark reflection and conversation.
             </p>
             <p>
-              The challenge was not simply to redesign an interface. The service needed to support
-              people at moments of vulnerability, encourage sustained behaviour change over time,
-              and work seamlessly across platforms. It also needed to be inclusive by design,
-              recognising the different cultural, accessibility, and health contexts in which people
-              attempt to quit.
+              This creative approach ensured the campaign would stand out from typical
+              election-period messaging, grounding it in authentic, real-world interactions that
+              could be amplified online.
             </p>
-          </div>
-
-          <!-- gallery: a one-column row, then a two-column row — mixed freely -->
-          <div class="work-gallery">
-            <div class="work-gallery__row">
-              <figure class=" media-reveal" data-reveal-img>
-              <img loading="lazy" src="../assets/work/iCQ/icq-app-screens-100.png" alt="A collage of iCanQuit app screens: dashboard, calendar, quit goals, mood tracking and community profiles" />
-            </figure>
-            </div>
-            <div class="work-gallery__row work-gallery__row--cols-2">
-              <figure class=" media-reveal" data-reveal-img>
-              <img loading="lazy" src="../assets/work/iCQ/Savings%20and%20Withdrawl%20timeline.png" alt="iCanQuit support tools: nicotine withdrawal timeline and savings results calculator" />
-            </figure>
-              <figure class=" media-reveal" data-reveal-img style="--animate-delay: 60ms">
-              <img loading="lazy" src="../assets/work/iCQ/iCQ%20mood%2051.png" alt="A hand holding a phone showing daily check-ins: your mood is trending up since you quit" />
-            </figure>
-            </div>
           </div>
 
           <div class="content-page work-article__prose" data-animate>
-            <h2>What we made</h2>
-            <p>We delivered a comprehensive UX design and validation program across three stages:</p>
+            <h2>The challenge</h2>
             <ul class="list-slash">
-              <li>
-                Project kickoff and discovery workshops to align on goals, review existing research
-                and information architecture, and confirm functional and behavioural requirements.
-              </li>
-              <li>
-                Low-fidelity wireframes for the full iCanQuit ecosystem, including onboarding,
-                dashboards, behaviour tracking, quit activities, forums, notifications, calculators,
-                and support tools, tested iteratively across desktop, mobile web, and app contexts.
-              </li>
-              <li>
-                High-fidelity UI prototypes for both website and app, refined through structured
-                usability testing to validate flows, content hierarchy, and interaction patterns
-                before development.
-              </li>
-              <li>
-                User testing was central to the approach. ICON recruited and managed 48 participants
-                across multiple rounds of testing, including Aboriginal and Torres Strait Islander
-                people, culturally and linguistically diverse audiences, and health professionals
-                for referral pathways. This ensured the service was inclusive, culturally informed,
-                and practical for real-world use.
-              </li>
+              <li>Counter misinformation in a highly polarised, fast-moving digital environment.</li>
+              <li>Engage diverse and hard-to-reach audiences, including those with low trust in traditional media.</li>
+              <li>Deliver a campaign that felt fresh, credible and culturally relevant.</li>
+              <li>Achieve measurable reach and resonance within a limited budget and tight timeframe.</li>
             </ul>
           </div>
+          </div>
 
-          <!-- gallery: one wide, then two up -->
+          <!-- gallery: the campaign creative, wide -->
           <div class="work-gallery">
             <div class="work-gallery__row">
-              <figure class=" media-reveal" data-reveal-img>
-              <img loading="lazy" src="../assets/work/iCQ/website%20screens,%20topics,%20forum,%20descision%20tree.png" alt="Three iCanQuit website screens: topics, community forums and the I-want-to-quit decision tree" />
-            </figure>
-            </div>
-            <div class="work-gallery__row work-gallery__row--cols-2">
-              <figure class=" media-reveal" data-reveal-img>
-              <img loading="lazy" src="../assets/work/iCQ/iCQ%20Sign%20up%2050.png" alt="iCanQuit sign-in screen beside an illustration of people out walking" />
-            </figure>
-              <figure class=" media-reveal" data-reveal-img style="--animate-delay: 60ms">
-              <img loading="lazy" src="../assets/work/iCQ/iCQ%20homepage%20desktop%20and%20mobile.png" alt="iCanQuit responsive website homepage shown on desktop and mobile" />
-            </figure>
+              <figure class="media-reveal" data-reveal-img>
+                <img loading="lazy" src="../assets/work/moad-democracy/campaign-creative-collection.jpg" alt="Collection of Democracy Cards campaign creative" />
+              </figure>
             </div>
           </div>
 
+          <div class="work-article__chunk">
+          <div class="work-article__share-rail">
+          <div class="news-article__share" data-share>
+            <span class="news-article__share-label" aria-hidden="true">Share</span>
+            <button class="news-article__share-btn" type="button" data-share-copy aria-label="Copy link">
+              <svg class="news-article__share-glyph news-article__share-glyph--link" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" /><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" /></svg>
+              <svg class="news-article__share-glyph news-article__share-glyph--check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5" /></svg>
+            </button>
+            <a class="news-article__share-btn" href="mailto:" data-share-email aria-label="Share by email">
+              <svg class="news-article__share-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2" /><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" /></svg>
+            </a>
+            <span class="sr-only" aria-live="polite" data-share-status></span>
+          </div>
+          </div>
           <div class="content-page work-article__prose" data-animate>
-            <h2>Why it mattered</h2>
+            <h2>The solution</h2>
             <p>
-              Quitting smoking is a complex, emotional, and highly personal journey. For iCanQuit,
-              getting the experience right was critical to trust, engagement, and long-term
-              behaviour change.
+              ICON designed and produced Democracy Cards, a deck of open-ended questions about
+              truth, media and democracy, as the centrepiece of the campaign. Using the cards as
+              conversation starters, ICON hit the streets to interview Australians from all walks of
+              life, capturing raw, unscripted perspectives in a vox-pop format.
             </p>
             <p>
-              By validating the service design before build, the project reduced delivery risk,
-              avoided costly rework, and gave Cancer Institute NSW confidence that the platform
-              would meet user needs across devices and contexts. The structured testing approach
-              ensured that accessibility, inclusion, and clarity were embedded early rather than
-              retrofitted later.
+              These authentic voices revealed common concerns about trust, polarisation and the
+              influence of AI &mdash; regardless of political leaning. Interviews were transformed
+              into short-form videos, each focused on a single theme, and launched across social
+              media with targeted media spend to maximise reach.
             </p>
             <p>
-              Most importantly, the work laid a strong UX foundation for a public health service
-              that supports people at moments of vulnerability, helping them navigate cravings,
-              track progress, and access support in ways that feel human, supportive, and
-              achievable.
+              By blending a tactile, real-world activation with inclusive, data-led digital
+              storytelling, ICON delivered an approach that was both innovative and deeply aligned
+              to MoAD&rsquo;s mission.
             </p>
+          </div>
+          </div>
+
+          <!-- the campaign film — the news article's video figure, shared -->
+          <div class="work-gallery">
+            <div class="work-gallery__row">
+              <figure class="news-article__figure news-article__figure--video media-reveal" data-reveal-img>
+                <iframe src="https://www.youtube-nocookie.com/embed/c1DjQLPgLbE" title="Question of the Day — ICON x Museum of Australian Democracy" loading="lazy" allow="encrypted-media; picture-in-picture; fullscreen"></iframe>
+              </figure>
+            </div>
+          </div>
+
+          <div class="work-article__chunk">
+          <div class="work-article__share-rail">
+          <div class="news-article__share" data-share>
+            <span class="news-article__share-label" aria-hidden="true">Share</span>
+            <button class="news-article__share-btn" type="button" data-share-copy aria-label="Copy link">
+              <svg class="news-article__share-glyph news-article__share-glyph--link" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" /><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" /></svg>
+              <svg class="news-article__share-glyph news-article__share-glyph--check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5" /></svg>
+            </button>
+            <a class="news-article__share-btn" href="mailto:" data-share-email aria-label="Share by email">
+              <svg class="news-article__share-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2" /><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" /></svg>
+            </a>
+            <span class="sr-only" aria-live="polite" data-share-status></span>
+          </div>
+          </div>
+          <div class="content-page work-article__prose" data-animate>
+            <h2>Results</h2>
+          </div>
+
+          <!-- ============ work-stats — the results in numbers ============ -->
+          <section class="work-stats" data-animate aria-label="Results at a glance">
+            <dl class="work-stats__grid">
+              <div class="work-stats__stat">
+                <dt class="work-stats__label">Australians reached</dt>
+                <dd class="work-stats__value">2.2m+</dd>
+              </div>
+              <div class="work-stats__stat">
+                <dt class="work-stats__label">Click-throughs to resources</dt>
+                <dd class="work-stats__value">85,553</dd>
+              </div>
+              <div class="work-stats__stat">
+                <dt class="work-stats__label">Cost per click</dt>
+                <dd class="work-stats__value">$0.35</dd>
+              </div>
+              <div class="work-stats__stat">
+                <dt class="work-stats__label">Most-visited MoAD pages</dt>
+                <dd class="work-stats__value">Top 5</dd>
+              </div>
+            </dl>
+          </section>
+
+          <div class="content-page work-article__prose" data-animate>
+            <p>
+              &lsquo;Misinformation Explained&rsquo; became the most-viewed campaign resource, and
+              the campaign balanced sensitivity and clarity in addressing misinformation,
+              strengthening public trust.
+            </p>
+            <p>
+              The work established a high-impact, cost-effective model for future democratic
+              engagement initiatives.
+            </p>
+          </div>
           </div>
         </div>
 
-        <!-- ============ Next up — back on the site theme, the footer's grow,
-             the work landing's cards ============ -->
         <section class="work-article__next" data-rule="top" aria-label="Next up">
           <h2 class="work-article__next-heading reveal-lines" data-animate>
             <span class="reveal-lines__line lockup-accent masthead-accent"><span class="reveal-lines__word" style="--w: 0">Next up</span></span>
@@ -368,22 +414,22 @@
           </h2>
 
           <div class="work-article__next-grid">
-            <a class="work__item" href="/work/article" aria-label="Transforming the elephant in the room into conversations that change lives — PHN North Western Melbourne">
+            <a class="work__item" href="work-icanquit.html" aria-label="iCanQuit is more than breaking a habit — Cancer Institute NSW">
               <figure class="work__figure media-reveal" data-reveal-img>
-                <video class="work__img" src="../assets/video/NWMPHN_RAISEIT_30s_16-9_h264_2.mp4" autoplay loop muted playsinline preload="auto" aria-label="PHN North Western Melbourne — Raise It campaign film"></video>
+                <img class="work__img" loading="lazy" src="../assets/work/iCanQuit.png" alt="iCanQuit — Cancer Institute NSW" />
               </figure>
               <div class="work__caption" data-animate>
-                <h3 class="work__title">Transforming the elephant in the room into conversations that change lives</h3>
-                <span class="work__meta">PHN North Western Melbourne</span>
+                <h3 class="work__title">iCanQuit is more than breaking a habit&mdash;it&rsquo;s an identity transformation</h3>
+                <span class="work__meta">Cancer Institute NSW</span>
               </div>
             </a>
-            <a class="work__item" href="/work/article" aria-label="Changing CALD community conversations on protection visas — Permanent Protection Visa">
+            <a class="work__item" href="work-nike-marathon.html" aria-label="Nike Melbourne Marathon Festival — IMG Events">
               <figure class="work__figure media-reveal" data-reveal-img>
-                <img class="work__img" loading="lazy" src="../assets/work/PPV.jpg" alt="Permanent Protection Visa community campaign portrait" />
+                <img class="work__img" loading="lazy" src="../assets/work/nike-mara/female-runners.png" alt="A runner celebrating at the Nike Melbourne Marathon Festival finish line" />
               </figure>
               <div class="work__caption" data-animate style="--animate-delay: 60ms">
-                <h3 class="work__title">Changing CALD community conversations on protection visas</h3>
-                <span class="work__meta">Permanent Protection Visa</span>
+                <h3 class="work__title">Nike Melbourne Marathon Festival</h3>
+                <span class="work__meta">IMG Events</span>
               </div>
             </a>
           </div>
@@ -520,6 +566,7 @@
          site-footer.js. No GSAP on article pages. -->
     <script src="../js/header.js"></script>
     <script src="../js/reveal.js"></script>
+    <script src="../js/share.js"></script>
     <script src="../js/velocity-lean.js"></script>
     <script src="../js/work-article.js"></script>
     <script src="../js/site-footer.js"></script>
