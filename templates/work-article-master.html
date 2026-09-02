@@ -22,6 +22,9 @@
                                     article types; plain ul stays default)
        8  work-gallery            — rows of 1 or 2 columns, mixed freely;
                                     images or looping video per figure
+       8a layered media           — background image/video with a foreground
+                                    image/video floating on a padding rule
+                                    (--overlay-pad); neither layer moves
        8b work-stats              — results as numbers: a ruled band of
                                     {value, label} pairs (figures only —
                                     qualitative results stay prose)
@@ -336,6 +339,18 @@
               </figure>
               <figure class="work-gallery__figure--portrait media-reveal" data-reveal-img style="--animate-delay: 60ms">
                 <img loading="lazy" src="../assets/work/iCQ/iCQ%20Sign%20up%2050.png" alt="Sample portrait gallery image" />
+              </figure>
+            </div>
+          </div>
+
+          <!-- ============ gallery: LAYERED — background + foreground media,
+               the overlay inset by --overlay-pad, no motion on either layer.
+               Either slot takes an image OR a video. ============ SAMPLE MEDIA -->
+          <div class="work-gallery">
+            <div class="work-gallery__row">
+              <figure class="work-gallery__figure--layered media-reveal" data-reveal-img style="--overlay-pad: 10%">
+                <img loading="lazy" src="../assets/work/nike-mara/nike-bg.jpg" alt="" />
+                <video autoplay muted loop playsinline preload="auto" src="../assets/work/nike-mara/race-day-reel.mp4" aria-label="Sample foreground film floating over a background photograph"></video>
               </figure>
             </div>
           </div>
