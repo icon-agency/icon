@@ -93,9 +93,12 @@
 .news-article__title {
   margin: 0;
   /* The mock's article headline, now the shared headline voice (the /news
-     masthead speaks it too — see typography.css). */
+     masthead speaks it too — see typography.css) — set in Miller Text at
+     REGULAR (user call, Sep 2026): the serif carries the headline, weight
+     stays book so the size does the talking. */
+  font-family: var(--font-serif);
   font-size: var(--voice-headline);
-  font-weight: var(--font-weight-bold);
+  font-weight: var(--font-weight-normal);
   line-height: 1.05;
   letter-spacing: -0.02em;
   color: var(--color-icon-black);
@@ -123,6 +126,39 @@
   .news-article__share {
     position: sticky;
     top: calc(50vh - 3.6rem);
+  }
+}
+
+/* Below md there is no rail column — the share moves UNDER the article
+   (user call, matching the work article): the in-flow block hides and the
+   horizontal __share-footer after the flow takes over. */
+@media (max-width: 767.98px) {
+  .news-article__body > .news-article__share {
+    display: none;
+  }
+}
+
+/* the below-the-article share: hidden where the rail block runs */
+.news-article__share-footer {
+  display: none;
+}
+
+@media (max-width: 767.98px) {
+  .news-article__share-footer {
+    display: block;
+  }
+
+  /* the same block, turned horizontal — the buttons' square STATED (a row
+     has no column stretch for the label to set their width; see the work
+     article's footer for the original catch) */
+  .news-article__share-footer .news-article__share {
+    flex-direction: row;
+    align-items: center;
+    gap: var(--space-xs);
+  }
+
+  .news-article__share-footer .news-article__share-btn {
+    width: 3.5rem;
   }
 }
 

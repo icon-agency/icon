@@ -461,8 +461,11 @@
      - a first media child (cover-fit image/video), or
      - a flat colour (user call): style="--overlay-ground: #2e2e2e" with the
        floating media as the only child — the editor's colour picker.
-   The last child always floats inside --overlay-pad (default 8%); set the
-   pad per instance: style="--overlay-pad: 12%". Compose with --portrait for
+   The last child always floats inside --overlay-pad. The default is an
+   ABSOLUTE fluid 5vw (user call: a half-column tile and a full-width tile
+   wear the IDENTICAL visible frame — a percentage pad scaled with the tile
+   and broke that). Set the pad per instance where a different frame is the
+   point: style="--overlay-pad: 22%". Compose with --portrait for
    a 7:10 grounded tile (declared later, so its aspect wins). Drupal: a
    layered_media paragraph — a media reference OR colour field for the
    ground, a media reference for the float, an inset field. */
@@ -500,11 +503,11 @@
      (letterboxed inside its narrowed box, never stretched). */
   position: absolute;
   z-index: 1; /* the float rides ABOVE the ground, explicitly */
-  inset: var(--overlay-pad, 8%);
+  inset: var(--overlay-pad, 5vw);
   margin: auto;
-  height: calc(100% - var(--overlay-pad, 8%) * 2);
+  height: calc(100% - var(--overlay-pad, 5vw) * 2);
   width: auto;
-  max-width: calc(100% - var(--overlay-pad, 8%) * 2);
+  max-width: calc(100% - var(--overlay-pad, 5vw) * 2);
   object-fit: contain;
   border-radius: var(--radius-icon);
   /* the float sits OUT the scroll-velocity skew (user call): the figure
