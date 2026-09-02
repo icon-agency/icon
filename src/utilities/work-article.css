@@ -480,6 +480,7 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+  z-index: 0; /* the ground stays under the float, explicitly */
 }
 
 .work-article__banner--layered > :last-child,
@@ -489,6 +490,7 @@
      — so the site radius rounds the media's own corners at any aspect
      ratio, instead of an invisible letterbox edge */
   position: absolute;
+  z-index: 1; /* the float rides ABOVE the ground, explicitly */
   inset: var(--overlay-pad, 8%);
   margin: auto;
   width: auto;

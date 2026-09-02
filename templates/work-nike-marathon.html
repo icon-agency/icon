@@ -256,11 +256,16 @@
           </div>
           </div>
 
-          <!-- gallery: the start line and the finish, one wide row -->
+          <!-- gallery: the lockup over the start-line film, and the winner on
+               the colour ground — two SQUARE layered tiles (user call) -->
           <div class="work-gallery">
-            <div class="work-gallery__row">
-              <figure class="media-reveal" data-reveal-img>
-                <img loading="lazy" src="../assets/work/nike-mara/start-and-finish-line.png" alt="The start line, and a runner crossing the finish line with a big smile" />
+            <div class="work-gallery__row work-gallery__row--cols-2">
+              <figure class="work-gallery__figure--layered media-reveal" data-reveal-img style="--overlay-pad: 22%; aspect-ratio: 1 / 1">
+                <video autoplay muted loop playsinline preload="auto" src="../assets/work/nike-mara/race-day-reel.mp4" aria-label="Race-day film: the start-line crowd surging under the arch"></video>
+                <img loading="lazy" src="../assets/work/nike-mara/logo.png" alt="Nike Melbourne Marathon Festival lockup" />
+              </figure>
+              <figure class="work-gallery__figure--layered media-reveal" data-reveal-img style="--overlay-ground: #2e2e2e; --overlay-pad: 22%; aspect-ratio: 1 / 1; --animate-delay: 60ms">
+                <img loading="lazy" src="../assets/work/nike-mara/winner.png" alt="The men's winner raising the finish banner" />
               </figure>
             </div>
           </div>
