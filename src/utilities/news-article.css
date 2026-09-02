@@ -20,15 +20,6 @@
  * three teasers. Share is live — copy link + email via js/share.js
  * (Drupal.behaviors.iconShare). */
 
-/* While the page is in its dark opening, every hairline here reads
-   ON-COLOUR — the theme's border grey is invisible on the near-black
-   (the footer's and blue theme's decision, reused: --rule-on-color is the
-   28% white both already use). The scroll handover to light hands the
-   rules back to the standard border token with everything else. */
-.dark .news-article {
-  --rule: var(--rule-on-color);
-}
-
 .news-article {
   /* FULL-BLEED like the news landing and the homepage — self-padded on the
      shared --gutter-page, not capped in .u-container. The prose measure

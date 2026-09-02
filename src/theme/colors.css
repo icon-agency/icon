@@ -218,17 +218,24 @@
      duplicate literal this used to be is gone). */
   --footer-ink: #ffffff;
   --footer-muted: rgb(255 255 255 / 0.55);
-  /* One hairline, everywhere. Dividers across the site say
-     `1px solid var(--rule)` and nothing else — no ad-hoc alphas.
-     --rule follows the theme's border token on ordinary surfaces; a
-     component sitting on a BRAND or near-black panel re-points it at
-     --rule-on-color, which is the same 28% white the blue theme already
-     uses for --border (see .theme-blue above), so the weight reads the
-     same on every ground.
-     A plain (unregistered) property on purpose: the registered
-     --color-* aliases resolve at :root and inherit their RESOLVED value,
-     so a component-level override of those would silently do nothing —
-     see LESSONS.md. */
-  --rule: var(--color-border);
-  --rule-on-color: rgb(255 255 255 / 0.28);
+  /* One hairline, everywhere — ONE derivation (user call, Sep 2026): the
+     current ink at 25% opacity, i.e. 75% transparent. Dividers across the
+     site say `1px solid var(--rule)` and nothing else.
+
+     currentColor tracks every ground for free — black-ish on light, white
+     on the footer's black, each client's ink under the work-article
+     chameleon — so the five per-context re-pointings this replaced
+     (--rule-on-color on the dark and brand panels) are gone, and their
+     values were all within a whisker of this anyway: the light border was
+     ~ink@28%, on-colour was white@28%, the chameleon ran ink@20%.
+
+     The one behavioural nuance: an element whose own `color` is muted
+     draws a proportionally softer line — its rule matches its text, which
+     is the point of deriving rather than fixing.
+
+     A plain (unregistered) property on purpose: the registered --color-*
+     aliases resolve at :root and inherit their RESOLVED value, so a
+     component-level override of those would silently do nothing — see
+     LESSONS.md. */
+  --rule: color-mix(in srgb, currentColor 25%, transparent);
 }

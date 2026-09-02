@@ -185,7 +185,6 @@
 }
 
 .dark .page-header--stack {
-  --rule: var(--rule-on-color);
 }
 
 .page-header--stack .page-header__inner {

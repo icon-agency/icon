@@ -34,7 +34,6 @@
      src/utilities/home-c.css — display caps on .work__heading, the mid voice
      on .hero__client, the meta voice on .news-card__meta). */
   /* near-black panel: dividers take the on-colour hairline */
-  --rule: var(--rule-on-color);
 
   --footer-voice-caps: var(--voice-display); /* the shared display voice */
   --footer-voice-mid: var(--voice-mid); /* the shared mid voice */
@@ -234,7 +233,7 @@
     );
   background: none;
   border: 0;
-  border-bottom: var(--rule-weight) solid var(--rule-on-color);
+  border-bottom: var(--rule-weight) solid var(--rule);
   border-radius: 0;
   font-family: inherit;
   /* ONE quiet size (user calls, settled after a bigger-placeholder trial:

@@ -1,7 +1,7 @@
 /* rules.css — THE hairline. One weight, one colour, one entrance.
  *
  * Every rule on the site is 1px of --rule (which is the theme's border token
- * on ordinary surfaces and --rule-on-color on the dark and brand panels — a
+ * — one derivation, currentColor at 25%, on every ground (colors.css) — a
  * white line is invisible on white, so the two values are the same decision
  * expressed twice, not an inconsistency). --rule-weight makes the thickness a
  * single edit too.

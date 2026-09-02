@@ -854,7 +854,6 @@ html:not(.js-animations) .hero__count { display: none; }
   padding: calc(var(--intro-card-w) * 0.094);
   background: var(--color-shader-blue);
   color: var(--color-white);
-  --rule: var(--rule-on-color); /* brand panel: the on-colour hairline */
 }
 
 .intro__fact-icon {
