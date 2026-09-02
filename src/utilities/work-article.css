@@ -169,6 +169,9 @@
      it (user call: "match the space above") — the head breathes evenly
      around the project name instead of the old tight 0.4rem pairing */
   margin: var(--space-sm) 0 0;
+  /* the serif accent at NORMAL weight here (user call) — quieter under the
+     900 project name than .masthead-accent's default 700 */
+  font-weight: var(--font-weight-normal);
   /* RATIO-LOCKED to the project name (user call, Sep 2026): the old clamp's
      floor met the display floor at mobile and the client line read nearly
      as big as the project — the desktop hierarchy inverted. display x 0.3
@@ -485,18 +488,24 @@
 
 .work-article__banner--layered > :last-child,
 .work-gallery__figure--layered > :last-child {
-  /* the box SHRINK-WRAPS the media (auto size clamped to the pad area, auto
-     margins centring it) rather than filling the pad area with a contain-fit
-     — so the site radius rounds the media's own corners at any aspect
-     ratio, instead of an invisible letterbox edge */
+  /* ONE margin rule (user call): the float FILLS the pad frame — height is
+     set to the frame and width follows the media's intrinsic ratio (the
+     abs-pos replaced-element rule), so every float meets the pad top and
+     bottom and the box hugs the media (the radius rounds real corners).
+     Before this, floats only ever scaled DOWN — low-resolution media sat
+     at natural size with outsized margins while large media met the frame.
+     Width specified + height clamped does NOT preserve ratio in engines,
+     so the axes are this way round deliberately. max-width catches media
+     wider than the frame's ratio; object-fit keeps that rare case honest
+     (letterboxed inside its narrowed box, never stretched). */
   position: absolute;
   z-index: 1; /* the float rides ABOVE the ground, explicitly */
   inset: var(--overlay-pad, 8%);
   margin: auto;
+  height: calc(100% - var(--overlay-pad, 8%) * 2);
   width: auto;
-  height: auto;
   max-width: calc(100% - var(--overlay-pad, 8%) * 2);
-  max-height: calc(100% - var(--overlay-pad, 8%) * 2);
+  object-fit: contain;
   border-radius: var(--radius-icon);
   /* the float sits OUT the scroll-velocity skew (user call): the figure
      tilts as one, so the float counter-skews by the same angle. The two
@@ -617,6 +626,15 @@
   text-transform: uppercase; /* the mock's register: 2X, 1ST, SOLD OUT */
   font-variant-numeric: tabular-nums;
   text-wrap: balance; /* a wrapping TEXT value breaks evenly */
+}
+
+/* ordinal and multiplier suffixes ride SMALL against the digits (user
+   call): markup 1<sup>st</sup> / 2<sup>x</sup> sets the suffix at half
+   size, raised toward the digit's cap line */
+.work-stats__value sup {
+  font-size: 0.48em;
+  line-height: 1;
+  vertical-align: 0.7em;
 }
 
 /* the optional unit word — a caps echo at the value's 900, half a step

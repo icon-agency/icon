@@ -95,6 +95,7 @@
                 <li><a class="ds-nav__link" href="#news-article">News article</a></li>
                 <li><a class="ds-nav__link" href="#site-header">Site header</a></li>
                 <li><a class="ds-nav__link" href="#work">Work grid</a></li>
+                <li><a class="ds-nav__link" href="#work-gallery">Work gallery</a></li>
                 <li><a class="ds-nav__link" href="#clients">Clients marquee</a></li>
                 <li><a class="ds-nav__link" href="#news-stack">News — cards &amp; stack</a></li>
                 <li><a class="ds-nav__link" href="#invitations">Invitations &amp; links</a></li>
@@ -150,7 +151,7 @@
               <div class="ds-group">
                 <h4 class="ds-group__title">Brand</h4>
                 <ul class="ds-swatches">
-                  <li class="ds-swatch"><div class="ds-swatch__chip bg-icon-black"></div><div class="ds-swatch__meta"><span class="ds-swatch__name">Icon black</span><span class="ds-swatch__token">--color-icon-black</span><div class="ds-group"><h4 class="ds-group__title">Rules — THE hairline</h4><p class="ds-group__note">Every divider on the site is <code class="ds-code">1px solid var(--rule)</code> and nothing else — no ad-hoc alphas. <code class="ds-code">--rule</code> follows the theme's border token on ordinary surfaces; a component sitting on a brand or near-black panel re-points it at <code class="ds-code">--rule-on-color</code> (28% white — the same value the blue theme already uses for <code class="ds-code">--border</code>), so the weight reads the same on every ground. Deliberately a plain, unregistered property: the registered <code class="ds-code">--color-*</code> aliases resolve at <code class="ds-code">:root</code> and inherit their resolved value, so a component-level override of those would silently do nothing (see LESSONS.md). Thickness and the draw-in entrance are <code class="ds-code">--rule-weight</code> / <code class="ds-code">--rule-draw-dur</code> in <code class="ds-code">src/utilities/rules.css</code>.</p></div></div></li>
+                  <li class="ds-swatch"><div class="ds-swatch__chip bg-icon-black"></div><div class="ds-swatch__meta"><span class="ds-swatch__name">Icon black</span><span class="ds-swatch__token">--color-icon-black</span><div class="ds-group"><h4 class="ds-group__title">Rules — THE hairline</h4><p class="ds-group__note">Every divider on the site is <code class="ds-code">1px solid var(--rule)</code> and nothing else — no ad-hoc alphas, and ONE value: <code class="ds-code">--rule</code> is <code class="ds-code">color-mix(in srgb, currentColor 25%, transparent)</code>, so a line drawn on any ground — light, dark, or a client’s chameleon pair — takes 25% of the ink around it automatically. No per-surface re-pointing; the old <code class="ds-code">--rule-on-color</code> escape hatch is deleted. Deliberately a plain, unregistered property: the registered <code class="ds-code">--color-*</code> aliases resolve at <code class="ds-code">:root</code> and inherit their resolved value, so a component-level override of those would silently do nothing (see LESSONS.md). Thickness and the draw-in entrance are <code class="ds-code">--rule-weight</code> / <code class="ds-code">--rule-draw-dur</code> in <code class="ds-code">src/utilities/rules.css</code>.</p></div></div></li>
                   <li class="ds-swatch"><div class="ds-swatch__chip bg-icon-grey"></div><div class="ds-swatch__meta"><span class="ds-swatch__name">Icon grey</span><span class="ds-swatch__token">--color-icon-grey</span><span class="ds-swatch__value">icon-black @ 80%</span></div></li>
                   <li class="ds-swatch"><div class="ds-swatch__chip bg-icon-blue"></div><div class="ds-swatch__meta"><span class="ds-swatch__name">Icon blue</span><span class="ds-swatch__token">--color-icon-blue</span><span class="ds-swatch__value">#0000ff (dark: white @ 80%)</span></div></li>
                 </ul>
@@ -192,7 +193,7 @@
                 </ul>
               </div>
             
-              <div class="ds-group"><h4 class="ds-group__title">Rules — THE hairline</h4><p class="ds-group__note">Every divider on the site is <code class="ds-code">1px solid var(--rule)</code> and nothing else — no ad-hoc alphas. <code class="ds-code">--rule</code> follows the theme's border token on ordinary surfaces; a component sitting on a brand or near-black panel re-points it at <code class="ds-code">--rule-on-color</code> (28% white — the same value the blue theme already uses for <code class="ds-code">--border</code>), so the weight reads the same on every ground. Deliberately a plain, unregistered property: the registered <code class="ds-code">--color-*</code> aliases resolve at <code class="ds-code">:root</code> and inherit their resolved value, so a component-level override of those would silently do nothing (see LESSONS.md). Thickness and the draw-in entrance are <code class="ds-code">--rule-weight</code> / <code class="ds-code">--rule-draw-dur</code> in <code class="ds-code">src/utilities/rules.css</code>.</p></div>
+              <div class="ds-group"><h4 class="ds-group__title">Rules — THE hairline</h4><p class="ds-group__note">Every divider on the site is <code class="ds-code">1px solid var(--rule)</code> and nothing else — no ad-hoc alphas, and ONE value: <code class="ds-code">--rule</code> is <code class="ds-code">color-mix(in srgb, currentColor 25%, transparent)</code>, so a line drawn on any ground — light, dark, or a client’s chameleon pair — takes 25% of the ink around it automatically. No per-surface re-pointing; the old <code class="ds-code">--rule-on-color</code> escape hatch is deleted. Deliberately a plain, unregistered property: the registered <code class="ds-code">--color-*</code> aliases resolve at <code class="ds-code">:root</code> and inherit their resolved value, so a component-level override of those would silently do nothing (see LESSONS.md). Thickness and the draw-in entrance are <code class="ds-code">--rule-weight</code> / <code class="ds-code">--rule-draw-dur</code> in <code class="ds-code">src/utilities/rules.css</code>.</p></div>
             
               <p class="ds-group__note">Theme-aware component roles also live in <code class="ds-code">colors.css</code> and are overridden per theme: <code class="ds-code">--nav-bg-scrolled</code> (the frosted nav pill), <code class="ds-code">--pager-surface</code> / <code class="ds-code">--pager-surface-strong</code> (pager prev + status pill), and the work-article accent pair <code class="ds-code">--work-article-text</code> / <code class="ds-code">--work-article-bg</code> (per-route override in the v0 build).</p>
             </section>
@@ -572,8 +573,9 @@ plus a note: decorative effect knobs also live in <code class="ds-code">motion.c
                 <code class="ds-code">experiments/News-article.png</code>). Full-bleed on the shared
                 <code class="ds-code">--gutter-page</code>. The page <strong>opens dark and hands over
                 to light</strong> as the head&rsquo;s halfway point scrolls past &mdash; two-way, so the
-                return scroll restores the dark opening &mdash; with every hairline reading
-                <code class="ds-code">--rule-on-color</code> while dark. The head is a ruled column
+                return scroll restores the dark opening &mdash; every hairline reading its
+                ground&rsquo;s ink automatically through the 25% <code class="ds-code">currentColor</code>
+                <code class="ds-code">--rule</code>. The head is a ruled column
                 (Share opens it, the meta line closes it on the photo&rsquo;s baseline) beside a square
                 photo; the body is a symmetric grid &mdash; a sticky Share rail, a centred ~67ch prose
                 measure that scales with its own 1.2vw body copy to the 4xl horizon, and a phantom
@@ -959,6 +961,87 @@ plus a note: decorative effect knobs also live in <code class="ds-code">motion.c
                   <code class="ds-code">@supports (animation-timeline: view())</code>); no-JS renders
                   media plainly &mdash; the hidden state exists only under
                   <code class="ds-code">.js-animations</code>.
+                </p>
+              </div>
+            </section>
+
+            <section class="ds-section" id="work-gallery">
+              <h3 class="ds-section__title">Work gallery</h3>
+              <p class="ds-section__intro">
+                <code class="ds-code">.work-gallery</code> &mdash; ONE media component for the Work
+                article flow (<code class="ds-code">src/utilities/work-article.css</code>): rows of
+                figures breaking out between the prose chunks. A row is one column
+                (<code class="ds-code">.work-gallery__row</code>) or two
+                (<code class="ds-code">.work-gallery__row--cols-2</code>, stacking to one below
+                <code class="ds-code">40rem</code>); every figure is a single image, a looping video,
+                or a LAYERED figure &mdash; a foreground floating over a background. Media reveal
+                through the shared <code class="ds-code">.media-reveal</code> entrance and lean with
+                the scroll-velocity skew like all article media.
+              </p>
+              <div class="ds-group">
+                <h4 class="ds-group__title">Rules &mdash; plain figure</h4>
+                <p class="ds-group__note">
+                  A bare <code class="ds-code">figure</code> holding one
+                  <code class="ds-code">img</code> or autoplaying muted looping
+                  <code class="ds-code">video</code>. Media fills the row width at its own ratio,
+                  wearing the site radius. Two portrait pieces pair under
+                  <code class="ds-code">.work-gallery__figure--portrait</code> &mdash; a 7:10
+                  phone-shaped cover crop applied to BOTH figures in the row so the pair lines up
+                  (born for the 720&times;1280 race-day reel, which uncropped towered half again the
+                  viewport).
+                </p>
+              </div>
+              <div class="ds-group">
+                <h4 class="ds-group__title">Rules &mdash; layered figure</h4>
+                <p class="ds-group__note">
+                  <code class="ds-code">.work-gallery__figure--layered</code> (or
+                  <code class="ds-code">.work-article__banner--layered</code> on the banner): the
+                  humaan.com card anatomy with NO parallax &mdash; both layers hold still, by call.
+                  The GROUND is either a first media child (cover-fit image/video) or a flat colour
+                  from the editor&rsquo;s picker &mdash;
+                  <code class="ds-code">style="--overlay-ground: #2e2e2e"</code> with the float as
+                  the only child. The FLOAT is the last child: it FILLS the pad frame
+                  (<code class="ds-code">--overlay-pad</code>, default 8%) along its binding axis at
+                  its own intrinsic ratio &mdash; never letterboxed, never stretched, low-resolution
+                  media scaled up to the frame like everything else &mdash; wearing the site radius
+                  on its real corners, pinned above the ground
+                  (<code class="ds-code">z-index</code> 1 over 0), and counter-shearing the
+                  scroll-velocity skew so the ground leans behind a LEVEL float. Tiles run 16:9 by
+                  default; override per instance with an inline
+                  <code class="ds-code">aspect-ratio</code> (the Nike squares) or compose with
+                  <code class="ds-code">--portrait</code> for a 7:10 tile.
+                </p>
+              </div>
+              <div class="ds-group">
+                <h4 class="ds-group__title">Examples, at full scale</h4>
+                <p class="ds-group__note">
+                  The MASTER demos every option in order &mdash; single wide row, 2-col pair,
+                  portrait pair, video row, layered media-ground (the reel over the start-line
+                  crowd), layered colour-ground. The Nike article runs the component in anger: the
+                  press wall on <code class="ds-code">#2e2e2e</code> grounds, square tiles at a 22%
+                  pad, the lockup floating over film.
+                </p>
+                <a class="ds-thumb-link" href="templates/work-article-master.html">
+                  <figure>
+                    <figcaption>Open the Work article (MASTER) &mdash; the gallery, every option</figcaption>
+                  </figure>
+                </a>
+                <a class="ds-thumb-link" href="templates/work-nike-marathon.html">
+                  <figure>
+                    <figcaption>Open the Nike Melbourne Marathon article &mdash; the gallery in use</figcaption>
+                  </figure>
+                </a>
+              </div>
+              <div class="ds-group">
+                <h4 class="ds-group__title">Drupal (Canvas / SDC)</h4>
+                <p class="ds-group__note">
+                  A <code class="ds-code">work_gallery</code> paragraph of rows, each row 1&ndash;2
+                  media references; the layered figure is a
+                  <code class="ds-code">layered_media</code> paragraph &mdash; ground (media
+                  reference OR a colour field), float (media reference), an inset percentage
+                  feeding <code class="ds-code">--overlay-pad</code>, and an optional ratio feeding
+                  the inline <code class="ds-code">aspect-ratio</code>. All figures reveal via the
+                  shared <code class="ds-code">iconReveal</code> behaviour.
                 </p>
               </div>
             </section>
@@ -1659,10 +1742,9 @@ plus a note: decorative effect knobs also live in <code class="ds-code">motion.c
                 <h4 class="ds-group__title">[data-rule] &mdash; the hairline draw</h4>
                 <p class="ds-group__note">
                   THE hairline: every rule on the site is 1px of
-                  <code class="ds-code">--rule</code> &mdash; the theme&rsquo;s border token on
-                  ordinary surfaces, <code class="ds-code">--rule-on-color</code> on the dark and
-                  brand panels, because a white line is invisible on white: the same decision
-                  expressed twice, not an inconsistency.
+                  <code class="ds-code">--rule</code> &mdash; 25%
+                  <code class="ds-code">currentColor</code>, so the line takes the ink of whatever
+                  ground it sits on, dark and brand panels included: one decision, expressed once.
                   <code class="ds-code">--rule-weight</code> and
                   <code class="ds-code">--rule-draw-dur</code> (0.7s) make thickness and speed
                   single edits, so the whole page draws at one speed. A rule marked
@@ -1814,8 +1896,9 @@ plus a note: decorative effect knobs also live in <code class="ds-code">motion.c
                 <code class="ds-code">--footer-voice-caps/mid/meta</code> so a retune is a one-line
                 edit: the CTA heading takes the display-caps masthead clamp (WORK/NEWS); the blurb,
                 Subscribe, city names and socials share the client-label mid voice; the Indigenous
-                place names and meta take the news-date voice. Hairlines re-point
-                <code class="ds-code">--rule</code> at <code class="ds-code">--rule-on-color</code>,
+                place names and meta take the news-date voice. Hairlines need no re-pointing
+                &mdash; the 25% <code class="ds-code">currentColor</code>
+                <code class="ds-code">--rule</code> reads the footer ink by itself &mdash;
                 and the focus ring overrides colour only to <code class="ds-code">--footer-ink</code>
                 (the checklist&rsquo;s sanctioned exception) &mdash; the global blue ring is invisible
                 on near-black. The panel &mdash; padded by <code class="ds-code">--gutter-page</code>, so its
