@@ -158,7 +158,7 @@
      the system and the client line's 0.3 ratio-lock stays proportional at
      every width. */
   font-size: calc(var(--voice-display) * 1.25);
-  font-weight: 900;
+  font-weight: 800; /* a step off the site's 900 (user call) */
   line-height: 1;
   letter-spacing: -0.02em;
   text-wrap: balance;
