@@ -169,9 +169,8 @@
      it (user call: "match the space above") — the head breathes evenly
      around the project name instead of the old tight 0.4rem pairing */
   margin: var(--space-sm) 0 0;
-  /* the serif accent at NORMAL weight here (user call) — quieter under the
-     900 project name than .masthead-accent's default 700 */
-  font-weight: var(--font-weight-normal);
+  /* back at the accent's bold 700 (user call — tried normal, bolder won) */
+  font-weight: var(--font-weight-bold);
   /* RATIO-LOCKED to the project name (user call, Sep 2026): the old clamp's
      floor met the display floor at mobile and the client line read nearly
      as big as the project — the desktop hierarchy inverted. display x 0.3
