@@ -325,13 +325,6 @@
                 <img loading="lazy" src="../assets/work/nike-mara/press-training-songs.png" alt="Press: the most popular songs to train to for a marathon" />
               </figure>
             </div>
-            <!-- the odd clipping out of seven closes the wall FULL WIDTH on
-                 its ground — the float shrink-wraps near native resolution -->
-            <div class="work-gallery__row">
-              <figure class="work-gallery__figure--layered media-reveal" data-reveal-img style="--overlay-ground: #2e2e2e">
-                <img loading="lazy" src="../assets/work/nike-mara/press-tag-heuer.png" alt="Life &amp; Leisure: marathon running booms" />
-              </figure>
-            </div>
             <!-- the race-day reel, LAYERED full width (user call): the
                  start-line crowd as the ground, the portrait reel floating
                  on the padding rule -->
@@ -341,14 +334,15 @@
                 <video autoplay muted loop playsinline preload="auto" src="../assets/work/nike-mara/race-day-reel.mp4" aria-label="Race-day edit: crowds, signs and finishers across the festival"></video>
               </figure>
             </div>
-            <!-- grounded tile composed with the portrait ratio, so the pair
-                 still lines up with the phone-cropped finish photo -->
+            <!-- the closing pair: two grounded tiles composed with the
+                 portrait ratio (user call: the finish photo out, the Life &
+                 Leisure clipping into the second column) -->
             <div class="work-gallery__row work-gallery__row--cols-2">
               <figure class="work-gallery__figure--layered work-gallery__figure--portrait media-reveal" data-reveal-img style="--overlay-ground: #2e2e2e">
                 <img loading="lazy" src="../assets/work/nike-mara/press-celebs-start-line.png" alt="Herald Sun spread: celebs join stars on the start line" />
               </figure>
-              <figure class="work-gallery__figure--portrait media-reveal" data-reveal-img style="--animate-delay: 60ms">
-                <img loading="lazy" src="../assets/work/nike-mara/female-runners.png" alt="A runner celebrating at the finish line" />
+              <figure class="work-gallery__figure--layered work-gallery__figure--portrait media-reveal" data-reveal-img style="--overlay-ground: #2e2e2e; --animate-delay: 60ms">
+                <img loading="lazy" src="../assets/work/nike-mara/press-tag-heuer.png" alt="Life &amp; Leisure: marathon running booms" />
               </figure>
             </div>
           </div>
@@ -392,6 +386,22 @@
           </div>
           </div>
 
+          <!-- gallery: the win and the pen — two SQUARE layered tiles ahead
+               of the client's word (user call): the finish-line celebration
+               floating on the colour ground, the supporter writing floating
+               on the spread of encouragement cards -->
+          <div class="work-gallery">
+            <div class="work-gallery__row work-gallery__row--cols-2">
+              <figure class="work-gallery__figure--layered media-reveal" data-reveal-img style="--overlay-ground: #2e2e2e; aspect-ratio: 1 / 1">
+                <img loading="lazy" src="../assets/work/nike-mara/win.png" alt="A runner celebrating at the finish line, arms raised" />
+              </figure>
+              <figure class="work-gallery__figure--layered media-reveal" data-reveal-img style="aspect-ratio: 1 / 1; --animate-delay: 60ms">
+                <img loading="lazy" src="../assets/work/nike-mara/pen-background.png" alt="" />
+                <img loading="lazy" src="../assets/work/nike-mara/pen-foreground.png" alt="A supporter writing her sign of encouragement" />
+              </figure>
+            </div>
+          </div>
+
           <!-- the client's word -->
           <blockquote class="pull-quote pull-quote--upright" data-animate>
             <p class="pull-quote__text">
@@ -419,24 +429,36 @@
           <div class="content-page work-article__prose" data-animate>
             <h2>Results</h2>
             <p>The campaign delivered record-breaking outcomes:</p>
-            <ul class="list-slash">
-              <li>34 million earned impressions</li>
-              <li>Front page of The Age</li>
-              <li>Coverage on Channel 9, Channel 7, and ABC News with live crosses through the race</li>
-              <li>Almost twice the coverage of 2024</li>
-            </ul>
+          </div>
+
+          <!-- ============ work-stats — the outcomes as ruled rows; text
+               values carry the qualitative wins ============ -->
+          <section class="work-stats" data-animate aria-label="Results at a glance">
+            <dl class="work-stats__grid">
+              <div class="work-stats__stat">
+                <dt class="work-stats__label">Earned impressions</dt>
+                <dd class="work-stats__value">34+ <span class="work-stats__unit">million</span></dd>
+              </div>
+              <div class="work-stats__stat">
+                <dt class="work-stats__label">Front page of The Age</dt>
+                <dd class="work-stats__value">1st <span class="work-stats__unit">page</span></dd>
+              </div>
+              <div class="work-stats__stat">
+                <dt class="work-stats__label">Live crosses through the race &mdash; Channel 9, Channel 7 and ABC News</dt>
+                <dd class="work-stats__value">3 <span class="work-stats__unit">networks</span></dd>
+              </div>
+              <div class="work-stats__stat">
+                <dt class="work-stats__label">Almost twice the 2024 coverage</dt>
+                <dd class="work-stats__value">2x <span class="work-stats__unit">coverage</span></dd>
+              </div>
+            </dl>
+          </section>
+
+          <div class="content-page work-article__prose" data-animate>
             <p>The campaign proved that Melbourne truly is the supporting capital of Australia.</p>
           </div>
           </div>
 
-          <!-- gallery: the closing image, one wide row -->
-          <div class="work-gallery">
-            <div class="work-gallery__row">
-              <figure class="media-reveal" data-reveal-img>
-                <img loading="lazy" src="../assets/work/nike-mara/woman-writing-her-goal.png" alt="A supporter writing her sign of encouragement" />
-              </figure>
-            </div>
-          </div>
           </div>
         </div>
 

@@ -100,6 +100,33 @@
   text-align: center;
 }
 
+/* XL monitors (user call): past the site's 4xl type horizon (~2571px, where
+   --voice-display's 5.6vw slope meets its 9rem cap) the FULL-BLEED head
+   keeps widening while capped type freezes — and the two-line project name
+   collapses onto one. Inside the article the display voice keeps its slope
+   instead, so the title, client line and accent statement (all ratios of
+   it — the client and accent ceilings are floors-only for this reason)
+   scale with the page and hold their wrap. Scoped to .work-article, NOT
+   the chameleon class: the theme handover strips that mid-scroll, and type
+   must not resize with it. The capped 90rem pages never reach this. */
+@media (min-width: 160.75rem) {
+  .work-article {
+    --voice-display: 5.6vw;
+  }
+
+  /* the serif statements ride their own 4vw clamp (capped 6.5rem at the
+     same ~2600px horizon inside the shared component) — continued here for
+     the same reason, with the cite's 1.2vw behind it. Scoped to this
+     article; the 90rem-capped pages never reach the horizon. */
+  .work-article .pull-quote__text {
+    font-size: 4vw;
+  }
+
+  .work-article .pull-quote__cite {
+    font-size: 1.2vw;
+  }
+}
+
 /* The back eyebrow — "← Work" above the project name (user call, matching
    the news article's head IDENTICALLY): the same doubled air above, the same
    --space-sm to the title below, the same caps label voice in the quiet
@@ -138,14 +165,20 @@
 }
 
 .work-article__client {
-  margin: 0.4rem 0 0; /* the tight project/client pairing the flex gap used to carry */
+  /* the same --space-sm the eyebrow holds ABOVE the title, mirrored below
+     it (user call: "match the space above") — the head breathes evenly
+     around the project name instead of the old tight 0.4rem pairing */
+  margin: var(--space-sm) 0 0;
   /* RATIO-LOCKED to the project name (user call, Sep 2026): the old clamp's
      floor met the display floor at mobile and the client line read nearly
      as big as the project — the desktop hierarchy inverted. display x 0.3
      is the desktop relationship (32px against 107 at 1920), now held at
      every width; the 15px floor guards legibility on the smallest screens
      (a shallower dip than the old 22px floor's flattening). */
-  font-size: clamp(0.9375rem, calc(var(--voice-display) * 0.3), 2.7rem);
+  /* floor-only: the old 2.7rem ceiling was the display cap x 0.3 — same
+     value below the horizon, fluid past it (see the XL rule at the end of
+     the head section) */
+  font-size: max(0.9375rem, calc(var(--voice-display) * 0.3));
   line-height: 1.2;
 }
 
@@ -533,45 +566,75 @@
   }
 }
 
+/* TWO columns of stacked cells (user call, third pitch of this band): each
+   stat reads downward — the VALUE in the headline 900 caps, an optional
+   caps UNIT word answering right under it at the same 900, then the label
+   in the large medium voice — with the hairlines kept under every cell. */
 .work-stats__grid {
   margin: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  column-gap: clamp(2rem, 5vw, 5rem);
 }
 
-/* one row per stat: value left, label right (the dl keeps dt→dd source
-   order for semantics; the grid seats them visually) */
+@media (min-width: 40rem) {
+  .work-stats__grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* the dl keeps dt→dd source order for semantics; the value block leads
+   visually (order) with the unit inside it, the label follows */
 .work-stats__stat {
   margin: 0;
-  display: grid;
-  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1fr);
-  align-items: center;
-  gap: clamp(1rem, 3vw, 2.5rem);
-  padding-block: clamp(1.25rem, 2.6vw, 2.25rem);
+  display: flex;
+  flex-direction: column;
+  padding-block: clamp(1.5rem, 3vw, 2.75rem);
   border-bottom: var(--rule-weight) solid var(--rule);
 }
 
-/* the table opens with a rule too (user call) */
+/* the table opens with a rule too (user call): the first cell — and its
+   row-mate once the grid is two across */
 .work-stats__stat:first-child {
   border-top: var(--rule-weight) solid var(--rule);
 }
 
+@media (min-width: 40rem) {
+  .work-stats__stat:nth-child(2) {
+    border-top: var(--rule-weight) solid var(--rule);
+  }
+}
+
 .work-stats__value {
-  grid-column: 1;
-  grid-row: 1;
+  order: -1;
   margin: 0;
   font-size: var(--voice-headline);
   font-weight: 900;
   line-height: 1;
   letter-spacing: -0.02em;
+  text-transform: uppercase; /* the mock's register: 2X, 1ST, SOLD OUT */
   font-variant-numeric: tabular-nums;
   text-wrap: balance; /* a wrapping TEXT value breaks evenly */
 }
 
+/* the optional unit word — a caps echo at the value's 900, half a step
+   down ("34+ MILLION", "3 NETWORKS"); stats without one simply omit it.
+   ONE gap token above and below it (user call: "same space"). */
+.work-stats__unit {
+  display: block;
+  margin-top: var(--stat-gap, 0.45rem);
+  font-size: calc(var(--voice-headline) * 0.42);
+  line-height: 1;
+  letter-spacing: 0.01em;
+}
+
+/* the label in the articles' BODY COPY register (user call) — the shared
+   prose clamp at medium, a step tighter in leading for label duty */
 .work-stats__label {
-  grid-column: 2;
-  grid-row: 1;
-  font-size: clamp(1.1875rem, 1.6vw, 1.75rem);
+  margin-top: var(--stat-gap, 0.45rem);
+  font-size: clamp(1.1875rem, 1.2vw, 1.875rem);
   font-weight: var(--font-weight-medium);
-  line-height: 1.3;
+  line-height: 1.4;
   text-wrap: pretty;
 }
 

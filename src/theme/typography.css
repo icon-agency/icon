@@ -138,7 +138,11 @@
      (Historical: born Aug 2026 as the headline curve x 0.9 — "a tad
      smaller" — when it stopped borrowing --voice-headline, which is also
      the news article's H1.) */
-  --voice-accent: clamp(1.25rem, calc(var(--voice-display) * 0.58), 5.4rem);
+  /* floor-only (max, not clamp): the old 5.4rem ceiling was exactly the
+     display cap x 0.58, so below the 4xl horizon nothing changes — but a
+     scope that lets --voice-display keep its vw slope past the cap (the
+     work article on XL monitors) now carries this voice along with it. */
+  --voice-accent: max(1.25rem, calc(var(--voice-display) * 0.58));
   /* The same register at 1.5x — every term scaled together, same cap
      horizon. Born as header B's stacked title; the /news masthead joined
      it (user call: News & Insights = the article H1's size). */

@@ -28,11 +28,13 @@
                                     cover-fit image/video OR a flat colour
                                     (--overlay-ground, the editor's picker —
                                     then the float is the only child)
-       8b work-stats              — results as ruled ROWS of {value, label}
-                                    pairs: the value left in the headline
-                                    register (a number OR text — "Top 5",
-                                    "Sold out"), the label right, a hairline
-                                    under each row
+       8b work-stats              — results in TWO columns of ruled cells,
+                                    each stacking a caps value in the
+                                    headline register (a number OR text —
+                                    "1ST", "SOLD OUT"), an optional caps
+                                    unit word under it ("34+ MILLION"),
+                                    then the label; hairline under every
+                                    cell
        9  work-article__next      — "Next up / Work" rail: client theme, drawn
                                     line within the margins, work-landing cards
      THE CHAMELEON: the two inline custom properties on <html> are the entire
@@ -436,7 +438,7 @@
             <dl class="work-stats__grid">
               <div class="work-stats__stat">
                 <dt class="work-stats__label">Stat label</dt>
-                <dd class="work-stats__value">00</dd>
+                <dd class="work-stats__value">00 <span class="work-stats__unit">unit word</span></dd>
               </div>
               <div class="work-stats__stat">
                 <dt class="work-stats__label">Stat label</dt>
