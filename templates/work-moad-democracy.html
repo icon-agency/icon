@@ -185,7 +185,7 @@
           <p class="work-article__client masthead-accent" data-animate style="--animate-delay: 120ms">Museum of Australian Democracy (MoAD)</p>
         </header>
 
-        <figure class="work-article__banner media-reveal" data-reveal-img>
+        <figure class="work-article__banner media-reveal" data-reveal-img data-theme-handover="gone" data-theme-handover-class="theme-work-article">
           <img src="../assets/work/moad-democracy/hero-women-with-cards.png" alt="Two women holding Democracy Cards on the street" />
         </figure>
 
@@ -195,11 +195,12 @@
 
         <section class="work-article__facts" data-rule="top" aria-label="Project facts">
           <ul data-animate>
-            <li><a href="/work">Work</a></li>
+            <li class="work-article__facts-title">Category</li>
             <li><a href="/work?category=creative">Content &amp; creative</a></li>
             <li><a href="/work?category=communications">PR &amp; communications</a></li>
           </ul>
           <ul data-animate style="--animate-delay: 60ms">
+            <li class="work-article__facts-title">Deliverables</li>
             <li>Campaign strategy and creative concept development</li>
             <li>Design and production of Democracy Cards</li>
             <li>Vox-pop street interviews and video production</li>
@@ -407,6 +408,23 @@
           </div>
         </div>
 
+
+        <!-- Below lg the per-run rails have no margin to stand in — this ONE
+             share takes over, under the article on a hairline. -->
+        <div class="work-article__share-footer">
+          <div class="news-article__share" data-share>
+            <span class="news-article__share-label" aria-hidden="true">Share</span>
+            <button class="news-article__share-btn" type="button" data-share-copy aria-label="Copy link">
+              <svg class="news-article__share-glyph news-article__share-glyph--link" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" /><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" /></svg>
+              <svg class="news-article__share-glyph news-article__share-glyph--check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5" /></svg>
+            </button>
+            <a class="news-article__share-btn" href="mailto:" data-share-email aria-label="Share by email">
+              <svg class="news-article__share-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2" /><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" /></svg>
+            </a>
+            <span class="sr-only" aria-live="polite" data-share-status></span>
+          </div>
+        </div>
+
         <section class="work-article__next" data-rule="top" aria-label="Next up">
           <h2 class="work-article__next-heading reveal-lines" data-animate>
             <span class="reveal-lines__line lockup-accent masthead-accent"><span class="reveal-lines__word" style="--w: 0">Next up</span></span>
@@ -432,6 +450,10 @@
                 <span class="work__meta">IMG Events</span>
               </div>
             </a>
+          </div>
+        
+          <div class="work-article__next-more">
+            <a class="news__more invite-arrow" href="/work" aria-label="More work">More</a>
           </div>
         </section>
       </article>
@@ -567,6 +589,7 @@
     <script src="../js/header.js"></script>
     <script src="../js/reveal.js"></script>
     <script src="../js/share.js"></script>
+    <script src="../js/theme-handover.js"></script>
     <script src="../js/velocity-lean.js"></script>
     <script src="../js/work-article.js"></script>
     <script src="../js/site-footer.js"></script>

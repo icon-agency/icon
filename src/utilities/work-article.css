@@ -117,7 +117,11 @@
 
 .work-article__project {
   margin: 0;
-  font-size: var(--voice-display);
+  /* A step past the display voice (user call, Sep 2026: "up the size") —
+     SCALED from the token, not its own clamp, so it grows and shrinks with
+     the system and the client line's 0.3 ratio-lock stays proportional at
+     every width. */
+  font-size: calc(var(--voice-display) * 1.25);
   font-weight: 900;
   line-height: 1;
   letter-spacing: -0.02em;
@@ -205,6 +209,16 @@
   line-height: 1.7;
 }
 
+/* Each column opens with a TITLE — CATEGORY / DELIVERABLES — in the same
+   caps voice at REGULAR weight (user call, Sep 2026), so the bold items
+   read as the content and the title as the label of the label. It replaced
+   the left column's "Work" link, which only duplicated the ← Work eyebrow. */
+.work-article__facts li.work-article__facts-title {
+  /* li stated in the selector: the items' `.work-article__facts li` is
+     class+type and would out-specify a bare class here */
+  font-weight: var(--font-weight-normal);
+}
+
 /* The category links wear the list's own ink (already full-strength, unlike
    the grey meta links elsewhere), so hover speaks through an underline —
    the prose link's affordance in the caps voice. */
@@ -250,7 +264,12 @@
   gap: var(--space-lg);
 }
 
-@media (min-width: 768px) {
+/* The rails need the measure's left margin to stand in, and the prose only
+   takes its centred measure from lg — between md and lg the rail sat ON the
+   text (user catch, Sep 2026). So: rails from lg up; below lg every rail
+   hides and ONE share sits below the article instead (the __share-footer),
+   horizontal on a hairline, before the Next up rail. */
+@media (min-width: 1024px) {
   .work-article__share-rail {
     position: absolute;
     inset-block: 0;
@@ -258,11 +277,35 @@
   }
 }
 
-/* Below md there is no rail column: ONE share leads the flow (the first
-   chunk's); the repeats would read as clutter. */
-@media (max-width: 767.98px) {
+@media (max-width: 1023.98px) {
   .work-article__chunk .work-article__share-rail { display: none; }
-  .work-article__flow > .work-article__chunk:first-child .work-article__share-rail { display: block; }
+}
+
+/* the below-the-article share: hidden where the rails run */
+.work-article__share-footer {
+  display: none;
+}
+
+@media (max-width: 1023.98px) {
+  .work-article__share-footer {
+    display: block;
+    /* no hairline of its own (user call) — the Next up rail's drawn rule
+       just below already marks the boundary */
+  }
+
+  /* the same block, turned horizontal: label then the two actions in a row.
+     The buttons need their square STATED here: in the rail the column
+     stretch makes the label set their width; a row has nothing to stretch
+     against, so they collapsed to bare glyphs (user catch). */
+  .work-article__share-footer .news-article__share {
+    flex-direction: row;
+    align-items: center;
+    gap: var(--space-xs);
+  }
+
+  .work-article__share-footer .news-article__share-btn {
+    width: 3.5rem;
+  }
 }
 
 /* The flow: same rhythm as the news article. Prose in the measure, media
@@ -475,3 +518,11 @@
 
 .work-article__next-grid .work__figure { aspect-ratio: 3 / 2; }
 .work-article__next-grid .work__item:nth-child(2) .work__figure { aspect-ratio: 1; }
+
+/* The rail's More — the homepage rails' own invitation (.news__more +
+   .invite-arrow, reused as-is), centred under the cards like the masthead
+   above them. */
+.work-article__next-more {
+  margin-top: var(--space-md);
+  text-align: center;
+}

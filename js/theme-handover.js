@@ -1,7 +1,10 @@
-/* theme-handover.js — the dark-opening theme handover, SHARED. A page that
- * OPENS dark (class="dark" on <html> in the markup, so there is no light
- * flash) marks its head block with [data-theme-handover]; this observer
- * hands the page over to light as that head scrolls away. Two-way:
+/* theme-handover.js — the OPENING-THEME handover, SHARED. A page that opens
+ * in a theme (a class on <html> in the markup, so there is no flash) marks
+ * its head block with [data-theme-handover]; this observer hands the page
+ * over to the light default as that head scrolls away. WHICH class hands
+ * over is the carrier's business: [data-theme-handover-class] names it
+ * ("theme-work-article" on the work articles, whose chameleon leaves with
+ * the hero — user call, Sep 2026); absent, it is the news pages' "dark". Two-way:
  * scrolling back up returns the dark opening, so the page reads the same
  * in both directions. Grown out of js/news-article.js when the /news
  * landing became the third template to open dark (article A, article B,
@@ -34,6 +37,11 @@
   //       than the viewport (header B's stacked hero): such a head can
   //       never be 50% visible, so the page went light at load.
   //
+  //   "gone" — the marked element's BOTTOM crossing the viewport TOP:
+  //       the opening theme holds until the element has fully scrolled
+  //       off, then hands over (the work articles' hero banner — user
+  //       call, Sep 2026: the midpoint flip came too early).
+  //
   //   "end" — the marked section's END arriving at the FOLD: dark while
   //       the element's bottom still sits below the viewport's bottom
   //       edge, light the moment the content after it starts to show
@@ -62,10 +70,14 @@
       // must still OPEN dark — the handover needs somewhere to hand over
       // FROM. At the exact top the opening always stands; the first real
       // scroll lets the criterion speak.
-      var dark = e.target.getAttribute("data-theme-handover") === "end"
+      var mode = e.target.getAttribute("data-theme-handover");
+      var opening = mode === "end"
         ? r.bottom > fold || window.scrollY < 1
-        : r.top + r.height / 2 > 0;
-      document.documentElement.classList.toggle("dark", dark);
+        : mode === "gone"
+          ? r.bottom > 0
+          : r.top + r.height / 2 > 0;
+      var cls = e.target.getAttribute("data-theme-handover-class") || "dark";
+      document.documentElement.classList.toggle(cls, opening);
     });
   }, { threshold: steps });
 
