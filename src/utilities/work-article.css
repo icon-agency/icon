@@ -58,9 +58,18 @@
   --icon-blue: var(--wa-ink);
   --border: color-mix(in srgb, var(--wa-ink) 20%, transparent);
   --secondary: color-mix(in srgb, var(--wa-ink) 8%, transparent);
-  /* Frosted nav pill, tinted to the folio surface (the dark default would be
-   * illegible under the folio nav links). */
-  --nav-bg-scrolled: color-mix(in srgb, var(--wa-surface) 78%, transparent);
+  /* Frosted nav pill (and the share chips wearing its dress), tinted to the
+   * folio surface pulled 20% toward BLACK, then frosted at 80% — the blue
+   * site theme's own pill relationship (#0000ff → rgb(0 0 190), ~25% down),
+   * derived from the surface so the shade survives ANY client colour and
+   * always lands darker (user call: darker, more contrast — ink-derived
+   * lightened on white-ink folios and read too faint). (Surface-only at 78%
+   * vanished: the same hue frosted over the same flat hue reads as nothing.) */
+  --nav-bg-scrolled: color-mix(
+    in srgb,
+    color-mix(in srgb, var(--wa-surface) 80%, #000) 80%,
+    transparent
+  );
   background-color: var(--wa-surface);
   color: var(--wa-ink);
 }
@@ -408,23 +417,31 @@
   width: 100%;
 }
 
-/* LAYERED media — a background image/video with a foreground image/video
-   floating inside it on a padding rule (the humaan.com card anatomy, by
-   user call Sep 2026: theirs drifts the background; ours holds BOTH layers
-   still — no parallax, per the ask). Works on any gallery figure or the
-   banner: first child is the ground (cover), last child the overlay
-   (contained inside --overlay-pad, default 8%). Set the pad per instance:
-   style="--overlay-pad: 12%". Drupal: a layered_media paragraph — two
-   media references + an inset field. */
+/* LAYERED media — a ground with a foreground image/video floating inside it
+   on a padding rule (the humaan.com card anatomy, by user call Sep 2026:
+   theirs drifts the background; ours holds BOTH layers still — no parallax,
+   per the ask). Works on any gallery figure or the banner. The ground is
+   EITHER of:
+     - a first media child (cover-fit image/video), or
+     - a flat colour (user call): style="--overlay-ground: #2e2e2e" with the
+       floating media as the only child — the editor's colour picker.
+   The last child always floats inside --overlay-pad (default 8%); set the
+   pad per instance: style="--overlay-pad: 12%". Compose with --portrait for
+   a 7:10 grounded tile (declared later, so its aspect wins). Drupal: a
+   layered_media paragraph — a media reference OR colour field for the
+   ground, a media reference for the float, an inset field. */
 .work-article__banner--layered,
 .work-gallery__figure--layered {
   position: relative;
   aspect-ratio: 16 / 9;
   overflow: hidden;
+  background: var(--overlay-ground, none);
 }
 
-.work-article__banner--layered > :first-child,
-.work-gallery__figure--layered > :first-child {
+/* the media ground — only when a float follows it (an only child IS the
+   float, riding a colour ground) */
+.work-article__banner--layered > :first-child:not(:only-child),
+.work-gallery__figure--layered > :first-child:not(:only-child) {
   position: absolute;
   inset: 0;
   width: 100%;
@@ -446,6 +463,13 @@
   max-width: calc(100% - var(--overlay-pad, 8%) * 2);
   max-height: calc(100% - var(--overlay-pad, 8%) * 2);
   border-radius: var(--radius-icon);
+  /* the float sits OUT the scroll-velocity skew (user call): the figure
+     tilts as one, so the float counter-skews by the same angle. The two
+     shears cancel exactly — the float is centred, so both act about the
+     same vertical axis — leaving the ground leaning behind a level float.
+     `transform` is free here: the reveal animates clip-path/scale/opacity. */
+  transform: skewY(calc(var(--wa-skew, 0deg) * -1));
+  transform-origin: center center;
 }
 
 /* Portrait media in a row — a phone-shaped crop (7:10) so a 9:16 reel and a
@@ -476,25 +500,31 @@
 }
 
 /* ---- The stats band ------------------------------------------------------ */
-/* Results as NUMBERS (born on the MoAD example, user call Sep 2026): a ruled
-   band — the same hairlines the flow's quotes wear, so the two read as
-   siblings — holding stat items on an auto-fit grid. The VALUE speaks in the
-   headline register at the site's 900; the LABEL answers in the caps label
-   voice at the quiet meta grey. Everything reads the chameleon ink, so the
-   band re-pitches with the client pair like every other component.
+/* Results as a ruled TABLE of rows (user call, Sep 2026, re-pitched from the
+   original packed grid to the row-per-stat shape): each stat is one row —
+   the VALUE on the left in the headline register at the site's 900, the
+   LABEL answering on the right in a large body voice at medium — with the
+   universal hairline under every row. The value takes TEXT as readily as a
+   number ("Top 5", "Sold out"); tabular numerals only steady the digits.
+   Everything reads the chameleon ink, so the band re-pitches with the
+   client pair like every other component.
 
    PADDED IN to the prose measure (user call, Sep 2026): full-bleed it broke
    a run in two and doubled the share; on the reading column it lives INSIDE
    a run — heading, stats, tail, one share travelling past all three — and
-   its rules align with the text edges. Qualitative results that resist a
-   number stay prose or slash-list beside it; the band is for figures only.
+   its rules align with the text edges.
 
    Drupal: a work_stats paragraph — repeating {value, label} pairs. */
 .work-stats {
   width: 100%;
   margin-inline: auto;
-  padding-block: clamp(1.5rem, 3vw, 3rem);
-  border-block: var(--rule-weight) solid var(--rule);
+}
+
+/* a heading block ahead of the band is ITS heading — sit it at the close
+   heading distance, not the chunk's full section gap (user call: "move the
+   results heading closer"; the negative margin eats the flex gap down) */
+.work-article__prose + .work-stats {
+  margin-top: calc(var(--space-sm) - var(--space-lg));
 }
 
 @media (min-width: 1024px) {
@@ -505,32 +535,44 @@
 
 .work-stats__grid {
   margin: 0;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
-  gap: clamp(1.25rem, 2.5vw, 2.5rem);
 }
 
+/* one row per stat: value left, label right (the dl keeps dt→dd source
+   order for semantics; the grid seats them visually) */
 .work-stats__stat {
   margin: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(1rem, 3vw, 2.5rem);
+  padding-block: clamp(1.25rem, 2.6vw, 2.25rem);
+  border-bottom: var(--rule-weight) solid var(--rule);
+}
+
+/* the table opens with a rule too (user call) */
+.work-stats__stat:first-child {
+  border-top: var(--rule-weight) solid var(--rule);
 }
 
 .work-stats__value {
-  display: block;
+  grid-column: 1;
+  grid-row: 1;
+  margin: 0;
   font-size: var(--voice-headline);
   font-weight: 900;
   line-height: 1;
   letter-spacing: -0.02em;
   font-variant-numeric: tabular-nums;
+  text-wrap: balance; /* a wrapping TEXT value breaks evenly */
 }
 
 .work-stats__label {
-  display: block;
-  margin-top: 0.5em;
-  font-size: var(--voice-label);
-  font-weight: var(--font-weight-bold);
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  color: var(--color-icon-grey);
+  grid-column: 2;
+  grid-row: 1;
+  font-size: clamp(1.1875rem, 1.6vw, 1.75rem);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.3;
+  text-wrap: pretty;
 }
 
 /* ---- 4. Next up — on the CLIENT theme, under a drawn line ---------------- */

@@ -306,38 +306,48 @@
 
           <!-- gallery: the press ran with it — clippings in mixed rows -->
           <div class="work-gallery">
+            <!-- the press wall on COLOUR grounds (user call): every clipping
+                 floats on the same editor-picked #2e2e2e — the layered
+                 component's colour-picker ground, no background media -->
             <div class="work-gallery__row work-gallery__row--cols-2">
-              <figure class="media-reveal" data-reveal-img>
+              <figure class="work-gallery__figure--layered media-reveal" data-reveal-img style="--overlay-ground: #2e2e2e">
                 <img loading="lazy" src="../assets/work/nike-mara/press-abc-radio.png" alt="ABC Radio: Joel Creasey on the world's most encouraging marathon" />
               </figure>
-              <figure class="media-reveal" data-reveal-img style="--animate-delay: 60ms">
+              <figure class="work-gallery__figure--layered media-reveal" data-reveal-img style="--overlay-ground: #2e2e2e; --animate-delay: 60ms">
+                <img loading="lazy" src="../assets/work/nike-mara/press-the-age.png" alt="The Age: marathon stories across the paper — life's not a sprint" />
+              </figure>
+            </div>
+            <div class="work-gallery__row work-gallery__row--cols-2">
+              <figure class="work-gallery__figure--layered media-reveal" data-reveal-img style="--overlay-ground: #2e2e2e">
                 <img loading="lazy" src="../assets/work/nike-mara/press-race-day-playlist.png" alt="Press: the ultimate race-day playlist — Melbourne Marathon runners' top songs" />
               </figure>
-            </div>
-            <div class="work-gallery__row work-gallery__row--cols-2">
-              <figure class="media-reveal" data-reveal-img>
-                <img loading="lazy" src="../assets/work/nike-mara/press-the-age.png" alt="The Age front page featuring the marathon" />
-              </figure>
-              <figure class="media-reveal" data-reveal-img style="--animate-delay: 60ms">
-                <img loading="lazy" src="../assets/work/nike-mara/press-celebs-start-line.png" alt="Press spread: celebs join stars on the start line" />
+              <figure class="work-gallery__figure--layered media-reveal" data-reveal-img style="--overlay-ground: #2e2e2e; --animate-delay: 60ms">
+                <img loading="lazy" src="../assets/work/nike-mara/press-training-songs.png" alt="Press: the most popular songs to train to for a marathon" />
               </figure>
             </div>
-            <!-- the race-day reel is PORTRAIT (720x1280) — paired with the
-                 similarly tall Instagram clipping rather than run full-width,
-                 where a portrait video would tower. -->
-            <div class="work-gallery__row work-gallery__row--cols-2">
-              <figure class="work-gallery__figure--portrait media-reveal" data-reveal-img>
-                <video autoplay muted loop playsinline preload="auto" src="../assets/work/nike-mara/race-day-reel.mp4" aria-label="Race-day edit: crowds, signs and finishers across the festival"></video>
-              </figure>
-              <figure class="work-gallery__figure--portrait media-reveal" data-reveal-img style="--animate-delay: 60ms">
-                <img loading="lazy" src="../assets/work/nike-mara/press-instagram-mcg.png" alt="The Age on Instagram: vibes are high inside the MCG as runners finish" />
-              </figure>
-            </div>
-            <div class="work-gallery__row work-gallery__row--cols-2">
-              <figure class="media-reveal" data-reveal-img>
+            <!-- the odd clipping out of seven closes the wall FULL WIDTH on
+                 its ground — the float shrink-wraps near native resolution -->
+            <div class="work-gallery__row">
+              <figure class="work-gallery__figure--layered media-reveal" data-reveal-img style="--overlay-ground: #2e2e2e">
                 <img loading="lazy" src="../assets/work/nike-mara/press-tag-heuer.png" alt="Life &amp; Leisure: marathon running booms" />
               </figure>
-              <figure class="media-reveal" data-reveal-img style="--animate-delay: 60ms">
+            </div>
+            <!-- the race-day reel, LAYERED full width (user call): the
+                 start-line crowd as the ground, the portrait reel floating
+                 on the padding rule -->
+            <div class="work-gallery__row">
+              <figure class="work-gallery__figure--layered media-reveal" data-reveal-img style="--overlay-pad: 10%">
+                <img loading="lazy" src="../assets/work/nike-mara/nike-bg.jpg" alt="The start-line crowd surging past the inflatable arch at first light" />
+                <video autoplay muted loop playsinline preload="auto" src="../assets/work/nike-mara/race-day-reel.mp4" aria-label="Race-day edit: crowds, signs and finishers across the festival"></video>
+              </figure>
+            </div>
+            <!-- grounded tile composed with the portrait ratio, so the pair
+                 still lines up with the phone-cropped finish photo -->
+            <div class="work-gallery__row work-gallery__row--cols-2">
+              <figure class="work-gallery__figure--layered work-gallery__figure--portrait media-reveal" data-reveal-img style="--overlay-ground: #2e2e2e">
+                <img loading="lazy" src="../assets/work/nike-mara/press-celebs-start-line.png" alt="Herald Sun spread: celebs join stars on the start line" />
+              </figure>
+              <figure class="work-gallery__figure--portrait media-reveal" data-reveal-img style="--animate-delay: 60ms">
                 <img loading="lazy" src="../assets/work/nike-mara/female-runners.png" alt="A runner celebrating at the finish line" />
               </figure>
             </div>
