@@ -748,6 +748,76 @@
   }
 }
 
+/* ---- The gallery scroller (work-scroller) -------------------------------- */
+/* A drifting strip for a SERIES, carded at the gallery width — posters, clippings (born on
+   The Athlete's Foot posters, user call Sep 2026). The homepage intro
+   filmstrip's marquee without the tilts, vanilla-rebuilt in
+   js/work-scroller.js: drifts at the shared strip speed, drag moves it 1:1
+   and a fling re-points the direction; clicking a card glides it to the
+   centre, zooms it a step and PAUSES; clicking it again, the band, or
+   dragging resumes. The optional colour ground and the frame use the
+   layered figure's own tokens (--overlay-ground, --overlay-pad). Card
+   height considers the viewport so the full image is always visible,
+   capped by the tallest image's natural height (js sets --ws-card-h; small
+   clippings never upscale). No-JS: a plain hand-scrollable strip.
+   As an image gallery it BREAKS share runs, like every other gallery.
+   Drupal: a work_scroller paragraph — media items + optional colour. */
+.work-scroller {
+  /* a CARD at the gallery width (user call — like the single-column rows
+     above it), wearing the site radius; the strip drifts inside it */
+  border-radius: var(--radius-icon);
+  padding-block: var(--overlay-pad, 5vw);
+  background: var(--overlay-ground, none);
+  overflow-x: auto; /* the no-JS strip scrolls by hand */
+  cursor: grab;
+  touch-action: pan-y;
+}
+
+.work-scroller.is-ready {
+  overflow: hidden;
+}
+
+.work-scroller.is-dragging {
+  cursor: grabbing;
+}
+
+.work-scroller__track {
+  display: flex;
+  align-items: center;
+  gap: clamp(1.5rem, 3vw, 4rem);
+  width: max-content;
+  will-change: transform;
+}
+
+.work-scroller__card {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  flex: none;
+  display: flex;
+  align-items: center;
+  height: var(--ws-card-h, 60vh);
+  cursor: pointer;
+  transition: scale 0.45s var(--ease-standard);
+}
+
+.work-scroller__card img {
+  display: block;
+  max-height: 100%;
+  width: auto;
+  border-radius: var(--radius-icon);
+  -webkit-user-drag: none;
+  user-select: none;
+}
+
+/* the centred card: a step larger over its neighbours while the drift holds */
+.work-scroller__card.is-focused {
+  position: relative;
+  z-index: 2;
+  scale: 1.05;
+}
+
 /* ---- 4. Next up — on the CLIENT theme, under a drawn line ---------------- */
 /* Settled over three passes (white → site-dark → this, all user calls): the
    rail STAYS in the chameleon — no hand-back, the client pair runs to the

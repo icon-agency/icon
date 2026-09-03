@@ -26,9 +26,6 @@
       document.documentElement.classList.add("js-animations");
     </script>
 
-    <!-- TEMPORARY dev-only light/dark toggle (bottom-right). Remove this tag +
-         js/theme-toggle.js before shipping. -->
-    <script src="../js/theme-toggle.js"></script>
   </head>
   <body>
     <!-- ================= HEADER (global region) ================= -->
@@ -271,24 +268,26 @@
               </figure>
           </div>
 
-          <!-- gallery: the campaign posters on colour grounds, portrait pairs -->
-          <div class="work-gallery">
-            <div class="work-gallery__row work-gallery__row--cols-2">
-              <figure class="work-gallery__figure--layered work-gallery__figure--portrait media-reveal" data-reveal-img style="--overlay-ground: #2e2e2e">
+          <!-- the campaign posters on the GALLERY SCROLLER — a drifting
+               strip on the colour ground; click a poster to centre it -->
+          <div class="work-scroller" data-work-scroller style="--overlay-ground: #2e2e2e">
+            <div class="work-scroller__track">
+              <button class="work-scroller__card" type="button">
                 <img loading="lazy" src="../assets/work/athletes-foot/poster-1.png" alt="Fit For Every Run poster: run to take off" />
-              </figure>
-              <figure class="work-gallery__figure--layered work-gallery__figure--portrait media-reveal" data-reveal-img style="--overlay-ground: #2e2e2e; --animate-delay: 60ms">
-                <img loading="lazy" src="../assets/work/athletes-foot/poster-2.png" alt="Fit For Every Run poster campaign variant" />
-              </figure>
-            </div>
-            <div class="work-gallery__row work-gallery__row--cols-2">
-              <figure class="work-gallery__figure--layered work-gallery__figure--portrait media-reveal" data-reveal-img style="--overlay-ground: #2e2e2e">
+              </button>
+              <button class="work-scroller__card" type="button">
+                <img loading="lazy" src="../assets/work/athletes-foot/poster-2.png" alt="Fit For Every Run poster: run like 30k is nothing" />
+              </button>
+              <button class="work-scroller__card" type="button">
                 <img loading="lazy" src="../assets/work/athletes-foot/poster-3.png" alt="Fit For Every Run poster campaign variant" />
-              </figure>
-              <figure class="work-gallery__figure--layered work-gallery__figure--portrait media-reveal" data-reveal-img style="--overlay-ground: #2e2e2e; --animate-delay: 60ms">
+              </button>
+              <button class="work-scroller__card" type="button">
                 <img loading="lazy" src="../assets/work/athletes-foot/poster-4.png" alt="Fit For Every Run poster campaign variant" />
-              </figure>
+              </button>
             </div>
+          </div>
+
+          <div class="work-gallery">
             <!-- the billboard, one wide row -->
             <div class="work-gallery__row">
               <figure class="media-reveal" data-reveal-img>
@@ -322,16 +321,11 @@
           </div>
           </div>
 
-          <!-- gallery: the campaign montages — one wide, one tall on its ground -->
+          <!-- gallery: the campaign montage, one wide row -->
           <div class="work-gallery">
             <div class="work-gallery__row">
               <figure class="media-reveal" data-reveal-img>
                 <img loading="lazy" src="../assets/work/athletes-foot/montage-1.png" alt="Fit For Every Run campaign montage" />
-              </figure>
-            </div>
-            <div class="work-gallery__row">
-              <figure class="work-gallery__figure--layered media-reveal" data-reveal-img style="--overlay-ground: #2e2e2e">
-                <img loading="lazy" src="../assets/work/athletes-foot/montage-2.png" alt="Campaign montage: the work across channels" />
               </figure>
             </div>
           </div>
@@ -551,6 +545,7 @@
     <script src="../js/velocity-lean.js"></script>
     <script src="../js/work-article.js"></script>
     <script src="../js/work-video.js"></script>
+    <script src="../js/work-scroller.js"></script>
     <script src="../js/site-footer.js"></script>
   </body>
 </html>

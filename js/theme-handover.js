@@ -19,7 +19,7 @@
  * No-JS / no-IO: the page simply stays dark end to end — a legitimate
  * reading of the design rather than a broken in-between.
  *
- * NB the dev-only theme-toggle also writes these classes; last writer wins,
+ * NB anything else writing these classes shares them; last writer wins,
  * which is fine for a prototype affordance that ships removed.
  *
  * Drupal: Drupal.behaviors.iconThemeHandover via `icon/theme-handover`. */
