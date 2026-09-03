@@ -215,6 +215,53 @@
   display: block;
 }
 
+/* The BREAKOUT (user call, Sep 2026): while the banner is the thing on
+   screen it runs to the viewport edges; off screen it sits in the gutter
+   like everything else. js/work-article.js flips .is-wide at ONE
+   IntersectionObserver threshold, both ways — wide once half of the banner
+   is in view, back once half of it has left (either edge) — AND follows
+   the header (user calls — see the JS): wide only while the wordmark has
+   slid out and the home glyph is open, so the page opens inset, widens
+   after that swap has finished, and goes back to inset when the wordmark
+   returns at the top.
+
+   Only the WIDTH moves. The height is PINNED for as long as the behaviour
+   is live (.is-pinned, from the JS's first frame; --wa-banner-h is the
+   height the aspect gives the inset frame, rewritten on resize), in BOTH
+   states — not only while wide. It was wide-only at first, and that
+   strobed: on the way out the aspect took the height back while the
+   width was still easing in, the bottom edge crept up, the visible
+   fraction crossed the threshold again, and the frame re-widened — a
+   loop at one scroll position. With the height constant no state change
+   moves an edge the observer measures. The reading column below never
+   reflows either, and the cover-fit media simply shows more of its
+   sides. The radius goes with the gutter — a full-bleed frame has no
+   corners to round.
+   Margin is a layout property, so this is a one-shot CSS transition (a
+   state change, like the footer's entrance), not a scroll-linked timeline;
+   the skew rule below keeps `transform`, which this never touches. */
+.work-article__banner {
+  transition:
+    margin var(--duration-slow) var(--ease-standard),
+    border-radius var(--duration-slow) var(--ease-standard);
+}
+
+.work-article__banner.is-pinned {
+  height: var(--wa-banner-h);
+  aspect-ratio: auto;
+}
+
+.work-article__banner.is-wide {
+  margin-inline: calc(-1 * var(--gutter-page));
+  border-radius: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .work-article__banner {
+    transition: none; /* the state still flips; it just doesn't travel */
+  }
+}
+
 /* The statement rides the page rhythm, not its own (user call, Sep 2026):
    .pull-quote ships a clamp(2rem, 6vw, 6rem) padding-block for pages that
    drop it into prose flows, but this page spaces its sections with the

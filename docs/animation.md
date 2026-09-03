@@ -173,7 +173,7 @@ missing.
 | Work section (swipe, underline, hover-video) | `js/work.js` | — | `iconWork` → `icon/work` |
 | Work listing filter | `js/work-filter.js` | — | `iconWorkFilter` → `icon/work-filter` |
 | Scroll-velocity engine (shared: footer skew, news + work listing lean, work article skew, gallery scroller) | `js/velocity-lean.js` | — | `iconVelocityLean` → `icon/velocity-lean` (a dependency of its consumers) |
-| Work article (chameleon skew) | `js/work-article.js` | velocity-lean | `iconWorkArticle` → `icon/work-article` |
+| Work article (chameleon skew + the hero banner's breakout to the viewport edges, an IO flip at one 0.5 threshold with the travel in CSS; wide only while the header is in its scrolled state, so it opens inset and returns to inset at the top) | `js/work-article.js` | velocity-lean | `iconWorkArticle` → `icon/work-article` |
 | Work article gallery scroller | `js/work-scroller.js` | velocity-lean | `iconWorkScroller` → `icon/work-scroller` |
 | Work article click-to-play film | `js/work-video.js` | — | `iconWorkVideo` → `icon/work-video` |
 | Home-A hero (prototype) | `js/hero.js` | gsap, ScrambleText | `iconHero` → `icon/hero` |
