@@ -306,27 +306,7 @@
           </div>
           </div>
 
-          <!-- gallery: the press ran with it — clippings in mixed rows -->
           <div class="work-gallery">
-            <!-- the press wall on COLOUR grounds (user call): every clipping
-                 floats on the same editor-picked #2e2e2e — the layered
-                 component's colour-picker ground, no background media -->
-            <div class="work-gallery__row work-gallery__row--cols-2">
-              <figure class="work-gallery__figure--layered media-reveal" data-reveal-img style="--overlay-ground: #2e2e2e">
-                <img loading="lazy" src="../assets/work/nike-mara/press-abc-radio.png" alt="ABC Radio: Joel Creasey on the world's most encouraging marathon" />
-              </figure>
-              <figure class="work-gallery__figure--layered media-reveal" data-reveal-img style="--overlay-ground: #2e2e2e; --animate-delay: 60ms">
-                <img loading="lazy" src="../assets/work/nike-mara/press-the-age.png" alt="The Age: marathon stories across the paper — life's not a sprint" />
-              </figure>
-            </div>
-            <div class="work-gallery__row work-gallery__row--cols-2">
-              <figure class="work-gallery__figure--layered media-reveal" data-reveal-img style="--overlay-ground: #2e2e2e">
-                <img loading="lazy" src="../assets/work/nike-mara/press-race-day-playlist.png" alt="Press: the ultimate race-day playlist — Melbourne Marathon runners' top songs" />
-              </figure>
-              <figure class="work-gallery__figure--layered media-reveal" data-reveal-img style="--overlay-ground: #2e2e2e; --animate-delay: 60ms">
-                <img loading="lazy" src="../assets/work/nike-mara/press-training-songs.png" alt="Press: the most popular songs to train to for a marathon" />
-              </figure>
-            </div>
             <!-- the race-day reel, LAYERED full width (user call): the
                  start-line crowd as the ground, the portrait reel floating
                  on the padding rule -->
@@ -336,15 +316,30 @@
                 <video autoplay muted loop playsinline preload="auto" src="../assets/work/nike-mara/race-day-reel.mp4" aria-label="Race-day edit: crowds, signs and finishers across the festival"></video>
               </figure>
             </div>
-            <!-- the closing pair: two grounded tiles at the wall's own 16:9
-                 (the 7:10 crop left with the finish photo it was matching) -->
-            <div class="work-gallery__row work-gallery__row--cols-2">
-              <figure class="work-gallery__figure--layered media-reveal" data-reveal-img style="--overlay-ground: #2e2e2e">
+          </div>
+          <!-- the press ran with it — all six clippings on the GALLERY
+               SCROLLER (user call), drifting on the colour ground; the
+               natural-size cap keeps the small scans from upscaling -->
+          <div class="work-scroller" data-work-scroller style="--overlay-ground: #2e2e2e">
+            <div class="work-scroller__track">
+              <button class="work-scroller__card" type="button">
+                <img loading="lazy" src="../assets/work/nike-mara/press-abc-radio.png" alt="ABC Radio: Joel Creasey on the world's most encouraging marathon" />
+              </button>
+              <button class="work-scroller__card" type="button">
+                <img loading="lazy" src="../assets/work/nike-mara/press-the-age.png" alt="The Age: marathon stories across the paper — life's not a sprint" />
+              </button>
+              <button class="work-scroller__card" type="button">
+                <img loading="lazy" src="../assets/work/nike-mara/press-race-day-playlist.png" alt="Press: the ultimate race-day playlist — Melbourne Marathon runners' top songs" />
+              </button>
+              <button class="work-scroller__card" type="button">
+                <img loading="lazy" src="../assets/work/nike-mara/press-training-songs.png" alt="Press: the most popular songs to train to for a marathon" />
+              </button>
+              <button class="work-scroller__card" type="button">
                 <img loading="lazy" src="../assets/work/nike-mara/press-celebs-start-line.png" alt="Herald Sun spread: celebs join stars on the start line" />
-              </figure>
-              <figure class="work-gallery__figure--layered media-reveal" data-reveal-img style="--overlay-ground: #2e2e2e; --animate-delay: 60ms">
+              </button>
+              <button class="work-scroller__card" type="button">
                 <img loading="lazy" src="../assets/work/nike-mara/press-tag-heuer.png" alt="Life &amp; Leisure: marathon running booms" />
-              </figure>
+              </button>
             </div>
           </div>
 
@@ -648,6 +643,7 @@
     <script src="../js/theme-handover.js"></script>
     <script src="../js/velocity-lean.js"></script>
     <script src="../js/work-article.js"></script>
+    <script src="../js/work-scroller.js"></script>
     <script src="../js/site-footer.js"></script>
   </body>
 </html>
