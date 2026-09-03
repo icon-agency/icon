@@ -5,8 +5,12 @@
  * lg (1024) is the mobile-menu / desktop cutoff (see the reference layout).
  * Only the two large additions are declared here.
  *
- * Available as variants in markup: 3xl:… 4xl:…  and via
- * @media (min-width: var(--breakpoint-3xl)) in component CSS. */
+ * Available as variants in markup: 3xl:… 4xl:…. In hand-written component
+ * CSS write the table's pixel value (@media (min-width: 1920px)) or nest the
+ * rule in @variant 3xl { … } — var() is NOT valid inside a media query, so
+ * var(--breakpoint-3xl) there silently never matches. One documented
+ * intermediate step lives outside this table: 900px, the nav / two-column
+ * switch used by site-header, home-c, work-landing and design-system. */
 
 @theme {
   --breakpoint-3xl: 120rem; /* 1920px */

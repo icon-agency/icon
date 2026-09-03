@@ -77,7 +77,7 @@ Because of the `@theme` token set, the following are available in markup alongsi
 - **Typography** — fluid `text-xs` through `text-9xl` (wired to the `--text-*` clamp scale), plus `font-sans` (Kumbh Sans) and `font-serif` (`miller-text`, used italic via `.miller-text`).
 - **Spacing** — named scale `p-3xs`/`p-2xs`/`p-xs`/`p-sm`/`p-md`/`p-lg`/`p-xl`/`p-2xl`/`p-3xl` (and the `m-*` / `gap-*` equivalents), generated alongside Tailwind's default numeric scale (`p-4`, `gap-8` — still available).
 - **Radius** — `rounded-sm`, `rounded-md`, `rounded-lg`, `rounded-xl`, plus the brand `rounded-icon` (4px) for media/cards.
-- **Breakpoints** — default variants `sm:` (640) · `md:` (768) · `lg:` (1024, the mobile-menu/desktop cutoff) · `xl:` (1280) · `2xl:` (1536), plus the two custom additions `3xl:` (1920) and `4xl:` (2560) from `src/theme/breakpoints.css`. There is no `xs:` or `wide:` variant.
+- **Breakpoints** — default variants `sm:` (640) · `md:` (768) · `lg:` (1024, the mobile-menu/desktop cutoff) · `xl:` (1280) · `2xl:` (1536), plus the two custom additions `3xl:` (1920) and `4xl:` (2560) from `src/theme/breakpoints.css`. There is no `xs:` or `wide:` variant. In component CSS use `@variant 3xl { … }` or the literal pixel value — `var(--breakpoint-*)` cannot be used inside `@media`.
 
 If a utility doesn't generate (typo, missing token), check whether the token exists in `src/theme/*.css` and whether the markup is covered by an `@source` path.
 

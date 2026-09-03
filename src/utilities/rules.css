@@ -48,7 +48,7 @@
 @property --rule {
   syntax: "<color>";
   inherits: true;
-  initial-value: rgb(0 0 0 / 0);
+  initial-value: transparent;
 }
 
 /* ---- border-drawn rules ------------------------------------------------- */

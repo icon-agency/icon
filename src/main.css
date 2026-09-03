@@ -14,7 +14,8 @@
 @source "../templates";
 @source "../index.html";
 
-/* Class-based dark mode (.dark on <html>) — the site default. */
+/* Class-based dark mode (.dark on <html>). Light is the default; the
+   dark-opening pages set the class in markup and hand over on scroll. */
 @custom-variant dark (&:is(.dark *));
 
 /* Tokens */
@@ -50,14 +51,16 @@
 @import "./components/page-header.css";
 @import "./components/filter-bar.css";
 @import "./components/pager.css";
-@import "./components/image-grid.css";
 @import "./components/pull-quote.css";
-@import "./components/more-work.css";
 @import "./components/site-footer.css";
 @import "./components/quiet-link.css";
 @import "./components/text-box.css";
 @import "./components/news-card.css";
 @import "./components/news-list.css";
+@import "./components/work-gallery.css";
+@import "./components/work-stats.css";
+@import "./components/work-video.css";
+@import "./components/work-scroller.css";
 
 /* Page-specific overrides — keep tiny */
 @import "./utilities/home-page.css";

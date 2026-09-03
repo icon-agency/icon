@@ -15,7 +15,7 @@
   border-radius: var(--radius-icon);
   height: 100%;
   /* Names a view-progress timeline on the CARD box so the parallax media inside
-     (project-card / image-grid / case-study featured) can reference it via
+     (project-card / case-study featured) can reference it via
      `animation-timeline: --card-parallax`. It anchors to the document scroller —
      NOT the clipped frame that bare `view()` would resolve to — so the images
      actually translate as the card scrolls through the viewport. */

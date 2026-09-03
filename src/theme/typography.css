@@ -29,18 +29,14 @@
   --text-4xl: clamp(2.25rem, 3vw, 3rem);
   --text-5xl: clamp(3rem, 4vw, 4rem);
   --text-6xl: clamp(3.75rem, 5vw, 5rem);
-  --text-7xl: 4.5rem;
-  --text-8xl: 6rem;
-  --text-9xl: 8rem;
 }
 
 :root {
-  /* Semantic display sizes used by headings and cards. */
+  /* The base <h1> size (base/typography.css). The old --heading-2/-3 and
+     --card-title/-subtitle scaffold sizes were removed (Sep 2026): nothing
+     consumed them — component headings wear a voice role below, and prose
+     headings are sized by .content-page. */
   --heading-1: clamp(2.5rem, 6vw, 4.5rem);
-  --heading-2: clamp(2rem, 4vw, 3.5rem);
-  --heading-3: clamp(1.5rem, 3vw, 2.5rem);
-  --card-title: clamp(0.9rem, 1.5vw, 1.5rem);
-  --card-subtitle: clamp(0.875rem, 0.85vw, 1.25rem);
 
   /* THE mid voice — the site's one "sentence" size, sitting between the
      display caps and the meta line. Worn by the hero's client label and
@@ -174,4 +170,3 @@
   --tracking-caps: -0.015em;
 }
 
-/* mirrors .site-logo__mark's steps — same breakpoints, same values */

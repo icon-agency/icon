@@ -22,7 +22,7 @@ file drives the **hairline draw** (`.is-drawn` on `[data-rule]` /
 (`.is-revealed` on `[data-reveal-img]` frames wearing `.media-reveal`) —
 both lifted here from per-page copies once a third page needed them.
 
-Used on `homeC`, `news`, `work` and `work-article`. (The design-system index
+Used on every template. (The design-system index
 deliberately loads no page JS — its inline demos show the genuine no-JS state.)
 Under `prefers-reduced-motion: reduce` the CSS resets everything to visible.
 Drupal: `Drupal.behaviors.iconReveal`.
@@ -94,7 +94,7 @@ Two shapes, both pure CSS with LESSONS.md-verified plumbing:
   speed. `js/hero.js` keeps a continuous rAF-**lerp** fallback for browsers
   without scroll-driven animations, gated by
   `CSS.supports('animation-timeline: scroll()')` so the two never both run.
-- **Card/media parallax** (`project-card`, `image-grid`, the case-study
+- **Card/media parallax** (`project-card` and the case-study
   featured media): a **named `view-timeline`** declared on the outer `.reveal`
   wrapper, consumed by the media via `animation-timeline: --card-parallax`.
   Named, not bare `view()`, because each medium sits inside an
@@ -139,9 +139,12 @@ missing.
    page deliberately ships without GSAP (news.js).
 4. **One behaviour per component/page concern**, each an IIFE keyed to a single
    future `Drupal.behaviors` entry, so unused components ship no dead animation
-   code. When two files need the same helper (the velocity sampler in
-   site-footer.js and news.js), the *third* consumer is the moment to lift it
-   into a shared primitive — not before.
+   code. When two files need the same helper, the *third* consumer is the
+   moment to lift it into a shared primitive — not before. The velocity
+   sampler is the worked example: it lived in `site-footer.js` and `news.js`
+   until the work landing became its third consumer, and is now
+   `js/velocity-lean.js` (`window.ICON.velocityLean`), loaded before the
+   files that call it.
 5. **Don't use JS for what CSS handles** — hover, focus, and theme
    cross-fades stay in CSS; observer-triggered reveals (including the hairline
    draw) keep the *transition* in CSS and use JS only to flip a class. JS
@@ -169,10 +172,13 @@ missing.
 | Work landing (filter + card motion) | `js/work-landing.js` | — | `iconWorkLanding` → `icon/work-landing` |
 | Work section (swipe, underline, hover-video) | `js/work.js` | — | `iconWork` → `icon/work` |
 | Work listing filter | `js/work-filter.js` | — | `iconWorkFilter` → `icon/work-filter` |
+| Scroll-velocity engine (shared: footer skew, news + work listing lean, work article skew, gallery scroller) | `js/velocity-lean.js` | — | `iconVelocityLean` → `icon/velocity-lean` (a dependency of its consumers) |
+| Work article (chameleon skew) | `js/work-article.js` | velocity-lean | `iconWorkArticle` → `icon/work-article` |
+| Work article gallery scroller | `js/work-scroller.js` | velocity-lean | `iconWorkScroller` → `icon/work-scroller` |
+| Work article click-to-play film | `js/work-video.js` | — | `iconWorkVideo` → `icon/work-video` |
 | Home-A hero (prototype) | `js/hero.js` | gsap, ScrambleText | `iconHero` → `icon/hero` |
 | Tagline (prototype) | `js/tagline.js` | gsap, Inertia | `iconTagline` → `icon/tagline` |
 | HomeB sphere (prototype) | `js/hero-sphere.js` | three, gsap, ScrollTrigger | `iconHeroSphere` → `icon/hero-sphere` |
-| Theme toggle | `js/theme-toggle.js` | — | **dev-only — never ported** |
 
 CDN loading (cdnjs/jsDelivr for GSAP + plugins, jsDelivr for Lenis) is a
 prototype convenience; self-hosting is a performance choice at port time, not a

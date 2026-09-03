@@ -3,7 +3,7 @@
 ## What this project is
 Front-end build (semantic HTML + Tailwind v4 CSS + minimal vanilla JS + GSAP) for the **ICON Agency** marketing site. It is built to be handed off into a future **vanilla Drupal 11+ theme using Drupal Canvas** (Single Directory Components / SDC). It is **not** GovCMS and **not** a Mercury-derived theme.
 
-Theming is class-driven on `<html>` (never `<body>` — the `@theme inline` aliases resolve at `:root`; see LESSONS.md). **Light is the default** (no class) on `templates/homeC.html` and the design-system `index.html`; the news pages (`templates/news.html`, its header-B variant `news-b.html` and the article templates) and the work landing (`templates/work-landing.html`, plus its header-B variant `work-landing-b.html`) **open dark** (`class="dark"` in the markup) and hand over to light on scroll via the shared `js/theme-handover.js`. `.dark` and `.theme-blue` are full token re-themes; the `dark` variant is declared in `src/main.css` via `@custom-variant dark (&:is(.dark *))`, and the older prototypes (`home`, `homeB`, `work`, `work-article`) still open in `.dark`. A dev-only toggle (`js/theme-toggle.js`) cycles light → dark → blue and is removed at ship time.
+Theming is class-driven on `<html>` (never `<body>` — the `@theme inline` aliases resolve at `:root`; see LESSONS.md). **Light is the default** (no class) on `templates/homeC.html` and the design-system `index.html`; the news pages (`templates/news.html`, its header-B variant `news-b.html` and the article templates) and the work landing (`templates/work-landing.html`, plus its header-B variant `work-landing-b.html`) **open dark** (`class="dark"` in the markup) and hand over to light on scroll via the shared `js/theme-handover.js`. The work articles (`templates/work-article-master.html` and the client folios) open in the `.theme-work-article` **chameleon** — a per-client background + ink pair set as two custom properties inline on `<html>` — and hand over the same way. `.dark` and `.theme-blue` are full token re-themes; the `dark` variant is declared in `src/main.css` via `@custom-variant dark (&:is(.dark *))`, and the older prototypes (`home`, `homeB`, `work`) still open in `.dark`. There is no dev theme toggle any more (removed Sep 2026) — inspect a theme by adding its class to `<html>` in devtools.
 
 ## Core constraints
 - **Tailwind v4 only.** No Sass pipeline. No `tailwind.config.js` — all configuration lives in `@theme` blocks in CSS.
@@ -50,12 +50,12 @@ Keep plans brief: 3–6 bullets maximum.
 ## Build
 - `npm run dev` — Tailwind v4 CLI watch mode, **unminified** → `css/main.css`
 - `npm run build` — one-shot, minified → `css/main.css`
-- `npm run verify` — alias for `build`
+- `npm run verify` — the gate (`scripts/verify.mjs`): rebuilds and byte-compares `css/main.css`, rejects raw colours outside `colors.css`, media queries off the breakpoint table, and literal inline styles. Run it before finishing.
 
 The build is driven by `src/main.css`, which `@import`s the token files, base styles, utilities, and every component file in order. `@source "../templates"` and `@source "../index.html"` tell Tailwind where to scan for utility classes used in markup. Local preview: `node server.js` on port 4100.
 
 ## Reference vs. live source
-- **Live build source:** `src/`, `templates/`, `index.html`, `package.json`, `js/`. This is what Tailwind compiles and what ships. `templates/homeC.html` is the **canonical** template; `home.html`, `homeB.html`, `work.html` and `work-article.html` are earlier prototypes kept browsable but outside the system.
+- **Live build source:** `src/`, `templates/`, `index.html`, `package.json`, `js/`. This is what Tailwind compiles and what ships. `templates/homeC.html` is the **canonical** template; the header-B landings, the news articles and the work articles (`work-article-master.html` + the client folios) are in the system; `home.html`, `homeB.html` and `work.html` are earlier prototypes kept browsable but outside the system.
 - **Reference only:** `experiments/` holds self-contained one-off explorations (each carries its own inline CSS and is not part of the Tailwind build). Approved experiments get **promoted** into `src/` + `templates/` (the homeC hero, intro strip, kinetic text box and footer all started here) — do not link production pages to experiment files or import from them.
 - The v0 / Next.js export (`v40-1-icon/`) that seeded the port has been **removed from the repo**; comments citing it (e.g. "port of v40-1-icon/components/…") are provenance notes, not live paths.
 

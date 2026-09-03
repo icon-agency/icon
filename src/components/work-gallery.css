@@ -1,0 +1,73 @@
+/* work-gallery.css — the work article's image rows: one or two columns,
+ * mixed freely, each figure a radius-cropped frame. Promoted from
+ * utilities/work-article.css (Sep 2026) at its fifth consumer.
+ *
+ * Markup: templates/work-article-master.html + the client folios. Behaviour:
+ * none of its own — the reveal (.media-reveal, js/reveal.js) and the scroll
+ * lean (--wa-skew, js/work-article.js) are applied by the page.
+ *
+ * What stays in the page layer, on purpose: the LAYERED-media anatomy
+ * (--layered ground + floating media) is shared with the article banner, and
+ * the rule that says which elements lean is page composition — both in
+ * utilities/work-article.css. The --portrait modifier below is qualified so
+ * it out-ranks that later layered rule (see the comment on it).
+ *
+ * Drupal: SDC `work-gallery` — a gallery paragraph with a per-row column
+ * count (field_work_gallery_cols → the --cols-2 row modifier, computed in
+ * preprocess) and repeating media rows.
+ */
+
+.work-gallery {
+  display: grid;
+  gap: var(--spacing-md);
+}
+
+.work-gallery__row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-md);
+}
+
+@media (min-width: 768px) {
+  .work-gallery__row--cols-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.work-gallery figure {
+  margin: 0;
+  border-radius: var(--radius-icon);
+  overflow: hidden;
+}
+
+.work-gallery img,
+.work-gallery video {
+  display: block;
+  width: 100%;
+}
+
+/* Portrait media in a row — a phone-shaped crop (7:10) so a 9:16 reel and a
+   tall clipping sit as a matched pair instead of towering at their intrinsic
+   heights (the Nike race-day reel is 720x1280; uncropped it ran half again
+   the viewport). Apply to BOTH figures in the row so the pair lines up. */
+/* .work-gallery-qualified (0,2,0) on purpose: the layered-media anatomy this
+   composes with lives in the page layer (shared with the article banner),
+   which is imported AFTER this file — so the aspect must win by specificity,
+   not by source order as it did when both sat in one file. */
+.work-gallery .work-gallery__figure--portrait {
+  aspect-ratio: 7 / 10;
+}
+
+.work-gallery__figure--portrait img,
+.work-gallery__figure--portrait video {
+  height: 100%;
+  object-fit: cover;
+}
+
+/* A SQUARE grounded tile — the Nike folio's four layered figures wore this
+   as an inline aspect-ratio until the verify gate caught it (Sep 2026); a
+   literal inline is a modifier that hasn't been written. Same qualification
+   as --portrait, for the same reason. Compose with --layered. */
+.work-gallery .work-gallery__figure--square {
+  aspect-ratio: 1 / 1;
+}

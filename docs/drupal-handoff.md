@@ -64,8 +64,8 @@ Every component note should include:
 | `src/base/*.css` | Port as-is. |
 | `src/utilities/*.css` | Port as-is. |
 | `src/components/*.css` | Port as-is. The BEM names match what the SDC Twig outputs. |
-| `templates/*.html` | Rebuild as SDC `.twig` under `components/<name>/<name>.twig`, plus a `<name>.component.yml` schema. `homeC.html` (canonical), `news-b.html`, `work-landing-b.html` (the header-B winners; the A variants stay as alternates) and the news-article templates are the pages being ported; `home`/`homeB`/`work`/`work-article` are prototypes — port their components only where the system has adopted them. |
-| `js/*.js` | Move into Drupal libraries; attach via `Drupal.behaviors`. The full behaviour → library table (header, reveal, home, site-footer, news, work, work-filter, work-landing, theme-handover, share, velocity-lean, plus the prototype-only files and the never-ported dev theme-toggle) is in `docs/animation.md`. `js/hero-loader.js`'s generated rows become a Twig loop inside the hero SDC. |
+| `templates/*.html` | Rebuild as SDC `.twig` under `components/<name>/<name>.twig`, plus a `<name>.component.yml` schema. `homeC.html` (canonical), `news-b.html`, `work-landing-b.html` (the header-B winners; the A variants stay as alternates) the news-article templates and the work articles (`work-article-master.html` is the reference; the client folios are instances of it) are the pages being ported; `home`/`homeB`/`work` are prototypes — port their components only where the system has adopted them. |
+| `js/*.js` | Move into Drupal libraries; attach via `Drupal.behaviors`. The full behaviour → library table (header, reveal, home, site-footer, news, work, work-filter, work-landing, theme-handover, share, subscribe-reveal, velocity-lean, work-article, work-scroller, work-video, plus the prototype-only files) is in `docs/animation.md`. `js/hero-loader.js`'s generated rows become a Twig loop inside the hero SDC. |
 
 The CSS doesn't change shape across the port — only the markup gets re-templated as Twig + SDC schemas.
 

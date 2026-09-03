@@ -143,7 +143,7 @@
               <h3 class="ds-section__title">Colours</h3>
               <p class="ds-section__intro">
                 Chips below are painted with the live tokens, so they re-resolve when the theme flips —
-                use the toggle (bottom-right), which now cycles THREE themes: light → dark (<code class="ds-code">.dark</code>) → blue (<code class="ds-code">.theme-blue</code>, a brand-blue page with white ink). Values noted as text are the light-theme values; dark values in brackets. Brand aliases invert in dark and flip to white on blue; <code class="ds-code">--color-brand-blue</code> deliberately never re-themes.
+                add <code class="ds-code">.dark</code> or <code class="ds-code">.theme-blue</code> (a brand-blue page with white ink) to <code class="ds-code">&lt;html&gt;</code> in devtools to see the other two (the dev toggle was retired, Sep 2026). Values noted as text are the light-theme values; dark values in brackets. Brand aliases invert in dark and flip to white on blue; <code class="ds-code">--color-brand-blue</code> deliberately never re-themes.
               </p>
 
               <div class="ds-group">
@@ -199,7 +199,7 @@
             <section class="ds-section" id="typography">
               <h3 class="ds-section__title">Typography</h3>
               <p class="ds-section__intro">
-                Kumbh Sans (Google Fonts) carries the interface; <li class="ds-swatch"><div class="ds-swatch__chip" style="background: var(--footer-bg)"></div><div class="ds-swatch__meta"><span class="ds-swatch__name">Footer panel</span><span class="ds-swatch__token">--footer-bg</span><span class="ds-swatch__value">#0d0d0d — fixed in every theme; the SAME literal as light icon-black on purpose, but never an alias (aliasing it flipped the whole footer white in dark — caught live). --footer-ink #ffffff, --footer-muted white @ 55%.</span></div></li> Pixel readouts are measured live from the cascade, not typed in, so this
+                Kumbh Sans (Google Fonts) carries the interface; <li class="ds-swatch"><div class="ds-swatch__chip ds-swatch__chip--footer"></div><div class="ds-swatch__meta"><span class="ds-swatch__name">Footer panel</span><span class="ds-swatch__token">--footer-bg</span><span class="ds-swatch__value">#0d0d0d — fixed in every theme; the SAME literal as light icon-black on purpose, but never an alias (aliasing it flipped the whole footer white in dark — caught live). --footer-ink #ffffff, --footer-muted white @ 55%.</span></div></li> Pixel readouts are measured live from the cascade, not typed in, so this
                 panel cannot drift from the real scale.
               </p>
 
@@ -236,9 +236,6 @@
               <div class="ds-group">
                 <h4 class="ds-group__title">Display sizes</h4>
                 <div class="ds-specimen"><span class="ds-specimen__label">--heading-1</span><span class="ds-specimen__sample ds-fs-h1" data-type-px>Heading one</span><span class="ds-specimen__px"></span></div>
-                <div class="ds-specimen"><span class="ds-specimen__label">--heading-2</span><span class="ds-specimen__sample ds-fs-h2" data-type-px>Heading two</span><span class="ds-specimen__px"></span></div>
-                <div class="ds-specimen"><span class="ds-specimen__label">--heading-3</span><span class="ds-specimen__sample ds-fs-h3" data-type-px>Heading three</span><span class="ds-specimen__px"></span></div>
-                <div class="ds-specimen"><span class="ds-specimen__label">--card-title</span><span class="ds-specimen__sample ds-fs-card" data-type-px>Card title</span><span class="ds-specimen__px"></span></div>
               </div>
 
               <div class="ds-group">
@@ -304,7 +301,6 @@
             
               <div class="ds-group"><h4 class="ds-group__title">Voice roles — reach for these before inventing a size</h4><p class="ds-group__note">Six named voices carry most of the canonical pages' running text. <code class="ds-code">--voice-mid</code> — THE "sentence" size (hero client label + counter, intro statement, expertise links, work tile titles, both "More" links, the footer's blurb / Subscribe / cities / socials): clamp(1.4rem, 2.1vw, 3.4rem), medium weight, −0.01em tracking, 1.2 line-height — titles and More links run one step heavier (semibold). <code class="ds-code">--voice-meta</code> — the quiet line under it (card categories and dates, work meta, footer place names, filter labels): clamp(1.0625rem, 1.1vw, 1.75rem). <code class="ds-code">--voice-display</code> — the big caps mastheads (WORK, NEWS &amp; INSIGHTS, LET'S TALK) AND the intro statement, one curve and literally one token (<code class="ds-code">.intro</code> aliases it, so the two can never drift): clamp(2.4rem, 5.6vw, 9rem), paired with <code class="ds-code">--voice-display-lh</code> (0.82) for stacked caps and <code class="ds-code">--voice-display-lh-sentence</code> (0.72) for the sentence-case mastheads. All three keep growing to the ~2545–2590px "4xl horizon" before capping. The display voice replaced a wordmark cap-height derivation (reasoning preserved in <code class="ds-code">src/theme/typography.css</code>); <code class="ds-code">--logo-h</code> survives as the wordmark's own FLUID height (the stepped ladder is retired — the mark now scales with the page, ink-aligned to the nav) and the sticky offsets derive from it. A fourth voice joined Aug 2026: <code class="ds-code">--voice-label</code> — chrome and wayfinding (the nav pill, mobile menu labels, arrow-links): clamp(0.78125rem, 0.3rem + 0.5vw, 1.125rem), bold, uppercase — named because the nav used to ride <code class="ds-code">--text-xs</code>, which the homepage re-scopes larger, so the header changed size per page. And a fifth: <code class="ds-code">--voice-headline</code> — the headline register a step under display, above the prose h1 (the article titles and the /news h1 masthead, which left the display voice for it — user call: masthead = article headline): clamp(2.25rem, 3.6vw, 6rem), capping at the same 4xl horizon &mdash; and its 1.5&times; sibling <code class="ds-code">--voice-headline-lg</code> (clamp(3.375rem, 5.4vw, 9rem)): header B's stacked title AND the /news h1 masthead, which stepped up to it (user call: masthead = the article H1's size). And a sixth: <code class="ds-code">--voice-accent</code> &mdash; the Miller line at the top of a masthead lockup (&ldquo;A strategic&rdquo;, &ldquo;Featured&rdquo;, &ldquo;Latest&rdquo;, the landings' &ldquo;News&rdquo; / &ldquo;Work&rdquo;): clamp(2.025rem, 3.24vw, 5.4rem) &mdash; the headline curve at 0.9, so it keeps the same 4xl horizon. It split off from <code class="ds-code">--voice-headline</code> in Aug 2026 (user call: &ldquo;a tad smaller&rdquo;) because that token is ALSO the news article's H1: the two roles only ever coincided, they were never one decision.</p></div>
             
-              <div class="ds-specimen"><span class="ds-specimen__label">--card-subtitle</span><span class="ds-specimen__sample ds-fs-card-sub" data-type-px>Card subtitle</span><span class="ds-specimen__px"></span></div>
             </section>
 
             <section class="ds-section" id="spacing">
@@ -341,7 +337,7 @@
                   <code class="ds-code">--container-pad</code>; a viewport-wide SELF-PADDED section
                   (listing rows, article pages, mastheads) pads with
                   <code class="ds-code">--gutter-page</code> &mdash; the token the fixed wordmark, the
-                  mobile chrome, the dev toggle and the global footer also read, so those edges align by
+                  mobile chrome and the global footer also read, so those edges align by
                   construction; an UNCAPPED composition re-points <code class="ds-code">--container-pad</code>
                   on its sections to <code class="ds-code">--container-pad-wide</code> — and since
                   Aug 2026 <code class="ds-code">--gutter-page</code> ALIASES the wide gutter globally
@@ -406,13 +402,11 @@
                     <tr><td><code>--duration-normal</code></td><td data-live-token="--duration-normal"></td><td>most transitions (nav, theme fades)</td></tr>
                     <tr><td><code>--duration-slow</code></td><td data-live-token="--duration-slow"></td><td>large moves, staged entrances</td></tr>
                     <tr><td><code>--duration-slower</code></td><td data-live-token="--duration-slower"></td><td>hero-scale choreography</td></tr>
+                    <tr><td><code>--transition-base</code></td><td>var(--duration-normal) var(--ease-standard)</td><td>the default composed transition</td></tr>
+                    <tr><td><code>--transition-slow</code></td><td>var(--duration-slow) var(--ease-standard)</td><td>large composed moves</td></tr>
                   </tbody>
                 </table>
               </div>
-            
-              <tr><td><code>--transition-base</code></td><td>var(--duration-normal) var(--ease-standard)</td><td>the default composed transition</td></tr>
-<tr><td><code>--transition-slow</code></td><td>var(--duration-slow) var(--ease-standard)</td><td>large composed moves</td></tr>
-plus a note: decorative effect knobs also live in <code class="ds-code">motion.css</code> — <code class="ds-code">--overlay-blur</code> (24px), <code class="ds-code">--overlay-opacity</code> (0.5), <code class="ds-code">--video-filter</code> (saturate(0) contrast(2) brightness(0.7)) — consumed by <code class="ds-code">utilities/effects.css</code>.
             </section>
 
             <section class="ds-section" id="breakpoints">
@@ -1299,7 +1293,7 @@ plus a note: decorative effect knobs also live in <code class="ds-code">motion.c
                 </div>
                 <p class="ds-demo__label">news-card · a.news-card — __figure.media-reveal (__img at 106%, 3% overscan a side) + __body (__title + __meta) · full-width stage: past 26rem the card splits 390:425 and the meta drops to the tile's baseline</p>
                 <div class="ds-demo ds-demo--home-context">
-                  <div style="max-width: 24rem">
+                  <div class="ds-narrow">
                     <a class="news-card" href="#">
                       <figure class="news-card__figure media-reveal" data-reveal-img>
                         <img class="news-card__img" loading="lazy" src="assets/Social/587006301_18538192765046950_6531438719646800553_n.jpg" alt="Two ICON staff outside the new Suva Business Center office" />

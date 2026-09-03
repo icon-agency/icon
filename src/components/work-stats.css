@@ -1,0 +1,114 @@
+/* work-stats.css — the results band: two columns of stacked, ruled cells
+ * (value / caps unit / label). Promoted from utilities/work-article.css
+ * (Sep 2026) at its fifth consumer. Markup: the work article templates.
+ * Everything reads the chameleon ink, so the band re-pitches with the client
+ * pair. The margin that tucks the band under a preceding prose heading is
+ * page composition and stays in utilities/work-article.css.
+ *
+ * Drupal: SDC `work-stats` — a work_stats paragraph of repeating
+ * {value, unit (optional), label} triples.
+ */
+
+/* Results as a ruled TABLE of rows (user call, Sep 2026, re-pitched from the
+   original packed grid to the row-per-stat shape): each stat is one row —
+   the VALUE on the left in the headline register at the site's 900, the
+   LABEL answering on the right in a large body voice at medium — with the
+   universal hairline under every row. The value takes TEXT as readily as a
+   number ("Top 5", "Sold out"); tabular numerals only steady the digits.
+   Everything reads the chameleon ink, so the band re-pitches with the
+   client pair like every other component.
+
+   PADDED IN to the prose measure (user call, Sep 2026): full-bleed it broke
+   a run in two and doubled the share; on the reading column it lives INSIDE
+   a run — heading, stats, tail, one share travelling past all three — and
+   its rules align with the text edges.
+
+   Drupal: a work_stats paragraph — repeating {value, label} pairs. */
+.work-stats {
+  width: 100%;
+  margin-inline: auto;
+}
+
+@media (min-width: 1024px) {
+  .work-stats {
+    max-width: clamp(46rem, 40vw, 64rem); /* the prose measure, verbatim */
+  }
+}
+
+/* TWO columns of stacked cells (user call, third pitch of this band): each
+   stat reads downward — the VALUE in the headline 900 caps, an optional
+   caps UNIT word answering right under it at the same 900, then the label
+   in the large medium voice — with the hairlines kept under every cell. */
+.work-stats__grid {
+  margin: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  column-gap: clamp(2rem, 5vw, 5rem);
+}
+
+@media (min-width: 40rem) {
+  .work-stats__grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* the dl keeps dt→dd source order for semantics; the value block leads
+   visually (order) with the unit inside it, the label follows */
+.work-stats__stat {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  padding-block: clamp(1.5rem, 3vw, 2.75rem);
+  border-bottom: var(--rule-weight) solid var(--rule);
+}
+
+/* the table opens with a rule too (user call): the first cell — and its
+   row-mate once the grid is two across */
+.work-stats__stat:first-child {
+  border-top: var(--rule-weight) solid var(--rule);
+}
+
+@media (min-width: 40rem) {
+  .work-stats__stat:nth-child(2) {
+    border-top: var(--rule-weight) solid var(--rule);
+  }
+}
+
+.work-stats__value {
+  order: -1;
+  margin: 0;
+  font-size: var(--voice-headline);
+  /* REGULAR weight (user call, Sep 2026 — was the site 900): the size
+     carries the number, the caps unit word echoes it at the same weight */
+  font-weight: var(--font-weight-normal);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  /* SENTENCE case (user call — "1st" and "2x" as written, not 1ST/2X);
+     the unit word below keeps the caps register itself */
+  font-variant-numeric: tabular-nums;
+  text-wrap: balance; /* a wrapping TEXT value breaks evenly */
+}
+
+/* the optional unit word — a caps echo half a step down at the site's
+   HEAVIEST 900 against the regular value (user call: the number light,
+   the word heavy — "34+ MILLION"); stats without one simply omit it.
+   ONE gap token above and below it (user call: "same space"). */
+.work-stats__unit {
+  display: block;
+  margin-top: var(--stat-gap, 0.45rem);
+  font-size: calc(var(--voice-headline) * 0.42);
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: 0.01em;
+  text-transform: uppercase; /* the caps register stays on the WORD */
+}
+
+/* the label in the articles' BODY COPY register (user call) — the shared
+   prose clamp at medium, a step tighter in leading for label duty */
+.work-stats__label {
+  margin-top: var(--stat-gap, 0.45rem);
+  font-size: clamp(1.1875rem, 1.2vw, 1.875rem);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.4;
+  text-wrap: balance; /* user call: multi-line labels break evenly */
+}

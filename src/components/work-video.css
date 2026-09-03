@@ -1,0 +1,84 @@
+/* work-video.css — the click-to-play film: an art-directed cover with the
+ * site's play control over it; the gesture reveals the native player
+ * (js/work-video.js, Drupal.behaviors.iconWorkVideo). Promoted from
+ * utilities/work-article.css (Sep 2026). The width it takes in the article's
+ * reading column is page composition and stays in the page layer.
+ *
+ * Drupal: SDC `work-video` — a work_video paragraph: cover media + video
+ * media. Never autoplayed; this is the sound-on cut.
+ */
+
+/* Click-to-play film (born on The Athlete's Foot example, user call Sep
+   2026): an ART-DIRECTED cover image with the site's play control over it;
+   the gesture reveals the native player and starts the film (js/work-video.js).
+   The cover is a designed frame — a media field, not a poster attribute — so
+   the editor controls the resting state. Sits in the gallery flow like any
+   figure: radius here, reveal and the scroll lean from the shared rules.
+   Never autoplayed: this is the SOUND-ON cut, so it waits for the gesture.
+   Drupal: a work_video paragraph — cover media + video media. */
+.work-video {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-icon);
+}
+
+.work-video__media {
+  display: block;
+  width: 100%;
+}
+
+.work-video__cover {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 1;
+  cursor: pointer;
+  transition: opacity var(--duration-normal) var(--ease-standard);
+}
+
+.work-video__play {
+  position: absolute;
+  z-index: 2;
+  top: 50%;
+  left: 50%;
+  translate: -50% -50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: clamp(4rem, 6vw, 6rem);
+  aspect-ratio: 1;
+  border: 0;
+  border-radius: 50%;
+  background: var(--scrim-strong);
+  color: var(--color-white);
+  cursor: pointer;
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  transition:
+    scale var(--duration-fast) var(--ease-standard),
+    opacity var(--duration-normal) var(--ease-standard);
+}
+
+.work-video__play:hover,
+.work-video__play:focus-visible {
+  scale: 1.08;
+}
+
+.work-video__play svg {
+  width: 38%;
+  height: 38%;
+  translate: 8% 0; /* optical centring of the triangle */
+}
+
+/* the .js-animations variant outranks the reveal system's opacity: 1
+   (.js-animations .media-reveal.is-revealed img, 0-3-1) — without it the
+   cover never faded once revealed */
+.work-video.is-playing .work-video__cover,
+.work-video.is-playing .work-video__play,
+.js-animations .work-video.is-playing .work-video__cover,
+.js-animations .work-video.is-playing .work-video__play {
+  opacity: 0;
+  pointer-events: none;
+}

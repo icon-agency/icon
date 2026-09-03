@@ -152,3 +152,17 @@ goes wrong.
   **resolve the counter with it** (the loading phase is over by policy) —
   a real counter that can freeze below 100 is worse than an honest cap.
   (`js/home-c.js` hero boot; found on a phone, Aug 2026.)
+
+- **`var()` is not valid inside a media query, and three docs recommended it
+  for a month.** `frontend-rules.md`, `tailwind-conventions.md` and the
+  comment in `src/theme/breakpoints.css` all told component authors to write
+  `@media (min-width: var(--breakpoint-3xl))`. A media query's prelude is
+  evaluated before the cascade exists, so a custom property there is a parse
+  error and the whole rule silently never matches — which is why no file ever
+  used the form and the docs never got caught. What works: the table's pixel
+  value (`@media (min-width: 1920px)`), or Tailwind v4's `@variant 3xl { … }`
+  nested in the rule, which resolves the step from the token. Two habits
+  follow. Docs that prescribe a technique should point at a file that USES it
+  (none did here), and rules with a mechanical shape belong in a gate —
+  `scripts/verify.mjs` now checks every media width against the table.
+  (Found in the Sep 2026 docs review.)

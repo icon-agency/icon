@@ -8,7 +8,7 @@ A page or component is done when:
 - Naming follows project conventions (BEM blocks, `u-` prefix for primitive utilities).
 - New tokens land in `src/theme/*.css`; no hex / rgb / hsl appears outside `src/theme/colors.css`.
 - New component files are imported in `src/main.css` in the correct order.
-- JS is minimal and justified. Throttled with `requestAnimationFrame` when scroll-driven.
+- JS is minimal and justified. Scroll-linked motion runs on a CSS scroll timeline, never a `scroll` handler (rAF-throttled or not); only velocity-driven motion is sampled in JS, rAF-coalesced — see `docs/animation.md`.
 
 ## Design quality
 - Layout is polished across the project breakpoints — Tailwind defaults `sm:640` / `md:768` / `lg:1024` / `xl:1280` / `2xl:1536`, plus custom `3xl:1920` and `4xl:2560` (`src/theme/breakpoints.css`). `lg` (1024) is the mobile-menu / desktop cutoff.
@@ -32,10 +32,10 @@ For the full a11y checklist, see `docs/accessibility-checklist.md`.
 - Preprocess requirements are noted.
 
 ## Verification
-Run `npm run build` before marking work done. The build is fast and minified; warnings or unresolved utilities indicate a missing token or missing `@source` path.
+Run `npm run verify` before marking work done. It rebuilds (fast, minified — warnings or unresolved utilities indicate a missing token or missing `@source` path) and byte-compares the committed `css/main.css`, then checks the three mechanical rules: no raw colour outside `colors.css`, no media query off the breakpoint table, no literal inline style.
 
 For full verification:
-1. `npm run build` — produces `css/main.css` without warnings.
+1. `npm run verify` — clean build, output in sync, the three mechanical rules hold.
 2. Open each affected template in a browser; check at narrow / tablet / desktop / wide widths.
 3. Toggle `prefers-reduced-motion` and confirm animations stop.
 4. Tab through the page; confirm focus ring is visible.

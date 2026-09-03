@@ -17,8 +17,10 @@
  *      two-value background + text pair;
  *   2. the article frame — centred head (project / client), hero banner,
  *      facts row, centred flow;
- *   3. .work-gallery — 1- or 2-column image rows, mixed freely (CMS-nominated
- *      eventually);
+ *   3. the gallery's shared anatomy — the layered-media ground the banner and
+ *      the gallery figures share, and the scroll-lean composition (the
+ *      blocks themselves — work-gallery, work-stats, work-video,
+ *      work-scroller — are components since Sep 2026);
  *   4. the Next up rail — back on the SITE theme, growing in like the footer,
  *      wearing the work-landing cards.
  *
@@ -54,7 +56,12 @@
   --background: var(--wa-surface);
   --foreground: var(--wa-ink);
   --icon-black: var(--wa-ink);
-  --icon-grey: color-mix(in srgb, var(--wa-ink) 80%, transparent);
+  /* 90%, not the site's 80%: over a saturated mid-luminance surface the
+     80% mix loses a stop — MoAD's body copy sat at 4.47:1 (AA needs 4.5).
+     At 90% every pair clears it (MoAD 5.5, Nike 4.9, the rest 6.6–8.7).
+     The percentage cannot rescue a pair whose FULL ink fails — Nike's first
+     red (#df453e, 4.15:1) had to be re-pitched to #cc0000 instead. */
+  --icon-grey: color-mix(in srgb, var(--wa-ink) 90%, transparent);
   --icon-blue: var(--wa-ink);
   --border: color-mix(in srgb, var(--wa-ink) 20%, transparent);
   --secondary: color-mix(in srgb, var(--wa-ink) 8%, transparent);
@@ -67,7 +74,7 @@
    * vanished: the same hue frosted over the same flat hue reads as nothing.) */
   --nav-bg-scrolled: color-mix(
     in srgb,
-    color-mix(in srgb, var(--wa-surface) 80%, #000) 80%,
+    color-mix(in srgb, var(--wa-surface) 80%, var(--black)) 80%,
     transparent
   );
   background-color: var(--wa-surface);
@@ -109,6 +116,8 @@
    scale with the page and hold their wrap. Scoped to .work-article, NOT
    the chameleon class: the theme handover strips that mid-scroll, and type
    must not resize with it. The capped 90rem pages never reach this. */
+/* verify-allow: the 4xl type horizon (5.6vw meets 9rem at ~2571px), a
+   deliberate step outside the breakpoint table — see the note above. */
 @media (min-width: 160.75rem) {
   .work-article {
     --voice-display: 5.6vw;
@@ -423,34 +432,9 @@
    CMS-nominated (Drupal: a gallery paragraph with a per-row column count).
    Images keep their intrinsic height; the row just divides the width. */
 
-.work-gallery {
-  display: grid;
-  gap: var(--spacing-md);
-}
-
-.work-gallery__row {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: var(--spacing-md);
-}
-
-@media (min-width: 768px) {
-  .work-gallery__row--cols-2 {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-.work-gallery figure {
-  margin: 0;
-  border-radius: var(--radius-icon);
-  overflow: hidden;
-}
-
-.work-gallery img,
-.work-gallery video {
-  display: block;
-  width: 100%;
-}
+/* The rows and figures are components/work-gallery.css. What stays here is
+   what the page COMPOSES: the layered-media anatomy the gallery shares with
+   the banner, and the rule naming which elements lean. */
 
 /* LAYERED media — a ground with a foreground image/video floating inside it
    on a padding rule (the humaan.com card anatomy, by user call Sep 2026:
@@ -518,19 +502,6 @@
   transform-origin: center center;
 }
 
-/* Portrait media in a row — a phone-shaped crop (7:10) so a 9:16 reel and a
-   tall clipping sit as a matched pair instead of towering at their intrinsic
-   heights (the Nike race-day reel is 720x1280; uncropped it ran half again
-   the viewport). Apply to BOTH figures in the row so the pair lines up. */
-.work-gallery__figure--portrait {
-  aspect-ratio: 7 / 10;
-}
-
-.work-gallery__figure--portrait img,
-.work-gallery__figure--portrait video {
-  height: 100%;
-  object-fit: cover;
-}
 
 /* Scroll-velocity skew — the /work landing's gesture on this page's media
    (user call, Sep 2026): js/work-article.js writes one --wa-skew on the
@@ -548,26 +519,8 @@
 }
 
 /* ---- The stats band ------------------------------------------------------ */
-/* Results as a ruled TABLE of rows (user call, Sep 2026, re-pitched from the
-   original packed grid to the row-per-stat shape): each stat is one row —
-   the VALUE on the left in the headline register at the site's 900, the
-   LABEL answering on the right in a large body voice at medium — with the
-   universal hairline under every row. The value takes TEXT as readily as a
-   number ("Top 5", "Sold out"); tabular numerals only steady the digits.
-   Everything reads the chameleon ink, so the band re-pitches with the
-   client pair like every other component.
-
-   PADDED IN to the prose measure (user call, Sep 2026): full-bleed it broke
-   a run in two and doubled the share; on the reading column it lives INSIDE
-   a run — heading, stats, tail, one share travelling past all three — and
-   its rules align with the text edges.
-
-   Drupal: a work_stats paragraph — repeating {value, label} pairs. */
-.work-stats {
-  width: 100%;
-  margin-inline: auto;
-}
-
+/* The band is components/work-stats.css. Only its relationship to a
+   preceding prose heading is page composition: */
 /* a heading block ahead of the band is ITS heading — sit it at the close
    heading distance, not the chunk's full section gap (user call: "move the
    results heading closer"; the negative margin eats the flex gap down) */
@@ -575,165 +528,10 @@
   margin-top: calc(var(--space-sm) - var(--space-lg));
 }
 
-@media (min-width: 1024px) {
-  .work-stats {
-    max-width: clamp(46rem, 40vw, 64rem); /* the prose measure, verbatim */
-  }
-}
-
-/* TWO columns of stacked cells (user call, third pitch of this band): each
-   stat reads downward — the VALUE in the headline 900 caps, an optional
-   caps UNIT word answering right under it at the same 900, then the label
-   in the large medium voice — with the hairlines kept under every cell. */
-.work-stats__grid {
-  margin: 0;
-  display: grid;
-  grid-template-columns: 1fr;
-  column-gap: clamp(2rem, 5vw, 5rem);
-}
-
-@media (min-width: 40rem) {
-  .work-stats__grid {
-    grid-template-columns: 1fr 1fr;
-  }
-}
-
-/* the dl keeps dt→dd source order for semantics; the value block leads
-   visually (order) with the unit inside it, the label follows */
-.work-stats__stat {
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  padding-block: clamp(1.5rem, 3vw, 2.75rem);
-  border-bottom: var(--rule-weight) solid var(--rule);
-}
-
-/* the table opens with a rule too (user call): the first cell — and its
-   row-mate once the grid is two across */
-.work-stats__stat:first-child {
-  border-top: var(--rule-weight) solid var(--rule);
-}
-
-@media (min-width: 40rem) {
-  .work-stats__stat:nth-child(2) {
-    border-top: var(--rule-weight) solid var(--rule);
-  }
-}
-
-.work-stats__value {
-  order: -1;
-  margin: 0;
-  font-size: var(--voice-headline);
-  /* REGULAR weight (user call, Sep 2026 — was the site 900): the size
-     carries the number, the caps unit word echoes it at the same weight */
-  font-weight: var(--font-weight-normal);
-  line-height: 1;
-  letter-spacing: -0.02em;
-  /* SENTENCE case (user call — "1st" and "2x" as written, not 1ST/2X);
-     the unit word below keeps the caps register itself */
-  font-variant-numeric: tabular-nums;
-  text-wrap: balance; /* a wrapping TEXT value breaks evenly */
-}
-
-/* the optional unit word — a caps echo half a step down at the site's
-   HEAVIEST 900 against the regular value (user call: the number light,
-   the word heavy — "34+ MILLION"); stats without one simply omit it.
-   ONE gap token above and below it (user call: "same space"). */
-.work-stats__unit {
-  display: block;
-  margin-top: var(--stat-gap, 0.45rem);
-  font-size: calc(var(--voice-headline) * 0.42);
-  font-weight: 900;
-  line-height: 1;
-  letter-spacing: 0.01em;
-  text-transform: uppercase; /* the caps register stays on the WORD */
-}
-
-/* the label in the articles' BODY COPY register (user call) — the shared
-   prose clamp at medium, a step tighter in leading for label duty */
-.work-stats__label {
-  margin-top: var(--stat-gap, 0.45rem);
-  font-size: clamp(1.1875rem, 1.2vw, 1.875rem);
-  font-weight: var(--font-weight-medium);
-  line-height: 1.4;
-  text-wrap: balance; /* user call: multi-line labels break evenly */
-}
 
 /* ---- The film player (work-video) ---------------------------------------- */
-/* Click-to-play film (born on The Athlete's Foot example, user call Sep
-   2026): an ART-DIRECTED cover image with the site's play control over it;
-   the gesture reveals the native player and starts the film (js/work-video.js).
-   The cover is a designed frame — a media field, not a poster attribute — so
-   the editor controls the resting state. Sits in the gallery flow like any
-   figure: radius here, reveal and the scroll lean from the shared rules.
-   Never autoplayed: this is the SOUND-ON cut, so it waits for the gesture.
-   Drupal: a work_video paragraph — cover media + video media. */
-.work-video {
-  position: relative;
-  overflow: hidden;
-  border-radius: var(--radius-icon);
-}
-
-.work-video__media {
-  display: block;
-  width: 100%;
-}
-
-.work-video__cover {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  z-index: 1;
-  cursor: pointer;
-  transition: opacity var(--duration-normal) var(--ease-standard);
-}
-
-.work-video__play {
-  position: absolute;
-  z-index: 2;
-  top: 50%;
-  left: 50%;
-  translate: -50% -50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: clamp(4rem, 6vw, 6rem);
-  aspect-ratio: 1;
-  border: 0;
-  border-radius: 50%;
-  background: rgb(0 0 0 / 0.55);
-  color: #fff;
-  cursor: pointer;
-  -webkit-backdrop-filter: blur(12px);
-  backdrop-filter: blur(12px);
-  transition:
-    scale var(--duration-fast) var(--ease-standard),
-    opacity var(--duration-normal) var(--ease-standard);
-}
-
-.work-video__play:hover,
-.work-video__play:focus-visible {
-  scale: 1.08;
-}
-
-.work-video__play svg {
-  width: 38%;
-  height: 38%;
-  translate: 8% 0; /* optical centring of the triangle */
-}
-
-/* the .js-animations variant outranks the reveal system's opacity: 1
-   (.js-animations .media-reveal.is-revealed img, 0-3-1) — without it the
-   cover never faded once revealed */
-.work-video.is-playing .work-video__cover,
-.work-video.is-playing .work-video__play,
-.js-animations .work-video.is-playing .work-video__cover,
-.js-animations .work-video.is-playing .work-video__play {
-  opacity: 0;
-  pointer-events: none;
-}
+/* The player itself is components/work-video.css. Its width in the reading
+   column is this page's composition, below. */
 
 /* Hosted film sits IN the run, never between runs (user call): a film —
    the work-video player or the shared news embed figure — takes the news
@@ -748,75 +546,6 @@
   }
 }
 
-/* ---- The gallery scroller (work-scroller) -------------------------------- */
-/* A drifting strip for a SERIES, carded at the gallery width — posters, clippings (born on
-   The Athlete's Foot posters, user call Sep 2026). The homepage intro
-   filmstrip's marquee without the tilts, vanilla-rebuilt in
-   js/work-scroller.js: drifts at the shared strip speed, drag moves it 1:1
-   and a fling re-points the direction; clicking a card glides it to the
-   centre, zooms it a step and PAUSES; clicking it again, the band, or
-   dragging resumes. The optional colour ground and the frame use the
-   layered figure's own tokens (--overlay-ground, --overlay-pad). Card
-   height considers the viewport so the full image is always visible,
-   capped by the tallest image's natural height (js sets --ws-card-h; small
-   clippings never upscale). No-JS: a plain hand-scrollable strip.
-   As an image gallery it BREAKS share runs, like every other gallery.
-   Drupal: a work_scroller paragraph — media items + optional colour. */
-.work-scroller {
-  /* a CARD at the gallery width (user call — like the single-column rows
-     above it), wearing the site radius; the strip drifts inside it */
-  border-radius: var(--radius-icon);
-  padding-block: var(--overlay-pad, 5vw);
-  background: var(--overlay-ground, none);
-  overflow-x: auto; /* the no-JS strip scrolls by hand */
-  cursor: grab;
-  touch-action: pan-y;
-}
-
-.work-scroller.is-ready {
-  overflow: hidden;
-}
-
-.work-scroller.is-dragging {
-  cursor: grabbing;
-}
-
-.work-scroller__track {
-  display: flex;
-  align-items: center;
-  gap: clamp(1.5rem, 3vw, 4rem);
-  width: max-content;
-  will-change: transform;
-}
-
-.work-scroller__card {
-  margin: 0;
-  padding: 0;
-  border: 0;
-  background: none;
-  flex: none;
-  display: flex;
-  align-items: center;
-  height: var(--ws-card-h, 60vh);
-  cursor: pointer;
-  transition: scale 0.45s var(--ease-standard);
-}
-
-.work-scroller__card img {
-  display: block;
-  max-height: 100%;
-  width: auto;
-  border-radius: var(--radius-icon);
-  -webkit-user-drag: none;
-  user-select: none;
-}
-
-/* the centred card: a step larger over its neighbours while the drift holds */
-.work-scroller__card.is-focused {
-  position: relative;
-  z-index: 2;
-  scale: 1.05;
-}
 
 /* ---- 4. Next up — on the CLIENT theme, under a drawn line ---------------- */
 /* Settled over three passes (white → site-dark → this, all user calls): the

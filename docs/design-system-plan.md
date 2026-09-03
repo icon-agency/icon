@@ -49,6 +49,35 @@ The plan below is kept as the working brief; this block records where it stands.
 
 ---
 
+### Addendum — 3 September 2026 (docs review)
+
+- **Dev theme toggle removed.** `js/theme-toggle.js` is gone; inspect `.dark`
+  / `.theme-blue` by adding the class to `<html>` in devtools. §4's "include
+  the dev theme toggle" no longer applies.
+- **§2 marquee pause: RECORDED.** The DS clients section carries the WCAG
+  2.2.2 exception as prose ("Accessibility — the recorded WCAG 2.2.2
+  exception"); `accessibility-checklist.md` points at it.
+- **The work article joined the system.** `templates/work-article-master.html`
+  plus four client folios are in the Template group; the `work-article.html`
+  prototype is gone. Its page layer holds four blocks with five consumers
+  (`.work-gallery`, `.work-scroller`, `.work-video`, `.work-stats`) —
+  **promoted to `src/components/` the same day**, declarations byte-for-byte
+  (one specificity bump on the portrait modifier, documented in the file);
+  the layered-media anatomy and the lean composition stay in the page layer.
+- **Dead weight removed:** `image-grid.css`, `more-work.css`, the unused
+  effects helpers, `--heading-2/3`, `--card-title/subtitle`, the fixed
+  `--text-7xl…9xl` overrides and the overlay / video-filter knobs. `u-grid`
+  and `u-container--wide` stay as documented primitives although nothing
+  consumes them yet.
+- **Phase 4 (gate): BUILT.** `scripts/verify.mjs` behind `npm run verify` —
+  build sync, raw colours, media queries against the table (escape hatch:
+  a `verify-allow` comment with the reason), literal inline styles. The
+  review found both mechanical rules had drifted; the nine ad-hoc scrim and
+  shadow alphas became five tokens (`--scrim-*`, `--shadow-*`) so the gate
+  passes clean from day one.
+- **Contrast:** the chameleon grey runs at 90% ink and the Nike pair was
+  re-pitched to `#cc0000`, so every client pair clears AA for body copy.
+
 ## 1. Does "Drupal Canvas AI, not GovCMS" matter? Yes — three ways
 
 1. **Document SDC props, not just paragraph fields.** GreenPowerDS annotated

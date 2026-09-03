@@ -17,9 +17,4 @@
 
   --transition-base: var(--duration-normal) var(--ease-standard);
   --transition-slow: var(--duration-slow) var(--ease-standard);
-
-  /* Decorative effect knobs (used by utilities/effects.css). */
-  --overlay-blur: 24px;
-  --overlay-opacity: 0.5;
-  --video-filter: saturate(0) contrast(2) brightness(0.7);
 }

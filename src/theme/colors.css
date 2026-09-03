@@ -2,7 +2,7 @@
  * may appear. Everything else consumes them as var(--color-*) or as generated
  * utilities (bg-background, text-icon-black, border-input, …).
  *
- * Raw values live in :root (light) and .dark (dark — the site default).
+ * Raw values live in :root (light — the default), .dark and .theme-blue.
  * Semantic role tokens are mapped through @theme inline so a runtime .dark
  * class (or a downstream theme.css) re-themes without a rebuild.
  *
@@ -68,6 +68,9 @@
 
   /* Component colour roles (theme-aware; overridden in .dark below) */
   --nav-bg-scrolled: rgb(221 221 221 / 0.8); /* frosted pill, light */
+  --nav-bg-over-hero: rgb(30 30 30 / 0.8); /* the pill while over a dark hero —
+     FIXED in every theme (the light pill would wash out the white links),
+     which is why it is its own role and not --nav-bg-scrolled */
   --pager-surface: rgb(0 0 0 / 0.06);        /* pager prev + status pill */
   --pager-surface-strong: rgb(0 0 0 / 0.12); /* pager prev hover */
 }
@@ -218,6 +221,19 @@
      duplicate literal this used to be is gone). */
   --footer-ink: #ffffff;
   --footer-muted: rgb(255 255 255 / 0.55);
+
+  /* Scrims and shadows — PURE black at an alpha, fixed in every theme: they
+     sit over media or float a surface, and neither flips with the ink. Not
+     the brand --black: a scrim is darkness, not ink. Three scrim steps and
+     two shadows replaced nine ad-hoc alphas (Sep 2026: 0.1/0.18 → soft,
+     0.35/0.4/0.45 → scrim, 0.55/0.65 → strong; 0.2/0.25 → shadow-lg), so a
+     gradient stop or a box-shadow reads a role, and the raw-colour rule
+     (only this file may state one) holds mechanically — npm run verify. */
+  --scrim-soft: rgb(0 0 0 / 0.18);
+  --scrim: rgb(0 0 0 / 0.4);
+  --scrim-strong: rgb(0 0 0 / 0.65);
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 8px 24px rgb(0 0 0 / 0.2);
   /* One hairline, everywhere — ONE derivation (user call, Sep 2026): the
      current ink at 25% opacity, i.e. 75% transparent. Dividers across the
      site say `1px solid var(--rule)` and nothing else.

@@ -17,18 +17,28 @@ not restate those.
 ## Hard rules
 - **No hex, rgb, or hsl values outside `src/theme/colors.css`.** All colour
   reaches the rest of the codebase as `var(--color-*)` or generated utilities
-  (`bg-background`, `text-icon-black`, `border-border`, etc.).
+  (`bg-background`, `text-icon-black`, `border-border`, etc.). Scrims and
+  shadows included: they read `--scrim-soft/--scrim/--scrim-strong` and
+  `--shadow-sm/--shadow-lg`. Enforced by `npm run verify`.
 - **No `tailwind.config.js`.** All Tailwind v4 configuration lives in `@theme`
   blocks inside `src/theme/*.css` (see `tailwind-conventions.md`).
-- **No raw `@media` queries with hard-coded pixel values.** Use Tailwind's
-  default breakpoints plus the project's `3xl`/`4xl` additions (see the table
-  below). In markup use Tailwind variants (`md:`, `lg:`, `3xl:`); in component
-  CSS prefer `@media (min-width: var(--breakpoint-3xl))` for the custom steps.
+- **No `@media` queries at values outside the breakpoint table.** In markup
+  use Tailwind variants (`md:`, `lg:`, `3xl:`). In hand-written component CSS
+  write the table's pixel value directly (`@media (min-width: 1024px)`) or
+  nest the rule in `@variant lg { … }`. `var()` is not valid inside a media
+  query, so `@media (min-width: var(--breakpoint-3xl))` silently never
+  matches — never write it. The one intermediate step in use, 900px, is in
+  the table below. Enforced by `npm run verify`; a deliberate exception
+  carries a `verify-allow` comment with its reason on the line above.
 - **No utility-class sprawl in markup.** A handful of layout/spacing utilities
   are fine (`u-container`, `u-grid`, `md:grid-cols-2`, `gap-lg`). Repeated
   visual styling belongs in a BEM component file under `src/components/`.
 - **No inline `style=""` attributes** except for genuinely dynamic values set
-  from JS (parallax offsets, animation delays via CSS custom properties).
+  from JS (parallax offsets, animation delays via CSS custom properties) or
+  per-instance custom properties the CMS will emit (the chameleon pair, a
+  layered figure's ground and pad). A literal property inline (`aspect-ratio:
+  1 / 1`) is a modifier that hasn't been written yet. Enforced by `npm run
+  verify`.
 - **No new tokens without updating `src/theme/*.css`** and recording the change.
 - **No CVA in Twig.** The Drupal theme target applies BEM class names directly.
   Conditional classes are computed in preprocess or inline as plain Twig
@@ -42,6 +52,7 @@ variant.
 ```
 sm:   640px   (Tailwind default)
 md:   768px   (Tailwind default)
+      900px   (intermediate — the nav / two-column switch, component CSS only, no variant)
 lg:   1024px  (Tailwind default — mobile-menu / desktop cutoff)
 xl:   1280px  (Tailwind default)
 2xl:  1536px  (Tailwind default)
@@ -56,11 +67,13 @@ switch here). In markup, use the variant prefixes:
 <div class="grid-cols-1 md:grid-cols-2 3xl:gap-3xl">…</div>
 ```
 
-In hand-written component CSS, reference the custom property for the large
-steps so the value stays single-sourced:
+In hand-written component CSS, either write the table value or use Tailwind
+v4's `@variant`, which resolves the step from the token:
 
 ```css
-@media (min-width: var(--breakpoint-3xl)) { /* ≥1920 */ }
+@media (min-width: 1920px) { /* ≥1920 — the 3xl step */ }
+
+.block { @variant 3xl { /* ≥1920, from --breakpoint-3xl */ } }
 ```
 
 ## Markup

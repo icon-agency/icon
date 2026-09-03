@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "tailwindcss -i src/main.css -o css/main.css --watch",
     "build": "tailwindcss -i src/main.css -o css/main.css --minify",
-    "verify": "tailwindcss -i src/main.css -o css/main.css --minify"
+    "verify": "node scripts/verify.mjs"
   },
   "devDependencies": {
     "@tailwindcss/cli": "^4.1.9",

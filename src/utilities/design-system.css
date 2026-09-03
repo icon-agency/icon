@@ -360,6 +360,12 @@
   border-bottom: 1px solid var(--color-border);
 }
 
+/* the footer's fixed ground, for its swatch */
+.ds-swatch__chip--footer { background: var(--footer-bg); }
+
+/* a demo held to a card's width */
+.ds-narrow { max-width: 24rem; }
+
 .ds-swatch__meta {
   padding: 0.5rem 0.65rem;
   display: flex;
@@ -422,9 +428,6 @@
 .ds-fs-5xl { font-size: var(--text-5xl); }
 .ds-fs-6xl { font-size: var(--text-6xl); }
 .ds-fs-h1 { font-size: var(--heading-1); font-weight: var(--font-weight-bold); }
-.ds-fs-h2 { font-size: var(--heading-2); font-weight: var(--font-weight-bold); }
-.ds-fs-h3 { font-size: var(--heading-3); font-weight: var(--font-weight-semibold); }
-.ds-fs-card { font-size: var(--card-title); font-weight: var(--font-weight-bold); }
 .ds-caps-sample { text-transform: uppercase; letter-spacing: var(--tracking-caps); }
 .ds-fw-400 { font-weight: 400; }
 .ds-fw-500 { font-weight: 500; }
@@ -584,7 +587,7 @@
     position: fixed;
     inset: 0;
     z-index: 40;
-    background: rgb(0 0 0 / 0.4);
+    background: var(--scrim);
     border: 0;
     display: none;
   }
