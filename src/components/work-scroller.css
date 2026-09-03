@@ -57,7 +57,11 @@
   flex: none;
   display: flex;
   align-items: center;
-  height: var(--ws-card-h, 60vh);
+  /* the JS's governor (tallest image / viewport height / viewport width),
+     under whatever ceiling the HOST sets — --ws-card-max is the page's to
+     declare (the work article pins it to its hero banner); a host that
+     sets none leaves the JS number alone */
+  height: min(var(--ws-card-h, 60vh), var(--ws-card-max, 100vh));
   cursor: pointer;
   transition: scale 0.45s var(--ease-standard);
 }

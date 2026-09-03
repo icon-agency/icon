@@ -594,6 +594,16 @@
 }
 
 
+/* The gallery scroller never stands taller than the hero (user call, Sep
+   2026): its cards are capped so the whole band — cards plus the pad above
+   and below — matches the banner's pinned height at most. The banner's
+   height is the one the breakout pins on the article root (--wa-banner-h,
+   js/work-article.js), so the two agree by construction; the scroller's own
+   governors (tallest image, viewport) still win when they are smaller. */
+.work-article .work-scroller {
+  --ws-card-max: calc(var(--wa-banner-h, 100vh) - 2 * var(--overlay-pad, 5vw));
+}
+
 /* ---- 4. Next up — on the CLIENT theme, under a drawn line ---------------- */
 /* Settled over three passes (white → site-dark → this, all user calls): the
    rail STAYS in the chameleon — no hand-back, the client pair runs to the

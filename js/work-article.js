@@ -121,7 +121,9 @@
     var ratio = readRatio();
     var cs = getComputedStyle(article);
     var contentWidth = article.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
-    banner.style.setProperty("--wa-banner-h", Math.round(contentWidth * ratio) + "px");
+    // on the ARTICLE, not the banner: the gallery scroller caps its cards
+    // at this height too (work-article.css), so it has to inherit
+    article.style.setProperty("--wa-banner-h", Math.round(contentWidth * ratio) + "px");
   }
 
   pinHeight(); // from the first frame, so no later flip moves an edge
@@ -134,9 +136,8 @@
     apply();
   }, { threshold: [0.45, 0.55] }).observe(banner);
 
-  var raf = 0;
-  window.addEventListener("resize", function () {
-    cancelAnimationFrame(raf);
-    raf = requestAnimationFrame(pinHeight);
-  });
+  // synchronous on purpose: js/work-scroller.js re-measures its cards on
+  // the same event and reads the cap this writes, so it must land first
+  // (this file loads first; one read + one write per event is cheap)
+  window.addEventListener("resize", pinHeight);
 })();
