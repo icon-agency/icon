@@ -35,6 +35,21 @@
                                     unit word under it ("34+ MILLION"),
                                     then the label; hairline under every
                                     cell
+       8c work-video              — click-to-play film: an art-directed
+                                    COVER image with the site play control
+                                    over the native player; the gesture
+                                    starts the sound-on cut (never
+                                    autoplayed). Cover media + video media.
+                                    Lives IN a prose run at the news
+                                    article's video width (the centred 7/9
+                                    band), so the share travels past it —
+                                    only image galleries break a share run.
+       8d embedded film           — YouTube/Vimeo: the news article's video
+                                    figure, shared verbatim — paste the
+                                    embed link into the iframe src
+                                    (youtube-nocookie.com/embed/<id> or
+                                    player.vimeo.com/video/<id>). Same
+                                    in-run width rule as 8c.
        9  work-article__next      — "Next up / Work" rail: client theme, drawn
                                     line within the margins, work-landing cards
      THE CHAMELEON: the two inline custom properties on <html> are the entire
@@ -385,6 +400,22 @@
             </a>
             <span class="sr-only" aria-live="polite" data-share-status></span>
           </div>
+          <!-- work-video IN the run — the film at the news video width,
+               the share travelling past ============ SAMPLE MEDIA -->
+          <figure class="work-video media-reveal" data-reveal-img data-work-video>
+                <video class="work-video__media" preload="metadata" playsinline src="../assets/work/athletes-foot/ffer-hero-film.mp4" aria-label="Sample film behind an art-directed cover"></video>
+                <img class="work-video__cover" src="../assets/work/athletes-foot/ffer-vid-cover.png" alt="Sample art-directed film cover" data-work-video-start />
+                <button class="work-video__play" type="button" aria-label="Play the film" data-work-video-start>
+                  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z" /></svg>
+                </button>
+              </figure>
+
+          <!-- embedded film IN the run — YouTube/Vimeo through the news
+               article's shared video figure: paste the embed link in
+               ============ SAMPLE MEDIA -->
+          <figure class="news-article__figure news-article__figure--video media-reveal" data-reveal-img>
+            <iframe src="https://www.youtube-nocookie.com/embed/c1DjQLPgLbE" title="Sample embedded film (YouTube)" loading="lazy" allow="encrypted-media; picture-in-picture; fullscreen"></iframe>
+          </figure>
           </div>
           <div class="content-page work-article__prose" data-animate>
             <h2>Content heading</h2>
@@ -647,6 +678,7 @@
     <script src="../js/theme-handover.js"></script>
     <script src="../js/velocity-lean.js"></script>
     <script src="../js/work-article.js"></script>
+    <script src="../js/work-video.js"></script>
     <script src="../js/site-footer.js"></script>
   </body>
 </html>

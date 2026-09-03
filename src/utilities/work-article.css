@@ -540,6 +540,8 @@
    the card tilt is a landing-only behaviour — so `transform` is free here. */
 .work-article__banner,
 .work-gallery figure,
+.work-article__chunk > .work-video,
+.work-article__chunk > .news-article__figure--video,
 .work-article__next .work__item {
   transform: skewY(var(--wa-skew, 0deg));
   transform-origin: center center;
@@ -622,32 +624,29 @@
   order: -1;
   margin: 0;
   font-size: var(--voice-headline);
-  font-weight: 900;
+  /* REGULAR weight (user call, Sep 2026 — was the site 900): the size
+     carries the number, the caps unit word echoes it at the same weight */
+  font-weight: var(--font-weight-normal);
   line-height: 1;
   letter-spacing: -0.02em;
-  text-transform: uppercase; /* the mock's register: 2X, 1ST, SOLD OUT */
+  /* SENTENCE case (user call — "1st" and "2x" as written, not 1ST/2X);
+     the unit word below keeps the caps register itself */
   font-variant-numeric: tabular-nums;
   text-wrap: balance; /* a wrapping TEXT value breaks evenly */
 }
 
-/* ordinal and multiplier suffixes ride SMALL against the digits (user
-   call): markup 1<sup>st</sup> / 2<sup>x</sup> sets the suffix at half
-   size, raised toward the digit's cap line */
-.work-stats__value sup {
-  font-size: 0.48em;
-  line-height: 1;
-  vertical-align: 0.7em;
-}
-
-/* the optional unit word — a caps echo at the value's 900, half a step
-   down ("34+ MILLION", "3 NETWORKS"); stats without one simply omit it.
+/* the optional unit word — a caps echo half a step down at the site's
+   HEAVIEST 900 against the regular value (user call: the number light,
+   the word heavy — "34+ MILLION"); stats without one simply omit it.
    ONE gap token above and below it (user call: "same space"). */
 .work-stats__unit {
   display: block;
   margin-top: var(--stat-gap, 0.45rem);
   font-size: calc(var(--voice-headline) * 0.42);
+  font-weight: 900;
   line-height: 1;
   letter-spacing: 0.01em;
+  text-transform: uppercase; /* the caps register stays on the WORD */
 }
 
 /* the label in the articles' BODY COPY register (user call) — the shared
@@ -657,7 +656,96 @@
   font-size: clamp(1.1875rem, 1.2vw, 1.875rem);
   font-weight: var(--font-weight-medium);
   line-height: 1.4;
-  text-wrap: pretty;
+  text-wrap: balance; /* user call: multi-line labels break evenly */
+}
+
+/* ---- The film player (work-video) ---------------------------------------- */
+/* Click-to-play film (born on The Athlete's Foot example, user call Sep
+   2026): an ART-DIRECTED cover image with the site's play control over it;
+   the gesture reveals the native player and starts the film (js/work-video.js).
+   The cover is a designed frame — a media field, not a poster attribute — so
+   the editor controls the resting state. Sits in the gallery flow like any
+   figure: radius here, reveal and the scroll lean from the shared rules.
+   Never autoplayed: this is the SOUND-ON cut, so it waits for the gesture.
+   Drupal: a work_video paragraph — cover media + video media. */
+.work-video {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-icon);
+}
+
+.work-video__media {
+  display: block;
+  width: 100%;
+}
+
+.work-video__cover {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 1;
+  cursor: pointer;
+  transition: opacity var(--duration-normal) var(--ease-standard);
+}
+
+.work-video__play {
+  position: absolute;
+  z-index: 2;
+  top: 50%;
+  left: 50%;
+  translate: -50% -50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: clamp(4rem, 6vw, 6rem);
+  aspect-ratio: 1;
+  border: 0;
+  border-radius: 50%;
+  background: rgb(0 0 0 / 0.55);
+  color: #fff;
+  cursor: pointer;
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  transition:
+    scale var(--duration-fast) var(--ease-standard),
+    opacity var(--duration-normal) var(--ease-standard);
+}
+
+.work-video__play:hover,
+.work-video__play:focus-visible {
+  scale: 1.08;
+}
+
+.work-video__play svg {
+  width: 38%;
+  height: 38%;
+  translate: 8% 0; /* optical centring of the triangle */
+}
+
+/* the .js-animations variant outranks the reveal system's opacity: 1
+   (.js-animations .media-reveal.is-revealed img, 0-3-1) — without it the
+   cover never faded once revealed */
+.work-video.is-playing .work-video__cover,
+.work-video.is-playing .work-video__play,
+.js-animations .work-video.is-playing .work-video__cover,
+.js-animations .work-video.is-playing .work-video__play {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Hosted film sits IN the run, never between runs (user call): a film —
+   the work-video player or the shared news embed figure — takes the news
+   article's video width, the centred 7/9 band its body grid gives the
+   flow, so the travelling share has room at the left and a film never
+   breaks a share run. Only image galleries start and stop the share. */
+@media (min-width: 1024px) {
+  .work-article .work-video,
+  .work-article .news-article__figure--video {
+    width: calc(100% * 7 / 9);
+    margin-inline: auto;
+  }
 }
 
 /* ---- 4. Next up — on the CLIENT theme, under a drawn line ---------------- */
