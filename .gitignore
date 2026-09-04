@@ -27,3 +27,6 @@ drupal/.ddev/postgres/
 drupal/.ddev/mysql/
 drupal/.ddev/xhprof/
 drupal/web/sites/*/settings.ddev.php
+
+# local database + files backups (never push: the repo is public)
+drupal/backups/
