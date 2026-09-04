@@ -166,8 +166,7 @@
       });
     }
   };
-  document.addEventListener("pointerup", end);
-  document.addEventListener("pointercancel", end);
+
 
   /* ---- The featured picker: a searchable dropdown ------------------------
    * The card's button opens a menu under the row: a search box over every
@@ -206,6 +205,15 @@
     var o = menu.options.find(function (x) { return x.id === id; });
     if (!o) return;
     var row = menu.row;
+    // An action pick (the news feed's "Add a story"): call the action, then
+    // reload — the story is content, not a page setting.
+    var actionUrl = row.getAttribute("data-action-url");
+    if (actionUrl) {
+      closeMenu();
+      fetch(actionUrl + "&nid=" + o.id, { headers: { "X-Requested-With": "XMLHttpRequest" }, credentials: "same-origin" })
+        .then(function () { window.location.reload(); });
+      return;
+    }
     row.setAttribute("data-id", String(o.id));
     var text = row.querySelector(".icon-panel__pickable .icon-panel__text");
     if (text) {
@@ -220,8 +228,8 @@
     var button = e.target.closest(".icon-panel__pickable");
     if (button) {
       e.preventDefault();
-      var row = button.closest("tr");
-      var card = row.closest(".icon-panel__card");
+      var row = button.closest("tr") || button;
+      var card = button.closest(".icon-panel__card");
       if (menu && menu.row === row) { closeMenu(); return; }
       closeMenu();
       var options = [];

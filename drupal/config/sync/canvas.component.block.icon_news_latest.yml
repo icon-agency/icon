@@ -1,0 +1,23 @@
+uuid: add5f641-cfb9-4f11-8d67-9b101617bbeb
+langcode: en
+status: true
+dependencies:
+  module:
+    - icon_site
+active_version: 607a2b1534a31c96
+versioned_properties:
+  active:
+    settings:
+      default_settings:
+        id: icon_news_latest
+        label: 'News feed (homepage)'
+        label_display: '0'
+        provider: icon_site
+        count: 3
+    fallback_metadata:
+      slot_definitions: null
+label: 'News feed (homepage)'
+id: block.icon_news_latest
+provider: icon_site
+source: block
+source_local_id: icon_news_latest

@@ -164,7 +164,8 @@ $tree = [
   $featured,
   // The marquee block has no settings — its panel links to the Client logos list.
   $item('block.icon_clients_marquee', ['label' => 'Clients marquee', 'label_display' => '0'], FALSE),
-  $block('news-latest', 'Latest news'),
+  // The news feed block: its setting is the count; the panel is the feed with pin / edit / remove / add.
+  $item('block.icon_news_latest', ['label' => 'Latest news', 'label_display' => '0', 'count' => 3], FALSE),
 ];
 
 $existing = \Drupal::entityTypeManager()->getStorage('canvas_page')->loadByProperties(['title' => 'Home']);

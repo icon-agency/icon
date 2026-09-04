@@ -483,3 +483,19 @@ goes wrong.
   or theme file, confirm the served copy contains the change before
   testing anything built on it.
 
+## Links and buttons fire Drupal ajax on different events; a script that throws at load takes everything after it down
+
+- **Symptom:** The news panel's pin did nothing from a scripted mousedown,
+  and the "Add a story" dropdown never opened.
+- **Cause:** Drupal binds `use-ajax` LINKS on `click` and submit BUTTONS on
+  `mousedown` (with click prevented) — a test has to send the right one.
+  And a leftover `addEventListener("pointerup", end)` from an earlier
+  version of the sorter threw `ReferenceError` at load, so every listener
+  after that line (the dropdown, the dialog's reload hook) was never
+  registered, while everything before it kept working — which is why the
+  drag still worked and hid the fault.
+- **Rule:** After editing a script, read the console for the file's name
+  before trusting any behaviour; and the smoke test in the deploy step
+  (`node -e` loading the file against a stub document) catches load-time
+  errors before the browser does.
+

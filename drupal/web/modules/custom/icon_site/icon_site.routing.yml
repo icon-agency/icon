@@ -12,3 +12,10 @@ icon_site.fact_icons:
     _title: 'Fact icons'
   requirements:
     _permission: 'administer media'
+icon_site.news_action:
+  path: '/icon-site/news-action'
+  defaults:
+    _controller: '\Drupal\icon_site\Controller\NewsActionController::act'
+  requirements:
+    _permission: 'edit any news content'
+    _csrf_token: 'TRUE'

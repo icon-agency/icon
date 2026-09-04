@@ -44,3 +44,17 @@ block.settings.icon_featured_work:
         constraints:
           Range:
             min: 1
+
+block.settings.icon_news_latest:
+  type: block_settings
+  label: 'News feed block settings'
+  constraints:
+    FullyValidatable: ~
+  mapping:
+    count:
+      type: integer
+      label: 'Stories shown'
+      constraints:
+        Range:
+          min: 1
+          max: 6
