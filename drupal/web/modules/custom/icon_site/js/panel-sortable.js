@@ -226,6 +226,33 @@
     if (card) card.classList.toggle("icon-panel__card--auto", e.target.checked);
   });
 
+  /* ---- Canvas swallows form build-id updates for forms it does not know --
+   * Canvas overrides Drupal's `update_build_id` ajax command and RETURNS
+   * EARLY for any form that is not one of its own (and re-installs that
+   * override, so wrapping the command does not stick). A Drupal form in a
+   * dialog over the editor therefore keeps posting its FIRST build id: every
+   * ajax step (open the media library, insert the selection) rebuilds and
+   * caches the form under a new id that is never used again, and the save
+   * finds the media widget as it was on open — empty. So the build id is
+   * updated a level up, where the response arrives: before Drupal.Ajax
+   * hands the commands out, apply every update_build_id to the inputs in
+   * our dialog ourselves. */
+  if (window.Drupal && window.Drupal.Ajax && !window.Drupal.Ajax.prototype.__iconPanelBuildId) {
+    var origSuccess = window.Drupal.Ajax.prototype.success;
+    window.Drupal.Ajax.prototype.__iconPanelBuildId = true;
+    window.Drupal.Ajax.prototype.success = function (response, status) {
+      if (Array.isArray(response)) {
+        response.forEach(function (c) {
+          if (!c || c.command !== "update_build_id") return;
+          document.querySelectorAll('#icon-panel-dialog input[name="form_build_id"]').forEach(function (input) {
+            if (input.value === c.old) input.value = c.new;
+          });
+        });
+      }
+      return origSuccess.apply(this, arguments);
+    };
+  }
+
   // After a slide is saved in its dialog the list is stale; Canvas has
   // auto-saved the page, so a reload is safe and is the one reliable way to
   // re-render a block form that nothing in the model has changed.

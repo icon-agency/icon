@@ -446,3 +446,23 @@ goes wrong.
   `#markup` goes through the admin XSS filter, which drops `<button>`, and
   the panel never re-renders a block form after a change, so whatever the
   row should show right away is updated client-side.
+
+## A media library inside a dialog over the Canvas editor: two more traps
+
+- **Symptom:** Creating a hero slide from the panel's dialog: the film was
+  picked, the thumbnail showed, and Save answered "This value should not be
+  null" for the media field.
+- **Cause, twice:** (1) Canvas's theme negotiator switches the media
+  library's "Insert selected" post back to canvas_stark on purpose, so the
+  widget came back as React custom elements with no real inputs. (2) Canvas
+  overrides Drupal's `update_build_id` ajax command and returns early for
+  forms it does not know, so the dialog kept posting its first build id;
+  every ajax step cached the form under a new id nobody used, and Save
+  rebuilt the widget as it was on open — empty. Traced by logging build ids
+  and the media field's raw input per request.
+- **Fix:** A theme negotiator (priority 1002) that keeps every `?panel=1`
+  request in the admin theme, and a wrapper on `Drupal.Ajax.prototype.success`
+  that applies `update_build_id` commands to the dialog's inputs before
+  Canvas's command handler drops them. Also: a dialog has no message region,
+  so validation errors are rendered inside the form.
+

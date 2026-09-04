@@ -4,3 +4,8 @@ services:
     arguments: ['@entity_type.manager']
     tags:
       - { name: twig.extension }
+  icon_site.theme_negotiator.panel_dialog:
+    class: Drupal\icon_site\Theme\PanelDialogThemeNegotiator
+    arguments: ['@request_stack', '@config.factory']
+    tags:
+      - { name: theme_negotiator, priority: 1002 }
