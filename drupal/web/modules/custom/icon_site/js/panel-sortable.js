@@ -112,6 +112,108 @@
   document.addEventListener("pointerup", end);
   document.addEventListener("pointercancel", end);
 
+  /* ---- The featured picker: a searchable dropdown ------------------------
+   * The card's button opens a menu under the row: a search box over every
+   * published Work item (from the card's data-options), filtered on project,
+   * client or title as you type. Picking writes "Label (id)" into the row's
+   * (hidden) entity autocomplete — the value transport Canvas accepts — and
+   * updates the row's text itself, because Canvas does not re-render a block
+   * form after a change. */
+  var menu = null;
+
+  var closeMenu = function () {
+    if (menu) { menu.el.remove(); menu = null; }
+  };
+
+  var escapeHtml = function (s) {
+    return String(s).replace(/[&<>"]/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;" }[c];
+    });
+  };
+
+  var renderList = function (q) {
+    var needle = q.trim().toLowerCase();
+    var items = menu.options.filter(function (o) {
+      return !needle || (o.project + " " + o.client).toLowerCase().indexOf(needle) !== -1;
+    });
+    menu.list.innerHTML = items.length
+      ? items.map(function (o) {
+          return '<li class="icon-panel__menu-item' + (o.id === menu.current ? " is-current" : "") + '" data-id="' + o.id + '" role="option">' +
+            '<p class="icon-panel__name">' + escapeHtml(o.project) + "</p>" +
+            (o.client ? '<p class="icon-panel__meta">' + escapeHtml(o.client) + "</p>" : "") + "</li>";
+        }).join("")
+      : '<li class="icon-panel__menu-empty">No matching project</li>';
+  };
+
+  var pick = function (id) {
+    var o = menu.options.find(function (x) { return x.id === id; });
+    if (!o) return;
+    var row = menu.row;
+    var input = row.querySelector("input.icon-panel__search");
+    var label = o.client ? o.project + " \u2014 " + o.client : o.project;
+    if (input) setValue(input, label + " (" + o.id + ")");
+    var current = row.querySelector("input.icon-panel__current");
+    if (current) current.value = String(o.id);
+    var text = row.querySelector(".icon-panel__pickable .icon-panel__text");
+    if (text) {
+      text.innerHTML = '<p class="icon-panel__name">' + escapeHtml(o.project) + "</p>" +
+        (o.client ? '<p class="icon-panel__meta">' + escapeHtml(o.client) + "</p>" : "");
+    }
+    closeMenu();
+  };
+
+  document.addEventListener("click", function (e) {
+    var button = e.target.closest(".icon-panel__pickable");
+    if (button) {
+      e.preventDefault();
+      var row = button.closest("tr");
+      var card = row.closest(".icon-panel__card");
+      if (menu && menu.row === row) { closeMenu(); return; }
+      closeMenu();
+      var options = [];
+      try { options = JSON.parse(card.getAttribute("data-options") || "[]"); } catch (err) {}
+      var el = document.createElement("div");
+      el.className = "icon-panel__menu";
+      el.innerHTML = '<input type="text" class="icon-panel__menu-search" placeholder="Search project or client\u2026" autocomplete="off">' +
+        '<ul class="icon-panel__menu-list" role="listbox"></ul>';
+      var rowRect = row.getBoundingClientRect();
+      var cardRect = card.getBoundingClientRect();
+      el.style.top = (rowRect.bottom - cardRect.top + 4) + "px";
+      card.appendChild(el);
+      var currentInput = row.querySelector("input.icon-panel__current");
+      menu = { el: el, row: row, options: options, list: el.querySelector("ul"), current: currentInput ? parseInt(currentInput.value, 10) : 0 };
+      renderList("");
+      el.querySelector("input").focus();
+      return;
+    }
+    if (!menu) return;
+    var item = e.target.closest(".icon-panel__menu-item");
+    if (item && menu.el.contains(item)) { pick(parseInt(item.getAttribute("data-id"), 10)); return; }
+    if (!menu.el.contains(e.target)) closeMenu();
+  });
+
+  document.addEventListener("input", function (e) {
+    if (menu && e.target === menu.el.querySelector("input")) renderList(e.target.value);
+  });
+
+  document.addEventListener("keydown", function (e) {
+    if (!menu) return;
+    if (e.key === "Escape") { closeMenu(); return; }
+    if (e.key === "Enter" && e.target === menu.el.querySelector("input")) {
+      e.preventDefault();
+      var first = menu.list.querySelector(".icon-panel__menu-item");
+      if (first) pick(parseInt(first.getAttribute("data-id"), 10));
+    }
+  });
+
+  // The "latest" switch dims the list at once; the server does the same on
+  // the next open.
+  document.addEventListener("change", function (e) {
+    if (!e.target.classList || !e.target.classList.contains("icon-panel__toggle")) return;
+    var card = e.target.closest(".icon-panel") && e.target.closest(".icon-panel").querySelector(".icon-panel__card");
+    if (card) card.classList.toggle("icon-panel__card--auto", e.target.checked);
+  });
+
   // After a slide is saved in its dialog the list is stale; Canvas has
   // auto-saved the page, so a reload is safe and is the one reliable way to
   // re-render a block form that nothing in the model has changed.

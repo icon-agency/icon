@@ -422,3 +422,24 @@ goes wrong.
   AFTER a plain form alter runs. Note for tests: Drupal ajax buttons fire on
   `mousedown`, so a scripted `.click()` does nothing.
 
+## Nested containers in a Canvas block form lose their values
+
+- **Symptom:** After the featured tiles were wrapped in `cell` → `pick`
+  containers for styling, the first auto-submit from the panel saved
+  `projects: []`, the rows read "No project yet", and the empty grid was
+  published before anyone noticed.
+- **Cause:** Canvas posts the block form from its own model of the form's
+  values; a table row's direct children come through, but values inside
+  nested `#type container` elements in a row did not, so `blockSubmit()`
+  saw no picks and wrote none.
+- **Fix:** Row children are the inputs themselves (`info` markup, the
+  `pick` autocomplete as the value's transport, a `current` text field
+  carrying the existing pick so an untouched row keeps it); styling is done
+  with CSS on the cells. Two more transport rules learned the same way:
+  Canvas does not post `#type hidden` inputs (a CSS-hidden text field
+  works), and `#markup` goes through the admin XSS filter, which drops
+  `<button>` — use an `<a role="button">`. And the panel does not re-render
+  a block form after a change: anything the row should show right away
+  (the new pick, the dimmed "automatic" state) is updated client-side.
+  The first thing to check after any panel change is the stored inputs.
+

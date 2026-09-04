@@ -145,6 +145,7 @@ $hero = $item('block.icon_hero', ['label' => 'Homepage hero', 'label_display' =>
 $featured = $item('block.icon_featured_work', [
   'label' => 'Featured work',
   'label_display' => '0',
+  'latest' => FALSE,
   'projects' => array_values(array_filter(array_map(
     fn(string $alias) => ($p = \Drupal::service('path_alias.repository')->lookupByAlias($alias, 'en')['path'] ?? NULL) ? (int) substr($p, 6) : NULL,
     ['/work/raise-it', '/work/permanent-protection-visa', '/work/fit-for-every-run', '/work/icanquit', '/work/democracy-cards'],

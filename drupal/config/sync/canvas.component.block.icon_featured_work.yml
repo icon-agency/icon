@@ -4,9 +4,20 @@ status: true
 dependencies:
   module:
     - icon_site
-active_version: 529e761982cb624f
+active_version: 33ff5b3c97d8d3ef
 versioned_properties:
   active:
+    settings:
+      default_settings:
+        id: icon_featured_work
+        label: 'Featured work'
+        label_display: '0'
+        provider: icon_site
+        latest: false
+        projects: {  }
+    fallback_metadata:
+      slot_definitions: null
+  529e761982cb624f:
     settings:
       default_settings:
         id: icon_featured_work

@@ -155,69 +155,96 @@ body.icon-panel-sorting { cursor: grabbing; user-select: none; }
 }
 .icon-panel__note a { color: #0b64ee; }
 
-/* The featured pick: a card that IS a select. The text block shows the pick
-   (project name over client); the native select covers it at opacity 0 so a
-   click anywhere opens the list; the chevron sits top-right. */
-.icon-panel__pick {
-  position: relative;
-  flex: 1;
-  min-width: 0;
-  padding-right: 24px;
-}
-.icon-panel__pick::after {
-  content: "";
+/* The featured pick: a button showing project over client with a chevron;
+   clicking it opens the searchable list. The autocomplete input beside it is
+   only the value's transport, out of sight. */
+.icon-panel__list td:has(> input.icon-panel__current),
+.icon-panel__list td:has(input.icon-panel__current),
+.icon-panel__list td.icon-panel__cell--search {
   position: absolute;
-  top: 2px;
-  right: 0;
-  width: 14px;
-  height: 14px;
-  background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%2360646c' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'><path d='M4 6l4 4 4-4'/></svg>") center / contain no-repeat;
-  pointer-events: none;
-}
-.icon-panel__pick .form-item,
-.icon-panel__pick .js-form-item {
-  position: absolute;
-  inset: 0;
-  margin: 0;
-}
-.icon-panel__list td .icon-panel__pick select.icon-panel__select {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
+  width: 1px;
+  height: 1px;
   padding: 0;
   border: 0;
-  opacity: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+}
+.icon-panel__list tr.draggable td:first-child {
+  border-right: 1px solid #e0e1e6;
+  border-radius: 8px;
+}
+.icon-panel__pickable,
+.icon-panel__pickable:hover,
+.icon-panel__pickable:focus {
+  text-decoration: none;
+}
+.icon-panel__pickable {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  color: inherit;
+  text-align: left;
   cursor: pointer;
 }
+.icon-panel__pickable .icon-panel__text { flex: 1; min-width: 0; }
+.icon-panel__pickable:hover .icon-panel__name { color: #0b64ee; }
+.icon-panel__chevron {
+  flex: none;
+  width: 14px;
+  height: 14px;
+  margin-top: 2px;
+  background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%2360646c' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'><path d='M4 6l4 4 4-4'/></svg>") center / contain no-repeat;
+}
 .icon-panel__name--empty { color: #8b8d98; font-weight: 500; }
-.icon-panel__pick:hover .icon-panel__name { color: #0b64ee; }
 
-/* The slide form's dialog over the editor. */
-.icon-panel-dialog.ui-dialog { z-index: 1000; border-radius: 10px; box-shadow: 0 24px 60px rgb(0 0 0 / 0.25); }
-.icon-panel-dialog .ui-dialog-content { padding: 16px 20px 20px; max-height: 80vh; overflow: auto; }
-
-/* Dragging: the row stays put, dimmed; the line says where it lands. */
-.icon-panel__list tr.is-dragging td { opacity: 0.45; }
-.icon-panel__drop {
+/* The dropdown: a search box over a filtered list, under the row. */
+.icon-panel__menu {
   position: absolute;
   left: 0;
   right: 0;
-  height: 2px;
-  margin-top: -1px;
-  border-radius: 2px;
-  background: #0b64ee;
-  pointer-events: none;
-  display: none;
+  z-index: 20;
+  padding: 8px;
+  border: 1px solid #d9d9e0;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 12px 32px rgb(0 0 0 / 0.16);
 }
-.icon-panel__drop::before {
-  content: "";
-  position: absolute;
-  left: -3px;
-  top: -3px;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: #0b64ee;
+.icon-panel__menu-search {
+  width: 100%;
+  box-sizing: border-box;
+  margin: 0 0 6px;
+  padding: 7px 8px 7px 28px;
+  border: 1px solid #d9d9e0;
+  border-radius: 6px;
+  font: inherit;
+  font-size: 13px;
+  color: #1c2024;
+  background: #fff url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%238b8d98' stroke-width='1.6' stroke-linecap='round'><circle cx='7' cy='7' r='4.5'/><path d='M10.5 10.5L14 14'/></svg>") 9px center / 13px no-repeat;
 }
-.icon-panel__drop.is-on { display: block; }
+.icon-panel__menu-search:focus { outline: 2px solid #0b64ee; outline-offset: -1px; }
+.icon-panel__menu-list {
+  max-height: 260px;
+  overflow: auto;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.icon-panel__menu-item {
+  padding: 6px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.icon-panel__menu-item:hover,
+.icon-panel__menu-item.is-active { background: #eef3ff; }
+.icon-panel__menu-item.is-current .icon-panel__name::after { content: " ✓"; color: #0b64ee; }
+.icon-panel__menu-item .icon-panel__name { font-weight: 500; }
+.icon-panel__menu-empty { padding: 8px; color: #8b8d98; font-size: 12px; }
+/* Hidden field of Drupal's own autocomplete suggestion list — not used. */
+.ui-autocomplete { display: none !important; }

@@ -32,6 +32,9 @@ block.settings.icon_featured_work:
   constraints:
     FullyValidatable: ~
   mapping:
+    latest:
+      type: boolean
+      label: 'Show the latest five automatically'
     projects:
       type: sequence
       label: 'Featured projects, in order'
