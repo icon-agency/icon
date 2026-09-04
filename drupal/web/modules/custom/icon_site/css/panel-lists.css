@@ -171,7 +171,8 @@ body.icon-panel-sorting { cursor: grabbing; user-select: none; }
   overflow: hidden;
   clip: rect(0 0 0 0);
 }
-.icon-panel__list tr.draggable td:first-child {
+/* A single-cell row (the featured tiles) is the whole card. */
+.icon-panel__list tr.draggable td:first-child:last-child {
   border-right: 1px solid #e0e1e6;
   border-radius: 8px;
 }
