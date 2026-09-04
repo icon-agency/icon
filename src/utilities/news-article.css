@@ -37,6 +37,12 @@
   display: grid;
   grid-template-columns: 1fr;
   gap: var(--space-md);
+  /* the doubled air under the wordmark clearance — ONE value for both
+     heads (user call, Sep 2026: the tile head wears the banner head's
+     treatment). It sat on the stacked eyebrow's margin before; on the head
+     it also lifts the tile head's photo with the text, so the two columns
+     start level. */
+  padding-top: calc(var(--space-sm) * 2);
 }
 
 /* Two columns from TABLET up (md, not lg — the stacked head left a dead
@@ -55,17 +61,15 @@
 .news-article__intro {
   display: flex;
   flex-direction: column;
-  /* The top/bottom hairlines: the HOST declares the border (house pattern —
-     see .news-list__item), and rules.css turns [data-rule="both"] borders
-     into the left-to-right draw. Padding is the gap inside them. */
-  border-top: var(--rule-weight) solid var(--rule);
-  border-bottom: var(--rule-weight) solid var(--rule);
-  padding-block: var(--space-sm);
+  /* No rules of its own since Sep 2026 (user call): the tile head wears
+     the banner head's ONE hairline, above the date row — see
+     .news-article__meta--date. The date still closes the column on the
+     photo's baseline at md+ (margin-top: auto below). */
 }
 
-/* The meta voice, split in two (user call): the CATEGORY eyebrow opens the
-   column above the headline; the DATE closes it on the photo's baseline at
-   md+ (margin-top: auto below). */
+/* The meta voice, split in two (user call): the back link opens the column
+   above the headline; the CATEGORY / DATE row closes it. Both wear the
+   caps register (.news-article__meta--caps in markup) on both heads. */
 .news-article__meta {
   font-size: var(--voice-meta);
   color: var(--color-icon-grey);
@@ -75,8 +79,13 @@
   margin: 0 0 var(--space-sm);
 }
 
+/* the one rule of the head: between headline and the category / date row,
+   drawn in like every hairline ([data-rule="top"] in markup) — shared by
+   both heads since Sep 2026 */
 .news-article__meta--date {
-  margin: var(--space-md) 0 0;
+  margin: 0;
+  padding-top: var(--space-sm);
+  border-top: var(--rule-weight) solid var(--rule);
 }
 
 .news-article__meta a {
@@ -97,11 +106,16 @@
      REGULAR (user call, Sep 2026): the serif carries the headline, weight
      stays book so the size does the talking. */
   font-family: var(--font-serif);
-  font-size: var(--voice-headline);
+  /* the LARGE headline register on BOTH heads (user call, Sep 2026 — the
+     tile head matches the banner head; it ran --voice-headline before),
+     shared with the /news masthead (typography.css) */
+  font-size: var(--voice-headline-lg);
   font-weight: var(--font-weight-normal);
   line-height: 1.05;
   letter-spacing: -0.02em;
   color: var(--color-icon-black);
+  max-width: 24ch; /* the mock breaks the headline over three lines, not the full bleed */
+  margin-bottom: var(--space-md);
 }
 
 /* Share — the caps label over two LIVE icon actions (copy link + email,
@@ -494,28 +508,13 @@
   text-transform: uppercase;
 }
 
-/* the doubled air goes ABOVE the eyebrow (user correction: the eyebrow
-   moves down with the headline, keeping its tight pairing to it — the
-   first pass wrongly opened the gap between them instead). A keeps its
-   own rhythm. */
-.news-article__head--stacked .news-article__meta--eyebrow {
-  margin-top: calc(var(--space-sm) * 2);
-}
-
-.news-article__head--stacked .news-article__title {
-  /* 1.5x the A title — doubled first on request, pulled back on sight
-     ("too big"). Now the named large headline register, shared with the
-     /news masthead (typography.css). */
-  font-size: var(--voice-headline-lg);
-  max-width: 24ch; /* the mock breaks the headline over three lines, not the full bleed */
-  margin-bottom: var(--space-md);
-}
-
-/* the one rule: between headline and date, drawn in like every hairline */
+/* The eyebrow's doubled air, the large headline register and the one
+   hairline above the date used to be THIS modifier's; since Sep 2026 they
+   are the head's own (user call: both heads wear the same treatment), and
+   the modifier keeps only what is about layout — the block flow and the
+   gap from the date row to the wide hero below it. */
 .news-article__head--stacked .news-article__meta--date {
-  margin: 0 0 var(--space-md);
-  padding-top: var(--space-sm);
-  border-top: var(--rule-weight) solid var(--rule);
+  margin-bottom: var(--space-md);
 }
 
 /* THE BANNER SLOT IS 2:1 — the CMS rule prototyped here (user design):
