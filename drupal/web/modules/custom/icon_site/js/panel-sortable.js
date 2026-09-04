@@ -30,7 +30,12 @@
     return Array.prototype.slice.call(table.querySelectorAll("tr.draggable"));
   };
 
-  // The drop line: one per card, positioned in the gap the row would land in.
+  /* ---- The drag ----------------------------------------------------------
+   * Pick a row up by its handle: a GHOST of it follows the pointer, the row
+   * itself stays in the list, dimmed, and a blue line with a dot marks the
+   * gap it will drop into. Nothing else moves until release — then the
+   * ghost glides into the gap, the row moves there, and the order is
+   * written. Escape cancels. */
   var lineFor = function (card) {
     var line = card.querySelector(".icon-panel__drop");
     if (!line) {
@@ -72,15 +77,27 @@
     var card = table && table.closest(".icon-panel__card");
     if (!row || !table || !card) return;
     e.preventDefault();
-    drag = { row: row, table: table, card: card, target: null };
+    closeMenu();
+    var rect = row.getBoundingClientRect();
+    var ghost = document.createElement("div");
+    ghost.className = "icon-panel__ghost";
+    var clone = document.createElement("table");
+    clone.className = table.className;
+    clone.innerHTML = "<tbody>" + row.outerHTML + "</tbody>";
+    clone.querySelector("tr").classList.remove("is-dragging");
+    ghost.appendChild(clone);
+    ghost.style.left = rect.left + "px";
+    ghost.style.top = rect.top + "px";
+    ghost.style.width = rect.width + "px";
+    document.body.appendChild(ghost);
+    drag = { row: row, table: table, card: card, ghost: ghost, startY: e.clientY, top: rect.top, target: null, lineY: null };
     row.classList.add("is-dragging");
     document.body.classList.add("icon-panel-sorting");
   });
 
-  // The row STAYS PUT while dragging; only the line moves. Moving rows under
-  // the pointer is what made the list jump and rows change height.
   document.addEventListener("pointermove", function (e) {
     if (!drag) return;
+    drag.ghost.style.transform = "translateY(" + (e.clientY - drag.startY) + "px)";
     var t = targetFor(e.clientY);
     var from = rowsOf(drag.table).indexOf(drag.row);
     // The gap above or below the row itself is no move.
@@ -89,22 +106,42 @@
     line.style.top = t.y + "px";
     line.classList.toggle("is-on", !noop);
     drag.target = noop ? null : t.index;
+    drag.lineY = t.y;
   });
 
-  var end = function () {
+  var settle = function (cancel) {
     if (!drag) return;
     var d = drag;
     drag = null;
-    d.row.classList.remove("is-dragging");
     document.body.classList.remove("icon-panel-sorting");
     lineFor(d.card).classList.remove("is-on");
-    if (d.target === null) return;
-    var rows = rowsOf(d.table);
-    var before = rows[d.target] || null; // past the end → append
-    if (before === d.row) return;
-    d.row.parentNode.insertBefore(d.row, before);
-    sync(d.table);
+    var moved = !cancel && d.target !== null;
+    // The ghost glides to where the row will be (its own place on cancel),
+    // then hands back to the real row.
+    var destTop;
+    if (moved) {
+      var cardTop = d.card.getBoundingClientRect().top;
+      destTop = cardTop + d.lineY - (d.target > rowsOf(d.table).indexOf(d.row) ? d.row.getBoundingClientRect().height : 0);
+    } else {
+      destTop = d.row.getBoundingClientRect().top;
+    }
+    d.ghost.style.transition = "transform 150ms cubic-bezier(0.2, 0, 0, 1), opacity 150ms";
+    d.ghost.style.transform = "translateY(" + (destTop - d.top) + "px)";
+    d.ghost.style.opacity = "0.85";
+    setTimeout(function () {
+      d.ghost.remove();
+      if (moved) {
+        var rows = rowsOf(d.table);
+        var before = rows[d.target] || null; // past the end → append
+        if (before !== d.row) d.row.parentNode.insertBefore(d.row, before);
+        sync(d.table);
+      }
+      d.row.classList.remove("is-dragging");
+    }, 150);
   };
+  document.addEventListener("pointerup", function () { settle(false); });
+  document.addEventListener("pointercancel", function () { settle(true); });
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape" && drag) settle(true); });
 
   // Write the list back into the settings' inputs: the hero's one `order`
   // field (row keys, comma-separated) or the featured grid's five project
@@ -137,9 +174,9 @@
    * form after a change. */
   var menu = null;
 
-  var closeMenu = function () {
+  function closeMenu() {
     if (menu) { menu.el.remove(); menu = null; }
-  };
+  }
 
   var escapeHtml = function (s) {
     return String(s).replace(/[&<>"]/g, function (c) {
