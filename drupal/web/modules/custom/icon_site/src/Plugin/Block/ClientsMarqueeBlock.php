@@ -24,6 +24,9 @@ use Drupal\Core\Url;
 )]
 final class ClientsMarqueeBlock extends BlockBase {
 
+  /** The drag handle (js/panel-sortable.js listens for it). */
+  private const HANDLE = '<span class="icon-panel__handle" title="Drag to reorder" aria-hidden="true"></span>';
+
   /**
    * {@inheritdoc}
    */
@@ -33,12 +36,13 @@ final class ClientsMarqueeBlock extends BlockBase {
 
   /**
    * {@inheritdoc}
+   *
+   * The one setting is an input (Canvas round-trips settings through the
+   * form's values); the logos are content, listed as markup with actions:
+   * drag to reorder (writes the Order field), Edit / Remove, Add.
    */
   public function blockForm($form, FormStateInterface $form_state): array {
-    $url = Url::fromRoute('icon_site.client_logos')->toString();
-    $form['help'] = [
-      '#markup' => '<p>' . $this->t('The marquee shows every client logo in the order of the <a href=":url" target="_blank" rel="noopener">Client logos</a> list — add, drag to reorder, rename or remove logos there.', [':url' => $url]) . '</p>',
-    ];
+    $form['#attached']['library'][] = 'icon_site/panel_lists';
     $form['heading'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Accessible label'),
@@ -46,6 +50,39 @@ final class ClientsMarqueeBlock extends BlockBase {
       '#default_value' => $this->configuration['heading'] ?? 'Selected clients',
       '#maxlength' => 128,
       '#required' => TRUE,
+      '#weight' => 5,
+      '#attributes' => ['class' => ['icon-panel__field']],
+    ];
+    $dialog = ' data-dialog-type="dialog" data-dialog-options=\'{"target":"icon-panel-dialog","modal":true,"width":"760","classes":{"ui-dialog":"icon-panel-dialog"}}\'';
+    $action = Url::fromRoute('icon_site.logo_action')->toString();
+    $add = Url::fromRoute('entity.media.add_form', ['media_type' => 'logo'], ['query' => ['panel' => 1, 'use_admin_theme' => 1]])->toString();
+    $storage = \Drupal::entityTypeManager()->getStorage('media');
+    $ids = $storage->getQuery()->accessCheck(TRUE)->condition('bundle', 'logo')->condition('status', 1)->sort('field_logo_weight', 'ASC')->sort('name', 'ASC')->execute();
+    $rows = '';
+    foreach ($storage->loadMultiple($ids) as $media) {
+      $file = $media->get('field_media_file')->entity;
+      $src = $file ? \Drupal::service('file_url_generator')->generateString($file->getFileUri()) : '';
+      $edit = $media->toUrl('edit-form', ['query' => ['panel' => 1, 'use_admin_theme' => 1]])->toString();
+      $rows .= '<tr class="draggable" data-row="' . $media->id() . '"><td>' . self::HANDLE
+        . ($src ? '<img class="icon-panel__logo" src="' . $src . '" alt="">' : '')
+        . '<div class="icon-panel__text"><p class="icon-panel__name">' . htmlspecialchars($media->label(), ENT_QUOTES) . '</p><p class="icon-panel__meta">' . htmlspecialchars((string) ($file ? strtoupper(pathinfo($file->getFilename(), PATHINFO_EXTENSION)) : ''), ENT_QUOTES) . '</p></div></td>'
+        . '<td class="icon-panel__cell--action"><a class="icon-panel__action use-ajax" href="' . $edit . '"' . $dialog . '>' . $this->t('Edit') . '</a>'
+        . '<a class="icon-panel__action icon-panel__action--quiet use-ajax" href="' . $action . '&id=' . $media->id() . '&op=remove" title="' . $this->t('Take this logo out of the marquee (it stays in the media library, unpublished)') . '">' . $this->t('Remove') . '</a></td></tr>';
+    }
+    $count = substr_count($rows, '<tr ');
+    $form['panel'] = ['#type' => 'container', '#weight' => 0, '#attributes' => ['class' => ['icon-panel', 'icon-panel--clients']]];
+    $form['panel']['bar'] = [
+      '#markup' => '<div class="icon-panel__bar"><p class="icon-panel__title">' . $this->t('Logos · @n', ['@n' => $count]) . '</p><a class="icon-panel__button icon-panel__button--primary use-ajax" href="' . $add . '"' . $dialog . '>' . $this->t('+ Add logo') . '</a></div>',
+    ];
+    $form['panel']['card'] = [
+      '#type' => 'container',
+      '#attributes' => ['class' => ['icon-panel__card'], 'data-order-url' => $action . '&op=order'],
+    ];
+    $form['panel']['card']['list'] = [
+      '#markup' => $rows ? '<table class="icon-panel__list"><tbody>' . $rows . '</tbody></table>' : '<p class="icon-panel__note">' . $this->t('No logos yet — add one.') . '</p>',
+    ];
+    $form['panel']['note'] = [
+      '#markup' => '<p class="icon-panel__note">' . $this->t('The marquee runs these in order. Drag to reorder — the order is saved at once. The name is the alt text screen readers announce. Edit replaces the file (SVG or PNG) or renames it; Remove takes it out of the marquee. The same list is at <a href=":url" target="_blank" rel="noopener">Content → Client logos</a>.', [':url' => Url::fromRoute('icon_site.client_logos')->toString()]) . '</p>',
     ];
     return $form;
   }

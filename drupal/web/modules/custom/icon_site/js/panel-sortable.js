@@ -159,6 +159,14 @@
       var value = rows.map(function (r) { return r.getAttribute("data-row"); }).join(",");
       if (value !== order.value) setValue(order, value);
     }
+    // The marquee's order is content: post it, then reload.
+    var orderUrl = table.closest(".icon-panel__card") && table.closest(".icon-panel__card").getAttribute("data-order-url");
+    if (table.closest(".icon-panel--clients") && orderUrl) {
+      var ids = rows.map(function (r) { return r.getAttribute("data-row"); }).join(",");
+      fetch(orderUrl + "&ids=" + ids, { headers: { "X-Requested-With": "XMLHttpRequest" }, credentials: "same-origin" })
+        .then(function () { window.location.reload(); });
+      return;
+    }
     if (table.closest(".icon-panel--featured") && projects.length) {
       projects.forEach(function (field, i) {
         var id = rows[i] ? (rows[i].getAttribute("data-id") || "") : "";

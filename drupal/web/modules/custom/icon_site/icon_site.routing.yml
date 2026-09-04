@@ -19,3 +19,10 @@ icon_site.news_action:
   requirements:
     _permission: 'edit any news content'
     _csrf_token: 'TRUE'
+icon_site.logo_action:
+  path: '/icon-site/logo-action'
+  defaults:
+    _controller: '\Drupal\icon_site\Controller\LogoActionController::act'
+  requirements:
+    _permission: 'administer media'
+    _csrf_token: 'TRUE'

@@ -346,3 +346,16 @@ body.icon-panel-sorting .icon-panel__handle { cursor: grabbing; }
 select.icon-panel__count { padding: 4px 24px 4px 8px; border: 1px solid #d9d9e0; border-radius: 6px; font-size: 13px; }
 /* Two actions side by side need the room. */
 .icon-panel--news .icon-panel__list td.icon-panel__cell--action { width: 96px; white-space: nowrap; }
+/* The marquee panel: a small logo before the alt text. */
+.icon-panel__logo {
+  flex: none;
+  width: 44px;
+  height: 28px;
+  object-fit: contain;
+  border-radius: 4px;
+  background: #f1f2f5;
+  padding: 3px;
+  box-sizing: border-box;
+}
+.icon-panel--clients .icon-panel__list td.icon-panel__cell--action { width: 96px; white-space: nowrap; }
+.form-item:has(> .icon-panel__field), .js-form-item:has(.icon-panel__field) { margin-top: 14px; font-size: 13px; }

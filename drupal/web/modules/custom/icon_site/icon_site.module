@@ -177,7 +177,8 @@ function _icon_site_panel_node_form_after_build(array $form, FormStateInterface 
   // save unpublished the slide. Published stays — it is how a slide leaves
   // the reel without being deleted.
   // (`footer` is where the node form keeps that checkbox — leave it too.)
-  foreach (['menu', 'meta', 'revision_information', 'revision_log', 'uid', 'created', 'promote', 'sticky', 'path', 'advanced'] as $key) {
+  // (`field_logo_weight`: the marquee panel's drag writes the order.)
+  foreach (['menu', 'meta', 'revision_information', 'revision_log', 'uid', 'created', 'promote', 'sticky', 'path', 'advanced', 'field_logo_weight'] as $key) {
     if (isset($form[$key])) {
       $form[$key]['#access'] = FALSE;
     }
@@ -202,4 +203,26 @@ function _icon_site_panel_form_ajax(array $form, FormStateInterface $form_state)
   // into re-fetching the block form.
   $response->addCommand(new InvokeCommand('body', 'trigger', ['icon-panel:saved']));
   return $response;
+}
+
+/**
+ * Implements hook_form_BASE_FORM_ID_alter() for media_form.
+ *
+ * A Logo / Icon media form opened from a Canvas panel (?panel=1) gets the
+ * same dialog treatment as a Hero slide: ajax Save that closes the dialog,
+ * no Preview / Delete, and the housekeeping sections trimmed.
+ */
+function icon_site_form_media_form_alter(array &$form, FormStateInterface $form_state): void {
+  $media = $form_state->getFormObject()->getEntity();
+  if (!in_array($media->bundle(), ['logo', 'icon'], TRUE) || !\Drupal::request()->query->get('panel')) {
+    return;
+  }
+  $form['#prefix'] = '<div id="icon-panel-form">';
+  $form['#suffix'] = '</div>';
+  $form['actions']['submit']['#ajax'] = [
+    'callback' => '_icon_site_panel_form_ajax',
+    'wrapper' => 'icon-panel-form',
+  ];
+  $form['actions']['delete']['#access'] = FALSE;
+  $form['#after_build'][] = '_icon_site_panel_node_form_after_build';
 }
