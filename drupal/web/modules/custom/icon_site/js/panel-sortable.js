@@ -30,49 +30,83 @@
     return Array.prototype.slice.call(table.querySelectorAll("tr.draggable"));
   };
 
+  // The drop line: one per card, positioned in the gap the row would land in.
+  var lineFor = function (card) {
+    var line = card.querySelector(".icon-panel__drop");
+    if (!line) {
+      line = document.createElement("div");
+      line.className = "icon-panel__drop";
+      card.appendChild(line);
+    }
+    return line;
+  };
+
+  // Where the pointer would drop the row: an index into the row list, and
+  // the card-relative y of the gap before that index.
+  var targetFor = function (y) {
+    var rows = rowsOf(drag.table);
+    var cardTop = drag.card.getBoundingClientRect().top;
+    var index = rows.length;
+    var lineY = null;
+    for (var i = 0; i < rows.length; i++) {
+      var b = rows[i].getBoundingClientRect();
+      if (y < b.top + b.height / 2) {
+        index = i;
+        var prev = rows[i - 1];
+        lineY = prev ? (prev.getBoundingClientRect().bottom + b.top) / 2 - cardTop : b.top - 4 - cardTop;
+        break;
+      }
+    }
+    if (lineY === null) {
+      var last = rows[rows.length - 1].getBoundingClientRect();
+      lineY = last.bottom + 4 - cardTop;
+    }
+    return { index: index, y: lineY };
+  };
+
   document.addEventListener("pointerdown", function (e) {
     var handle = e.target.closest(".icon-panel__handle");
     if (!handle || e.button !== 0) return;
     var row = handle.closest("tr");
     var table = row && row.closest("table");
-    if (!row || !table) return;
+    var card = table && table.closest(".icon-panel__card");
+    if (!row || !table || !card) return;
     e.preventDefault();
-    drag = { row: row, table: table, pointerId: e.pointerId };
+    drag = { row: row, table: table, card: card, target: null };
     row.classList.add("is-dragging");
     document.body.classList.add("icon-panel-sorting");
   });
 
+  // The row STAYS PUT while dragging; only the line moves. Moving rows under
+  // the pointer is what made the list jump and rows change height.
   document.addEventListener("pointermove", function (e) {
     if (!drag) return;
-    var y = e.clientY;
-    // One step per pass; repeat until the row sits where the pointer is, so
-    // a fast drag (few move events) still lands in the right place.
-    for (var pass = 0; pass < 10; pass++) {
-      var moved = false;
-      var rows = rowsOf(drag.table);
-      for (var i = 0; i < rows.length; i++) {
-        var r = rows[i];
-        if (r === drag.row) continue;
-        var b = r.getBoundingClientRect();
-        var mid = b.top + b.height / 2;
-        var after = r.compareDocumentPosition(drag.row) & Node.DOCUMENT_POSITION_FOLLOWING; // drag.row is after r
-        if (after && y < mid) { r.before(drag.row); moved = true; break; }
-        if (!after && y > mid) { r.after(drag.row); moved = true; break; }
-      }
-      if (!moved) break;
-    }
+    var t = targetFor(e.clientY);
+    var from = rowsOf(drag.table).indexOf(drag.row);
+    // The gap above or below the row itself is no move.
+    var noop = t.index === from || t.index === from + 1;
+    var line = lineFor(drag.card);
+    line.style.top = t.y + "px";
+    line.classList.toggle("is-on", !noop);
+    drag.target = noop ? null : t.index;
   });
 
   var end = function () {
     if (!drag) return;
-    var rows = rowsOf(drag.table);
-    var panel = drag.table.closest(".icon-panel");
-    var field = panel && panel.querySelector("input.icon-panel__order");
-    drag.row.classList.remove("is-dragging");
-    document.body.classList.remove("icon-panel-sorting");
+    var d = drag;
     drag = null;
+    d.row.classList.remove("is-dragging");
+    document.body.classList.remove("icon-panel-sorting");
+    lineFor(d.card).classList.remove("is-on");
+    if (d.target === null) return;
+    var rows = rowsOf(d.table);
+    var before = rows[d.target] || null; // past the end → append
+    if (before === d.row) return;
+    d.row.parentNode.insertBefore(d.row, before);
+    var panel = d.table.closest(".icon-panel");
+    var field = panel && panel.querySelector("input.icon-panel__order");
     if (!field) return;
-    var value = rows.map(function (r) { return r.getAttribute("data-row"); }).join(",");
+    var value = rowsOf(d.table).map(function (r) { return r.getAttribute("data-row"); }).join(",");
     if (value !== field.value) setValue(field, value);
   };
   document.addEventListener("pointerup", end);

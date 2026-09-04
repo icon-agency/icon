@@ -392,9 +392,13 @@ goes wrong.
   weight` selects entirely — even calling the React onChange directly left
   the model untouched — while a select or text field it treats as a value.
 - **Fix:** `js/panel-sortable.js`, a delegated pointer sorter on the document
-  (survives re-renders), which on drop writes ONE hidden text field
-  (`order`, comma-separated row keys) through the input's prototype setter
-  plus input / change / blur; `blockSubmit()` parses it. Verified: a real
+  (survives re-renders). The row stays put and dims while dragging and a
+  drop line marks the gap it will land in — moving rows under the pointer
+  made the list jump and rows change height. On drop it writes ONE hidden
+  text field (`order`, comma-separated row keys) through the input's
+  prototype setter plus input / change / blur; `blockSubmit()` parses it.
+  The handle is Canvas's own component glyph, so the panel matches the
+  layers tree beside it. Verified: a real
   mouse drag re-posts the form and the auto-save carries the new order.
 - **Rule:** In a Canvas block form, carry state in plain text fields and
   selects; drive any richer UI with delegated JS; and test with a real drag,
