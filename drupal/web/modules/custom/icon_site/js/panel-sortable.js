@@ -103,11 +103,27 @@
     var before = rows[d.target] || null; // past the end → append
     if (before === d.row) return;
     d.row.parentNode.insertBefore(d.row, before);
-    var panel = d.table.closest(".icon-panel");
-    var field = panel && panel.querySelector("input.icon-panel__order");
-    if (!field) return;
-    var value = rowsOf(d.table).map(function (r) { return r.getAttribute("data-row"); }).join(",");
-    if (value !== field.value) setValue(field, value);
+    sync(d.table);
+  };
+
+  // Write the list back into the settings' inputs: the hero's one `order`
+  // field (row keys, comma-separated) or the featured grid's five project
+  // fields (the i-th row's project into projects[i]). One block form is open
+  // at a time, so the inputs are found from the document.
+  var sync = function (table) {
+    var rows = rowsOf(table);
+    var order = document.querySelector("input.icon-panel__order");
+    var projects = document.querySelectorAll("input.icon-panel__project");
+    if (table.closest(".icon-panel--hero") && order) {
+      var value = rows.map(function (r) { return r.getAttribute("data-row"); }).join(",");
+      if (value !== order.value) setValue(order, value);
+    }
+    if (table.closest(".icon-panel--featured") && projects.length) {
+      projects.forEach(function (field, i) {
+        var id = rows[i] ? (rows[i].getAttribute("data-id") || "") : "";
+        if (field.value !== id) setValue(field, id);
+      });
+    }
   };
   document.addEventListener("pointerup", end);
   document.addEventListener("pointercancel", end);
@@ -149,17 +165,14 @@
     var o = menu.options.find(function (x) { return x.id === id; });
     if (!o) return;
     var row = menu.row;
-    var input = row.querySelector("input.icon-panel__search");
-    var label = o.client ? o.project + " \u2014 " + o.client : o.project;
-    if (input) setValue(input, label + " (" + o.id + ")");
-    var current = row.querySelector("input.icon-panel__current");
-    if (current) current.value = String(o.id);
+    row.setAttribute("data-id", String(o.id));
     var text = row.querySelector(".icon-panel__pickable .icon-panel__text");
     if (text) {
       text.innerHTML = '<p class="icon-panel__name">' + escapeHtml(o.project) + "</p>" +
         (o.client ? '<p class="icon-panel__meta">' + escapeHtml(o.client) + "</p>" : "");
     }
     closeMenu();
+    sync(row.closest("table"));
   };
 
   document.addEventListener("click", function (e) {
@@ -180,8 +193,7 @@
       var cardRect = card.getBoundingClientRect();
       el.style.top = (rowRect.bottom - cardRect.top + 4) + "px";
       card.appendChild(el);
-      var currentInput = row.querySelector("input.icon-panel__current");
-      menu = { el: el, row: row, options: options, list: el.querySelector("ul"), current: currentInput ? parseInt(currentInput.value, 10) : 0 };
+      menu = { el: el, row: row, options: options, list: el.querySelector("ul"), current: parseInt(row.getAttribute("data-id") || "0", 10) };
       renderList("");
       el.querySelector("input").focus();
       return;
@@ -210,7 +222,7 @@
   // the next open.
   document.addEventListener("change", function (e) {
     if (!e.target.classList || !e.target.classList.contains("icon-panel__toggle")) return;
-    var card = e.target.closest(".icon-panel") && e.target.closest(".icon-panel").querySelector(".icon-panel__card");
+    var card = document.querySelector(".icon-panel--featured .icon-panel__card");
     if (card) card.classList.toggle("icon-panel__card--auto", e.target.checked);
   });
 

@@ -422,24 +422,27 @@ goes wrong.
   AFTER a plain form alter runs. Note for tests: Drupal ajax buttons fire on
   `mousedown`, so a scripted `.click()` does nothing.
 
-## Nested containers in a Canvas block form lose their values
+## A Canvas block's settings ARE its form's values
 
-- **Symptom:** After the featured tiles were wrapped in `cell` → `pick`
-  containers for styling, the first auto-submit from the panel saved
-  `projects: []`, the rows read "No project yet", and the empty grid was
-  published before anyone noticed.
-- **Cause:** Canvas posts the block form from its own model of the form's
-  values; a table row's direct children come through, but values inside
-  nested `#type container` elements in a row did not, so `blockSubmit()`
-  saw no picks and wrote none.
-- **Fix:** Row children are the inputs themselves (`info` markup, the
-  `pick` autocomplete as the value's transport, a `current` text field
-  carrying the existing pick so an untouched row keeps it); styling is done
-  with CSS on the cells. Two more transport rules learned the same way:
-  Canvas does not post `#type hidden` inputs (a CSS-hidden text field
-  works), and `#markup` goes through the admin XSS filter, which drops
-  `<button>` — use an `<a role="button">`. And the panel does not re-render
-  a block form after a change: anything the row should show right away
-  (the new pick, the dimmed "automatic" state) is updated client-side.
-  The first thing to check after any panel change is the stored inputs.
-
+- **Symptom:** The featured picks kept vanishing — first when the rows were
+  wrapped in containers for styling, then again when only the "latest"
+  switch was toggled — and the empty grid was published before anyone
+  noticed. Reading the existing configuration in `blockSubmit()` and
+  applying only what was posted did not help.
+- **Cause (traced by logging the form's config and the submit's values):**
+  Canvas builds the block form from the stored settings, takes the inputs'
+  DEFAULT values as its model, and on every change posts that model and
+  rebuilds the settings from it with a plugin that has only default
+  configuration. Anything that is not an input with a default is simply not
+  in the model, so the next round trip drops it. `#type hidden` and
+  `entity_autocomplete` elements do not travel either; text fields,
+  checkboxes and selects do (not weight selects).
+- **Fix:** Every setting is a top-level input keyed as the setting, with
+  its default the current value — the hero's `order` text field, the
+  featured `latest` checkbox and five `projects[i]` text fields — hidden by
+  CSS where they are not for typing; the list the editor sees is markup
+  only, and `js/panel-sortable.js` writes the inputs from it (on drop, on
+  pick). `blockSubmit()` reads values only. Also learned on the way:
+  `#markup` goes through the admin XSS filter, which drops `<button>`, and
+  the panel never re-renders a block form after a change, so whatever the
+  row should show right away is updated client-side.

@@ -52,42 +52,59 @@ final class FeaturedWorkBlock extends BlockBase {
 
   /**
    * {@inheritdoc}
+   *
+   * CANVAS ROUND-TRIPS A BLOCK'S SETTINGS THROUGH THIS FORM'S VALUES: on
+   * load it builds the form from the stored settings and takes the inputs'
+   * default values as its model; on every change it posts that model and
+   * rebuilds the settings from it with a plugin that has only DEFAULT
+   * configuration. So (1) every setting is an input whose default is the
+   * current value, keyed exactly as the setting; (2) the list the editor sees
+   * is markup only; (3) blockSubmit() reads values, never configuration.
    */
   public function blockForm($form, FormStateInterface $form_state): array {
     $storage = \Drupal::entityTypeManager()->getStorage('node');
+    $latest = !empty($this->configuration['latest']);
     $picks = array_values(array_filter(array_map('intval', $this->configuration['projects'] ?? [])));
-    if (!empty($this->configuration['latest'])) {
-      // Preview what the grid shows: the newest five.
-      $picks = array_map(fn(NodeInterface $n) => (int) $n->id(), $this->tiles());
-    }
+    $shown = $latest ? array_map(fn(NodeInterface $n) => (int) $n->id(), $this->tiles()) : $picks;
     $all = Url::fromRoute('system.admin_content', [], ['query' => ['type' => 'work']])->toString();
     $form['#attached']['library'][] = 'icon_site/panel_lists';
-    $form['panel'] = [
+
+    // THE SETTINGS, as inputs (see above). The five project fields are
+    // hidden by CSS; js/panel-sortable.js writes them from the list.
+    $form['head'] = [
       '#type' => 'container',
-      '#attributes' => ['class' => ['icon-panel']],
+      '#weight' => 0,
+      '#attributes' => ['class' => ['icon-panel', 'icon-panel--featured-head']],
+      'bar' => ['#markup' => '<div class="icon-panel__bar"><p class="icon-panel__title">' . $this->t('Featured · 5 tiles') . '</p><a class="icon-panel__button" href="' . $all . '" target="_blank" rel="noopener">' . $this->t('All work') . '</a></div>'],
     ];
-    $latest = !empty($this->configuration['latest']);
-    $form['panel']['bar'] = [
-      '#markup' => '<div class="icon-panel__bar"><p class="icon-panel__title">' . $this->t('Featured · 5 tiles') . '</p><a class="icon-panel__button" href="' . $all . '" target="_blank" rel="noopener">' . $this->t('All work') . '</a></div>',
-    ];
-    // Automatic or hand-picked. On, the grid is the five newest work items
-    // and the list below is only a preview of that; off, the list is the
-    // grid.
-    $form['panel']['latest'] = [
+    $form['latest'] = [
       '#type' => 'checkbox',
+      '#weight' => 1,
       '#title' => $this->t('Show the latest five automatically'),
       '#description' => $this->t('Off: the five tiles below, in order.'),
       '#default_value' => $latest,
       '#attributes' => ['class' => ['icon-panel__toggle']],
     ];
-    // Every published Work item for the searchable dropdown (js/panel-sortable.js
-    // filters it client-side); the autocomplete input is the value's transport.
+    $form['projects'] = ['#type' => 'container', '#tree' => TRUE, '#weight' => 3, '#attributes' => ['class' => ['icon-panel__hidden']]];
+    for ($i = 0; $i < self::SLOTS; $i++) {
+      $form['projects'][$i] = [
+        '#type' => 'textfield',
+        '#title' => $this->t('Project @n', ['@n' => $i + 1]),
+        '#title_display' => 'invisible',
+        '#default_value' => isset($picks[$i]) ? (string) $picks[$i] : '',
+        '#attributes' => ['class' => ['icon-panel__project'], 'data-index' => $i, 'autocomplete' => 'off', 'tabindex' => '-1'],
+        '#size' => 6,
+      ];
+    }
+
+    // THE LIST: markup only.
     $options = [];
     foreach ($storage->loadByProperties(['type' => 'work', 'status' => 1]) as $node) {
       $n = self::names($node);
       $options[] = ['id' => (int) $node->id(), 'project' => $n['project'], 'client' => $n['client']];
     }
     usort($options, fn(array $a, array $b) => strcasecmp($a['project'], $b['project']));
+    $form['panel'] = ['#type' => 'container', '#weight' => 2, '#attributes' => ['class' => ['icon-panel', 'icon-panel--featured']]];
     $form['panel']['card'] = [
       '#type' => 'container',
       '#attributes' => [
@@ -95,60 +112,18 @@ final class FeaturedWorkBlock extends BlockBase {
         'data-options' => json_encode($options, JSON_UNESCAPED_UNICODE),
       ],
     ];
-    $form['panel']['card']['projects'] = [
-      '#type' => 'table',
-      '#header' => [$this->t('Project'), $this->t('Search')],
-      '#attributes' => ['class' => ['icon-panel__list']],
-    ];
+    $rows = '';
     for ($i = 0; $i < self::SLOTS; $i++) {
-      $nid = $picks[$i] ?? 0;
+      $nid = $shown[$i] ?? 0;
       $node = $nid ? $storage->load($nid) : NULL;
       $picked = $node instanceof NodeInterface && $node->bundle() === 'work' ? self::names($node) : NULL;
       $display = $picked
         ? '<p class="icon-panel__name">' . htmlspecialchars($picked['project'], ENT_QUOTES) . '</p><p class="icon-panel__meta">' . htmlspecialchars($picked['client'], ENT_QUOTES) . '</p>'
         : '<p class="icon-panel__name icon-panel__name--empty">' . $this->t('No project yet') . '</p>';
-      $form['panel']['card']['projects'][$i] = [
-        '#attributes' => ['class' => ['draggable'], 'data-row' => $i],
-        '#weight' => $i,
-        // The pick, shown (an <a>: #markup's admin XSS filter drops <button>);
-        // then the search that changes it — an entity
-        // autocomplete over Work, matching project, client or title
-        // (WorkSelection). Picking a suggestion re-renders the row.
-        'info' => ['#markup' => self::HANDLE . '<a href="#" class="icon-panel__pickable" role="button" aria-haspopup="listbox"><span class="icon-panel__text">' . $display . '</span><span class="icon-panel__chevron" aria-hidden="true"></span></a>'],
-        'pick' => [
-          '#type' => 'entity_autocomplete',
-          '#target_type' => 'node',
-          '#selection_handler' => 'icon_work',
-          '#title' => $this->t('Change project @n', ['@n' => $i + 1]),
-          '#title_display' => 'invisible',
-          '#attributes' => ['class' => ['icon-panel__search'], 'autocomplete' => 'off', 'tabindex' => '-1'],
-          '#size' => 30,
-          '#wrapper_attributes' => ['class' => ['icon-panel__cell--search']],
-        ],
-        // The current pick rides along so an untouched row keeps it — as a
-        // text field, hidden by CSS: Canvas does not transport `hidden`
-        // inputs (a first version lost every pick on the panel's first
-        // auto-submit that way).
-        'current' => [
-          '#type' => 'textfield',
-          '#title' => $this->t('Current project @n', ['@n' => $i + 1]),
-          '#title_display' => 'invisible',
-          '#default_value' => $picked ? (string) $nid : '',
-          '#attributes' => ['class' => ['icon-panel__current'], 'autocomplete' => 'off', 'tabindex' => '-1'],
-          '#size' => 4,
-        ],
-      ];
+      $rows .= '<tr class="draggable" data-row="' . $i . '" data-id="' . ($picked ? (int) $nid : '') . '"><td>' . self::HANDLE
+        . '<a href="#" class="icon-panel__pickable" role="button" aria-haspopup="listbox"><span class="icon-panel__text">' . $display . '</span><span class="icon-panel__chevron" aria-hidden="true"></span></a></td></tr>';
     }
-    // THE ORDER of the five rows, as one text field the sorter writes
-    // (js/panel-sortable.js) — Canvas ignores per-row weight selects.
-    $form['panel']['order'] = [
-      '#type' => 'textfield',
-      '#title' => $this->t('Tile order'),
-      '#title_display' => 'invisible',
-      '#default_value' => implode(',', range(0, self::SLOTS - 1)),
-      '#attributes' => ['class' => ['icon-panel__order'], 'autocomplete' => 'off', 'tabindex' => '-1'],
-      '#wrapper_attributes' => ['class' => ['icon-panel__order-wrap']],
-    ];
+    $form['panel']['card']['list'] = ['#markup' => '<table class="icon-panel__list"><tbody>' . $rows . '</tbody></table>'];
     $form['panel']['note'] = [
       '#markup' => '<p class="icon-panel__note">' . ($latest
         ? $this->t('Showing the five newest work items, newest first — this list is what visitors see. Turn the switch off to pick and order tiles yourself.')
@@ -161,31 +136,18 @@ final class FeaturedWorkBlock extends BlockBase {
    * {@inheritdoc}
    */
   public function blockSubmit($form, FormStateInterface $form_state): void {
-    // Canvas posts the block form with #tree semantics (nested under the
-    // panel container); the ordinary block UI posts it flat.
-    $rows = $form_state->getValue(['panel', 'card', 'projects']) ?: $form_state->getValue('projects') ?: [];
-    $order = $form_state->getValue(['panel', 'order']) ?? $form_state->getValue('order') ?? '';
-    $sequence = array_filter(array_map('intval', explode(',', (string) $order)), fn(int $i) => isset($rows[$i]));
-    foreach (array_keys($rows) as $i) {
-      if (!in_array($i, $sequence, TRUE)) {
-        $sequence[] = $i;
-      }
-    }
+    // From the values only — see blockForm(). Canvas posts them nested the
+    // way the form is shaped, so the keys are the setting names.
+    $projects = $form_state->getValue('projects');
     $picks = [];
-    foreach ($sequence as $i) {
-      // A picked suggestion wins; otherwise the row keeps what it had.
-      $nid = $rows[$i]['pick'] ?? NULL;
-      $nid = is_array($nid) ? ($nid['target_id'] ?? NULL) : $nid;
-      if (empty($nid)) {
-        $nid = $rows[$i]['current'] ?? NULL;
-      }
-      if (!empty($nid)) {
-        $picks[] = (int) $nid;
+    foreach (is_array($projects) ? $projects : [] as $v) {
+      $v = is_array($v) ? ($v['target_id'] ?? reset($v)) : $v;
+      if (is_numeric($v) && (int) $v > 0) {
+        $picks[] = (int) $v;
       }
     }
     $this->configuration['projects'] = array_values(array_unique($picks));
-    $latest = $form_state->getValue(['panel', 'latest']) ?? $form_state->getValue('latest') ?? FALSE;
-    $this->configuration['latest'] = (bool) $latest;
+    $this->configuration['latest'] = (bool) $form_state->getValue('latest');
   }
 
   /**

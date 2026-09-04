@@ -60,58 +60,50 @@ final class HeroBlock extends BlockBase {
 
   /**
    * {@inheritdoc}
+   *
+   * Canvas round-trips the settings through this form's VALUES (it builds
+   * the form from the settings, takes the defaults as its model, and
+   * rebuilds the settings from the posted model with a default-configured
+   * plugin), so the one setting is one input — `order`, hidden by CSS,
+   * written by js/panel-sortable.js — and the list is markup only.
    */
   public function blockForm($form, FormStateInterface $form_state): array {
     $slides = $this->slides();
-    // Add / Edit open the slide form in a dialog over the editor (the form
-    // closes it on save — icon_site_form_node_form_alter()). `use_admin_theme`
-    // is Canvas's own switch: without it the editor's ajax requests render in
-    // canvas_stark, whose form markup is for the React panel, not a dialog.
     $add = Url::fromRoute('node.add', ['node_type' => 'hero_slide'], ['query' => ['panel' => 1, 'use_admin_theme' => 1]])->toString();
     $form['#attached']['library'][] = 'icon_site/panel_lists';
-    $form['panel'] = [
-      '#type' => 'container',
-      '#attributes' => ['class' => ['icon-panel']],
-    ];
-    $form['panel']['bar'] = [
-      '#markup' => '<div class="icon-panel__bar"><p class="icon-panel__title">' . $this->t('Slides · @count of @max', ['@count' => count($slides), '@max' => self::MAX]) . '</p><a class="icon-panel__button icon-panel__button--primary use-ajax" href="' . $add . '" data-dialog-type="dialog" data-dialog-options=\'{"target":"icon-panel-dialog","modal":true,"width":"860","classes":{"ui-dialog":"icon-panel-dialog"}}\'>' . $this->t('+ Add slide') . '</a></div>',
-    ];
-    $form['panel']['card'] = ['#type' => 'container', '#attributes' => ['class' => ['icon-panel__card']]];
-    $form['panel']['card']['order'] = [
-      '#type' => 'table',
-      '#header' => [$this->t('Slide'), ''],
-      '#empty' => $this->t('No slides yet — add one.'),
-      '#attributes' => ['class' => ['icon-panel__list']],
-    ];
-    $weight = 0;
-    foreach ($slides as $slide) {
-      $media = $slide->get('field_slide_media')->entity;
-      $kind = $media ? ($media->bundle() === 'video' ? $this->t('Film') : $this->t('Image')) : $this->t('No media');
-      $link = $slide->get('field_slide_link')->first();
-      $meta = $kind . ($link ? ' · ' . preg_replace('#^https?://[^/]+#', '', $link->getUrl()->toString()) : '');
-      $form['panel']['card']['order'][$slide->id()] = [
-        '#attributes' => ['class' => ['draggable'], 'data-row' => $slide->id()],
-        '#weight' => $weight,
-        'name' => [
-          '#markup' => self::HANDLE . '<div class="icon-panel__text"><p class="icon-panel__name">' . htmlspecialchars($slide->label(), ENT_QUOTES) . '</p><p class="icon-panel__meta">' . htmlspecialchars((string) $meta, ENT_QUOTES) . '</p></div>',
-        ],
-        'edit' => [
-          '#markup' => '<a class="icon-panel__action use-ajax" href="' . $slide->toUrl('edit-form', ['query' => ['panel' => 1, 'use_admin_theme' => 1]])->toString() . '" data-dialog-type="dialog" data-dialog-options=\'{"target":"icon-panel-dialog","modal":true,"width":"860","classes":{"ui-dialog":"icon-panel-dialog"}}\'>' . $this->t('Edit') . '</a>',
-          '#wrapper_attributes' => ['class' => ['icon-panel__cell--action']],
-        ],
-      ];
-      $weight++;
-    }
-    // THE ORDER, as one text field the sorter writes (js/panel-sortable.js):
-    // Canvas ignores changes to per-row weight selects, but a text field it
-    // treats like any other — visually hidden by CSS.
-    $form['panel']['order'] = [
+    $form['order'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Slide order'),
       '#title_display' => 'invisible',
       '#default_value' => implode(',', array_keys($slides)),
       '#attributes' => ['class' => ['icon-panel__order'], 'autocomplete' => 'off', 'tabindex' => '-1'],
-      '#wrapper_attributes' => ['class' => ['icon-panel__order-wrap']],
+      '#wrapper_attributes' => ['class' => ['icon-panel__hidden']],
+    ];
+    // Add / Edit open the slide form in a dialog over the editor (the form
+    // closes it on save — icon_site_form_node_form_alter()). `use_admin_theme`
+    // is Canvas's own switch: without it the editor's ajax requests render in
+    // canvas_stark, whose form markup is for the React panel, not a dialog.
+    $dialog = ' data-dialog-type="dialog" data-dialog-options=\'{"target":"icon-panel-dialog","modal":true,"width":"860","classes":{"ui-dialog":"icon-panel-dialog"}}\'';
+    $form['panel'] = ['#type' => 'container', '#attributes' => ['class' => ['icon-panel', 'icon-panel--hero']]];
+    $form['panel']['bar'] = [
+      '#markup' => '<div class="icon-panel__bar"><p class="icon-panel__title">' . $this->t('Slides · @count of @max', ['@count' => count($slides), '@max' => self::MAX]) . '</p><a class="icon-panel__button icon-panel__button--primary use-ajax" href="' . $add . '"' . $dialog . '>' . $this->t('+ Add slide') . '</a></div>',
+    ];
+    $rows = '';
+    foreach ($slides as $slide) {
+      $media = $slide->get('field_slide_media')->entity;
+      $kind = $media ? ($media->bundle() === 'video' ? $this->t('Film') : $this->t('Image')) : $this->t('No media');
+      $link = $slide->get('field_slide_link')->first();
+      $meta = $kind . ($link ? ' · ' . preg_replace('#^https?://[^/]+#', '', $link->getUrl()->toString()) : '');
+      $edit = $slide->toUrl('edit-form', ['query' => ['panel' => 1, 'use_admin_theme' => 1]])->toString();
+      $rows .= '<tr class="draggable" data-row="' . $slide->id() . '"><td>' . self::HANDLE
+        . '<div class="icon-panel__text"><p class="icon-panel__name">' . htmlspecialchars($slide->label(), ENT_QUOTES) . '</p><p class="icon-panel__meta">' . htmlspecialchars((string) $meta, ENT_QUOTES) . '</p></div></td>'
+        . '<td class="icon-panel__cell--action"><a class="icon-panel__action use-ajax" href="' . $edit . '"' . $dialog . '>' . $this->t('Edit') . '</a></td></tr>';
+    }
+    $form['panel']['card'] = ['#type' => 'container', '#attributes' => ['class' => ['icon-panel__card']]];
+    $form['panel']['card']['list'] = [
+      '#markup' => $rows
+        ? '<table class="icon-panel__list"><tbody>' . $rows . '</tbody></table>'
+        : '<p class="icon-panel__note">' . $this->t('No slides yet — add one.') . '</p>',
     ];
     $form['panel']['note'] = [
       '#markup' => '<p class="icon-panel__note">' . $this->t('Drag to reorder — the reel plays top to bottom. Edit opens the slide (film or image, client name, link) over the page; the list refreshes when you save. Films must be 6 seconds long, muted.') . '</p>',
@@ -123,11 +115,10 @@ final class HeroBlock extends BlockBase {
    * {@inheritdoc}
    */
   public function blockSubmit($form, FormStateInterface $form_state): void {
-    // Canvas posts the block form with #tree semantics: the field is nested
-    // under the panel container. The ordinary block UI posts it flat.
-    $order = $form_state->getValue(['panel', 'order']) ?? $form_state->getValue('order') ?? '';
-    $ids = is_array($order) ? array_keys($order) : explode(',', (string) $order);
-    $this->configuration['order'] = array_values(array_unique(array_filter(array_map('intval', $ids))));
+    $order = $form_state->getValue('order');
+    $this->configuration['order'] = is_string($order)
+      ? array_values(array_unique(array_filter(array_map('intval', explode(',', $order)))))
+      : [];
   }
 
   /**

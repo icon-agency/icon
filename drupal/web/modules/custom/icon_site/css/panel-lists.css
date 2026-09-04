@@ -58,9 +58,11 @@
 /* The order field the sorter writes: in the form, out of sight. Canvas
    drops wrapper attributes, so the wrapper is found from the input. */
 .icon-panel__order-wrap,
-.icon-panel .form-item:has(> .icon-panel__order),
-.icon-panel .js-form-item:has(.icon-panel__order),
-.icon-panel div:has(> input.icon-panel__order) {
+.icon-panel__hidden,
+.form-item:has(> .icon-panel__order),
+.js-form-item:has(.icon-panel__order),
+div:has(> input.icon-panel__order),
+div:has(> .icon-panel__hidden) {
   position: absolute !important;
   width: 1px;
   height: 1px;
