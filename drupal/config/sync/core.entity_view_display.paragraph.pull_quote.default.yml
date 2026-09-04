@@ -1,0 +1,18 @@
+uuid: 50eeeb50-4242-42cb-b38b-761b8b16741a
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.pull_quote.field_pull_quote_text
+    - field.field.paragraph.pull_quote.field_pull_quote_variant
+    - field.field.paragraph.pull_quote.field_pull_quote_cite
+    - paragraphs.paragraphs_type.pull_quote
+id: paragraph.pull_quote.default
+targetEntityType: paragraph
+bundle: pull_quote
+mode: default
+content: {  }
+hidden:
+  field_pull_quote_cite: true
+  field_pull_quote_text: true
+  field_pull_quote_variant: true

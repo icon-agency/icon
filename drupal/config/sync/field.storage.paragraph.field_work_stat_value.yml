@@ -1,0 +1,21 @@
+uuid: 2f05dadc-8f7b-4b98-9423-7f8f2c4f36b5
+langcode: en
+status: true
+dependencies:
+  module:
+    - paragraphs
+id: paragraph.field_work_stat_value
+field_name: field_work_stat_value
+entity_type: paragraph
+type: string
+settings:
+  max_length: 255
+  case_sensitive: false
+  is_ascii: false
+module: core
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

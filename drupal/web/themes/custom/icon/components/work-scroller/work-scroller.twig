@@ -1,0 +1,16 @@
+{#
+/**
+ * @file
+ * work-scroller — thin copy of the scroller in templates/work-article-master.html
+ * (Drupal.behaviors.iconWorkScroller drives drift, drag and click-to-focus).
+ */
+#}
+<div class="work-scroller" data-work-scroller{% if ground %} style="--overlay-ground: {{ ground }}"{% endif %}>
+  <div class="work-scroller__track">
+    {% for item in items %}
+      <button class="work-scroller__card" type="button">
+        <img loading="lazy" src="{{ item.src }}" alt="{{ item.alt }}"{% if item.width %} width="{{ item.width }}"{% endif %}{% if item.height %} height="{{ item.height }}"{% endif %} />
+      </button>
+    {% endfor %}
+  </div>
+</div>

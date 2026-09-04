@@ -1,0 +1,30 @@
+$schema: https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json
+name: Scroller
+group: Work
+status: stable
+description: The drifting gallery strip for a series — posters, clippings — on an optional colour ground (src/components/work-scroller.css, js/work-scroller.js).
+props:
+  type: object
+  required:
+    - items
+  properties:
+    items:
+      type: array
+      title: Images
+      items:
+        type: object
+        properties:
+          src: { type: string }
+          alt: { type: string }
+          width: { type: integer }
+          height: { type: integer }
+      examples:
+        - - src: https://placehold.co/800x1100
+            alt: Poster
+            width: 800
+            height: 1100
+    ground:
+      type: string
+      title: Ground colour
+      examples:
+        - '#2e2e2e'

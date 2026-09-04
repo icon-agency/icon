@@ -1,0 +1,22 @@
+uuid: 0d97f836-7de0-4524-b880-a6799537d87c
+langcode: en
+status: true
+dependencies:
+  config:
+    - node.type.news
+id: node.news.promote
+field_name: promote
+entity_type: node
+bundle: news
+label: 'Promote to homepage'
+description: 'Show this story in the homepage news feed.'
+required: false
+translatable: true
+default_value:
+  -
+    value: true
+default_value_callback: ''
+settings:
+  on_label: 'On'
+  off_label: 'Off'
+field_type: boolean

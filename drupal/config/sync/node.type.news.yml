@@ -1,0 +1,11 @@
+uuid: 7a3398a7-8c9e-45a6-a3df-9e74c01ef562
+langcode: en
+status: true
+dependencies: {  }
+name: News
+type: news
+description: 'A news story: agency news, launches, awards and insights. The tile, category and date feed the /news listing and the homepage rail; the body is composed in Canvas.'
+help: ''
+new_revision: true
+preview_mode: 1
+display_submitted: false

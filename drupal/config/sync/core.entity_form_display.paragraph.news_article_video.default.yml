@@ -1,0 +1,31 @@
+uuid: d96cb508-dba0-4888-852b-0e6ac89b6ed6
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.news_article_video.field_news_article_video_url
+    - field.field.paragraph.news_article_video.field_news_article_video_title
+    - paragraphs.paragraphs_type.news_article_video
+  module:
+    - link
+id: paragraph.news_article_video.default
+targetEntityType: paragraph
+bundle: news_article_video
+mode: default
+content:
+  field_news_article_video_title:
+    type: string_textfield
+    weight: 1
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_news_article_video_url:
+    type: link_default
+    weight: 0
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+hidden:
+  created: true
+  status: true
+  uid: true

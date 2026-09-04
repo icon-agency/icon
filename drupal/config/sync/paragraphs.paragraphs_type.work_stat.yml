@@ -1,0 +1,10 @@
+uuid: a23f6716-200e-4646-926d-c06e8e1913aa
+langcode: en
+status: true
+dependencies: {  }
+id: work_stat
+label: Result
+icon_uuid: null
+icon_default: null
+description: 'One figure in the results band.'
+behavior_plugins: {  }

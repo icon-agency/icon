@@ -1,0 +1,135 @@
+{#
+/**
+ * @file
+ * The global footer — ported from templates/news-b.html (byte-identical on
+ * every template). Hand-authored Twig, not a block region. Copy, offices
+ * and social links are static for now; the newsletter inputs stay the
+ * visual spec of a future webform/newsletter block (see the comment in the
+ * markup). The films inside the mark are theme assets (assets/banner/).
+ *
+ * Behaviour: Drupal.behaviors.iconFooter (icon/site-footer) — replaying
+ * reveal, one-video-at-a-time films, scroll-velocity skew.
+ */
+#}
+{% set theme_path = base_path ~ directory %}
+<footer class="site-footer">
+  <h2 class="site-footer__cta">
+    <a class="site-footer__cta-link" href="/contact">
+      <!-- Split per word only so each can rise out of its own mask; the
+           space between the spans is real, so the link still reads
+           "Let's talk Get in touch". -->
+      <span class="site-footer__talk"
+        ><span class="site-footer__talk-line"><span class="site-footer__talk-word" style="--w: 0">Let&rsquo;s</span></span>
+        <span class="site-footer__talk-line"><span class="site-footer__talk-word" style="--w: 1">talk</span></span
+      ></span>
+      <span class="site-footer__touch invite-arrow">Get in touch</span>
+    </a>
+  </h2>
+
+  <div class="site-footer__body">
+    <div class="site-footer__newsletter">
+      <p class="site-footer__blurb">Join our newsletter for industry insights, news and our latest work</p>
+      <!-- No <form> yet, on purpose: the subscribe behaviour ships with
+           the newsletter slice, and a form here would let Enter fire a
+           phantom submit. Drupal: webform/newsletter block renders the
+           real form; these two stay its visual spec. -->
+      <label class="sr-only" for="footer-email">Email address</label>
+      <input class="site-footer__email" id="footer-email" type="email" name="email" placeholder="Your email" autocomplete="email" />
+      <button class="site-footer__subscribe invite-arrow" type="button" data-subscribe>Subscribe</button>
+    </div>
+
+    <div class="site-footer__locations">
+      <h3 class="sr-only">Our offices</h3>
+      <ul class="site-footer__offices" role="list">
+        <li class="site-footer__office-item" data-rule="top">
+          <details class="site-footer__office">
+            <summary class="site-footer__office-summary">
+              <!-- footer-melbourne-icon.tsx, inlined; fill follows currentColor -->
+              <svg class="site-footer__office-icon" viewBox="0 0 278 278" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M243.62,97.25l-7.01-60.45h-15.78l-3.63-22.98L60.7.06l-4.26,36.74h-15.06l-7.01,60.45h14.37l25.68,180.69h129.15l25.68-180.69h14.37ZM52.08,48.8h15.06l4.15-35.77,135.53,11.92,3.76,23.85h15.35l4.23,36.45H47.85l4.23-36.45ZM193.16,265.94h-108.32l-23.98-168.69h156.27l-23.98,168.69Z" /></svg>
+              <span class="site-footer__office-city">Melbourne</span>
+              <span class="site-footer__office-place">Naarm</span>
+              <span class="site-footer__office-toggle" aria-hidden="true"></span>
+            </summary>
+            <address class="site-footer__office-details">
+              <p>Suite 1, Level 2<br />132 Gwynne Street<br />Cremorne VIC 3121 Australia</p>
+              <p class="site-footer__office-contact">Phone <a href="tel:+61396424107">03 9642 4107</a><br /><a href="mailto:melbourne@iconagency.com.au">melbourne@iconagency.com.au</a></p>
+            </address>
+          </details>
+        </li>
+        <li class="site-footer__office-item" data-rule="top">
+          <details class="site-footer__office">
+            <summary class="site-footer__office-summary">
+              <!-- footer-sydney-icon.tsx, inlined; fill follows currentColor -->
+              <svg class="site-footer__office-icon" viewBox="0 0 278 278" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M230.52,104.99h-19.73v-53.65h-65.79V0h-12v51.34h-65.79v53.65h-19.73l14.24,100.92h31.04v72.1h92.47v-72.1h31.05l14.24-100.92ZM79.21,63.34h119.59v41.65h-119.59v-41.65ZM216.71,116.99l-4.58,32.44H65.87l-4.58-32.44h155.41ZM173.23,266h-68.47v-60.1h68.47v60.1ZM72.15,193.9l-4.58-32.47h142.87l-4.58,32.47H72.15Z" /></svg>
+              <span class="site-footer__office-city">Sydney</span>
+              <span class="site-footer__office-place">Gadigal</span>
+              <span class="site-footer__office-toggle" aria-hidden="true"></span>
+            </summary>
+            <address class="site-footer__office-details">
+              <p>Suite 5, Level 6<br />2&ndash;12 Foveaux Street<br />Surry Hills NSW 2010 Australia</p>
+              <p class="site-footer__office-contact">Phone <a href="tel:+61261852860">02 6185 2860</a><br /><a href="mailto:sydney@iconagency.com.au">sydney@iconagency.com.au</a></p>
+            </address>
+          </details>
+        </li>
+        <li class="site-footer__office-item" data-rule="top">
+          <details class="site-footer__office">
+            <summary class="site-footer__office-summary">
+              <!-- footer-brisbane-icon.tsx, inlined; fill follows currentColor -->
+              <svg class="site-footer__office-icon" viewBox="0 0 278 278" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M270.05,73.68c-2.07-7.73-7.03-14.19-13.95-18.19-6.93-4-15-5.06-22.73-2.99-3.9,1.04-7.48,2.82-10.64,5.28l-.49.4c-12.77,10.25-27.24,17.58-43,21.81-35.31,9.46-72.99,1.86-103.88-20.82-1.17-1.76-2.5-3.42-4.03-4.94-2.28-2.28-4.82-4.14-7.52-5.58,3.12-6.12,5.43-13.44,6.62-21.18,1.5-9.78,1.11-19.5-1.1-27.37l-11.55,3.24c1.76,6.27,2.04,14.19.79,22.32-1.13,7.36-3.4,14.15-6.45,19.42-9.22-.97-18.78,2.06-25.82,9.1-2.45,2.45-4.47,5.26-6,8.37-.67,1.36-1.25,2.78-1.72,4.21-11.27,28.9-14.45,59.74-9.21,89.2,5.41,30.41,19.61,57.81,41.05,79.25,23.92,23.93,54.79,38.62,89.25,42.49l.49.06c.98.09,1.95.14,2.92.14,7.93,0,15.53-3.12,21.19-8.78,11.71-11.71,11.68-30.79-.06-42.52-2.86-2.87-6.21-5.09-9.93-6.61l-.59-.23c-6.38-2.49-12.46-5.49-18.23-8.98,10.98,2.58,22.09,3.86,33.2,3.86,20.38,0,40.76-4.31,60.27-12.87l.44-.19c8.16-3.73,14.16-10.83,16.48-19.49,4.27-15.95-5.23-32.41-21.18-36.68-3.9-1.04-7.89-1.29-11.85-.74l-.62.1c-.36.05-.71.1-1.07.15,21.12-10.42,39.52-25.91,54.09-45.73l.29-.39c5.2-7.31,6.85-16.46,4.53-25.12ZM149.82,231.13c2.21.91,4.21,2.24,5.92,3.96,7.06,7.06,7.09,18.53.06,25.56-3.81,3.81-9.09,5.7-14.43,5.18l-.35-.04c-31.73-3.57-60.13-17.07-82.11-39.05-19.7-19.7-32.74-44.89-37.72-72.87-4.87-27.35-1.88-56.01,8.63-82.9l.13-.36c.3-.93.67-1.85,1.1-2.73.95-1.93,2.21-3.68,3.73-5.2,3.85-3.85,8.91-5.77,13.98-5.77s10.2,1.95,14.09,5.83c1.16,1.16,2.15,2.44,2.98,3.81l-.25.32c.24.19.49.36.74.55,2.1,3.92,2.86,8.49,2.05,12.99l-.05.3c-3.91,21.79-2.84,44.17,3.09,64.71,5.72,19.8,15.59,37.36,29.32,52.29l-.05.09c.08.04.16.08.23.12,1.19,1.28,2.39,2.56,3.64,3.8,12.8,12.8,27.86,22.64,44.76,29.24l.5.19ZM214.03,156.63l.52-.08c2.35-.32,4.71-.16,7.03.46,9.56,2.56,15.25,12.42,12.69,21.98-1.39,5.19-4.99,9.45-9.92,11.7l-.23.1c-29.08,12.75-60.21,15.27-90.03,7.28-8.92-2.39-17.57-5.71-25.77-9.87-23.78-26.67-34.21-62.36-29.09-99.67,6.81,12.37,15.33,23.62,25.24,33.18,16.1,15.52,35.1,26.3,56.49,32.03,17.38,4.65,35.23,5.63,53.07,2.88ZM255.72,91.88l-.15.2c-18.81,25.58-44.51,43.33-74.32,51.32-1.76.47-3.52.9-5.27,1.29-3.99-.64-7.96-1.48-11.91-2.54-32.37-8.67-58.9-30.32-75.02-60.57,29.25,14.65,62.1,18.35,93.3,9.99,17.38-4.66,33.33-12.75,47.39-24.03l.41-.34c1.88-1.45,4-2.5,6.32-3.12,4.63-1.24,9.47-.6,13.62,1.79,4.15,2.4,7.12,6.27,8.36,10.9,1.39,5.19.4,10.68-2.75,15.09Z" /></svg>
+              <span class="site-footer__office-city">Brisbane</span>
+              <span class="site-footer__office-place">Meanjin</span>
+              <span class="site-footer__office-toggle" aria-hidden="true"></span>
+            </summary>
+            <address class="site-footer__office-details">
+              <p>25 King Street<br />Bowen Hills<br />Brisbane QLD 4006 Australia</p>
+              <p class="site-footer__office-contact">Phone <a href="tel:+61731556528">07 3155 6528</a><br /><a href="mailto:brisbane@iconagency.com.au">brisbane@iconagency.com.au</a></p>
+            </address>
+          </details>
+        </li>
+        <li class="site-footer__office-item" data-rule="both">
+          <details class="site-footer__office">
+            <summary class="site-footer__office-summary">
+              <!-- footer-fiji-icon.tsx, inlined; fill follows currentColor -->
+              <svg class="site-footer__office-icon" viewBox="0 0 278 278" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M100.58,251.4C45.12,251.4,0,206.28,0,150.82,0,82.33,55.73,26.6,124.22,26.6c84.79,0,153.78,68.98,153.78,153.78v6h-97.46c-7.71,37.08-40.63,65.02-79.96,65.02ZM124.22,38.6c-61.88,0-112.22,50.34-112.22,112.22,0,48.84,39.74,88.58,88.58,88.58,38.41,0,69.66-31.25,69.66-69.66,0-30.07-24.46-54.53-54.53-54.53-23.39,0-42.42,19.03-42.42,42.42,0,18.05,14.69,32.74,32.74,32.74,13.78,0,24.99-11.21,24.99-24.99h12c0,20.4-16.59,36.99-36.99,36.99-24.67,0-44.74-20.07-44.74-44.74,0-30.01,24.41-54.42,54.42-54.42,36.68,0,66.53,29.84,66.53,66.53,0,1.56-.04,3.1-.13,4.64h83.76c-3.15-75.41-65.48-135.78-141.65-135.78Z" /></svg>
+              <span class="site-footer__office-city">Fiji</span>
+              <span class="site-footer__office-place">Suva</span>
+              <span class="site-footer__office-toggle" aria-hidden="true"></span>
+            </summary>
+            <address class="site-footer__office-details">
+              <p>Suva Business Center<br />177&ndash;181 Victoria Parade<br />Suva, Fiji</p>
+              <p class="site-footer__office-contact"><a href="mailto:fiji@iconagency.com.au">fiji@iconagency.com.au</a></p>
+            </address>
+          </details>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="site-footer__base">
+    <ul class="site-footer__social" role="list">
+      <li><a class="site-footer__social-link" href="https://www.linkedin.com/company/iconagency" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
+      <li><a class="site-footer__social-link" href="https://www.instagram.com/iconagency" target="_blank" rel="noopener noreferrer">Instagram</a></li>
+    </ul>
+    <p class="site-footer__ack">ICON recognises the First Peoples of this nation and their ongoing connection to culture and country. We acknowledge First Nations Peoples as the Traditional Owners, Custodians and Lore Keepers of the world&rsquo;s oldest living culture and pay respects to their Elders past, present and emerging.</p>
+  </div>
+
+  <!-- The brand lockup closes every page: the ICON logo at full width, with
+       the hero's banner films playing inside it (see site-footer.css — the
+       mark is a mask over a fill layer, so its contents are swappable).
+       One clean string for assistive tech; the mark itself is decorative.
+
+       preload="none" is deliberate: these are the hero's files, so on the
+       homepage they are already cached, but on every other template they
+       would be a multi-megabyte download for a footer decoration. Nothing
+       is fetched until js/site-footer.js starts playback, which it only
+       does once the panel is on screen. -->
+  <p class="site-footer__lockup">
+    <span class="sr-only">ICON</span>
+    <span class="site-footer__lockup-line" aria-hidden="true">
+      <span class="site-footer__logo">
+        <video class="site-footer__slide is-current" src="{{ theme_path }}/assets/banner/NWMPHN.mp4" muted playsinline loop preload="none"></video>
+        <video class="site-footer__slide" src="{{ theme_path }}/assets/banner/banner-vid-nike-mara.mp4" muted playsinline loop preload="none"></video>
+      </span>
+    </span>
+  </p>
+</footer>

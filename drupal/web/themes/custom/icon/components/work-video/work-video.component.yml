@@ -1,0 +1,32 @@
+$schema: https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json
+name: Film
+group: Work
+status: stable
+description: The click-to-play film with an art-directed cover — the sound-on cut (src/components/work-video.css, js/work-video.js).
+props:
+  type: object
+  required:
+    - video_src
+    - cover
+    - title
+  properties:
+    video_src:
+      type: string
+      format: uri-reference
+      title: Film
+      examples:
+        - /sites/default/files/work/film.mp4
+    cover:
+      $ref: json-schema-definitions://canvas.module/image
+      type: object
+      title: Cover
+      examples:
+        - src: https://placehold.co/1600x900
+          alt: Film cover
+          width: 1600
+          height: 900
+    title:
+      type: string
+      title: Title
+      examples:
+        - Fit for every run — the film

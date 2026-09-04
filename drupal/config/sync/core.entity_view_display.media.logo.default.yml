@@ -1,0 +1,29 @@
+uuid: 1c72e140-1aef-4b30-9727-ec68e7b0869a
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.media.logo.field_logo_weight
+    - field.field.media.logo.field_media_file
+    - media.type.logo
+  module:
+    - file
+id: media.logo.default
+targetEntityType: media
+bundle: logo
+mode: default
+content:
+  field_media_file:
+    type: file_default
+    label: hidden
+    settings:
+      use_description_as_link_text: true
+    third_party_settings: {  }
+    weight: 0
+    region: content
+hidden:
+  created: true
+  field_logo_weight: true
+  name: true
+  thumbnail: true
+  uid: true

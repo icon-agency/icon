@@ -1,0 +1,20 @@
+uuid: 89bac7ca-ad24-4df3-8730-6084cc6e37e3
+langcode: en
+status: true
+dependencies:
+  module:
+    - media
+    - paragraphs
+id: paragraph.field_news_article_figure_image
+field_name: field_news_article_figure_image
+entity_type: paragraph
+type: entity_reference
+settings:
+  target_type: media
+module: core
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

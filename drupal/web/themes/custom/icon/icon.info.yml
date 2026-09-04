@@ -1,0 +1,23 @@
+name: ICON
+type: theme
+base theme: false
+description: 'ICON Agency — the design-system theme. Tokens, BEM components and page layers come from the repo-root src/ (one Tailwind v4 build); the SDC components under components/ are what Drupal Canvas composes with. See docs/drupal-handoff.md.'
+package: ICON
+core_version_requirement: ^11.3
+# One stylesheet, every page: the design-system build plus the two web fonts.
+# The chrome behaviours (header, reveal, footer + the velocity engine they
+# share) ride on every page too — everything else attaches per page/component.
+libraries:
+  - icon/global
+  - icon/header
+  - icon/reveal
+  - icon/velocity-lean
+  - icon/site-footer
+  - icon/toast
+# Two regions, on purpose. The header and footer are hand-authored Twig
+# includes (templates/includes/), not block regions, because their markup IS
+# the design system's chrome. `content` is the page; `highlighted` carries the
+# status messages above it.
+regions:
+  highlighted: Highlighted
+  content: Content

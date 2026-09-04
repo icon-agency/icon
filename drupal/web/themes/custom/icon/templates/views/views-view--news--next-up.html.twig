@@ -1,0 +1,21 @@
+{#
+/**
+ * @file
+ * The article's "Next up" rail — the homepage news block reused
+ * (templates/news-article.html, "MORE NEWS"). Three teasers as h3 cards.
+ */
+#}
+<section class="news news-article__related" data-rule="top" aria-label="{{ 'More news'|t }}">
+  <div class="news__inner">
+    <div class="news__head">
+      <div class="news__rail">
+        <h2 class="news__heading reveal-lines" data-animate>
+          <span class="reveal-lines__line lockup-accent masthead-accent"><span class="reveal-lines__word" style="--w: 0">{{ 'Next up'|t }}</span></span>
+          <span class="reveal-lines__line lockup-caps"><span class="reveal-lines__word" style="--w: 1">{{ 'News'|t }}</span></span>
+        </h2>
+      </div>
+      <a class="news__more invite-arrow" href="{{ path('view.news.page_1') }}" aria-label="{{ 'More news'|t }}">{{ 'More'|t }}</a>
+    </div>
+    {{ rows }}
+  </div>
+</section>

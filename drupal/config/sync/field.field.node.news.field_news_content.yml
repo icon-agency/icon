@@ -1,0 +1,46 @@
+uuid: 62c3386a-3c20-4d94-b033-a71143175246
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_news_content
+    - node.type.news
+    - paragraphs.paragraphs_type.news_article_figure
+    - paragraphs.paragraphs_type.news_article_video
+    - paragraphs.paragraphs_type.prose
+    - paragraphs.paragraphs_type.pull_quote
+  module:
+    - entity_reference_revisions
+id: node.news.field_news_content
+field_name: field_news_content
+entity_type: node
+bundle: news
+label: Body
+description: 'The article body: Content, Image, Video and Pull quote blocks in any order.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:paragraph'
+  handler_settings:
+    target_bundles:
+      prose: prose
+      news_article_figure: news_article_figure
+      news_article_video: news_article_video
+      pull_quote: pull_quote
+    negate: 0
+    target_bundles_drag_drop:
+      news_article_figure:
+        weight: 2
+        enabled: true
+      news_article_video:
+        weight: 3
+        enabled: true
+      prose:
+        weight: 1
+        enabled: true
+      pull_quote:
+        weight: 4
+        enabled: true
+field_type: entity_reference_revisions

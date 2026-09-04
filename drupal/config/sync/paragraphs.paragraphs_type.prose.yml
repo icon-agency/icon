@@ -1,0 +1,10 @@
+uuid: 7b3144e7-b0d7-4567-a640-c9dfd503004a
+langcode: en
+status: true
+dependencies: {  }
+id: prose
+label: Content
+icon_uuid: null
+icon_default: null
+description: 'A run of text: paragraphs, headings, lists, links.'
+behavior_plugins: {  }

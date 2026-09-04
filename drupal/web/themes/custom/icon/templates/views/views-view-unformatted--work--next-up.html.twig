@@ -1,0 +1,10 @@
+{#
+/**
+ * @file
+ * The rail's grid: the cards sit directly in .work-article__next-grid
+ * (a landscape tile then a square one — work-article.css).
+ */
+#}
+<div class="work-article__next-grid">
+  {% for row in rows %}{{ row.content }}{% endfor %}
+</div>

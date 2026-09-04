@@ -1,0 +1,30 @@
+uuid: 7904af71-c807-4193-91e1-f99455ec8adf
+langcode: en
+status: false
+dependencies:
+  theme:
+    - icon
+active_version: d3b736751589d787
+versioned_properties:
+  active:
+    settings:
+      prop_field_definitions:
+        heading:
+          required: false
+          field_type: string
+          field_storage_settings: {  }
+          field_instance_settings: {  }
+          field_widget: string_textfield
+          default_value:
+            -
+              value: 'Selected clients'
+          expression: ℹ︎string␟value
+          derived_schema_metadata:
+            string_shape: {  }
+    fallback_metadata:
+      slot_definitions: {  }
+label: 'Clients marquee'
+id: sdc.icon.clients
+provider: icon
+source: sdc
+source_local_id: 'icon:clients'

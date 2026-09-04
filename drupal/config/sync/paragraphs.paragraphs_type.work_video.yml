@@ -1,0 +1,10 @@
+uuid: c735039f-2639-44ea-be76-51406b8c9d7e
+langcode: en
+status: true
+dependencies: {  }
+id: work_video
+label: Film
+icon_uuid: null
+icon_default: null
+description: 'A click-to-play film with an art-directed cover — the sound-on cut.'
+behavior_plugins: {  }

@@ -1,0 +1,35 @@
+uuid: 6b73e050-eb57-4ad7-9ccf-44573b20c527
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.node.teaser
+    - field.field.node.news.field_news_banner
+    - field.field.node.news.field_news_category
+    - field.field.node.news.field_news_content
+    - field.field.node.news.field_news_date
+    - field.field.node.news.field_news_image
+    - node.type.news
+  module:
+    - entity_reference_revisions
+    - user
+id: node.news.teaser
+targetEntityType: node
+bundle: news
+mode: teaser
+content:
+  field_news_content:
+    type: entity_reference_revisions_entity_view
+    label: hidden
+    settings:
+      view_mode: default
+      link: ''
+    third_party_settings: {  }
+    weight: 0
+    region: content
+hidden:
+  field_news_banner: true
+  field_news_category: true
+  field_news_date: true
+  field_news_image: true
+  links: true

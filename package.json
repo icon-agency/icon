@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "tailwindcss -i src/main.css -o css/main.css --watch",
     "build": "tailwindcss -i src/main.css -o css/main.css --minify",
-    "verify": "node scripts/verify.mjs"
+    "verify": "node scripts/verify.mjs",
+    "build:theme": "tailwindcss -i drupal/web/themes/custom/icon/src/main.css -o drupal/web/themes/custom/icon/css/main.css --minify && node scripts/theme-js.mjs",
+    "dev:theme": "tailwindcss -i drupal/web/themes/custom/icon/src/main.css -o drupal/web/themes/custom/icon/css/main.css --watch"
   },
   "devDependencies": {
     "@tailwindcss/cli": "^4.1.9",

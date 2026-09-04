@@ -1,0 +1,31 @@
+uuid: 3e05ceae-3214-4697-a3d2-bfe01c056f90
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.work_scroller.field_work_scroller_media
+    - field.field.paragraph.work_scroller.field_work_scroller_ground
+    - paragraphs.paragraphs_type.work_scroller
+  module:
+    - media_library
+id: paragraph.work_scroller.default
+targetEntityType: paragraph
+bundle: work_scroller
+mode: default
+content:
+  field_work_scroller_ground:
+    type: string_textfield
+    weight: 1
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_work_scroller_media:
+    type: media_library_widget
+    weight: 0
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+hidden:
+  created: true
+  status: true
+  uid: true

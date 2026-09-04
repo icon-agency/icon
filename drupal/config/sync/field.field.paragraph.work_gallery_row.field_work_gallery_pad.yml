@@ -1,0 +1,19 @@
+uuid: 8353ceb8-c3b1-4ede-b321-3b069876469b
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_work_gallery_pad
+    - paragraphs.paragraphs_type.work_gallery_row
+id: paragraph.work_gallery_row.field_work_gallery_pad
+field_name: field_work_gallery_pad
+entity_type: paragraph
+bundle: work_gallery_row
+label: 'Float inset'
+description: 'Layered rows only: how far the float sits in from the frame, e.g. 22%. Leave empty for the default.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

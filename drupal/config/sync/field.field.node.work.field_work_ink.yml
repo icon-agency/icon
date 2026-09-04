@@ -1,0 +1,21 @@
+uuid: ad357624-6eb5-4722-ace6-09b40a52bc87
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_work_ink
+    - node.type.work
+id: node.work.field_work_ink
+field_name: field_work_ink
+entity_type: node
+bundle: work
+label: 'Ink colour'
+description: 'The text colour on the page colour, as a hex value (#ffffff).'
+required: true
+translatable: false
+default_value:
+  -
+    value: '#ffffff'
+default_value_callback: ''
+settings: {  }
+field_type: string

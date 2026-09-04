@@ -1,0 +1,18 @@
+{#
+/**
+ * @file
+ * news-article-video — the film figure of templates/news-article.html.
+ * Follow-up: a remote-video (oEmbed) media picker once Canvas has a prop
+ * shape for it; for now the editor supplies the embed URL.
+ */
+#}
+<figure class="news-article__figure news-article__figure--video media-reveal" data-reveal-img>
+  <iframe
+    src="{{ embed_url }}"
+    title="{{ title }}"
+    loading="lazy"
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+    referrerpolicy="strict-origin-when-cross-origin"
+    allowfullscreen
+  ></iframe>
+</figure>

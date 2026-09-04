@@ -1,0 +1,72 @@
+{#
+/**
+ * @file
+ * The Work article (folio case study) — thin copy of
+ * templates/work-article-master.html. The page wears the client's colour
+ * pair: icon_preprocess_html() puts .theme-work-article and the two custom
+ * properties on <html>, and the banner carries the handover hook that hands
+ * the page back to the site theme as it scrolls away.
+ *
+ * Frame from the node: eyebrow, project, client, banner, feature statement,
+ * facts (categories | deliverables). Body = field_work_content, whose field
+ * template groups consecutive text blocks into runs with one Share rail and
+ * consecutive gallery rows into one gallery. Then the share footer (below
+ * lg) and the Next up rail (the work View's next_up display).
+ * Variables from icon_preprocess_node(): client, statement, categories,
+ * deliverables, banner, next_up.
+ */
+#}
+<article class="work-article" aria-labelledby="project-title">
+  <header class="work-article__head">
+    <p class="work-article__eyebrow" data-animate>
+      <a class="invite-arrow invite-arrow--back" href="{{ path('view.work.page_1') }}">{{ 'Work'|t }}</a>
+    </p>
+    <h1 class="work-article__project" id="project-title" data-animate style="--animate-delay: 60ms">{{ label }}</h1>
+    {% if client %}
+      <p class="work-article__client masthead-accent" data-animate style="--animate-delay: 120ms">{{ client }}</p>
+    {% endif %}
+  </header>
+
+  {% if banner %}
+    <figure class="work-article__banner media-reveal" data-reveal-img data-theme-handover="gone" data-theme-handover-class="theme-work-article">
+      {% if banner.type == 'video' %}
+        <video autoplay muted loop playsinline preload="auto" src="{{ banner.src }}" aria-label="{{ banner.alt|default(label ~ ' — banner film') }}"></video>
+      {% else %}
+        <img src="{{ banner.src }}" alt="{{ banner.alt }}"{% if banner.width %} width="{{ banner.width }}"{% endif %}{% if banner.height %} height="{{ banner.height }}"{% endif %} />
+      {% endif %}
+    </figure>
+  {% endif %}
+
+  {% if statement %}
+    <blockquote class="pull-quote pull-quote--upright" data-animate>
+      <p class="pull-quote__text">{{ statement }}</p>
+    </blockquote>
+  {% endif %}
+
+  {% if categories or deliverables %}
+    <section class="work-article__facts" data-rule="top" aria-label="{{ 'Project facts'|t }}">
+      {% if categories %}
+        <ul data-animate>
+          <li class="work-article__facts-title">{{ 'Category'|t }}</li>
+          {% for c in categories %}<li><a href="{{ c.url }}">{{ c.label }}</a></li>{% endfor %}
+        </ul>
+      {% endif %}
+      {% if deliverables %}
+        <ul data-animate style="--animate-delay: 60ms">
+          <li class="work-article__facts-title">{{ 'Deliverables'|t }}</li>
+          {% for d in deliverables %}<li>{{ d }}</li>{% endfor %}
+        </ul>
+      {% endif %}
+    </section>
+  {% endif %}
+
+  <div class="work-article__flow">
+    {{ content.field_work_content }}
+  </div>
+
+  <div class="work-article__share-footer">
+    {% include '@icon/includes/share.html.twig' %}
+  </div>
+
+  {{ next_up }}
+</article>

@@ -1,0 +1,27 @@
+uuid: c7acc801-69e0-47b8-8270-a778a536503f
+langcode: en
+status: true
+dependencies:
+  module:
+    - paragraphs
+    - options
+id: paragraph.field_pull_quote_variant
+field_name: field_pull_quote_variant
+entity_type: paragraph
+type: list_string
+settings:
+  allowed_values:
+    -
+      value: italic
+      label: Italic
+    -
+      value: upright
+      label: Upright
+  allowed_values_function: ''
+module: options
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

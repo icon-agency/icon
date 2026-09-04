@@ -1,0 +1,22 @@
+uuid: b208e2e2-ff66-40a3-99f2-d679214dbd3d
+langcode: en
+status: true
+dependencies:
+  config:
+    - node.type.news
+id: node.news.sticky
+field_name: sticky
+entity_type: node
+bundle: news
+label: 'Pin on homepage'
+description: 'Keep this story at the top of the homepage feed whatever its date.'
+required: false
+translatable: true
+default_value:
+  -
+    value: false
+default_value_callback: ''
+settings:
+  on_label: 'On'
+  off_label: 'Off'
+field_type: boolean

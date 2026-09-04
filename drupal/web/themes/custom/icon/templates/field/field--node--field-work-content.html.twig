@@ -1,0 +1,24 @@
+{#
+/**
+ * @file
+ * The case study body, composed: icon_preprocess_field() turns the
+ * paragraphs into `groups` —
+ *   run     → .work-article__chunk with ONE Share rail travelling past its
+ *             text, films and results (templates/work-article-master.html);
+ *   gallery → consecutive Gallery row blocks as one .work-gallery;
+ *   block   → a flow-level block on its own (scroller, pull quote).
+ * Bare output, no field wrappers: the flow's CSS keys on direct children.
+ */
+#}
+{% for group in groups %}
+  {% if group.type == 'run' %}
+    <div class="work-article__chunk">
+      <div class="work-article__share-rail">
+        {% include '@icon/includes/share.html.twig' %}
+      </div>
+      {% for item in group.items %}{{ item }}{% endfor %}
+    </div>
+  {% else %}
+    {{ group.item }}
+  {% endif %}
+{% endfor %}

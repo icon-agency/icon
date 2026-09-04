@@ -1,0 +1,19 @@
+$schema: https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json
+name: Content
+group: Article
+status: stable
+description: >
+  A run of rich text inside the .content-page wrapper (src/base/prose.css) —
+  the one place CKEditor output is styled. Headings inside start at h2.
+props:
+  type: object
+  required:
+    - text
+  properties:
+    text:
+      type: string
+      contentMediaType: text/html
+      x-formatting-context: block
+      title: Text
+      examples:
+        - '<p>Fresh from the PRCA APAC Awards in Singapore: ICON is proud to celebrate three award wins.</p>'

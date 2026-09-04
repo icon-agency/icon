@@ -1,0 +1,11 @@
+uuid: e2a16d46-bc79-4f49-a299-547da0a45ebe
+langcode: en
+status: true
+dependencies: {  }
+name: Work
+type: work
+description: 'A folio case study. The tile, client and category feed the /work landing and the homepage; the page wears the client colour pair; the body is composed from blocks.'
+help: ''
+new_revision: true
+preview_mode: 1
+display_submitted: false

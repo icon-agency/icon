@@ -1,0 +1,24 @@
+/* ICON theme — Tailwind v4 build entry.
+ *
+ * The design system is the source of truth: this file imports the repo-root
+ * src/main.css UNCHANGED (tokens → base → utilities → components → page
+ * layers, plus its own @source paths for the static templates), and adds the
+ * theme's Twig and SDC folders as further sources so the utilities used in
+ * the ported markup are generated too. While the port is in progress the
+ * output is therefore a superset of the root css/main.css; once every page
+ * is Twig the root @source lines can go.
+ *
+ * Build: `npm run build:theme` from the repo root → css/main.css (minified,
+ * committed — Drupal serves the committed file). `npm run verify` checks the
+ * two stay in sync. */
+
+@import "../../../../../../src/main.css";
+
+@source "../templates";
+@source "../components";
+
+/* The theme's OWN page layers — Drupal-only pages the static design system
+   has no template for. Same rules (tokens only, table breakpoints). */
+@import "./auth.css";
+@import "./admin-chrome.css";
+@import "./toast.css";

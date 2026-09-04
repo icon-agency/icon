@@ -1,0 +1,25 @@
+uuid: 5d857221-44bc-4359-93b8-3c423c04144b
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.media.field_logo_weight
+    - media.type.logo
+id: media.logo.field_logo_weight
+field_name: field_logo_weight
+entity_type: media
+bundle: logo
+label: Order
+description: 'Lower numbers first in the marquee; equal numbers sort by name.'
+required: false
+translatable: false
+default_value:
+  -
+    value: 0
+default_value_callback: ''
+settings:
+  min: null
+  max: null
+  prefix: ''
+  suffix: ''
+field_type: integer

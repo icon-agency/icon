@@ -1,0 +1,14 @@
+uuid: 1c794267-86ce-45f9-8790-be711eb3d839
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.prose.field_prose_text
+    - paragraphs.paragraphs_type.prose
+id: paragraph.prose.default
+targetEntityType: paragraph
+bundle: prose
+mode: default
+content: {  }
+hidden:
+  field_prose_text: true

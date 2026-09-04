@@ -1,0 +1,28 @@
+$schema: https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json
+name: Video
+group: Article
+status: stable
+description: >
+  An embedded film in the article flow — the wide figure band at the
+  player's own 16:9 (src/utilities/news-article.css, .news-article__figure--video).
+props:
+  type: object
+  required:
+    - embed_url
+    - title
+  properties:
+    embed_url:
+      type: string
+      format: uri
+      title: Embed URL
+      description: >
+        The player's embed address — https://www.youtube-nocookie.com/embed/VIDEO_ID
+        or https://player.vimeo.com/video/VIDEO_ID — not the watch-page link.
+      examples:
+        - 'https://www.youtube-nocookie.com/embed/9kqQ7fBv7bM?rel=0&modestbranding=1&playsinline=1'
+    title:
+      type: string
+      title: Title
+      description: Names the film for assistive tech (the iframe title).
+      examples:
+        - 'Campaign film'

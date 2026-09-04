@@ -1,0 +1,36 @@
+$schema: https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json
+name: Pull quote
+group: Article
+status: stable
+description: >
+  The big centred serif statement that divides an article's acts
+  (src/components/pull-quote.css). Italic by default; the articles use the
+  upright variant.
+props:
+  type: object
+  required:
+    - text
+  properties:
+    text:
+      type: string
+      title: Quote
+      examples:
+        # Quoted: a bare colon would make YAML read the line as a mapping.
+        - 'How ICON transformed with AI: at the nexus between culture and tech'
+    variant:
+      type: string
+      title: Style
+      enum:
+        - italic
+        - upright
+      meta:enum:
+        italic: Italic (default)
+        upright: Upright
+      examples:
+        - upright
+    cite:
+      type: string
+      title: Attribution
+      description: Optional — who said it.
+      examples:
+        - 'Client name, role'

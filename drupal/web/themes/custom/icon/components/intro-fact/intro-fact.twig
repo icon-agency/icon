@@ -1,0 +1,6 @@
+{# intro-fact — a filmstrip fact card (templates/homeC.html .intro__card--fact). #}
+<div class="intro__card intro__card--fact">
+  {% include '@icon/includes/fact-icon.html.twig' with { icon: icon } only %}
+  <p class="intro__fact-title">{{ title }}</p>
+  {% if label %}<p class="intro__fact-label" data-rule="top">{{ label }}</p>{% endif %}
+</div>

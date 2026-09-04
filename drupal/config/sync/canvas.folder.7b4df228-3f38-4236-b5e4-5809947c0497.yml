@@ -1,0 +1,11 @@
+uuid: 7b4df228-3f38-4236-b5e4-5809947c0497
+langcode: en
+status: true
+dependencies:
+  config:
+    - canvas.component.sdc.icon.news-card
+name: News
+configEntityTypeId: component
+weight: 0
+items:
+  - sdc.icon.news-card

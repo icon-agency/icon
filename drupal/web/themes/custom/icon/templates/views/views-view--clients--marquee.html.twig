@@ -1,0 +1,10 @@
+{#
+/**
+ * @file
+ * The clients marquee = the clients View's marquee display: its Logo media
+ * become the clients SDC's logos (icon_preprocess_views_view()).
+ */
+#}
+{% if client_logos %}
+  {{ include('icon:clients', { logos: client_logos, heading: 'Selected clients'|t }, with_context = false) }}
+{% endif %}

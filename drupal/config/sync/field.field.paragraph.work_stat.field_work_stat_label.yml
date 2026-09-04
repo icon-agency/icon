@@ -1,0 +1,19 @@
+uuid: 01ccd849-d687-4c06-a10a-b5440527e552
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_work_stat_label
+    - paragraphs.paragraphs_type.work_stat
+id: paragraph.work_stat.field_work_stat_label
+field_name: field_work_stat_label
+entity_type: paragraph
+bundle: work_stat
+label: Label
+description: 'What the figure measures.'
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

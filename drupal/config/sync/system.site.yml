@@ -1,0 +1,15 @@
+_core:
+  default_config_hash: ijfbzDTN4CbE7Sr-6ubWzy_t1vH4OtU1doNCLssVz-4
+langcode: en
+uuid: 9d173137-49ff-48a4-9a1f-55595a1cbcb2
+name: 'ICON Agency'
+mail: admin@example.com
+slogan: ''
+page:
+  403: ''
+  404: ''
+  front: /page/1
+admin_compact_mode: false
+weight_select_max: 100
+default_langcode: en
+mail_notification: null

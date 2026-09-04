@@ -1,0 +1,21 @@
+uuid: d67e0d6d-cff5-4236-a133-b93bae170b52
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_news_category
+    - node.type.news
+  module:
+    - options
+id: node.news.field_news_category
+field_name: field_news_category
+entity_type: node
+bundle: news
+label: Category
+description: 'Shown in the card meta and the article eyebrow; the /news filter chips. The keys are the ?category= slugs.'
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: list_string

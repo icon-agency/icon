@@ -1,0 +1,42 @@
+{#
+/**
+ * @file
+ * The account pages (/user/login, /user/password, /user/reset/…, /user/N):
+ * a split screen — the homepage hero's opening film with its drawn
+ * "Make what matters" lockup on the left (icon/auth-lockup), the form
+ * on the footer's black on the right — with no site header or footer (the
+ * chrome's fixed lockup would sit over the form). Drupal-only, so its
+ * styles are the theme's own page layer (src/auth.css). Variables from
+ * icon_preprocess_page(): page_title, is_login.
+ */
+#}
+{% set theme_path = base_path ~ directory %}
+<a class="sr-only" href="#main">{{ 'Skip to content'|t }}</a>
+<main{{ main_attributes.addClass('auth') }}>
+  <aside class="auth__banner" aria-hidden="true">
+    <video class="auth__film" src="{{ theme_path }}/assets/banner/NWMPHN.mp4" poster="{{ theme_path }}/assets/banner/moad-question-of-the-day.jpg" muted playsinline loop autoplay preload="metadata"></video>
+    <div class="auth__scrim"></div>
+    <div class="auth__lockup">
+      {% include '@icon/includes/lockup.html.twig' %}
+    </div>
+  </aside>
+  {{ attach_library('icon/auth-lockup') }}
+  <div class="auth__side">
+    <div class="auth__panel">
+      <a class="auth__logo" href="{{ path('<front>') }}" aria-label="{{ 'ICON Agency — home'|t }}">
+        {% include '@icon/includes/wordmark.html.twig' %}
+      </a>
+      {% if page_title %}
+        <h1 class="auth__title">{{ page_title }}</h1>
+      {% endif %}
+      {% if is_login %}
+        <p class="auth__lede">{{ 'Welcome back. Log in to your account.'|t }}</p>
+      {% endif %}
+      {{ page.highlighted }}
+      {{ page.content }}
+      {% if is_login %}
+        <p class="auth__aside"><a href="{{ path('user.pass') }}">{{ 'Forgot your password?'|t }}</a></p>
+      {% endif %}
+    </div>
+  </div>
+</main>

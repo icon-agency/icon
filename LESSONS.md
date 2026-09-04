@@ -166,3 +166,78 @@ goes wrong.
   (none did here), and rules with a mechanical shape belong in a gate —
   `scripts/verify.mjs` now checks every media width against the table.
   (Found in the Sep 2026 docs review.)
+
+- **A shared behaviour file must guard each concern on its own markup — never
+  `return` early on the first one's absence.** `js/reveal.js` grew from a
+  `[data-animate]` fade-up into the home of three concerns (fade-ups, media
+  reveals, the hairline draw), but kept its original prologue:
+  `if (!nodes.length) return;`. Every static template carries a `data-animate`
+  somewhere, so the early exit never fired and the later sections always ran.
+  The first page that didn't — the bare Drupal front page, footer only — drew
+  no hairlines at all, because the rule observer three sections down was never
+  reached. Nothing in the static build could have caught it; the port did,
+  which is one more argument for the theme rendering the REAL chrome early.
+  Fix: each section is wrapped in its own `if (els.length)` block and none of
+  them returns from the IIFE. Corollary for the generated Drupal behaviours:
+  the wrapper runs the source once per page whatever the page holds, so a
+  source file must be safe on ANY page, not just the templates it was written
+  for. (`js/reveal.js`; found 4 Sep 2026 on the Drupal front page.)
+
+- **A YAML `examples:` line with a bare colon is a mapping, not a string.**
+  `- How ICON transformed with AI: at the nexus…` parsed as
+  `{ "How ICON transformed with AI": "at the nexus…" }`, and Canvas rejected
+  the whole `pull-quote` SDC ("Prop text has invalid example value: []
+  Array value found"). The error names the prop, not the colon, so it reads
+  like a schema bug. Quote every example that contains `: ` — titles, quotes
+  and ledes routinely do. (`components/pull-quote/pull-quote.component.yml`,
+  4 Sep 2026.)
+
+- **A custom `#` key on a render-cached entity build is invisible to the
+  cache.** The news teaser is rendered as h2 on /news and as h3 in the
+  article's "Next up" rail; the rail set `#news_heading_level` on the row's
+  entity build and the preprocess read it — and still rendered h2, because
+  `EntityViewBuilder::view()` cache-keys the teaser by entity + view mode
+  only, so the rail got the listing's cached copy. Anything that changes
+  the output of a render-cached entity build must ALSO join
+  `#cache['keys']` (here `heading-h3`). Symptom to recognise: a variant that
+  works on first render in isolation and "randomly" reverts on pages that
+  also render the plain one. (`icon.theme`,
+  `icon_preprocess_views_view_unformatted()`, 4 Sep 2026.)
+
+- **Tailwind v4 scans the whole repo by default — `@source` lines ADD to that,
+  they don't replace it.** `src/main.css` names `../templates` and
+  `../index.html`, and everyone read that as the complete source list. It
+  never was: automatic source detection also walks every non-ignored file
+  under the working directory, so the static `css/main.css` has always
+  carried utilities harvested from prose in `docs/*.md` (`md:grid-cols-2`,
+  `rounded-icon`, `text-destructive`, `bg-icon-blue/40` …) — harmless bloat,
+  and invisible while the repo held only the design system. The moment the
+  Drupal theme arrived (`drupal/`), its Twig and its own CSS layer joined
+  the static build's scan too: `npm run verify` began failing on
+  "build-sync" after theme-only edits, and a `var(--color-destructive)` in
+  the theme's login stylesheet surfaced as a new theme variable in the
+  STATIC file. Fix: `@source not "../drupal";` in the root entry — the
+  static build is byte-identical to its pre-theme baseline again, while the
+  theme build (which imports the root file and adds its own positive
+  `@source` lines) still sees everything it needs. The alternative,
+  `@import "tailwindcss" source(none)`, would also drop the doc-harvested
+  utilities and change the shipped static CSS — a design-system call, not a
+  port one, so it was left alone. Rule: when a directory beside the design
+  system gains markup or CSS of its own, fence it off explicitly.
+  (`src/main.css`, 4 Sep 2026.)
+
+- **Canvas 1.10 composes only its own Pages; nodes go through Content
+  Templates, and per-node slots have no editor yet.** The News slice put
+  the article body in Canvas's `component_tree` field and I reported it
+  editable at `/canvas/editor/node/N` because that URL returned 200 — but
+  only the React shell had loaded; its first API call threw "For now Canvas
+  only works if the entity is a canvas_page" (`ComponentTreeLoader::
+  getCanvasFieldName()`, issue 3498525, open). A "Canvas" tab I then added
+  made it worse: evaluating the editor route's access for VISITORS hit the
+  same exception and every story became a 401. Two rules. A 200 on a
+  single-page app's shell proves nothing — verify the API it calls, or
+  click through in the UI. And before choosing a storage model on a
+  contrib module's promise, find the guard that decides which entity types
+  it serves. Resolution: the body moved to Paragraphs, each type rendered
+  by the same SDC (`docs/drupal-handoff.md`, "Why not Canvas for the body").
+  (4 Sep 2026.)

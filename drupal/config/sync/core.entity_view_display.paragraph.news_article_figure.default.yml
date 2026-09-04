@@ -1,0 +1,14 @@
+uuid: 32e4c7dc-05f2-4f5c-88d6-f99d8269eeef
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.news_article_figure.field_news_article_figure_image
+    - paragraphs.paragraphs_type.news_article_figure
+id: paragraph.news_article_figure.default
+targetEntityType: paragraph
+bundle: news_article_figure
+mode: default
+content: {  }
+hidden:
+  field_news_article_figure_image: true

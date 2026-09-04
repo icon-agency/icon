@@ -1,0 +1,33 @@
+uuid: f5220a06-8b81-46f1-93ae-1e9f85c34ae0
+langcode: en
+status: true
+dependencies:
+  module:
+    - icon_site
+active_version: 5a4dc369e563c871
+versioned_properties:
+  active:
+    settings:
+      default_settings:
+        id: icon_hero
+        label: 'Homepage hero'
+        label_display: '0'
+        provider: icon_site
+        pieces: {  }
+    fallback_metadata:
+      slot_definitions: null
+  c53772b9e99f7d5b:
+    settings:
+      default_settings:
+        id: icon_hero
+        label: 'Homepage hero'
+        label_display: '0'
+        provider: icon_site
+        projects: {  }
+    fallback_metadata:
+      slot_definitions: null
+label: 'Homepage hero'
+id: block.icon_hero
+provider: icon_site
+source: block
+source_local_id: icon_hero

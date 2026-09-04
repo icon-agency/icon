@@ -1,0 +1,20 @@
+{#
+/**
+ * @file
+ * The /news pair grid (src/components/news-list.css). Each row is one
+ * news-card via the node teaser; the <li> carries data-category (the
+ * client-side filter's key), the fade-up stagger and, on the first item,
+ * the theme handover "end" marker — all computed in
+ * icon_preprocess_views_view_unformatted(). data-news-list (the js/news.js
+ * filter hook) is only emitted when the page is NOT server-filtered, so the
+ * in-place filter always works over the whole set; on a ?category page the
+ * chips are plain links.
+ */
+#}
+<ul class="news-list"{% if not filtered %} data-news-list{% endif %} role="list">
+  {% for row in rows %}
+    <li{{ row.attributes.addClass('news-list__item') }}>
+      {{ row.content }}
+    </li>
+  {% endfor %}
+</ul>

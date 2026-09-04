@@ -1,0 +1,73 @@
+{#
+/**
+ * @file
+ * The news article — thin copy of templates/news-article.html.
+ *
+ * Fixed frame from the node (head: back link, title, category / date row,
+ * tile photo or 2:1 banner; the Share rails; the Next up rail), composable middle from Canvas: the body is the
+ * field_news_body component tree (prose, article figures, pull quotes),
+ * edited at /canvas/editor/node/{nid}. Variables from icon_preprocess_node():
+ * category_label, category_url, date, date_iso, image, banner, next_up.
+ */
+#}
+{% set share %}
+  <div class="news-article__share" data-share>
+    <span class="news-article__share-label" aria-hidden="true">{{ 'Share'|t }}</span>
+    <button class="news-article__share-btn" type="button" data-share-copy aria-label="{{ 'Copy link'|t }}">
+      <svg class="news-article__share-glyph news-article__share-glyph--link" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" /><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" /></svg>
+      <svg class="news-article__share-glyph news-article__share-glyph--check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5" /></svg>
+    </button>
+    <a class="news-article__share-btn" href="mailto:" data-share-email aria-label="{{ 'Share by email'|t }}">
+      <svg class="news-article__share-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2" /><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" /></svg>
+    </a>
+    <span class="sr-only" aria-live="polite" data-share-status></span>
+  </div>
+{% endset %}
+<article class="news-article" aria-labelledby="article-title">
+  {#
+    Two heads, one treatment (Sep 2026): the caps back link, the large serif
+    headline and the one hairline above the "Category / date" row are the
+    head's own. The optional 2:1 banner picks the variant — present: the
+    STACKED head with the wide hero under the row (news-article-butterfly.html);
+    absent: the TILE head with the story's square tile beside the column
+    (news-article.html). No variant field: `banner` is computed in preprocess.
+  #}
+  <header class="news-article__head{{ banner ? ' news-article__head--stacked' }}" data-theme-handover>
+    {% set intro %}
+      <p class="news-article__meta news-article__meta--eyebrow news-article__meta--caps" data-animate>
+        <a class="invite-arrow invite-arrow--back" href="{{ path('view.news.page_1') }}">{{ 'News'|t }}</a>
+      </p>
+      <h1 class="news-article__title" id="article-title" data-animate style="--animate-delay: 60ms">{{ label }}</h1>
+      <p class="news-article__meta news-article__meta--date news-article__meta--caps" data-rule="top" data-animate style="--animate-delay: 120ms">
+        <a href="{{ category_url }}">{{ category_label }}</a> / <time datetime="{{ date_iso }}">{{ date }}</time>
+      </p>
+    {% endset %}
+    {% if banner %}
+      {{ intro }}
+      <figure class="news-article__hero media-reveal" data-reveal-img>
+        <img src="{{ banner.src }}" alt="{{ banner.alt }}"{% if banner.width %} width="{{ banner.width }}"{% endif %}{% if banner.height %} height="{{ banner.height }}"{% endif %} />
+      </figure>
+    {% else %}
+      <div class="news-article__intro">
+        {{ intro }}
+      </div>
+      {% if image %}
+        <figure class="news-article__media media-reveal" data-reveal-img>
+          <img src="{{ image.src }}" alt="{{ image.alt }}"{% if image.width %} width="{{ image.width }}"{% endif %}{% if image.height %} height="{{ image.height }}"{% endif %} />
+        </figure>
+      {% endif %}
+    {% endif %}
+  </header>
+
+  <div class="news-article__body">
+    {{ share }}
+    <div class="news-article__flow">
+      {{ content.field_news_content }}
+    </div>
+    <div class="news-article__share-footer">
+      {{ share }}
+    </div>
+  </div>
+</article>
+
+{{ next_up }}

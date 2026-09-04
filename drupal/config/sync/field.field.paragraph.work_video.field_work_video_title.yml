@@ -1,0 +1,19 @@
+uuid: 5ec4d5d9-6b77-4f43-b643-37e81a0e47dc
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_work_video_title
+    - paragraphs.paragraphs_type.work_video
+id: paragraph.work_video.field_work_video_title
+field_name: field_work_video_title
+entity_type: paragraph
+bundle: work_video
+label: Title
+description: 'Names the film for assistive tech.'
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

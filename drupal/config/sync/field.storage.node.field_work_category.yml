@@ -1,0 +1,39 @@
+uuid: 809ca180-f3d8-4040-9800-864473822b54
+langcode: en
+status: true
+dependencies:
+  module:
+    - options
+    - node
+id: node.field_work_category
+field_name: field_work_category
+entity_type: node
+type: list_string
+settings:
+  allowed_values:
+    -
+      value: behaviour-change
+      label: 'Behaviour change'
+    -
+      value: brand
+      label: Brand
+    -
+      value: creative
+      label: Creative
+    -
+      value: communications
+      label: Communications
+    -
+      value: reputation
+      label: Reputation
+    -
+      value: websites
+      label: Websites
+  allowed_values_function: ''
+module: options
+locked: false
+cardinality: -1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

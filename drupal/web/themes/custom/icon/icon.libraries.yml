@@ -1,0 +1,163 @@
+# icon.libraries.yml — one library per behaviour, mirroring docs/animation.md's
+# "Drupal port" table (file → Drupal.behaviors name → library). The js/ files are
+# GENERATED from the repo-root js/ by scripts/theme-js.mjs (`npm run build:theme`);
+# edit the source there, never the copies here.
+
+global:
+  version: VERSION
+  css:
+    theme:
+      https://fonts.googleapis.com/css2?family=Kumbh+Sans:wght@400..900&display=swap: { type: external, minified: true }
+      https://use.typekit.net/bhv7yrj.css: { type: external, minified: true }
+      css/main.css: { minified: true }
+
+# ── Chrome (every page) ─────────────────────────────────────────────────────
+header:
+  js:
+    js/header.js: {}
+  dependencies:
+    - core/drupal
+    - core/once
+reveal:
+  js:
+    js/reveal.js: {}
+  dependencies:
+    - core/drupal
+    - core/once
+# THE scroll-velocity engine — defines window.ICON.velocityLean; consumers
+# declare it so it is guaranteed to load first. Plain IIFE, not a behaviour.
+velocity-lean:
+  js:
+    js/velocity-lean.js: {}
+site-footer:
+  js:
+    js/site-footer.js: {}
+  dependencies:
+    - core/drupal
+    - core/once
+    - icon/velocity-lean
+
+# ── Page bundles ────────────────────────────────────────────────────────────
+theme-handover:
+  js:
+    js/theme-handover.js: {}
+  dependencies:
+    - core/drupal
+    - core/once
+news:
+  js:
+    js/news.js: {}
+  dependencies:
+    - core/drupal
+    - core/once
+    - icon/velocity-lean
+share:
+  js:
+    js/share.js: {}
+  dependencies:
+    - core/drupal
+    - core/once
+subscribe-reveal:
+  js:
+    js/subscribe-reveal.js: {}
+  dependencies:
+    - core/drupal
+    - core/once
+work-landing:
+  js:
+    js/work-landing.js: {}
+  dependencies:
+    - core/drupal
+    - core/once
+    - icon/velocity-lean
+work:
+  js:
+    js/work.js: {}
+  dependencies:
+    - core/drupal
+    - core/once
+work-filter:
+  js:
+    js/work-filter.js: {}
+  dependencies:
+    - core/drupal
+    - core/once
+work-article:
+  js:
+    js/work-article.js: {}
+  dependencies:
+    - core/drupal
+    - core/once
+    - icon/velocity-lean
+work-scroller:
+  js:
+    js/work-scroller.js: {}
+  dependencies:
+    - core/drupal
+    - core/once
+    - icon/velocity-lean
+work-video:
+  js:
+    js/work-video.js: {}
+  dependencies:
+    - core/drupal
+    - core/once
+
+# ── The homepage system ─────────────────────────────────────────────────────
+# hero-loader must exist on the FIRST frame (docs/animation.md §2): plain IIFE
+# in the <head>, before the CDN libraries.
+hero-loader:
+  header: true
+  js:
+    js/hero-loader.js: {}
+home-c:
+  js:
+    js/home-c.js: {}
+  dependencies:
+    - core/drupal
+    - core/once
+    - icon/velocity-lean
+    - icon/gsap
+    - icon/gsap-splittext
+    - icon/gsap-drawsvg
+    - icon/lenis
+
+# ── Third-party (CDN, as the prototype loads them; self-hosting is a
+#    performance choice at port time, not a compliance requirement) ─────────
+gsap:
+  js:
+    https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js: { type: external, minified: true }
+gsap-splittext:
+  js:
+    https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js: { type: external, minified: true }
+  dependencies:
+    - icon/gsap
+gsap-drawsvg:
+  js:
+    https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/DrawSVGPlugin.min.js: { type: external, minified: true }
+  dependencies:
+    - icon/gsap
+lenis:
+  js:
+    https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js: { type: external, minified: true }
+
+# ── Theme-authored (js-theme/, not generated) ──────────────────────────────
+# The account pages' drawn lockup — js/home-c.js §2d transcribed without the
+# hero's scroll gating (templates/layout/page--user.html.twig).
+auth-lockup:
+  js:
+    js-theme/auth-lockup.js: {}
+  dependencies:
+    - core/drupal
+    - core/once
+    - icon/gsap
+    - icon/gsap-drawsvg
+
+# Drupal's status messages as dismissible toasts
+# (templates/misc/status-messages.html.twig, src/toast.css).
+toast:
+  js:
+    js-theme/toast.js: {}
+  dependencies:
+    - core/drupal
+    - core/once

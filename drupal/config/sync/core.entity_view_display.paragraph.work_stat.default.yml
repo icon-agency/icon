@@ -1,0 +1,18 @@
+uuid: 9b65a244-3b7e-4be0-a920-07b9cc04c301
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.work_stat.field_work_stat_value
+    - field.field.paragraph.work_stat.field_work_stat_unit
+    - field.field.paragraph.work_stat.field_work_stat_label
+    - paragraphs.paragraphs_type.work_stat
+id: paragraph.work_stat.default
+targetEntityType: paragraph
+bundle: work_stat
+mode: default
+content: {  }
+hidden:
+  field_work_stat_label: true
+  field_work_stat_unit: true
+  field_work_stat_value: true

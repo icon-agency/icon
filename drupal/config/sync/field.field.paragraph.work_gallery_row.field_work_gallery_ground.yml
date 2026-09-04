@@ -1,0 +1,19 @@
+uuid: 2a441d26-5b9e-4d67-b382-326f03e31a25
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_work_gallery_ground
+    - paragraphs.paragraphs_type.work_gallery_row
+id: paragraph.work_gallery_row.field_work_gallery_ground
+field_name: field_work_gallery_ground
+entity_type: paragraph
+bundle: work_gallery_row
+label: 'Ground colour'
+description: 'Layered rows only: a flat hex colour (#2e2e2e) behind a single floating item.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

@@ -1,0 +1,509 @@
+<?php
+
+/**
+ * @file
+ * ICON theme — preprocess.
+ *
+ * The three-piece rule (docs/drupal-mapping-pattern.md): Drupal-specific
+ * lookups and every conditional class live HERE, so the Twig stays a thin
+ * copy of the static templates. Page-level concerns only in this file;
+ * component preprocess arrives with each SDC.
+ */
+
+use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Template\Attribute;
+use Drupal\Core\Url;
+use Drupal\image\Entity\ImageStyle;
+use Drupal\media\MediaInterface;
+use Drupal\node\NodeInterface;
+use Drupal\paragraphs\ParagraphInterface;
+
+/**
+ * Implements hook_preprocess_HOOK() for html.html.twig.
+ *
+ * The theme class rides on <html>, never <body> — the @theme inline colour
+ * aliases resolve at :root (LESSONS.md). Light is the default (no class); the
+ * dark-opening pages (news listing, articles, work landing) add `dark` and
+ * the work articles the `theme-work-article` chameleon — those hooks arrive
+ * with their page templates and only ever touch $variables['html_attributes'].
+ */
+function icon_preprocess_html(array &$variables): void {
+  // Font preconnects, as the static templates ship them.
+  $variables['#attached']['html_head_link'][] = [['rel' => 'preconnect', 'href' => 'https://fonts.googleapis.com']];
+  $variables['#attached']['html_head_link'][] = [['rel' => 'preconnect', 'href' => 'https://fonts.gstatic.com', 'crossorigin' => TRUE]];
+
+  // The dark-opening pages (templates/news-b.html, news-article.html): the
+  // class is in the markup so there is no flash, and iconThemeHandover hands
+  // over to light as the head scrolls away.
+  if (_icon_is_news_page() || \Drupal::routeMatch()->getRouteName() === 'view.work.page_1') {
+    $variables['html_attributes']->addClass('dark');
+    $variables['#attached']['library'][] = 'icon/theme-handover';
+  }
+
+  // THE CHAMELEON (src/utilities/work-article.css): a work node wears its
+  // client colour pair as two custom properties on <html> — on <html>, never
+  // <body> (LESSONS.md) — and hands back to the site theme as the banner
+  // scrolls away (iconThemeHandover, hook in node--work--full.html.twig).
+  $node = _icon_route_node('work');
+  if ($node) {
+    $hex = fn(string $field, string $fallback) => preg_match('/^#[0-9a-f]{3,8}$/i', $v = trim((string) $node->get($field)->value)) ? $v : $fallback;
+    $variables['html_attributes']->addClass('theme-work-article');
+    $variables['html_attributes']->setAttribute('style', '--work-article-bg: ' . $hex('field_work_bg', '#0000ff') . '; --work-article-text: ' . $hex('field_work_ink', '#ffffff'));
+    $variables['#attached']['library'][] = 'icon/theme-handover';
+  }
+}
+
+/**
+ * The node of the current canonical node route, if it is of the bundle.
+ */
+function _icon_route_node(string $bundle): ?NodeInterface {
+  $route = \Drupal::routeMatch();
+  $node = $route->getParameter('node');
+  return ($node instanceof NodeInterface && $node->bundle() === $bundle && $route->getRouteName() === 'entity.node.canonical') ? $node : NULL;
+}
+
+/**
+ * Whether the current route is the /news listing or a news node.
+ */
+function _icon_is_news_page(): bool {
+  $route = \Drupal::routeMatch();
+  if ($route->getRouteName() === 'view.news.page_1') {
+    return TRUE;
+  }
+  $node = $route->getParameter('node');
+  return $node instanceof NodeInterface && $node->bundle() === 'news' && $route->getRouteName() === 'entity.node.canonical';
+}
+
+/**
+ * Implements hook_preprocess_HOOK() for page.html.twig.
+ *
+ * `main_attributes` is the hook for a page layer's shell class
+ * (`.page-home` on the homepage); pages set it from their own preprocess.
+ */
+function icon_preprocess_page(array &$variables): void {
+  $variables['main_attributes'] = new Attribute(['id' => 'main']);
+  // The homepage's shell class (templates/homeC.html <main class="page-home">):
+  // the uncapped fluid container + the page system in src/utilities/home-c.css.
+  if (\Drupal::service('path.matcher')->isFrontPage()) {
+    $variables['main_attributes']->addClass('page-home');
+  }
+  // The route title, for page templates that draw their own h1 (the auth
+  // pages) — the page-title block is not placed in this theme.
+  $request = \Drupal::request();
+  $route = \Drupal::routeMatch()->getRouteObject();
+  $variables['page_title'] = $route ? \Drupal::service('title_resolver')->getTitle($request, $route) : NULL;
+  $variables['is_login'] = \Drupal::routeMatch()->getRouteName() === 'user.login';
+}
+
+/**
+ * Implements hook_preprocess_HOOK() for node.html.twig.
+ *
+ * News: every Drupal-specific lookup for the card and the article lives here
+ * (docs/drupal-mapping-pattern.md), so node--news--teaser.html.twig is one
+ * SDC include and node--news--full.html.twig reads like the static page.
+ */
+function icon_preprocess_node(array &$variables): void {
+  $node = $variables['node'];
+  if (!$node instanceof NodeInterface) {
+    return;
+  }
+  if ($node->bundle() === 'work') {
+    _icon_preprocess_node_work($variables, $node);
+    return;
+  }
+  if ($node->bundle() !== 'news') {
+    return;
+  }
+  $category = $node->get('field_news_category')->value ?: '';
+  $allowed = $node->get('field_news_category')->getFieldDefinition()->getSetting('allowed_values');
+  $date = $node->get('field_news_date')->value ?: date('Y-m-d', (int) $node->getCreatedTime());
+
+  if ($variables['view_mode'] === 'teaser') {
+    $variables['card'] = [
+      'title' => $node->label(),
+      'url' => $node->toUrl()->toString(),
+      'image' => _icon_media_image($node->get('field_news_image')->entity, 'news_tile'),
+      'category' => $allowed[$category] ?? $category,
+      'date' => $date,
+    ];
+    // The rail (the news View's next_up display) sits under a section h2.
+    $variables['card_heading_level'] = ($variables['elements']['#news_heading_level'] ?? 'h2');
+    return;
+  }
+
+  if ($variables['view_mode'] === 'full') {
+    $variables['category_label'] = $allowed[$category] ?? $category;
+    $variables['category_url'] = Url::fromRoute('view.news.page_1', [], ['query' => ['category' => $category]])->toString();
+    $variables['date_iso'] = $date;
+    $variables['date'] = \Drupal::service('date.formatter')->format(strtotime($date), 'custom', 'j M Y');
+    $variables['image'] = _icon_media_image($node->get('field_news_image')->entity, 'news_banner');
+    // The optional 2:1 banner picks the head variant (src/utilities/
+    // news-article.css, "THE BANNER SLOT IS 2:1"): present → stacked head.
+    $variables['banner'] = $node->hasField('field_news_banner') ? _icon_media_image($node->get('field_news_banner')->entity, 'news_hero') : [];
+    $variables['next_up'] = views_embed_view('news', 'next_up', $node->id());
+    $variables['#attached']['library'][] = 'icon/news';
+    $variables['#attached']['library'][] = 'icon/share';
+  }
+}
+
+/**
+ * An image media item as the Canvas image prop shape: src, alt, width, height.
+ *
+ * Empty array when there is no usable media, so Twig can `{% if image %}`.
+ */
+function _icon_media_image(?EntityInterface $media, string $style_id): array {
+  if (!$media instanceof MediaInterface || !$media->hasField('field_media_image') || $media->get('field_media_image')->isEmpty()) {
+    return [];
+  }
+  $item = $media->get('field_media_image')->first();
+  $file = $item->entity;
+  if (!$file) {
+    return [];
+  }
+  $style = ImageStyle::load($style_id);
+  $uri = $file->getFileUri();
+  $dimensions = ['width' => (int) $item->width, 'height' => (int) $item->height];
+  if ($style) {
+    $style->transformDimensions($dimensions, $uri);
+  }
+  return [
+    'src' => $style ? $style->buildUrl($uri) : \Drupal::service('file_url_generator')->generateString($uri),
+    'alt' => (string) $item->alt,
+    'width' => $dimensions['width'] ?: NULL,
+    'height' => $dimensions['height'] ?: NULL,
+  ];
+}
+
+/**
+ * Implements hook_preprocess_HOOK() for views-view.html.twig.
+ */
+function icon_preprocess_views_view(array &$variables): void {
+  $view = $variables['view'];
+  if ($view->id() === 'clients') {
+    // The marquee's logos: each Logo media's file + its name as the alt.
+    $logos = [];
+    foreach ($view->result as $row) {
+      $media = $row->_entity ?? NULL;
+      if ($media instanceof MediaInterface && !$media->get('field_media_file')->isEmpty() && ($file = $media->get('field_media_file')->entity)) {
+        $logos[] = ['src' => \Drupal::service('file_url_generator')->generateString($file->getFileUri()), 'alt' => $media->label()];
+      }
+    }
+    $variables['client_logos'] = $logos;
+    return;
+  }
+  if ($view->id() === 'work' && $view->current_display === 'page_1') {
+    $current = $view->args[0] ?? 'all';
+    $allowed = \Drupal::service('entity_field.manager')
+      ->getFieldStorageDefinitions('node')['field_work_category']->getSetting('allowed_values');
+    $chips = [['key' => 'all', 'label' => t('All'), 'url' => Url::fromRoute('view.work.page_1')->toString(), 'active' => $current === 'all']];
+    foreach ($allowed as $key => $label) {
+      $chips[] = ['key' => $key, 'label' => $label, 'url' => Url::fromRoute('view.work.page_1', [], ['query' => ['category' => $key]])->toString(), 'active' => $current === $key];
+    }
+    $variables['chips'] = $chips;
+    $variables['pager']['#noun'] = t('projects');
+    $variables['#attached']['library'][] = 'icon/work-landing';
+    $variables['#attached']['library'][] = 'icon/subscribe-reveal';
+    return;
+  }
+  if ($view->id() !== 'news') {
+    return;
+  }
+  if ($view->current_display === 'page_1') {
+    // The category chips: the list field's allowed values as real links to
+    // this page's ?category=slug, "All" first. Active = the current argument
+    // (the View's query-parameter contextual filter; 'all' is its exception).
+    $current = $view->args[0] ?? 'all';
+    $allowed = \Drupal::service('entity_field.manager')
+      ->getFieldStorageDefinitions('node')['field_news_category']->getSetting('allowed_values');
+    $chips = [['key' => 'all', 'label' => t('All'), 'url' => Url::fromRoute('view.news.page_1')->toString(), 'active' => $current === 'all']];
+    foreach ($allowed as $key => $label) {
+      $chips[] = ['key' => $key, 'label' => $label, 'url' => Url::fromRoute('view.news.page_1', [], ['query' => ['category' => $key]])->toString(), 'active' => $current === $key];
+    }
+    $variables['chips'] = $chips;
+    $variables['pager']['#noun'] = t('stories');
+    $variables['#attached']['library'][] = 'icon/news';
+    $variables['#attached']['library'][] = 'icon/subscribe-reveal';
+  }
+}
+
+/**
+ * Implements hook_preprocess_HOOK() for views-view-unformatted.html.twig.
+ */
+function icon_preprocess_views_view_unformatted(array &$variables): void {
+  $view = $variables['view'];
+  if ($view->id() === 'work' && $view->current_display === 'featured') {
+    // templates/homeC.html: rows [split pair] [wide feature] [tall-left pair].
+    $pattern = [['work__row--split', 2], ['', 1], ['work__row--split work__row--tall-left', 2]];
+    $rows = array_values($variables['rows']);
+    // The Featured work block passes its picks as nid+nid+…; keep that order.
+    if (!empty($view->args[0])) {
+      $order = array_flip(array_map('intval', explode('+', (string) $view->args[0])));
+      usort($rows, fn($a, $b) => ($order[(int) ($a['content']['#node']?->id() ?? 0)] ?? 99) <=> ($order[(int) ($b['content']['#node']?->id() ?? 0)] ?? 99));
+    }
+    $groups = [];
+    $i = 0;
+    foreach ($pattern as [$modifier, $count]) {
+      $items = [];
+      for ($n = 0; $n < $count && $i < count($rows); $n++, $i++) {
+        $content = $rows[$i]['content'];
+        if ($count === 1) {
+          $content['#work_wide'] = TRUE;
+          $content['#cache']['keys'][] = 'wide';
+        }
+        $items[] = $content;
+      }
+      if ($items) {
+        $groups[] = ['modifier' => $modifier, 'items' => $items];
+      }
+    }
+    $variables['work_rows'] = $groups;
+    return;
+  }
+  if ($view->id() === 'work') {
+    $is_rail = $view->current_display === 'next_up';
+    $variables['filtered'] = !$is_rail && ($view->args[0] ?? 'all') !== 'all';
+    foreach ($variables['rows'] as $i => &$row) {
+      $node = $row['content']['#node'] ?? NULL;
+      // templates/work-landing-b.html: the second card of a pair fades up
+      // 60ms after the first; the rail's second card likewise. Cache keys
+      // carry both variants (LESSONS.md).
+      $row['content']['#work_delay'] = ($i % 2) * 60;
+      $row['content']['#cache']['keys'][] = 'delay-' . (($i % 2) * 60);
+      if ($is_rail) {
+        $row['content']['#work_heading_level'] = 'h3';
+        $row['content']['#cache']['keys'][] = 'heading-h3';
+        continue;
+      }
+      $row['attributes']->setAttribute('data-category', $node instanceof NodeInterface ? ($node->get('field_work_category')->value ?? '') : '');
+    }
+    return;
+  }
+  if ($view->id() !== 'news') {
+    return;
+  }
+  $is_rail = in_array($view->current_display, ['next_up', 'latest'], TRUE);
+  $filtered = !$is_rail && ($view->args[0] ?? 'all') !== 'all';
+  $variables['filtered'] = $filtered;
+  foreach ($variables['rows'] as $i => &$row) {
+    $node = $row['content']['#node'] ?? NULL;
+    if ($is_rail) {
+      // Under the rail's own h2, the cards' titles are h3. The teaser is
+      // render-cached per entity + view mode, so the level must be part of
+      // the cache keys or the listing's h2 copy would be served here.
+      $row['content']['#news_heading_level'] = 'h3';
+      $row['content']['#cache']['keys'][] = 'heading-h3';
+      continue;
+    }
+    // templates/news-b.html: data-category for the client-side filter, the
+    // fade-up stagger cycling 0…300ms in sixes, and the handover marker on
+    // the first story (the dark opening holds until it reaches the fold).
+    $row['attributes']->setAttribute('data-category', $node instanceof NodeInterface ? ($node->get('field_news_category')->value ?? '') : '');
+    $row['attributes']->setAttribute('data-animate', '');
+    if ($delay = ($i % 6) * 60) {
+      $row['attributes']->setAttribute('style', "--animate-delay: {$delay}ms");
+    }
+    if ($i === 0) {
+      $row['attributes']->setAttribute('data-theme-handover', 'end');
+    }
+  }
+}
+
+/**
+ * Implements hook_preprocess_HOOK() for pager.html.twig.
+ *
+ * Composes the status pill ("Page 1 of 3 (11 stories)") from the pager's
+ * totals; the noun rides in on the render element (#noun) from the view.
+ */
+function icon_preprocess_pager(array &$variables): void {
+  $element = $variables['pager']['#element'] ?? 0;
+  $pager = \Drupal::service('pager.manager')->getPager($element);
+  if (!$pager) {
+    return;
+  }
+  $total_items = $pager->getTotalItems();
+  $pages = max(1, $pager->getTotalPages());
+  $current = $pager->getCurrentPage() + 1;
+  $noun = $variables['pager']['#noun'] ?? t('items');
+  $variables['status'] = t('Page @current of @pages (@count @noun)', ['@current' => $current, '@pages' => $pages, '@count' => $total_items, '@noun' => $noun]);
+  // Always render the pill, even on a single page (the static template does).
+  if (empty($variables['items'])) {
+    $variables['items'] = ['pages' => []];
+  }
+}
+
+/**
+ * Implements hook_preprocess_HOOK() for paragraph.html.twig.
+ *
+ * The three-piece pattern: the paragraph type owns the data, this owns the
+ * Drupal lookups, the SDC owns the markup. Each bundle maps to the SDC of the
+ * same name; `sdc_props` is the SDC's prop object, ready to include.
+ */
+function icon_preprocess_paragraph(array &$variables): void {
+  $paragraph = $variables['paragraph'];
+  if (!$paragraph instanceof ParagraphInterface) {
+    return;
+  }
+  $variables['sdc_props'] = in_array($paragraph->bundle(), ['work_gallery_row', 'work_stats', 'work_video', 'work_scroller'], TRUE)
+    ? _icon_work_paragraph_props($paragraph)
+    : _icon_paragraph_props($paragraph);
+}
+
+/**
+ * The SDC props for the shared article paragraphs (prose, quote, image, video).
+ */
+function _icon_paragraph_props(ParagraphInterface $paragraph): array {
+  return match ($paragraph->bundle()) {
+    'prose' => [
+      'text' => [
+        '#type' => 'processed_text',
+        '#text' => $paragraph->get('field_prose_text')->value ?? '',
+        '#format' => $paragraph->get('field_prose_text')->format ?? 'basic_html',
+      ],
+    ],
+    'pull_quote' => [
+      'text' => $paragraph->get('field_pull_quote_text')->value ?? '',
+      'variant' => $paragraph->get('field_pull_quote_variant')->value ?: 'italic',
+      'cite' => $paragraph->get('field_pull_quote_cite')->value ?? '',
+    ],
+    'news_article_figure' => ($image = _icon_media_image($paragraph->get('field_news_article_figure_image')->entity, 'news_hero')) ? ['image' => $image] : [],
+    'news_article_video' => [
+      'embed_url' => $paragraph->get('field_news_article_video_url')->uri ?? '',
+      'title' => $paragraph->get('field_news_article_video_title')->value ?? '',
+    ],
+    default => [],
+  };
+}
+
+/**
+ * The work node: card props for the teaser, the folio frame for the full view.
+ */
+function _icon_preprocess_node_work(array &$variables, NodeInterface $node): void {
+  $allowed = $node->get('field_work_category')->getFieldDefinition()->getSetting('allowed_values');
+  if ($variables['view_mode'] === 'teaser') {
+    $variables['card'] = [
+      'title' => $node->label(),
+      'url' => $node->toUrl()->toString(),
+      'client' => $node->get('field_work_client')->value ?? '',
+      'media' => _icon_media_source($node->get('field_work_tile')->entity, 'work_media'),
+    ];
+    $variables['card_heading_level'] = $variables['elements']['#work_heading_level'] ?? 'h2';
+    $variables['card_delay'] = $variables['elements']['#work_delay'] ?? 0;
+    $variables['card_wide'] = !empty($variables['elements']['#work_wide']);
+    return;
+  }
+  if ($variables['view_mode'] === 'full') {
+    $variables['client'] = $node->get('field_work_client')->value ?? '';
+    $variables['statement'] = $node->get('field_work_statement')->value ?? '';
+    $variables['categories'] = array_map(fn($item) => [
+      'label' => $allowed[$item->value] ?? $item->value,
+      'url' => Url::fromRoute('view.work.page_1', [], ['query' => ['category' => $item->value]])->toString(),
+    ], iterator_to_array($node->get('field_work_category')));
+    $variables['deliverables'] = array_map(fn($item) => $item->value, iterator_to_array($node->get('field_work_deliverables')));
+    $variables['banner'] = _icon_media_source($node->get('field_work_banner')->entity, 'work_media')
+      ?: _icon_media_source($node->get('field_work_tile')->entity, 'work_media');
+    $variables['next_up'] = views_embed_view('work', 'next_up', $node->id());
+    foreach (['icon/share', 'icon/velocity-lean', 'icon/work-article', 'icon/work-video', 'icon/work-scroller'] as $lib) {
+      $variables['#attached']['library'][] = $lib;
+    }
+  }
+}
+
+/**
+ * A media item (image OR video) as {type, src, alt, width, height}.
+ *
+ * Images go through the image style; videos are the file itself. Empty
+ * array when there is nothing usable.
+ */
+function _icon_media_source(?EntityInterface $media, string $style_id): array {
+  return $media instanceof MediaInterface ? icon_site_media_source($media, $style_id) : [];
+}
+
+/**
+ * The SDC props for a work-article paragraph, by bundle.
+ */
+function _icon_work_paragraph_props(ParagraphInterface $p): array {
+  switch ($p->bundle()) {
+    case 'work_gallery_row':
+      $media = array_values(array_filter(array_map(fn($m) => _icon_media_source($m, 'work_media'), $p->get('field_work_gallery_media')->referencedEntities())));
+      return $media ? ['rows' => [[
+        'style' => $p->get('field_work_gallery_style')->value ?: 'default',
+        'ground' => $p->get('field_work_gallery_ground')->value ?? '',
+        'pad' => $p->get('field_work_gallery_pad')->value ?? '',
+        'media' => $media,
+      ]]] : [];
+
+    case 'work_stats':
+      $items = [];
+      foreach ($p->get('field_work_stats_items')->referencedEntities() as $stat) {
+        $items[] = [
+          'label' => $stat->get('field_work_stat_label')->value ?? '',
+          'value' => $stat->get('field_work_stat_value')->value ?? '',
+          'unit' => $stat->get('field_work_stat_unit')->value ?? '',
+        ];
+      }
+      return $items ? ['items' => $items] : [];
+
+    case 'work_video':
+      $film = _icon_media_source($p->get('field_work_video_media')->entity, 'work_media');
+      $cover = _icon_media_image($p->get('field_work_video_cover')->entity, 'work_media');
+      return ($film && $cover) ? ['video_src' => $film['src'], 'cover' => $cover, 'title' => $p->get('field_work_video_title')->value ?? ''] : [];
+
+    case 'work_scroller':
+      $items = array_values(array_filter(array_map(fn($m) => _icon_media_image($m, 'work_media'), $p->get('field_work_scroller_media')->referencedEntities())));
+      return $items ? ['items' => $items, 'ground' => $p->get('field_work_scroller_ground')->value ?? ''] : [];
+  }
+  return [];
+}
+
+/**
+ * Implements hook_preprocess_HOOK() for field.html.twig.
+ *
+ * The case study body: paragraphs → `groups` (see the field template).
+ */
+function icon_preprocess_field(array &$variables): void {
+  if ($variables['field_name'] !== 'field_work_content') {
+    return;
+  }
+  $sdc = ['prose' => 'prose', 'pull_quote' => 'pull-quote', 'news_article_video' => 'news-article-video', 'work_gallery_row' => 'work-gallery', 'work_stats' => 'work-stats', 'work_video' => 'work-video', 'work_scroller' => 'work-scroller'];
+  // A "run" is text and what travels with it under one Share rail; the rest
+  // breaks the flow (templates/work-article-master.html).
+  $run_types = ['prose', 'work_video', 'news_article_video', 'work_stats'];
+  $groups = [];
+  $current = NULL;
+  $gallery_rows = [];
+  $flush_gallery = function () use (&$groups, &$gallery_rows) {
+    if ($gallery_rows) {
+      $groups[] = ['type' => 'block', 'item' => ['#type' => 'component', '#component' => 'icon:work-gallery', '#props' => ['rows' => $gallery_rows]]];
+      $gallery_rows = [];
+    }
+  };
+  foreach ($variables['element']['#items']->referencedEntities() as $p) {
+    if (!$p instanceof ParagraphInterface || !isset($sdc[$p->bundle()])) {
+      continue;
+    }
+    $props = in_array($p->bundle(), ['work_gallery_row', 'work_stats', 'work_video', 'work_scroller'], TRUE) ? _icon_work_paragraph_props($p) : _icon_paragraph_props($p);
+    if (!$props) {
+      continue;
+    }
+    if ($p->bundle() === 'work_gallery_row') {
+      $current = NULL;
+      $gallery_rows[] = $props['rows'][0];
+      continue;
+    }
+    $flush_gallery();
+    $item = ['#type' => 'component', '#component' => 'icon:' . $sdc[$p->bundle()], '#props' => $props];
+    if (in_array($p->bundle(), $run_types, TRUE)) {
+      if ($current === NULL) {
+        $groups[] = ['type' => 'run', 'items' => []];
+        $current = count($groups) - 1;
+      }
+      $groups[$current]['items'][] = $item;
+    }
+    else {
+      $current = NULL;
+      $groups[] = ['type' => 'block', 'item' => $item];
+    }
+  }
+  $flush_gallery();
+  $variables['groups'] = $groups;
+}

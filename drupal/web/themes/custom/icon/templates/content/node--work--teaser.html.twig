@@ -1,0 +1,9 @@
+{#
+/**
+ * @file
+ * Work teaser = the work-card SDC (props from icon_preprocess_node(): title,
+ * url, client, media; heading level + caption delay from the host list).
+ * No wrapper: the landing's <li> and the rail's grid want the card itself.
+ */
+#}
+{{ include('icon:work-card', card|merge({ heading_level: card_heading_level|default('h2'), delay: card_delay|default(0), wide: card_wide|default(false) }), with_context = false) }}

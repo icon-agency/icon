@@ -33,6 +33,12 @@ The canonical page is `templates/homeC.html` (light theme, fully fluid). The roo
 ├── docs/                 # working conventions + Drupal handoff docs
 ├── index.html            # design-system index (sidebar, foundations, component demos)
 ├── scripts/verify.mjs    # the `npm run verify` gate (docs/css-architecture.md, rule 6)
+├── scripts/theme-js.mjs  # wraps js/*.js into Drupal.behaviors for the theme (`npm run build:theme`)
+├── drupal/               # the Drupal 11 + Canvas site (DDEV project `icon-drupal`, docroot web/)
+│   ├── web/themes/custom/icon/   # THE theme: src/main.css imports ../../src/main.css, css/ + js/
+│   │                             #   are build outputs, templates/ the chrome + pages, components/ the SDCs
+│   ├── config/sync/              # the site's config (drush cex / cim) — content types, paragraphs, views, displays
+│   └── scripts/, sample-content/ # drush php:script sample content (news-, work-, clients-sample-content.php, home-page.php) + media
 └── server.js             # dev-only static preview server (port 4100)
 ```
 
@@ -42,8 +48,11 @@ The canonical page is `templates/homeC.html` (light theme, fully fluid). The roo
 npm install
 npm run dev      # Tailwind v4 CLI watch → css/main.css (UNMINIFIED)
 npm run build    # one-shot, minified → css/main.css
-npm run verify   # the gate: build sync · raw colours · media queries · inline styles
+npm run verify   # the gate: build sync · raw colours · media queries · inline styles · theme sync
+npm run build:theme  # the Drupal theme: css/main.css (same tokens + the Twig/SDC sources) + js/ behaviours
 ```
+
+Drupal: `cd drupal && ddev start`, then https://icon-drupal.ddev.site (admin / admin, `ddev drush uli`). The theme is `drupal/web/themes/custom/icon` — see `docs/drupal-handoff.md`, "The theme".
 
 Local preview: `node server.js`, then open http://localhost:4100. `/` serves `index.html` — the design-system index, which links to every template and experiment.
 

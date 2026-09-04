@@ -1,0 +1,34 @@
+$schema: https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json
+name: Clients marquee
+group: Homepage
+status: stable
+description: >
+  The logo card marquee (templates/homeC.html, src/utilities/home-c.css):
+  two full-bleed counter-drifting rows of client logos, draggable. Fed by the
+  clients View's marquee display (Logo media) — place that block, not this
+  component, on a page.
+libraryOverrides:
+  dependencies:
+    - icon/home-c
+props:
+  type: object
+  required:
+    - logos
+  properties:
+    logos:
+      type: array
+      title: Logos
+      description: In marquee order; the first half drifts on the top row, the second on the bottom.
+      items:
+        type: object
+        properties:
+          src: { type: string }
+          alt: { type: string }
+      examples:
+        - - src: /themes/custom/icon/assets/client-logos/meta.svg
+            alt: Meta
+    heading:
+      type: string
+      title: Accessible label
+      examples:
+        - Selected clients

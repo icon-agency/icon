@@ -1,0 +1,15 @@
+uuid: d4515a1c-76d9-4e4c-af6c-83a607f28506
+langcode: en
+status: true
+dependencies:
+  config:
+    - canvas.component.sdc.icon.news-article-figure
+    - canvas.component.sdc.icon.news-article-video
+    - canvas.component.sdc.icon.prose
+name: Article
+configEntityTypeId: component
+weight: 0
+items:
+  - sdc.icon.news-article-figure
+  - sdc.icon.news-article-video
+  - sdc.icon.prose

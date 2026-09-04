@@ -1,0 +1,24 @@
+uuid: 0fc3d777-f15a-497a-a60c-a6f0619c60a0
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.news_article_figure.field_news_article_figure_image
+    - paragraphs.paragraphs_type.news_article_figure
+  module:
+    - media_library
+id: paragraph.news_article_figure.default
+targetEntityType: paragraph
+bundle: news_article_figure
+mode: default
+content:
+  field_news_article_figure_image:
+    type: media_library_widget
+    weight: 0
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+hidden:
+  created: true
+  status: true
+  uid: true

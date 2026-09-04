@@ -1,0 +1,14 @@
+{#
+/**
+ * @file
+ * work-video — thin copy of the film in templates/work-article-master.html.
+ * Cover and play control both start it (Drupal.behaviors.iconWorkVideo).
+ */
+#}
+<figure class="work-video media-reveal" data-reveal-img data-work-video>
+  <video class="work-video__media" preload="metadata" playsinline src="{{ video_src }}" aria-label="{{ title }}"></video>
+  <img class="work-video__cover" src="{{ cover.src }}" alt="{{ cover.alt }}"{% if cover.width %} width="{{ cover.width }}"{% endif %}{% if cover.height %} height="{{ cover.height }}"{% endif %} data-work-video-start />
+  <button class="work-video__play" type="button" aria-label="{{ 'Play the film'|t }}" data-work-video-start>
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z" /></svg>
+  </button>
+</figure>

@@ -1,0 +1,19 @@
+uuid: 776105d6-b20b-4118-8909-fb137f8ccbfc
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_work_scroller_ground
+    - paragraphs.paragraphs_type.work_scroller
+id: paragraph.work_scroller.field_work_scroller_ground
+field_name: field_work_scroller_ground
+entity_type: paragraph
+bundle: work_scroller
+label: 'Ground colour'
+description: 'A flat hex colour behind the strip (#2e2e2e). Leave empty for none.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

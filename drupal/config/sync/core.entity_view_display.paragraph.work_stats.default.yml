@@ -1,0 +1,14 @@
+uuid: be99821b-6ff6-4134-a94a-e5190f3e01bc
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.work_stats.field_work_stats_items
+    - paragraphs.paragraphs_type.work_stats
+id: paragraph.work_stats.default
+targetEntityType: paragraph
+bundle: work_stats
+mode: default
+content: {  }
+hidden:
+  field_work_stats_items: true

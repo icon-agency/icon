@@ -123,8 +123,25 @@
 
       // Label swap: a fast snap-fade — out, swap text, in (reduced motion /
       // first set: instant).
+      // The name is a LINK when the slide carries data-client-url (the CMS's
+      // hero pieces link to their project; the static reel has none): the
+      // inner span holds an <a class="hero__client-link"> with the grow-line
+      // hover (home-c.css). Written as one small render so the text and the
+      // link always change together.
       var labelTimer = null;
-      var setLabel = function (text) {
+      var renderLabel = function (inner, text, href) {
+        inner.textContent = "";
+        if (href) {
+          var a = document.createElement("a");
+          a.className = "hero__client-link";
+          a.href = href;
+          a.textContent = text;
+          inner.appendChild(a);
+        } else {
+          inner.textContent = text;
+        }
+      };
+      var setLabel = function (text, href) {
         if (!label) return;
         var inner = label.firstElementChild;
         if (!inner) {
@@ -134,14 +151,14 @@
         }
         if (inner.textContent === text) return;
         if (reduce || !inner.textContent) {
-          inner.textContent = text;
+          renderLabel(inner, text, href);
           return;
         }
         if (labelTimer) clearTimeout(labelTimer);
         inner.classList.add("is-out");
         labelTimer = setTimeout(function () {
           labelTimer = null;
-          inner.textContent = text;
+          renderLabel(inner, text, href);
           inner.classList.remove("is-out"); // fade the new name straight in
         }, 160); // just past the 0.15s fade-out
       };
@@ -159,7 +176,7 @@
             }
           }
         });
-        setLabel(slides[i].getAttribute("data-client"));
+        setLabel(slides[i].getAttribute("data-client"), slides[i].getAttribute("data-client-url"));
       };
 
       // Background tabs: the browser pauses muted videos in hidden tabs, so a

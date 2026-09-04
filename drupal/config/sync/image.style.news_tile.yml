@@ -1,0 +1,15 @@
+uuid: 485edc99-961b-4832-b7ef-531e6a7ebb37
+langcode: en
+status: true
+dependencies: {  }
+name: news_tile
+label: 'News tile (1200)'
+effects:
+  a1b2c3d4-0000-4000-8000-000000000001:
+    uuid: a1b2c3d4-0000-4000-8000-000000000001
+    id: image_scale
+    weight: 1
+    data:
+      width: 1200
+      height: null
+      upscale: false

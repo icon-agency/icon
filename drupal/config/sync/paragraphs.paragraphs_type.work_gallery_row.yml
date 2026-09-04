@@ -1,0 +1,10 @@
+uuid: f98d5631-2148-4b22-a03e-4d9f5ed1d18a
+langcode: en
+status: true
+dependencies: {  }
+id: work_gallery_row
+label: 'Gallery row'
+icon_uuid: null
+icon_default: null
+description: 'One or two images or films breaking wide between text; rows next to each other form one gallery.'
+behavior_plugins: {  }

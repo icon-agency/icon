@@ -14,24 +14,26 @@
 (function () {
   "use strict";
 
+  // Three independent sections — fade-ups, media reveals, hairlines — each
+  // guarded on its OWN markup. No early return: a page with no [data-animate]
+  // (the bare Drupal front page) still has rules to draw (LESSONS.md).
   var nodes = Array.prototype.slice.call(document.querySelectorAll("[data-animate]"));
-  if (!nodes.length) return;
+  if (nodes.length) {
+    // No IntersectionObserver → reveal everything immediately (no-JS equivalent).
+    if (!("IntersectionObserver" in window)) {
+      nodes.forEach(function (el) { el.classList.add("is-visible"); });
+    } else {
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (!e.isIntersecting) return;
+          e.target.classList.add("is-visible");
+          io.unobserve(e.target);
+        });
+      }, { threshold: 0.1, rootMargin: "0px 0px -50px 0px" });
 
-  // No IntersectionObserver → reveal everything immediately (no-JS equivalent).
-  if (!("IntersectionObserver" in window)) {
-    nodes.forEach(function (el) { el.classList.add("is-visible"); });
-    return;
+      nodes.forEach(function (el) { io.observe(el); });
+    }
   }
-
-  var io = new IntersectionObserver(function (entries) {
-    entries.forEach(function (e) {
-      if (!e.isIntersecting) return;
-      e.target.classList.add("is-visible");
-      io.unobserve(e.target);
-    });
-  }, { threshold: 0.1, rootMargin: "0px 0px -50px 0px" });
-
-  nodes.forEach(function (el) { io.observe(el); });
 
   /* ---- rules draw themselves in --------------------------------------------
    * Every hairline on the site ([data-rule], and the clients marquee's

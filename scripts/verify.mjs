@@ -12,6 +12,9 @@
  *                     three lines above it and says why.
  *   4. inline styles — style="" in templates/ and index.html carries only
  *                     custom properties (JS-set values, the chameleon pair).
+ *   5. theme sync   — the Drupal theme's css/main.css and generated js/ match
+ *                     a fresh `npm run build:theme` (Drupal serves the
+ *                     committed files; the js/ are wrapped copies of js/).
  *
  * Exit 1 on any failure. Run before marking work done (definition-of-done).
  */
@@ -19,6 +22,7 @@ import { execFileSync } from "node:child_process";
 import { readFileSync, readdirSync, statSync, mkdtempSync, rmSync } from "node:fs";
 import { join, relative } from "node:path";
 import { tmpdir } from "node:os";
+import { build as buildThemeJs } from "./theme-js.mjs";
 
 const root = new URL("..", import.meta.url).pathname;
 const failures = [];
@@ -96,9 +100,29 @@ const stripComments = (css) => css.replace(/\/\*[\s\S]*?\*\//g, (m) => m.replace
   }
 }
 
+/* 5. theme sync */
+{
+  const theme = join(root, "drupal/web/themes/custom/icon");
+  const dir = mkdtempSync(join(tmpdir(), "icon-verify-theme-"));
+  const out = join(dir, "main.css");
+  try {
+    execFileSync("npm", ["exec", "--", "tailwindcss", "-i", join(theme, "src/main.css"), "-o", out, "--minify"], { cwd: root, stdio: ["ignore", "ignore", "pipe"] });
+    if (!readFileSync(out).equals(readFileSync(join(theme, "css/main.css")))) fail("theme-sync", "drupal/web/themes/custom/icon/css/main.css", "differs from a fresh `npm run build:theme` — rebuild and commit the output");
+  } catch (e) {
+    fail("theme-sync", "tailwindcss (theme)", `build failed: ${String(e.stderr || e.message).trim()}`);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+  for (const [file, code] of Object.entries(buildThemeJs())) {
+    let committed = null;
+    try { committed = readFileSync(join(theme, "js", file), "utf8"); } catch {}
+    if (committed !== code) fail("theme-sync", `drupal/web/themes/custom/icon/js/${file}`, "is not the generated wrap of js/" + file + " — run `npm run build:theme` (never edit the theme copy)");
+  }
+}
+
 if (failures.length) {
   console.error(`verify: ${failures.length} problem${failures.length === 1 ? "" : "s"}\n`);
   for (const f of failures) console.error("  " + f);
   process.exit(1);
 }
-console.log("verify: build in sync · no raw colours outside colors.css · every media query on the table · no literal inline styles");
+console.log("verify: build in sync · no raw colours outside colors.css · every media query on the table · no literal inline styles · theme css + js in sync");

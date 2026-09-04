@@ -1,0 +1,10 @@
+uuid: f917f9ae-c020-404a-9bbe-c6ff2a005a5c
+langcode: en
+status: true
+dependencies: {  }
+id: news_article_video
+label: Video
+icon_uuid: null
+icon_default: null
+description: 'An embedded film (YouTube or Vimeo) at 16:9.'
+behavior_plugins: {  }

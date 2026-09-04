@@ -1,0 +1,24 @@
+uuid: 749cb3cb-40a1-42f5-b885-4c55cfdd419d
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.prose.field_prose_text
+    - paragraphs.paragraphs_type.prose
+  module:
+    - text
+id: paragraph.prose.default
+targetEntityType: paragraph
+bundle: prose
+mode: default
+content:
+  field_prose_text:
+    type: text_textarea
+    weight: 0
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+hidden:
+  created: true
+  status: true
+  uid: true

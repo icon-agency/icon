@@ -1,0 +1,23 @@
+uuid: 02c91024-d25c-4d8f-97fe-b91ae8cafb3c
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_work_gallery_style
+    - paragraphs.paragraphs_type.work_gallery_row
+  module:
+    - options
+id: paragraph.work_gallery_row.field_work_gallery_style
+field_name: field_work_gallery_style
+entity_type: paragraph
+bundle: work_gallery_row
+label: Style
+description: ''
+required: true
+translatable: false
+default_value:
+  -
+    value: default
+default_value_callback: ''
+settings: {  }
+field_type: list_string

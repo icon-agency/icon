@@ -1,0 +1,41 @@
+uuid: a059370a-2589-4e8b-a099-e5ccbda907f6
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.node.work.field_work_banner
+    - field.field.node.work.field_work_bg
+    - field.field.node.work.field_work_category
+    - field.field.node.work.field_work_client
+    - field.field.node.work.field_work_content
+    - field.field.node.work.field_work_deliverables
+    - field.field.node.work.field_work_ink
+    - field.field.node.work.field_work_statement
+    - field.field.node.work.field_work_tile
+    - node.type.work
+  module:
+    - entity_reference_revisions
+id: node.work.default
+targetEntityType: node
+bundle: work
+mode: default
+content:
+  field_work_content:
+    type: entity_reference_revisions_entity_view
+    label: hidden
+    settings:
+      view_mode: default
+      link: ''
+    third_party_settings: {  }
+    weight: 0
+    region: content
+hidden:
+  field_work_banner: true
+  field_work_bg: true
+  field_work_category: true
+  field_work_client: true
+  field_work_deliverables: true
+  field_work_ink: true
+  field_work_statement: true
+  field_work_tile: true
+  links: true

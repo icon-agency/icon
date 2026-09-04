@@ -1,0 +1,10 @@
+uuid: 9d3ab1c5-cb5d-4314-bcc3-d38979acf996
+langcode: en
+status: true
+dependencies: {  }
+id: work_stats
+label: Results
+icon_uuid: null
+icon_default: null
+description: 'The results band: figures with a unit and a label.'
+behavior_plugins: {  }

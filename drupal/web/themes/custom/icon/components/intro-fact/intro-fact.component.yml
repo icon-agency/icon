@@ -1,0 +1,32 @@
+$schema: https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json
+name: Fact card (filmstrip)
+group: Homepage
+status: stable
+description: A blue fact card in the intro filmstrip — brand icon, headline figure, label under a hairline.
+props:
+  type: object
+  required:
+    - icon
+    - title
+  properties:
+    icon:
+      type: string
+      title: Icon
+      enum: [trophy, world, peace, flame]
+      meta:enum:
+        trophy: Trophy
+        world: World
+        peace: Peace sign
+        flame: Flame
+      examples:
+        - trophy
+    title:
+      type: string
+      title: Heading
+      examples:
+        - 14 Agency of the Year awards
+    label:
+      type: string
+      title: Label
+      examples:
+        - Since 2021

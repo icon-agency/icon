@@ -1,0 +1,10 @@
+{#
+/**
+ * @file
+ * news-article-figure — the wide figure between prose chunks
+ * (templates/news-article.html). Reveal via the shared .media-reveal primitive.
+ */
+#}
+<figure class="news-article__figure media-reveal" data-reveal-img>
+  <img src="{{ image.src }}" alt="{{ image.alt }}"{% if image.width %} width="{{ image.width }}"{% endif %}{% if image.height %} height="{{ image.height }}"{% endif %} loading="lazy" />
+</figure>

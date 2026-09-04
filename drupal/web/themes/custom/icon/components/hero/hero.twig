@@ -1,0 +1,47 @@
+{#
+/**
+ * @file
+ * hero — thin copy of the hero in templates/homeC.html. The loading screen
+ * (.text-box) is built by js/hero-loader.js; the reel, pile, headline device,
+ * client label and counter are the markup js/home-c.js drives. The lockup is
+ * the shared include (the same artwork the login page draws).
+ */
+#}
+<section class="hero" data-hero>
+  <div class="text-box text-box--cover text-box--pop" data-text-box aria-hidden="true"></div>
+
+  <div class="hero__show" aria-hidden="true">
+    <div class="hero__show-inner">
+      {% for piece in pieces %}
+        {% if piece.media.type == 'video' %}
+          <video class="hero__slide" data-client="{{ piece.client }}"{% if piece.url %} data-client-url="{{ piece.url }}"{% endif %} src="{{ piece.media.src }}" muted playsinline loop preload="auto"></video>
+        {% else %}
+          <img class="hero__slide" data-client="{{ piece.client }}"{% if piece.url %} data-client-url="{{ piece.url }}"{% endif %} src="{{ piece.media.src }}" alt="" />
+        {% endif %}
+      {% endfor %}
+      <div class="hero__scrim"></div>
+    </div>
+  </div>
+
+  <div class="hero__stage" aria-hidden="true">
+    {% for piece in pieces %}
+      <figure class="hero__card">
+        {% if piece.media.type == 'video' %}
+          <video src="{{ piece.media.src }}" muted playsinline preload="auto"></video>
+        {% else %}
+          <img src="{{ piece.media.src }}" alt="" />
+        {% endif %}
+      </figure>
+    {% endfor %}
+  </div>
+
+  <div class="hero__inner">
+    <h1 class="hero__headline">
+      <span class="sr-only">{{ 'Make what matters'|t }}</span>
+      {% include '@icon/includes/lockup.html.twig' %}
+    </h1>
+  </div>
+
+  <p class="hero__client" data-client-label></p>
+  <p class="hero__count" data-boot-count aria-hidden="true"></p>
+</section>

@@ -1,0 +1,10 @@
+{#
+/**
+ * @file
+ * Paragraph "news-article-video" = the news-article-video SDC. Props come from icon_preprocess_paragraph()
+ * (docs/drupal-mapping-pattern.md: paragraph type → preprocess → thin SDC
+ * Twig). No wrapper element — the article flow's CSS keys on the SDC's own
+ * root as a DIRECT child of .news-article__flow.
+ */
+#}
+{% if sdc_props is not empty %}{{ include('icon:news-article-video', sdc_props, with_context = false) }}{% endif %}

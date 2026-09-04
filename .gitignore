@@ -5,3 +5,25 @@ v40-1-icon/
 
 # unrelated nested project
 GreenPowerDS/
+
+# Drupal install (drupal/) — Composer-managed code stays out; custom code + config stay in
+drupal/vendor/
+drupal/web/core/
+drupal/web/modules/contrib/
+drupal/web/themes/contrib/
+drupal/web/profiles/contrib/
+drupal/web/libraries/
+drupal/web/sites/*/files/
+drupal/web/sites/*/private/
+drupal/web/sites/*/settings.local.php
+drupal/web/sites/*/services.local.yml
+drupal/web/sites/simpletest/
+drupal/.ddev/.*
+drupal/.ddev/db_snapshots/
+drupal/.ddev/*.yaml
+!drupal/.ddev/config.yaml
+drupal/.ddev/traefik/
+drupal/.ddev/postgres/
+drupal/.ddev/mysql/
+drupal/.ddev/xhprof/
+drupal/web/sites/*/settings.ddev.php

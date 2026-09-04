@@ -1,0 +1,237 @@
+/* auth.css — the theme's OWN page layer for Drupal's account pages
+ * (templates/layout/page--user.html.twig): login, password reset, the
+ * profile. Nothing here exists in the static design system, so it lives in
+ * the theme rather than the repo-root src/ — but it obeys the same rules:
+ * tokens only, no raw colours, breakpoints from the table, sans throughout.
+ *
+ * Split screen: the homepage hero's opening film fills the left; the form
+ * sits on the footer's fixed black (--footer-bg / -ink / -muted — the one
+ * dark palette that never re-themes). Fields are outlined boxes with the
+ * label riding the top edge; the action is the brand blue. */
+
+.auth {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr;
+  background: var(--footer-bg);
+  color: var(--footer-ink);
+}
+
+@media (min-width: 1024px) {
+  .auth {
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  }
+}
+
+/* ---- the film ----------------------------------------------------------- */
+.auth__banner {
+  position: relative;
+  min-height: 42vh;
+  overflow: hidden;
+  background: var(--footer-bg) url("../assets/banner/moad-question-of-the-day.jpg") center / cover no-repeat;
+}
+
+@media (min-width: 1024px) {
+  .auth__banner { min-height: 100vh; }
+}
+
+.auth__film {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* The hero's scrim, so the lockup reads on any frame (home-c.css .hero__scrim) */
+.auth__scrim {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(var(--scrim-soft), var(--scrim-soft)),
+    linear-gradient(to bottom, var(--scrim) 0%, transparent 30%, transparent 55%, var(--scrim-strong) 100%);
+}
+
+/* The lockup, centred over the film. The SVG wears the design system's
+   .hero__lockup-* rules (fills, strokes, the box); its width reads
+   --hero-square, which the hero defines and this panel defines for itself. */
+.auth__lockup {
+  --hero-square: clamp(14rem, 38%, 26rem);
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: var(--space-lg);
+}
+
+/* reduced motion: the still stays, the film does not run */
+@media (prefers-reduced-motion: reduce) {
+  .auth__film { visibility: hidden; }
+}
+
+/* ---- the form side ------------------------------------------------------ */
+.auth__side {
+  display: grid;
+  place-items: center;
+  padding: var(--space-xl) var(--gutter-page);
+}
+
+.auth__panel {
+  width: 100%;
+  max-width: 28rem;
+}
+
+.auth__logo {
+  display: inline-flex;
+  color: var(--footer-ink);
+  margin-bottom: var(--space-xl);
+}
+
+.auth__logo .site-logo__mark {
+  height: var(--logo-h);
+  width: auto;
+}
+
+/* an h3 register (user call): the page's one h1 for structure, sized quietly */
+.auth__title {
+  font-family: var(--font-sans);
+  font-size: var(--text-3xl);
+  font-weight: var(--font-weight-bold);
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  margin: 0 0 var(--space-2xs);
+}
+
+.auth__lede {
+  font-size: var(--text-lg);
+  line-height: 1.3;
+  color: var(--footer-muted);
+  margin: 0 0 var(--space-lg);
+}
+
+/* the "Log in / Reset your password" tabs — replaced by the link under
+   the form; the block still renders for the other account pages */
+.auth .visually-hidden { position: absolute; clip: rect(0 0 0 0); width: 1px; height: 1px; overflow: hidden; }
+.auth [id^="block-icon-local-tasks"] { display: none; }
+
+/* ---- fields: outlined box, label on the top edge ------------------------ */
+.auth .form-item {
+  position: relative;
+  margin: 0 0 var(--space-md);
+}
+
+.auth .form-item > label {
+  position: absolute;
+  top: 0;
+  left: 0.875rem;
+  transform: translateY(-50%);
+  padding: 0 0.375rem;
+  background: var(--footer-bg);
+  font-size: var(--voice-label);
+  font-weight: var(--font-weight-medium);
+  line-height: 1;
+  color: var(--footer-muted);
+  transition: color var(--duration-fast) var(--ease-standard);
+}
+
+.auth .form-item:focus-within > label {
+  color: var(--footer-ink);
+}
+
+.auth .form-text,
+.auth input[type="text"],
+.auth input[type="password"],
+.auth input[type="email"] {
+  display: block;
+  width: 100%;
+  padding: 1.125rem 1.125rem 1rem;
+  background: none;
+  border: var(--rule-weight) solid color-mix(in srgb, var(--footer-ink) 30%, transparent);
+  border-radius: var(--radius);
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  line-height: 1.2;
+  color: var(--footer-ink);
+  caret-color: var(--footer-ink);
+  transition: border-color var(--duration-fast) var(--ease-standard);
+}
+
+.auth .form-text:focus {
+  outline: none;
+  border-color: var(--footer-ink);
+}
+
+.auth .description {
+  font-size: var(--voice-label);
+  color: var(--footer-muted);
+  margin: var(--space-3xs) 0 0 0.25rem;
+}
+
+/* ---- the action --------------------------------------------------------- */
+.auth .form-actions {
+  margin-top: var(--space-lg);
+}
+
+.auth .form-submit {
+  display: block;
+  width: 100%;
+  padding: 1rem 1.25rem;
+  border: 0;
+  border-radius: var(--radius);
+  background: var(--color-icon-blue);
+  cursor: pointer;
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  font-weight: var(--font-weight-semibold);
+  line-height: 1.2;
+  color: var(--color-white);
+  transition: opacity var(--duration-fast) var(--ease-standard);
+}
+
+.auth .form-submit:hover,
+.auth .form-submit:focus-visible {
+  opacity: 0.85;
+}
+
+.auth__aside {
+  margin: var(--space-md) 0 0;
+  text-align: center;
+  font-size: var(--voice-label);
+  color: var(--footer-muted);
+}
+
+.auth__aside a {
+  color: var(--footer-ink);
+  text-decoration: none;
+  border-bottom: var(--rule-weight) solid var(--rule);
+}
+
+.auth__aside a:hover,
+.auth__aside a:focus-visible {
+  border-bottom-color: currentColor;
+}
+
+/* ---- status / error messages: inline in the panel, not the site's toast ---- */
+.auth .toast {
+  position: static;
+  max-width: none;
+  margin: 0 0 var(--space-md);
+  pointer-events: auto;
+}
+
+.auth .toast__item {
+  padding: var(--space-xs) 0;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+  border-top: var(--rule-weight) solid var(--rule);
+  border-bottom: var(--rule-weight) solid var(--rule);
+  animation: none;
+}
+
+.auth .toast__item--error,
+.auth .toast__item--warning {
+  border-inline-start: 0;
+  color: var(--color-destructive);
+}

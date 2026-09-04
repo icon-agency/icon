@@ -1,0 +1,22 @@
+uuid: 199285e1-b3e8-4a8c-809d-4c3c2c78f2d4
+langcode: en
+status: true
+dependencies:
+  module:
+    - system
+  theme:
+    - icon
+_core:
+  default_config_hash: erQSEZF2XUjNmgTl0uNRBzmg18ZGXwUcw2FhApoeuHk
+id: icon_content
+theme: icon
+region: content
+weight: 0
+provider: null
+plugin: system_main_block
+settings:
+  id: system_main_block
+  label: 'Main page content'
+  label_display: '0'
+  provider: system
+visibility: {  }

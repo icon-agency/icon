@@ -1,0 +1,16 @@
+uuid: 2a41fe2f-42f8-4707-ad6a-762ac9c8e137
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.work_scroller.field_work_scroller_media
+    - field.field.paragraph.work_scroller.field_work_scroller_ground
+    - paragraphs.paragraphs_type.work_scroller
+id: paragraph.work_scroller.default
+targetEntityType: paragraph
+bundle: work_scroller
+mode: default
+content: {  }
+hidden:
+  field_work_scroller_ground: true
+  field_work_scroller_media: true

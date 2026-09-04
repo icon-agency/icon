@@ -1,0 +1,26 @@
+{#
+/**
+ * @file
+ * The listing pager (src/components/pager.css): previous, a status pill
+ * ("Page 1 of 3 (11 stories)"), next. Real <a> navigation; a disabled
+ * control is a non-interactive <span>. `status` is composed in
+ * icon_preprocess_pager() from the pager's totals and the view's noun.
+ */
+#}
+{% if items %}
+  <nav class="pager" aria-label="{{ 'Pagination'|t }}">
+    {% set arrow_left %}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5" /><path d="m12 19-7-7 7-7" /></svg>{% endset %}
+    {% set arrow_right %}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>{% endset %}
+    {% if items.previous %}
+      <a class="pager__prev" href="{{ items.previous.href }}" aria-label="{{ 'Previous page'|t }}">{{ arrow_left }}</a>
+    {% else %}
+      <span class="pager__prev pager__prev--disabled" role="link" aria-disabled="true" aria-label="{{ 'Previous page'|t }}">{{ arrow_left }}</span>
+    {% endif %}
+    <span class="pager__status">{{ status }}</span>
+    {% if items.next %}
+      <a class="pager__next" href="{{ items.next.href }}" aria-label="{{ 'Next page'|t }}">{{ arrow_right }}</a>
+    {% else %}
+      <span class="pager__next pager__next--disabled" role="link" aria-disabled="true" aria-label="{{ 'Next page'|t }}">{{ arrow_right }}</span>
+    {% endif %}
+  </nav>
+{% endif %}

@@ -1,0 +1,17 @@
+{#
+/**
+ * @file
+ * The /work project grid (src/utilities/work-landing.css): the homepage's
+ * five-slot rhythm assigned by visible position, so the client-side filter
+ * re-forms it. Each row is one work-card; the <li> carries data-category
+ * (the filter key, from icon_preprocess_views_view_unformatted()).
+ * data-work-list is withheld on a server-filtered page, as on /news.
+ */
+#}
+<ul class="work-landing__list"{% if not filtered %} data-work-list{% endif %} role="list">
+  {% for row in rows %}
+    <li{{ row.attributes.addClass('work-landing__item') }}>
+      {{ row.content }}
+    </li>
+  {% endfor %}
+</ul>

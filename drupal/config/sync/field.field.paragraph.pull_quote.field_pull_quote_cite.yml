@@ -1,0 +1,19 @@
+uuid: 952a240f-59e2-4dda-b1c2-47d5ff66254f
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_pull_quote_cite
+    - paragraphs.paragraphs_type.pull_quote
+id: paragraph.pull_quote.field_pull_quote_cite
+field_name: field_pull_quote_cite
+entity_type: paragraph
+bundle: pull_quote
+label: Attribution
+description: 'Optional — who said it.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

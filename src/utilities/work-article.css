@@ -439,14 +439,20 @@
   gap: var(--space-lg);
 }
 
-/* Same measure as .news-article__prose — shared by intent, see header. */
-.work-article__prose {
+/* Same measure as .news-article__prose — shared by intent, see header.
+   Two ways to be a prose chunk: the static template's explicit
+   .work-article__prose, or — in Drupal — a bare .content-page placed in a
+   run by the Content block, which carries no page class; the parent
+   selector gives it the measure (the news article's own arrangement). */
+.work-article__prose,
+.work-article__chunk > .content-page {
   width: 100%;
   margin-inline: auto;
 }
 
 @media (min-width: 1024px) {
-  .work-article__prose {
+  .work-article__prose,
+  .work-article__chunk > .content-page {
     max-width: clamp(46rem, 40vw, 64rem);
   }
 }

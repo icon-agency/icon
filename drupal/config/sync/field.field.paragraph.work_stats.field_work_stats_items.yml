@@ -1,0 +1,31 @@
+uuid: 7b91c191-d994-4970-a80e-48f7abe190f9
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_work_stats_items
+    - paragraphs.paragraphs_type.work_stat
+    - paragraphs.paragraphs_type.work_stats
+  module:
+    - entity_reference_revisions
+id: paragraph.work_stats.field_work_stats_items
+field_name: field_work_stats_items
+entity_type: paragraph
+bundle: work_stats
+label: Results
+description: ''
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:paragraph'
+  handler_settings:
+    target_bundles:
+      work_stat: work_stat
+    negate: 0
+    target_bundles_drag_drop:
+      work_stat:
+        weight: 1
+        enabled: true
+field_type: entity_reference_revisions

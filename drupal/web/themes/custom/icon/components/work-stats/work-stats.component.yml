@@ -1,0 +1,23 @@
+$schema: https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json
+name: Results
+group: Work
+status: stable
+description: The results band — two columns of ruled cells, value / unit / label (src/components/work-stats.css).
+props:
+  type: object
+  required:
+    - items
+  properties:
+    items:
+      type: array
+      title: Results
+      items:
+        type: object
+        properties:
+          label: { type: string }
+          value: { type: string }
+          unit: { type: string }
+      examples:
+        - - label: Participants tested
+            value: '48'
+            unit: people

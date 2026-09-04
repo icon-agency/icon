@@ -1,0 +1,16 @@
+{#
+/**
+ * @file
+ * work-stats — thin copy of the results band in templates/work-article-master.html.
+ */
+#}
+<section class="work-stats" data-animate aria-label="{{ 'Results at a glance'|t }}">
+  <dl class="work-stats__grid">
+    {% for item in items %}
+      <div class="work-stats__stat">
+        <dt class="work-stats__label">{{ item.label }}</dt>
+        <dd class="work-stats__value">{{ item.value }}{% if item.unit %} <span class="work-stats__unit">{{ item.unit }}</span>{% endif %}</dd>
+      </div>
+    {% endfor %}
+  </dl>
+</section>

@@ -1,0 +1,21 @@
+$schema: https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json
+name: Image
+group: Article
+status: stable
+description: >
+  A wide image breaking out of the article's prose measure, revealed on
+  scroll (src/utilities/news-article.css, .news-article__figure).
+props:
+  type: object
+  required:
+    - image
+  properties:
+    image:
+      $ref: json-schema-definitions://canvas.module/image
+      type: object
+      title: Image
+      examples:
+        - src: https://placehold.co/1600x900
+          alt: Collage of the campaign across social and on-site media
+          width: 1600
+          height: 900

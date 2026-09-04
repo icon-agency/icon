@@ -1,0 +1,61 @@
+/* admin-chrome.css — the theme's OWN layer: make room for Drupal's admin UI.
+ *
+ * For a logged-in editor, core's Navigation module draws a fixed top bar
+ * (Published, Edit, ⋮) and a left sidebar, and publishes their sizes on
+ * <html> as --drupal-displace-offset-top / -left (Drupal.displace). The
+ * design system's chrome is fixed at the viewport's own top-left with a
+ * z-index far above the admin bar's (10000 vs 490), so without this the
+ * invisible nav strip swallows every click on Edit. The chrome steps aside
+ * by exactly the admin UI's size; for visitors the variables are absent
+ * and every rule below collapses to the design system's values.
+ *
+ * Each rule mirrors its source in src/components/site-header.css (same
+ * selector + media query, so specificity ties and this file wins by order).
+ */
+:root {
+  --icon-admin-top: var(--drupal-displace-offset-top, 0px);
+  --icon-admin-left: var(--drupal-displace-offset-left, 0px);
+}
+
+.site-logo {
+  top: calc(1rem + var(--icon-admin-top));
+  left: calc(var(--gutter-page) + var(--icon-admin-left));
+}
+
+@media (min-width: 768px) {
+  .site-logo {
+    top: calc(1.75rem + var(--voice-label) * 0.13 - var(--logo-h) * 0.184 + var(--icon-admin-top));
+  }
+  .site-nav {
+    top: calc(1rem + var(--icon-admin-top));
+    inset-inline: var(--icon-admin-left) 0;
+  }
+}
+
+.site-header__mobile-home {
+  top: calc(1rem + var(--icon-admin-top));
+  left: calc(var(--gutter-page) + var(--icon-admin-left));
+}
+
+.site-header__mobile-actions {
+  top: calc(1rem + var(--icon-admin-top));
+}
+
+.mobile-menu {
+  inset: var(--icon-admin-top) 0 0 var(--icon-admin-left);
+}
+
+/* STACKING under the admin UI. The design system's fixed chrome sits at
+   10000/10001 (and the toasts at 10002) — above everything on a public page,
+   which is right. Drupal's admin sidebar is a fixed stacking context at
+   z-index 501 and its top bar 490, so the same chrome painted over the
+   sidebar's Create flyout. Whenever the admin sidebar is on the page, the
+   chrome steps down beneath the admin UI, keeping its own order: nav and
+   controls 480, wordmark 481, toasts 482. Visitors never have the sidebar,
+   so nothing changes for them. */
+body:has(.admin-toolbar) .site-nav,
+body:has(.admin-toolbar) .site-header__mobile-home,
+body:has(.admin-toolbar) .site-header__mobile-actions { z-index: 480; }
+body:has(.admin-toolbar) .site-logo { z-index: 481; }
+body:has(.admin-toolbar) .toast { z-index: 482; }
+body:has(.admin-toolbar) .mobile-menu { z-index: 479; }

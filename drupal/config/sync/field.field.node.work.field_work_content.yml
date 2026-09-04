@@ -1,0 +1,61 @@
+uuid: 1db9e2b7-5d72-4828-aac1-e4d18bdaf0b9
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_work_content
+    - node.type.work
+    - paragraphs.paragraphs_type.news_article_video
+    - paragraphs.paragraphs_type.prose
+    - paragraphs.paragraphs_type.pull_quote
+    - paragraphs.paragraphs_type.work_gallery_row
+    - paragraphs.paragraphs_type.work_scroller
+    - paragraphs.paragraphs_type.work_stats
+    - paragraphs.paragraphs_type.work_video
+  module:
+    - entity_reference_revisions
+id: node.work.field_work_content
+field_name: field_work_content
+entity_type: node
+bundle: work
+label: Body
+description: 'The case study: Content, Gallery row, Pull quote, Film, Video, Scroller and Results blocks in any order. Consecutive text blocks share one Share rail; gallery rows next to each other form one gallery.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:paragraph'
+  handler_settings:
+    target_bundles:
+      prose: prose
+      work_gallery_row: work_gallery_row
+      pull_quote: pull_quote
+      work_video: work_video
+      news_article_video: news_article_video
+      work_scroller: work_scroller
+      work_stats: work_stats
+    negate: 0
+    target_bundles_drag_drop:
+      news_article_video:
+        weight: 5
+        enabled: true
+      prose:
+        weight: 1
+        enabled: true
+      pull_quote:
+        weight: 3
+        enabled: true
+      work_gallery_row:
+        weight: 2
+        enabled: true
+      work_scroller:
+        weight: 6
+        enabled: true
+      work_stats:
+        weight: 7
+        enabled: true
+      work_video:
+        weight: 4
+        enabled: true
+field_type: entity_reference_revisions

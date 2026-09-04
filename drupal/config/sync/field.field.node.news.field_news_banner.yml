@@ -1,0 +1,29 @@
+uuid: 8675fd07-6ea9-4d3c-aebd-ba4dfa7deb8b
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_news_banner
+    - media.type.image
+    - node.type.news
+id: node.news.field_news_banner
+field_name: field_news_banner
+entity_type: node
+bundle: news
+label: 'Banner (optional, 2:1)'
+description: 'A wide 2:1 image for the article head. With a banner the head stacks: headline, category / date, then the banner. Without one the square tile sits beside the headline.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:media'
+  handler_settings:
+    target_bundles:
+      image: image
+    sort:
+      field: _none
+      direction: ASC
+    auto_create: false
+    auto_create_bundle: ''
+field_type: entity_reference

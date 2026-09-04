@@ -1,0 +1,19 @@
+{#
+/**
+ * @file
+ * The page: skip link, the site header, <main>, the site footer — the shell
+ * every static template shares (templates/*.html). The header and footer are
+ * includes, not regions (see icon.info.yml). `main_attributes` comes from
+ * icon_preprocess_page() and is where a page layer adds its shell class
+ * (`.page-home` on the homepage).
+ *
+ * Available variables: page.highlighted (status messages), page.content.
+ */
+#}
+<a class="sr-only" href="#main">{{ 'Skip to content'|t }}</a>
+{% include '@icon/includes/site-header.html.twig' %}
+<main{{ main_attributes }}>
+  {{ page.highlighted }}
+  {{ page.content }}
+</main>
+{% include '@icon/includes/site-footer.html.twig' %}

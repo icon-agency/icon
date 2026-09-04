@@ -1,0 +1,20 @@
+uuid: 1ca07705-a4d6-4cf6-963f-a6534b94d24d
+langcode: en
+status: true
+dependencies:
+  module:
+    - media
+    - paragraphs
+id: paragraph.field_work_video_cover
+field_name: field_work_video_cover
+entity_type: paragraph
+type: entity_reference
+settings:
+  target_type: media
+module: media
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

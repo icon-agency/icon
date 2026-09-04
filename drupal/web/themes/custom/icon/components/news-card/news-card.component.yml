@@ -1,0 +1,59 @@
+$schema: https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json
+name: News card
+group: News
+status: stable
+description: >
+  One news story card — square tile left, title top-right, meta on the tile's
+  baseline. The same component the /news listing and the homepage rail
+  render; sized by its own container (src/components/news-card.css).
+props:
+  type: object
+  required:
+    - title
+    - url
+    - image
+    - category
+    - date
+  properties:
+    title:
+      type: string
+      title: Title
+      examples:
+        - ICON expands into the Pacific with a new Suva studio
+    url:
+      type: string
+      format: uri-reference
+      title: Link
+      description: Where the card goes — the story's page.
+      examples:
+        - /news/icon-expands-into-the-pacific
+    image:
+      $ref: json-schema-definitions://canvas.module/image
+      type: object
+      title: Tile image
+      description: Cropped square by the card; supply a landscape or square photo.
+      examples:
+        - src: https://placehold.co/900x900
+          alt: Two ICON staff outside the new Suva office
+          width: 900
+          height: 900
+    category:
+      type: string
+      title: Category
+      examples:
+        - Agency
+    date:
+      type: string
+      format: date
+      title: Date
+      examples:
+        - '2026-07-24'
+    heading_level:
+      type: string
+      title: Heading level
+      description: The host page's call — h2 on the /news listing (it is the page's list), h3 under a section heading (the homepage rail, the article's Next up).
+      enum:
+        - h2
+        - h3
+      examples:
+        - h2

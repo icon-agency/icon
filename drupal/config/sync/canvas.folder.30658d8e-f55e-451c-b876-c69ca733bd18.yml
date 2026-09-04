@@ -1,0 +1,11 @@
+uuid: 30658d8e-f55e-451c-b876-c69ca733bd18
+langcode: en
+status: true
+dependencies:
+  config:
+    - canvas.component.sdc.icon.work-video
+name: Work
+configEntityTypeId: component
+weight: 0
+items:
+  - sdc.icon.work-video

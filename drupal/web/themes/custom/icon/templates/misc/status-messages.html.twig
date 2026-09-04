@@ -1,0 +1,36 @@
+{#
+/**
+ * @file
+ * Drupal's status messages as TOASTS (src/toast.css, js-theme/toast.js):
+ * a stack of dark pills in the bottom-left corner, clear of the wordmark,
+ * the nav and the admin sidebar, each with a close control. Statuses
+ * dismiss themselves after a few seconds; warnings and errors stay until
+ * closed. Core's contract is kept — data-drupal-messages, the
+ * messages / messages--{type} classes and the roles — so Drupal.Message
+ * (JS-added messages) and assistive tech behave as on any Drupal site.
+ * The account pages restyle the same markup inline (src/auth.css).
+ */
+#}
+<div class="toast" data-drupal-messages>
+  {% for type, messages in message_list %}
+    <div{{ attributes.addClass('toast__item', 'toast__item--' ~ type).setAttribute('role', type == 'error' ? 'alert' : 'status').setAttribute('data-toast', type) }}>
+      {% if status_headings[type] %}
+        <h2 class="sr-only">{{ status_headings[type] }}</h2>
+      {% endif %}
+      <div class="toast__text">
+        {% if messages|length > 1 %}
+          <ul class="toast__list">
+            {% for message in messages %}
+              <li>{{ message }}</li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          {{ messages|first }}
+        {% endif %}
+      </div>
+      <button class="toast__close" type="button" aria-label="{{ 'Dismiss'|t }}" data-toast-close>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>
+      </button>
+    </div>
+  {% endfor %}
+</div>

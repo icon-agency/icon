@@ -1,0 +1,32 @@
+{#
+/**
+ * @file
+ * Theme override for the basic structure of a single Drupal page.
+ *
+ * Differences from core's html.html.twig, both from the static templates:
+ * - the `js-animations` class is added to <html> by an inline script BEFORE
+ *   the stylesheet, so [data-animate] hosts start hidden only when JS is
+ *   definitely present (a no-JS page renders fully visible — docs/animation.md);
+ * - the skip link is the design system's `sr-only` link to #main, so it lives
+ *   in page.html.twig with the rest of the chrome.
+ *
+ * The theme class (light default / `dark` / `theme-work-article`) rides on
+ * <html> via html_attributes, never <body> — LESSONS.md.
+ */
+#}
+<!DOCTYPE html>
+<html{{ html_attributes }}>
+  <head>
+    <head-placeholder token="{{ placeholder_token }}">
+    <title>{{ head_title|safe_join(' — ') }}</title>
+    <script>document.documentElement.classList.add("js-animations");</script>
+    <css-placeholder token="{{ placeholder_token }}">
+    <js-placeholder token="{{ placeholder_token }}">
+  </head>
+  <body{{ attributes }}>
+    {{ page_top }}
+    {{ page }}
+    {{ page_bottom }}
+    <js-bottom-placeholder token="{{ placeholder_token }}">
+  </body>
+</html>

@@ -1,0 +1,37 @@
+$schema: https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json
+name: Homepage hero
+group: Homepage
+status: stable
+description: >
+  The stack-takeover hero (templates/homeC.html, src/utilities/home-c.css,
+  js/home-c.js): work pieces pop onto a pile, take over the screen, then play
+  as a reel under the drawn "Make what matters" lockup, each with its client
+  name (a link) bottom-left. Fed by the Homepage hero block (icon_site) —
+  place that block, not this component, on the page.
+libraryOverrides:
+  dependencies:
+    - icon/hero-loader
+    - icon/home-c
+props:
+  type: object
+  required:
+    - pieces
+  properties:
+    pieces:
+      type: array
+      title: Pieces
+      description: Each rendered twice — once as a pile card, once as a reel slide.
+      items:
+        type: object
+        properties:
+          client: { type: string }
+          url: { type: string }
+          media:
+            type: object
+            properties:
+              type: { type: string, enum: [image, video] }
+              src: { type: string }
+              alt: { type: string }
+      examples:
+        - - client: PHN North Western Melbourne
+            media: { type: image, src: https://placehold.co/1600x900, alt: '' }

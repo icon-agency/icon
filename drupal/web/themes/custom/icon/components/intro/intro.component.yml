@@ -1,0 +1,56 @@
+$schema: https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json
+name: Intro strip
+group: Homepage
+status: stable
+description: >
+  The homepage intro (templates/homeC.html): the logo-mark film, the two-voice
+  masthead, the draggable filmstrip, then the band — statement + About beside
+  the expertise list. The filmstrip and the expertise list are slots.
+libraryOverrides:
+  dependencies:
+    - icon/home-c
+props:
+  type: object
+  required:
+    - accent
+    - caps
+    - statement
+  properties:
+    accent:
+      type: string
+      title: Masthead accent (serif line)
+      examples:
+        - A strategic
+    caps:
+      type: string
+      title: Masthead caps line
+      examples:
+        - communications agency for complex change
+    statement:
+      type: string
+      title: Intro text
+      examples:
+        - ICON is an independent Australian agency with over 24 years of experience. We’ve built deep expertise across government, technology, health, education and social impact, helping organisations and change-makers create work that matters.
+    about_url:
+      type: string
+      format: uri-reference
+      title: About link
+      examples:
+        - /about
+    about_label:
+      type: string
+      title: About link label
+      examples:
+        - About us
+    expertise_label:
+      type: string
+      title: Expertise heading
+      examples:
+        - Our expertise
+slots:
+  strip:
+    title: Filmstrip cards
+    description: Photo and Fact card components, in the order they drift past.
+  expertise:
+    title: Expertise links
+    description: Expertise link components — one per service.

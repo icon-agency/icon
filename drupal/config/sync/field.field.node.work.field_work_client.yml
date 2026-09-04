@@ -1,0 +1,19 @@
+uuid: 3d946d92-378b-40a6-8866-6a0d883e0aae
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_work_client
+    - node.type.work
+id: node.work.field_work_client
+field_name: field_work_client
+entity_type: node
+bundle: work
+label: Client
+description: 'The client name — under the project title and on the card.'
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

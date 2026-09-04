@@ -1,0 +1,19 @@
+uuid: 2a455047-e699-4ae1-b38c-9606c5567003
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_work_statement
+    - node.type.work
+id: node.work.field_work_statement
+field_name: field_work_statement
+entity_type: node
+bundle: work
+label: 'Feature statement'
+description: 'The serif statement under the banner: the project outcome in one line.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string_long

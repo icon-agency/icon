@@ -50,7 +50,8 @@ Keep plans brief: 3–6 bullets maximum.
 ## Build
 - `npm run dev` — Tailwind v4 CLI watch mode, **unminified** → `css/main.css`
 - `npm run build` — one-shot, minified → `css/main.css`
-- `npm run verify` — the gate (`scripts/verify.mjs`): rebuilds and byte-compares `css/main.css`, rejects raw colours outside `colors.css`, media queries off the breakpoint table, and literal inline styles. Run it before finishing.
+- `npm run verify` — the gate (`scripts/verify.mjs`): rebuilds and byte-compares `css/main.css`, rejects raw colours outside `colors.css`, media queries off the breakpoint table, and literal inline styles, and checks the Drupal theme's `css/main.css` + generated `js/` are current. Run it before finishing.
+- `npm run build:theme` — the Drupal theme (`drupal/web/themes/custom/icon`): its `src/main.css` imports the root entry unchanged and adds the theme's Twig + `components/` as `@source`s → `css/main.css`; `scripts/theme-js.mjs` wraps each `js/*.js` into its `Drupal.behaviors` entry → `js/`. Both outputs are committed and generated — never edit them in the theme.
 
 The build is driven by `src/main.css`, which `@import`s the token files, base styles, utilities, and every component file in order. `@source "../templates"` and `@source "../index.html"` tell Tailwind where to scan for utility classes used in markup. Local preview: `node server.js` on port 4100.
 

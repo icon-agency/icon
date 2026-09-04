@@ -1,0 +1,10 @@
+uuid: 64dd783f-8de1-4e65-aaf1-66a162fa76ca
+langcode: en
+status: true
+dependencies: {  }
+id: pull_quote
+label: 'Pull quote'
+icon_uuid: null
+icon_default: null
+description: 'A big centred statement that divides the article.'
+behavior_plugins: {  }

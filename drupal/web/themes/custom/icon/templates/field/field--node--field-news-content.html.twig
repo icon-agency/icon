@@ -1,0 +1,10 @@
+{#
+/**
+ * @file
+ * The article body field: its paragraphs, bare. Core's field.html.twig wraps
+ * items in .field/.field__item divs, which would sit between
+ * .news-article__flow and each block and break the flow's direct-child
+ * measure rule (src/utilities/news-article.css).
+ */
+#}
+{% for item in items %}{{ item.content }}{% endfor %}

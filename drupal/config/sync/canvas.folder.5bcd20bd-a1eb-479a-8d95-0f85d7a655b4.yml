@@ -1,0 +1,25 @@
+uuid: 5bcd20bd-a1eb-479a-8d95-0f85d7a655b4
+langcode: en
+status: true
+dependencies:
+  config:
+    - canvas.component.block.icon_featured_work
+    - canvas.component.block.icon_hero
+    - canvas.component.block.views_block.clients-marquee
+    - canvas.component.block.views_block.news-latest
+    - canvas.component.block.views_block.news-next_up
+    - canvas.component.block.views_block.work-featured
+    - canvas.component.block.views_block.work-hero
+    - canvas.component.block.views_block.work-next_up
+name: ICON
+configEntityTypeId: component
+weight: 0
+items:
+  - block.icon_featured_work
+  - block.icon_hero
+  - block.views_block.clients-marquee
+  - block.views_block.news-latest
+  - block.views_block.news-next_up
+  - block.views_block.work-featured
+  - block.views_block.work-hero
+  - block.views_block.work-next_up

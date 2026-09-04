@@ -1,0 +1,19 @@
+uuid: ee04b1a7-36f9-4ac2-9eab-bf7556a78cd3
+langcode: en
+status: true
+dependencies:
+  config:
+    - canvas.component.sdc.icon.clients
+    - canvas.component.sdc.icon.intro
+    - canvas.component.sdc.icon.intro-expertise
+    - canvas.component.sdc.icon.intro-fact
+    - canvas.component.sdc.icon.intro-photo
+name: Homepage
+configEntityTypeId: component
+weight: 0
+items:
+  - sdc.icon.clients
+  - sdc.icon.intro
+  - sdc.icon.intro-expertise
+  - sdc.icon.intro-fact
+  - sdc.icon.intro-photo

@@ -1,0 +1,22 @@
+$schema: https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json
+name: Expertise link
+group: Homepage
+status: stable
+description: One service in the intro's expertise list.
+props:
+  type: object
+  required:
+    - label
+    - url
+  properties:
+    label:
+      type: string
+      title: Service
+      examples:
+        - Creative
+    url:
+      type: string
+      format: uri-reference
+      title: Link
+      examples:
+        - /services#creative

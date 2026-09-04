@@ -1,0 +1,9 @@
+{#
+/**
+ * @file
+ * Paragraph "work-stats" = the work-stats SDC, props from icon_preprocess_paragraph().
+ * (In the case study body the field template renders these itself, grouping
+ * runs and galleries; this stands alone anywhere else a paragraph renders.)
+ */
+#}
+{% if sdc_props is not empty %}{{ include('icon:work-stats', sdc_props, with_context = false) }}{% endif %}

@@ -1,0 +1,26 @@
+uuid: 89d6d4fb-dd7b-499e-abc7-6b8a589565b6
+langcode: en
+status: true
+dependencies:
+  config:
+    - views.view.work
+  module:
+    - views
+active_version: 379e907965d88514
+versioned_properties:
+  active:
+    settings:
+      default_settings:
+        id: 'views_block:work-next_up'
+        label: 'Work: Next up'
+        label_display: '0'
+        provider: views
+        views_label: ''
+        items_per_page: null
+    fallback_metadata:
+      slot_definitions: null
+label: 'Work: Next up'
+id: block.views_block.work-next_up
+provider: views
+source: block
+source_local_id: 'views_block:work-next_up'

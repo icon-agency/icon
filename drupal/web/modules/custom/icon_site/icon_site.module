@@ -1,0 +1,94 @@
+<?php
+
+/**
+ * @file
+ * ICON site glue — hooks.
+ */
+
+declare(strict_types=1);
+
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\image\Entity\ImageStyle;
+use Drupal\media\MediaInterface;
+
+/**
+ * Implements hook_form_BASE_FORM_ID_alter() for node_form.
+ *
+ * News: core's "Promoted to front page" and "Sticky at top of lists" ARE the
+ * homepage feed's two controls (the news View's latest display filters on
+ * promote and sorts sticky first, then date) — they just need to say so.
+ */
+function icon_site_form_node_form_alter(array &$form, FormStateInterface $form_state): void {
+  $node = $form_state->getFormObject()->getEntity();
+  if ($node->bundle() !== 'news') {
+    return;
+  }
+  if (isset($form['promote']['widget']['value'])) {
+    $form['promote']['widget']['value']['#title'] = t('Promote to homepage');
+    $form['promote']['widget']['value']['#description'] = t('Show this story in the homepage news feed. The feed shows the three newest promoted stories by date.');
+  }
+  if (isset($form['sticky']['widget']['value'])) {
+    $form['sticky']['widget']['value']['#title'] = t('Pin on homepage');
+    $form['sticky']['widget']['value']['#description'] = t('Keep this story at the top of the homepage feed whatever its date. It must also be promoted.');
+  }
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter() for user_login_form.
+ *
+ * After logging in, land on the homepage rather than the account page. A
+ * ?destination= on the login URL still wins (Drupal applies it after the
+ * form's own redirect).
+ */
+function icon_site_form_user_login_form_alter(array &$form, FormStateInterface $form_state): void {
+  $form['#submit'][] = '_icon_site_login_to_front';
+}
+
+/**
+ * Submit handler: redirect the login form to the front page.
+ */
+function _icon_site_login_to_front(array &$form, FormStateInterface $form_state): void {
+  $form_state->setRedirect('<front>');
+}
+
+/**
+ * A media item (image OR video) as {type, src, alt, width, height}.
+ *
+ * Images go through the image style; videos are the file itself. Empty
+ * array when there is nothing usable. Shared by the theme (its
+ * _icon_media_source() delegates here) and the icon_site blocks.
+ */
+function icon_site_media_source(?MediaInterface $media, string $style_id): array {
+  if (!$media instanceof MediaInterface) {
+    return [];
+  }
+  if ($media->bundle() === 'video' && $media->hasField('field_media_video_file') && !$media->get('field_media_video_file')->isEmpty()) {
+    $file = $media->get('field_media_video_file')->entity;
+    return $file ? [
+      'type' => 'video',
+      'src' => \Drupal::service('file_url_generator')->generateString($file->getFileUri()),
+      'alt' => $media->label(),
+    ] : [];
+  }
+  if (!$media->hasField('field_media_image') || $media->get('field_media_image')->isEmpty()) {
+    return [];
+  }
+  $item = $media->get('field_media_image')->first();
+  $file = $item->entity;
+  if (!$file) {
+    return [];
+  }
+  $style = ImageStyle::load($style_id);
+  $uri = $file->getFileUri();
+  $dimensions = ['width' => (int) $item->width, 'height' => (int) $item->height];
+  if ($style) {
+    $style->transformDimensions($dimensions, $uri);
+  }
+  return [
+    'type' => 'image',
+    'src' => $style ? $style->buildUrl($uri) : \Drupal::service('file_url_generator')->generateString($uri),
+    'alt' => (string) $item->alt,
+    'width' => $dimensions['width'] ?: NULL,
+    'height' => $dimensions['height'] ?: NULL,
+  ];
+}

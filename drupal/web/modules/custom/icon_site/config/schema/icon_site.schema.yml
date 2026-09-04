@@ -1,0 +1,43 @@
+# Fully validatable, so Drupal Canvas accepts the block as a component
+# (docs/components.md §3.2.2) and edits its settings in the side panel.
+block.settings.icon_featured_work:
+  type: block_settings
+  label: 'Featured work block settings'
+  constraints:
+    FullyValidatable: ~
+  mapping:
+    projects:
+      type: sequence
+      label: 'Featured projects'
+      sequence:
+        type: integer
+        label: 'Work item ID'
+        constraints:
+          Range:
+            min: 1
+
+block.settings.icon_hero:
+  type: block_settings
+  label: 'Homepage hero block settings'
+  constraints:
+    FullyValidatable: ~
+  mapping:
+    pieces:
+      type: sequence
+      label: 'Slides'
+      sequence:
+        type: mapping
+        label: Slide
+        mapping:
+          media:
+            type: integer
+            label: 'Media ID (video or image)'
+            constraints:
+              Range:
+                min: 1
+          client:
+            type: label
+            label: 'Client name'
+          url:
+            type: string
+            label: Link

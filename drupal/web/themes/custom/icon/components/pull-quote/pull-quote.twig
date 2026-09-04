@@ -1,0 +1,14 @@
+{#
+/**
+ * @file
+ * pull-quote — thin copy of the statement blocks in templates/news-article.html.
+ * The variant class is the one conditional, set in plain Twig (no CVA).
+ */
+#}
+{% set classes = ['pull-quote', variant == 'upright' ? 'pull-quote--upright'] %}
+<blockquote class="{{ classes|filter(c => c)|join(' ') }}" data-animate>
+  <p class="pull-quote__text">{{ text }}</p>
+  {% if cite %}
+    <footer class="pull-quote__cite">{{ cite }}</footer>
+  {% endif %}
+</blockquote>

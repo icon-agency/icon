@@ -13,6 +13,10 @@
 /* Where Tailwind looks for utility classes used in markup. */
 @source "../templates";
 @source "../index.html";
+/* The Drupal site lives beside the design system (drupal/); its theme has
+   its own build that imports this file, so the static build must not
+   auto-detect the theme's Twig and CSS as sources. */
+@source not "../drupal";
 
 /* Class-based dark mode (.dark on <html>). Light is the default; the
    dark-opening pages set the class in markup and hand over on scroll. */

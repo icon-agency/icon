@@ -1,0 +1,54 @@
+{#
+/**
+ * @file
+ * The /news listing — thin copy of templates/news-b.html (header B: the
+ * centred page-header--stack masthead over the paired list).
+ *
+ * The masthead and chips live here, not in a Views header: the chips are
+ * the View's category argument rendered as links (icon_preprocess_views_view
+ * builds `chips` from the field's allowed values + the ?category param), so
+ * they filter server-side and js/news.js enhances them in place. `rows` is
+ * views-view-unformatted--news.html.twig; `pager` is the themed pager.
+ */
+#}
+<div class="page-header page-header--stack">
+  <div class="page-header__inner">
+    <h1 class="page-header__heading page-header__heading--lockup" data-animate>
+      <span class="page-header__lockup-accent masthead-accent">{{ 'News'|t }}</span>
+      <span class="page-header__lockup-caps">{{ 'The latest updates and insights'|t }}</span>
+    </h1>
+    <div class="page-header__subscribe-slot" data-subscribe-slot data-animate style="--animate-delay: 80ms">
+      <div class="page-header__subscribe-closed">
+        <div class="page-header__slot-clip">
+          <button class="page-header__subscribe quiet-link invite-arrow" type="button" data-subscribe-open aria-expanded="false">{{ 'Subscribe'|t }}</button>
+        </div>
+      </div>
+      <div class="page-header__subscribe-reveal">
+        <div class="page-header__slot-clip">
+          <label class="sr-only" for="header-email">{{ 'Email address'|t }}</label>
+          <div class="page-header__email-row">
+            <input class="page-header__email" id="header-email" type="email" name="email" placeholder="{{ 'Your email'|t }}" autocomplete="email" />
+            <button class="page-header__email-go invite-arrow" type="button" data-subscribe aria-label="{{ 'Subscribe'|t }}"></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-header__filter-band" data-rule="both">
+    <div class="page-header__filters">
+      <div class="filter-bar" role="group" aria-label="{{ 'Filter news by category'|t }}">
+        {% for chip in chips %}
+          <a class="filter-bar__chip{{ chip.active ? ' is-active' }}" href="{{ chip.url }}" data-filter="{{ chip.key }}"{% if chip.active %} aria-current="true"{% endif %}>{{ chip.label }}</a>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<section aria-label="{{ 'News stories'|t }}">
+  <p class="sr-only" aria-live="polite" data-news-status></p>
+  {{ rows }}
+  {{ empty }}
+  {{ pager }}
+</section>

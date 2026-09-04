@@ -1,0 +1,23 @@
+uuid: 56a3578e-0ff0-4aaa-9cfa-18044e576bb0
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_news_article_video_url
+    - paragraphs.paragraphs_type.news_article_video
+  module:
+    - link
+id: paragraph.news_article_video.field_news_article_video_url
+field_name: field_news_article_video_url
+entity_type: paragraph
+bundle: news_article_video
+label: 'Embed URL'
+description: 'The player embed address: https://www.youtube-nocookie.com/embed/VIDEO_ID or https://player.vimeo.com/video/VIDEO_ID — not the watch-page link.'
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  title: 0
+  link_type: 16
+field_type: link

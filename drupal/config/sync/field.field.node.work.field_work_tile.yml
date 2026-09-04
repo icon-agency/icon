@@ -1,0 +1,31 @@
+uuid: 383096e0-b54d-426d-a204-fb8fa8cf61b4
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_work_tile
+    - media.type.image
+    - media.type.video
+    - node.type.work
+id: node.work.field_work_tile
+field_name: field_work_tile
+entity_type: node
+bundle: work
+label: Tile
+description: 'The card on /work and the homepage: an image or a looping film. Landscape, at least 1600px wide.'
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:media'
+  handler_settings:
+    target_bundles:
+      image: image
+      video: video
+    sort:
+      field: _none
+      direction: ASC
+    auto_create: false
+    auto_create_bundle: ''
+field_type: entity_reference

@@ -1,0 +1,31 @@
+uuid: 346826ac-f9d2-4ba1-8598-bc4e9aa5045f
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_work_banner
+    - media.type.image
+    - media.type.video
+    - node.type.work
+id: node.work.field_work_banner
+field_name: field_work_banner
+entity_type: node
+bundle: work
+label: Banner
+description: 'The wide hero under the title: an image or a looping film. Falls back to the tile.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:media'
+  handler_settings:
+    target_bundles:
+      image: image
+      video: video
+    sort:
+      field: _none
+      direction: ASC
+    auto_create: false
+    auto_create_bundle: ''
+field_type: entity_reference

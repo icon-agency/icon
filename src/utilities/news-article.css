@@ -309,14 +309,22 @@
 
    The FIGURES are siblings, not children, of this rule — they keep the
    full flow width in both regimes: text in a measure, images breaking
-   wide. */
-.news-article__prose {
+   wide.
+
+   Two ways to be a prose chunk: the static template's explicit
+   .news-article__prose, or — in Drupal — a bare .content-page placed
+   directly in the flow by the Canvas `prose` SDC, which cannot know which
+   article it sits in and so carries no page class. The parent selector
+   gives it the measure instead. */
+.news-article__prose,
+.news-article__flow > .content-page {
   width: 100%;
   margin-inline: auto;
 }
 
 @media (min-width: 1024px) {
-  .news-article__prose {
+  .news-article__prose,
+  .news-article__flow > .content-page {
     max-width: clamp(46rem, 40vw, 64rem);
   }
 }

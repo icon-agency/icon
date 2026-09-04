@@ -1,0 +1,171 @@
+uuid: c4f616c8-e35d-49fb-b7db-4dc49b1b8c35
+langcode: en
+status: true
+dependencies:
+  module:
+    - link
+  theme:
+    - icon
+active_version: 3dd9b3197efcabbb
+versioned_properties:
+  active:
+    settings:
+      prop_field_definitions:
+        accent:
+          required: true
+          field_type: string
+          field_storage_settings: {  }
+          field_instance_settings: {  }
+          field_widget: string_textfield
+          default_value:
+            -
+              value: 'A strategic'
+          expression: ℹ︎string␟value
+          derived_schema_metadata:
+            string_shape: {  }
+        caps:
+          required: true
+          field_type: string
+          field_storage_settings: {  }
+          field_instance_settings: {  }
+          field_widget: string_textfield
+          default_value:
+            -
+              value: 'communications agency for complex change'
+          expression: ℹ︎string␟value
+          derived_schema_metadata:
+            string_shape: {  }
+        statement:
+          required: true
+          field_type: string
+          field_storage_settings: {  }
+          field_instance_settings: {  }
+          field_widget: string_textfield
+          default_value:
+            -
+              value: 'ICON is an independent Australian agency with over 24 years of experience. We’ve built deep expertise across government, technology, health, education and social impact, helping organisations and change-makers create work that matters.'
+          expression: ℹ︎string␟value
+          derived_schema_metadata:
+            string_shape: {  }
+        about_url:
+          required: false
+          field_type: link
+          field_storage_settings: {  }
+          field_instance_settings:
+            title: 0
+            link_type: 17
+          field_widget: link_default
+          default_value:
+            -
+              uri: /about
+              options: {  }
+          expression: ℹ︎link␟url
+          derived_schema_metadata:
+            string_shape:
+              format: uri-reference
+        about_label:
+          required: false
+          field_type: string
+          field_storage_settings: {  }
+          field_instance_settings: {  }
+          field_widget: string_textfield
+          default_value:
+            -
+              value: 'About us'
+          expression: ℹ︎string␟value
+          derived_schema_metadata:
+            string_shape: {  }
+        expertise_label:
+          required: false
+          field_type: string
+          field_storage_settings: {  }
+          field_instance_settings: {  }
+          field_widget: string_textfield
+          default_value:
+            -
+              value: 'Our expertise'
+          expression: ℹ︎string␟value
+          derived_schema_metadata:
+            string_shape: {  }
+    fallback_metadata:
+      slot_definitions:
+        strip:
+          title: 'Filmstrip cards'
+          description: 'Photo and Fact card components, in the order they drift past.'
+        expertise:
+          title: 'Expertise links'
+          description: 'Expertise link components — one per service.'
+  d1dd0ecff51b6078:
+    settings:
+      prop_field_definitions:
+        accent:
+          required: true
+          field_type: string
+          field_storage_settings: {  }
+          field_instance_settings: {  }
+          field_widget: string_textfield
+          default_value:
+            -
+              value: 'A strategic'
+          expression: ℹ︎string␟value
+          derived_schema_metadata:
+            string_shape: {  }
+        caps:
+          required: true
+          field_type: string
+          field_storage_settings: {  }
+          field_instance_settings: {  }
+          field_widget: string_textfield
+          default_value:
+            -
+              value: 'communications agency for complex change'
+          expression: ℹ︎string␟value
+          derived_schema_metadata:
+            string_shape: {  }
+        statement:
+          required: true
+          field_type: string
+          field_storage_settings: {  }
+          field_instance_settings: {  }
+          field_widget: string_textfield
+          default_value:
+            -
+              value: 'ICON is an independent Australian agency with over 24 years of experience. We’ve built deep expertise across government, technology, health, education and social impact, helping organisations and change-makers create work that matters.'
+          expression: ℹ︎string␟value
+          derived_schema_metadata:
+            string_shape: {  }
+        about_url:
+          required: false
+          field_type: link
+          field_storage_settings: {  }
+          field_instance_settings:
+            title: 0
+            link_type: 17
+          field_widget: link_default
+          default_value:
+            -
+              uri: /about
+              options: {  }
+          expression: ℹ︎link␟url
+          derived_schema_metadata:
+            string_shape:
+              format: uri-reference
+        about_label:
+          required: false
+          field_type: string
+          field_storage_settings: {  }
+          field_instance_settings: {  }
+          field_widget: string_textfield
+          default_value:
+            -
+              value: 'About us'
+          expression: ℹ︎string␟value
+          derived_schema_metadata:
+            string_shape: {  }
+    fallback_metadata:
+      slot_definitions: {  }
+label: 'Intro strip'
+id: sdc.icon.intro
+provider: icon
+source: sdc
+source_local_id: 'icon:intro'

@@ -1,0 +1,30 @@
+uuid: e6f1c03c-c3bd-4558-aaf8-b3b811a0859c
+langcode: en
+status: true
+dependencies:
+  module:
+    - options
+    - paragraphs
+id: paragraph.field_work_gallery_style
+field_name: field_work_gallery_style
+entity_type: paragraph
+type: list_string
+settings:
+  allowed_values:
+    -
+      value: default
+      label: Default
+    -
+      value: portrait
+      label: 'Portrait pair (7:10)'
+    -
+      value: layered
+      label: 'Layered (float over a ground)'
+  allowed_values_function: ''
+module: options
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

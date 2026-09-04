@@ -1,0 +1,11 @@
+{#
+/**
+ * @file
+ * News teaser = the news-card SDC. The card's props are computed in
+ * icon_preprocess_node() (card: title, url, image, category, date); the
+ * heading level is the host list's call (h2 on /news, h3 in a rail).
+ * No <article> wrapper: news-card.css establishes its container query on
+ * the card's DIRECT parent, which must be the list item.
+ */
+#}
+{{ include('icon:news-card', card|merge({ heading_level: card_heading_level|default('h2') }), with_context = false) }}

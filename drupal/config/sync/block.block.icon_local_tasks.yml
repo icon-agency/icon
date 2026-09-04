@@ -1,0 +1,22 @@
+uuid: e77a81b7-bbaa-4441-b8b1-673d4016eb6e
+langcode: en
+status: true
+dependencies:
+  module:
+    - system
+  theme:
+    - icon
+id: icon_local_tasks
+theme: icon
+region: highlighted
+weight: -10
+provider: null
+plugin: local_tasks_block
+settings:
+  id: local_tasks_block
+  label: Tabs
+  label_display: '0'
+  provider: system
+  primary: true
+  secondary: true
+visibility: {  }

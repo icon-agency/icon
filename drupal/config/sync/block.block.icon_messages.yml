@@ -1,0 +1,22 @@
+uuid: 120c008d-0de2-440f-b11d-959c05a7994d
+langcode: en
+status: true
+dependencies:
+  module:
+    - system
+  theme:
+    - icon
+_core:
+  default_config_hash: BZ5tpW7H8X4PVGRm3MImTIHd2tN0eF7zOtp4SpRYUA0
+id: icon_messages
+theme: icon
+region: highlighted
+weight: -5
+provider: null
+plugin: system_messages_block
+settings:
+  id: system_messages_block
+  label: 'Status messages'
+  label_display: '0'
+  provider: system
+visibility: {  }

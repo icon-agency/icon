@@ -1,0 +1,71 @@
+$schema: https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json
+name: Work card
+group: Work
+status: stable
+description: >
+  One project tile — the homepage .work block's item (src/utilities/home-c.css):
+  a media frame (image or looping film) over a caption of title + client.
+  Worn by the /work landing, the article's Next up rail and the homepage.
+props:
+  type: object
+  required:
+    - title
+    - url
+    - client
+    - media
+  properties:
+    title:
+      type: string
+      title: Title
+      examples:
+        - Transforming the elephant in the room into conversations that change lives
+    url:
+      type: string
+      format: uri-reference
+      title: Link
+      examples:
+        - /work/raise-it
+    client:
+      type: string
+      title: Client
+      examples:
+        - PHN North Western Melbourne
+    media:
+      type: object
+      title: Tile media
+      description: An image (src, alt, width, height) or a looping film (type video, src).
+      properties:
+        type:
+          type: string
+          enum: [image, video]
+        src:
+          type: string
+        alt:
+          type: string
+        width:
+          type: integer
+        height:
+          type: integer
+      examples:
+        - type: image
+          src: https://placehold.co/1600x1067
+          alt: Campaign creative
+          width: 1600
+          height: 1067
+    heading_level:
+      type: string
+      title: Heading level
+      enum: [h2, h3]
+      examples:
+        - h2
+    wide:
+      type: boolean
+      title: Wide feature
+      description: The homepage's 16:9 feature across all twelve columns (.work__item--wide).
+      examples:
+        - false
+    delay:
+      type: integer
+      title: Caption fade-up delay (ms)
+      examples:
+        - 0

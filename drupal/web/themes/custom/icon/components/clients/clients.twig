@@ -1,0 +1,29 @@
+{#
+/**
+ * @file
+ * clients — thin copy of the logo marquee in templates/homeC.html: two
+ * counter-drifting rows, the client list's first half over its second, each
+ * row a seamless track pair (the second track aria-hidden, empty alts). The
+ * component owns colour and sizing (.client__logo forces mono ink); the file
+ * owns clean geometry — assets/client-logos/README.md. Behaviour: js/home-c.js
+ * §3g (drift + drag); the CSS keyframes are the no-JS fallback.
+ */
+#}
+{% set half = ((logos|length) / 2)|round(0, 'ceil') %}
+{% set rows = [logos|slice(0, half), logos|slice(half)] %}
+<section class="clients" aria-label="{{ heading|default('Selected clients'|t) }}">
+  {% for row in rows|filter(r => r is not empty) %}
+    <div class="clients__scroller{{ loop.index == 2 ? ' clients__scroller--reverse' }}">
+      <ul class="clients__track">
+        {% for logo in row %}
+          <li class="client"><img class="client__logo" loading="lazy" src="{{ logo.src }}" alt="{{ logo.alt }}" /></li>
+        {% endfor %}
+      </ul>
+      <ul class="clients__track" aria-hidden="true">
+        {% for logo in row %}
+          <li class="client"><img class="client__logo" loading="lazy" src="{{ logo.src }}" alt="" /></li>
+        {% endfor %}
+      </ul>
+    </div>
+  {% endfor %}
+</section>

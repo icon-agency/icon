@@ -1,0 +1,18 @@
+{#
+/**
+ * @file
+ * The case study's "Next up" rail (templates/work-article-master.html):
+ * the two-voice lockup, two work cards, More. Still on the client theme —
+ * the footer alone returns to the site theme.
+ */
+#}
+<section class="work-article__next" data-rule="top" aria-label="{{ 'Next up'|t }}">
+  <h2 class="work-article__next-heading reveal-lines" data-animate>
+    <span class="reveal-lines__line lockup-accent masthead-accent"><span class="reveal-lines__word" style="--w: 0">{{ 'Next up'|t }}</span></span>
+    <span class="reveal-lines__line lockup-caps"><span class="reveal-lines__word" style="--w: 1">{{ 'Work'|t }}</span></span>
+  </h2>
+  {{ rows }}
+  <div class="work-article__next-more">
+    <a class="news__more invite-arrow" href="{{ path('view.work.page_1') }}" aria-label="{{ 'More work'|t }}">{{ 'More'|t }}</a>
+  </div>
+</section>

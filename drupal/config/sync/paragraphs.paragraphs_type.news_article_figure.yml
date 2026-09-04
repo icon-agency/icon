@@ -1,0 +1,10 @@
+uuid: dc7eb811-c5f0-4b3b-aafd-976c7cf7b891
+langcode: en
+status: true
+dependencies: {  }
+id: news_article_figure
+label: Image
+icon_uuid: null
+icon_default: null
+description: 'A wide image that breaks out of the text measure.'
+behavior_plugins: {  }

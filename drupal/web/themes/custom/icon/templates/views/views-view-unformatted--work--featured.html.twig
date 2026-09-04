@@ -1,0 +1,13 @@
+{#
+/**
+ * @file
+ * The homepage work rows: split pair, wide feature, tall-left pair —
+ * grouped by icon_preprocess_views_view_unformatted() into `work_rows`
+ * ({ modifier, items }) from the five results, as templates/homeC.html.
+ */
+#}
+{% for row in work_rows %}
+  <div class="work__row{{ row.modifier ? ' ' ~ row.modifier }}">
+    {% for item in row.items %}{{ item }}{% endfor %}
+  </div>
+{% endfor %}

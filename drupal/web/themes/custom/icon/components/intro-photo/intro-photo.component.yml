@@ -1,0 +1,19 @@
+$schema: https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json
+name: Photo (filmstrip)
+group: Homepage
+status: stable
+description: One photo card in the intro filmstrip. Alt text comes from the media item.
+props:
+  type: object
+  required:
+    - image
+  properties:
+    image:
+      $ref: json-schema-definitions://canvas.module/image
+      type: object
+      title: Photo
+      examples:
+        - src: https://placehold.co/800x1000
+          alt: The ICON team
+          width: 800
+          height: 1000

@@ -1,0 +1,48 @@
+uuid: 18b8599c-1718-4e66-81b7-b3f3e676f4f8
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.media.logo.field_logo_weight
+    - field.field.media.logo.field_media_file
+    - media.type.logo
+  module:
+    - file
+id: media.logo.default
+targetEntityType: media
+bundle: logo
+mode: default
+content:
+  field_logo_weight:
+    type: number
+    weight: 2
+    region: content
+    settings:
+      placeholder: ''
+    third_party_settings: {  }
+  field_media_file:
+    type: file_generic
+    weight: 1
+    region: content
+    settings:
+      progress_indicator: throbber
+    third_party_settings: {  }
+  name:
+    type: string_textfield
+    weight: 0
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  status:
+    type: boolean_checkbox
+    weight: 10
+    region: content
+    settings:
+      display_label: true
+    third_party_settings: {  }
+hidden:
+  created: true
+  path: true
+  uid: true

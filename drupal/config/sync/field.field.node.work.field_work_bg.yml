@@ -1,0 +1,21 @@
+uuid: b8b866bc-c638-48b2-8a25-9f4ffe81e360
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_work_bg
+    - node.type.work
+id: node.work.field_work_bg
+field_name: field_work_bg
+entity_type: node
+bundle: work
+label: 'Page colour'
+description: 'The client colour the whole page wears, as a hex value (#0000ff). Check the pair clears AA with the ink colour.'
+required: true
+translatable: false
+default_value:
+  -
+    value: '#0000ff'
+default_value_callback: ''
+settings: {  }
+field_type: string

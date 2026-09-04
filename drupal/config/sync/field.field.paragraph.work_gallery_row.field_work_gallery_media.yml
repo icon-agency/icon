@@ -1,0 +1,31 @@
+uuid: 6d6bc920-4152-4887-95b5-4b33a5b4316b
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_work_gallery_media
+    - media.type.image
+    - media.type.video
+    - paragraphs.paragraphs_type.work_gallery_row
+id: paragraph.work_gallery_row.field_work_gallery_media
+field_name: field_work_gallery_media
+entity_type: paragraph
+bundle: work_gallery_row
+label: Media
+description: 'One image or film for a wide row, two for a pair. For a layered row: the first is the ground, the last floats (or one item floating on the ground colour).'
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:media'
+  handler_settings:
+    target_bundles:
+      image: image
+      video: video
+    sort:
+      field: _none
+      direction: ASC
+    auto_create: false
+    auto_create_bundle: ''
+field_type: entity_reference

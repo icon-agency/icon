@@ -1,0 +1,15 @@
+uuid: 7352f19c-e228-4da7-b8d1-45b754fabfc3
+langcode: en
+status: true
+dependencies: {  }
+name: news_hero
+label: 'News hero banner (2400)'
+effects:
+  a1b2c3d4-0000-4000-8000-000000000003:
+    uuid: a1b2c3d4-0000-4000-8000-000000000003
+    id: image_scale
+    weight: 1
+    data:
+      width: 2400
+      height: null
+      upscale: false

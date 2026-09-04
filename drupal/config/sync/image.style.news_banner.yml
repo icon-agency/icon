@@ -1,0 +1,15 @@
+uuid: 6425c3c2-d610-4335-9642-13a54e7ae85f
+langcode: en
+status: true
+dependencies: {  }
+name: news_banner
+label: 'News banner (1800)'
+effects:
+  a1b2c3d4-0000-4000-8000-000000000002:
+    uuid: a1b2c3d4-0000-4000-8000-000000000002
+    id: image_scale
+    weight: 1
+    data:
+      width: 1800
+      height: null
+      upscale: false

@@ -1,0 +1,23 @@
+uuid: 7177ed05-1952-4785-8cff-c4f43e8498be
+langcode: en
+status: true
+dependencies:
+  module:
+    - icon_site
+active_version: 529e761982cb624f
+versioned_properties:
+  active:
+    settings:
+      default_settings:
+        id: icon_featured_work
+        label: 'Featured work'
+        label_display: '0'
+        provider: icon_site
+        projects: {  }
+    fallback_metadata:
+      slot_definitions: null
+label: 'Featured work'
+id: block.icon_featured_work
+provider: icon_site
+source: block
+source_local_id: icon_featured_work

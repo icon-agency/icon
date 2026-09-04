@@ -1,0 +1,14 @@
+{#
+/**
+ * @file
+ * The homepage rail's list (.news__list), a hairline above every card
+ * but the first (templates/news-article.html).
+ */
+#}
+<ul class="news__list" role="list">
+  {% for row in rows %}
+    <li{% if not loop.first %} data-rule="top"{% endif %}>
+      {{ row.content }}
+    </li>
+  {% endfor %}
+</ul>

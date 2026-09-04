@@ -1,0 +1,48 @@
+uuid: 9b617ee4-4518-437a-9bcb-b3a79df96be5
+langcode: en
+status: true
+dependencies:
+  module:
+    - link
+  theme:
+    - icon
+active_version: 12adc55f49229516
+versioned_properties:
+  active:
+    settings:
+      prop_field_definitions:
+        embed_url:
+          required: true
+          field_type: link
+          field_storage_settings: {  }
+          field_instance_settings:
+            title: 0
+            link_type: 16
+          field_widget: link_default
+          default_value:
+            -
+              uri: 'https://www.youtube-nocookie.com/embed/9kqQ7fBv7bM?rel=0&modestbranding=1&playsinline=1'
+              options: {  }
+          expression: ℹ︎link␟url
+          derived_schema_metadata:
+            string_shape:
+              format: uri
+        title:
+          required: true
+          field_type: string
+          field_storage_settings: {  }
+          field_instance_settings: {  }
+          field_widget: string_textfield
+          default_value:
+            -
+              value: 'Campaign film'
+          expression: ℹ︎string␟value
+          derived_schema_metadata:
+            string_shape: {  }
+    fallback_metadata:
+      slot_definitions: {  }
+label: Video
+id: sdc.icon.news-article-video
+provider: icon
+source: sdc
+source_local_id: 'icon:news-article-video'

@@ -1,0 +1,42 @@
+{#
+/**
+ * @file
+ * intro — thin copy of the intro strip in templates/homeC.html. Behaviours
+ * (filmstrip drift + drag, word cascade, the pinned expertise band) are
+ * js/home-c.js's (Drupal.behaviors.iconHomeC). The photos, the four fact
+ * cards and the expertise list are theme content for now — a later slice
+ * makes them editable (see docs/drupal-handoff.md).
+ */
+#}
+{# An SDC has no page context (base_path / directory): resolve the theme's own path. #}
+{% set theme_path = file_url(active_theme_path()) %}
+<section class="intro u-container" aria-label="About ICON">
+  <video class="intro__mark" autoplay loop muted playsinline aria-hidden="true" data-intro-mark>
+    <source src="{{ theme_path }}/assets/intro/logo-long.mp4" type='video/mp4; codecs="hvc1"' />
+    <source src="{{ theme_path }}/assets/intro/logo-long.webm" type="video/webm" />
+  </video>
+  <h2 class="intro__headline" data-reveal-words>
+    <span class="lockup-accent masthead-accent">{{ accent }}</span>
+    <span class="lockup-caps">{{ caps }}</span>
+  </h2>
+  <div class="intro__viewport" data-strip>
+    <div class="intro__track">
+{# SLOT strip: Photo and Fact card components, in the order they should drift. #}
+{{ strip }}
+</div>
+</div>
+
+<div class="intro__band">
+    <div class="intro__expertise" data-animate style="--animate-delay: 120ms">
+      <span class="intro__expertise-label">{{ expertise_label|default('Our expertise'|t) }}</span>
+      <ul class="intro__expertise-list" aria-label="{{ 'Our expertise'|t }}">
+{# SLOT expertise: Expertise link components. #}
+{{ expertise }}
+</ul>
+    </div>
+    <div class="intro__prose">
+      <p class="intro__statement" data-reveal-words>{{ statement }}</p>
+      {% if about_url %}<a class="intro__about quiet-link invite-arrow" href="{{ about_url }}" data-animate style="--animate-delay: 200ms">{{ about_label|default('About us'|t) }}</a>{% endif %}
+    </div>
+  </div>
+</section>

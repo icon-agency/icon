@@ -1,0 +1,9 @@
+{#
+/**
+ * @file
+ * Paragraph "work-video" = the work-video SDC, props from icon_preprocess_paragraph().
+ * (In the case study body the field template renders these itself, grouping
+ * runs and galleries; this stands alone anywhere else a paragraph renders.)
+ */
+#}
+{% if sdc_props is not empty %}{{ include('icon:work-video', sdc_props, with_context = false) }}{% endif %}

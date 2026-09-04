@@ -1,0 +1,29 @@
+uuid: d985b49b-3eca-4bac-9503-ee598cf75e38
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_work_video_cover
+    - media.type.image
+    - paragraphs.paragraphs_type.work_video
+id: paragraph.work_video.field_work_video_cover
+field_name: field_work_video_cover
+entity_type: paragraph
+bundle: work_video
+label: Cover
+description: 'The art-directed still shown until play.'
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:media'
+  handler_settings:
+    target_bundles:
+      image: image
+    sort:
+      field: _none
+      direction: ASC
+    auto_create: false
+    auto_create_bundle: ''
+field_type: entity_reference

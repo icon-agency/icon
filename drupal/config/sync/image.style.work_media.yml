@@ -1,0 +1,15 @@
+uuid: 65318744-c911-4c8f-b9db-b5a06371e48e
+langcode: en
+status: true
+dependencies: {  }
+name: work_media
+label: 'Work media (2400)'
+effects:
+  a1b2c3d4-0000-4000-8000-000000000004:
+    uuid: a1b2c3d4-0000-4000-8000-000000000004
+    id: image_scale
+    weight: 1
+    data:
+      width: 2400
+      height: null
+      upscale: false

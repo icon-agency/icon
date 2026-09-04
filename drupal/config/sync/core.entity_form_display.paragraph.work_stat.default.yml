@@ -1,0 +1,36 @@
+uuid: 6dbe2fd6-da22-427a-a7f5-e8c16e0f6c80
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.work_stat.field_work_stat_value
+    - field.field.paragraph.work_stat.field_work_stat_unit
+    - field.field.paragraph.work_stat.field_work_stat_label
+    - paragraphs.paragraphs_type.work_stat
+id: paragraph.work_stat.default
+targetEntityType: paragraph
+bundle: work_stat
+mode: default
+content:
+  field_work_stat_label:
+    type: string_textfield
+    weight: 2
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_work_stat_unit:
+    type: string_textfield
+    weight: 1
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_work_stat_value:
+    type: string_textfield
+    weight: 0
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+hidden:
+  created: true
+  status: true
+  uid: true

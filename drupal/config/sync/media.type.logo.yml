@@ -1,0 +1,16 @@
+uuid: 4bc6ec80-d7d1-492c-b473-fa9faf830dcf
+langcode: en
+status: true
+dependencies:
+  module:
+    - file
+id: logo
+label: Logo
+description: 'A client logo for the marquee: an SVG (preferred) or PNG, following assets/client-logos/README.md — cropped tight, transparent counters, paths only. The name is the alt text.'
+source: file
+queue_thumbnail_downloads: false
+new_revision: false
+source_configuration:
+  source_field: field_media_file
+field_map:
+  name: name
