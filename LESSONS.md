@@ -466,3 +466,20 @@ goes wrong.
   Canvas's command handler drops them. Also: a dialog has no message region,
   so validation errors are rendered inside the form.
 
+## The drop line that was never there: check computed styles, and turn aggregation off locally
+
+- **Symptom:** "Not seeing the line on drag." The sorter added the line's
+  class and set its top; every check I ran read those and passed. The rule
+  that draws it had been deleted by an earlier CSS dedupe, and for a while
+  the container also held a stale copy of the file behind aggregated
+  bundles the browser kept serving.
+- **Fix:** The line, ghost and dimming rules are back (the line and the
+  ghost are `position: fixed` on the body, the line above the ghost that
+  follows the pointer). Locally, CSS/JS aggregation is off in
+  `settings.local.php` (now included from settings.php) so edits reach the
+  browser on `drush cr`.
+- **Rule:** A UI check reads `getComputedStyle`, a rect and
+  `elementFromPoint` — never just a class name. And after editing a module
+  or theme file, confirm the served copy contains the change before
+  testing anything built on it.
+

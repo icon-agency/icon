@@ -250,3 +250,62 @@ body.icon-panel-sorting { cursor: grabbing; user-select: none; }
 .icon-panel__menu-empty { padding: 8px; color: #8b8d98; font-size: 12px; }
 /* Hidden field of Drupal's own autocomplete suggestion list — not used. */
 .ui-autocomplete { display: none !important; }
+
+/* Dragging: a ghost of the row follows the pointer; the row stays put,
+   dimmed; the line with its dot marks the gap it drops into. Both the ghost
+   and the line live on the body, position: fixed — the line ABOVE the
+   ghost, or the ghost (which follows the pointer, i.e. sits over the gap)
+   would hide it. */
+.icon-panel__list tr.is-dragging td { opacity: 0.35; }
+body.icon-panel-sorting { cursor: grabbing; user-select: none; }
+body.icon-panel-sorting .icon-panel__handle { cursor: grabbing; }
+.icon-panel__ghost {
+  position: fixed;
+  z-index: 1300;
+  pointer-events: none;
+  opacity: 0.92;
+  transform: translateY(0);
+}
+.icon-panel__ghost table {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: separate;
+  border-spacing: 0;
+  font: 13px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif;
+  color: #1c2024;
+}
+.icon-panel__ghost td {
+  padding: 10px 8px;
+  background: #fff;
+  border: 1px solid #0b64ee;
+  border-radius: 8px;
+  box-shadow: 0 14px 34px rgb(0 0 0 / 0.18);
+  vertical-align: top;
+  overflow: hidden;
+}
+.icon-panel__ghost td:first-child { display: flex; align-items: flex-start; gap: 8px; }
+.icon-panel__ghost .icon-panel__handle { background: #0b64ee; }
+.icon-panel__drop {
+  position: fixed;
+  z-index: 1400;
+  height: 3px;
+  margin-top: -1px;
+  border-radius: 2px;
+  background: #0b64ee;
+  box-shadow: 0 0 0 1px rgb(255 255 255 / 0.9);
+  pointer-events: none;
+  display: none;
+  transition: top 80ms cubic-bezier(0.2, 0, 0, 1);
+}
+.icon-panel__drop::before {
+  content: "";
+  position: absolute;
+  left: -4px;
+  top: -3.5px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #0b64ee;
+  box-shadow: 0 0 0 1px rgb(255 255 255 / 0.9);
+}
+.icon-panel__drop.is-on { display: block; }

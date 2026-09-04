@@ -36,21 +36,26 @@
    * gap it will drop into. Nothing else moves until release — then the
    * ghost glides into the gap, the row moves there, and the order is
    * written. Escape cancels. */
+  // The line is on the body, position: fixed, ABOVE the ghost: inside the
+  // card it sat underneath the ghost that follows the pointer, which is
+  // exactly where the gap is — so the editor never saw it.
   var lineFor = function (card) {
-    var line = card.querySelector(".icon-panel__drop");
+    var line = document.querySelector(".icon-panel__drop");
     if (!line) {
       line = document.createElement("div");
       line.className = "icon-panel__drop";
-      card.appendChild(line);
+      document.body.appendChild(line);
     }
+    var r = card.getBoundingClientRect();
+    line.style.left = r.left + "px";
+    line.style.width = r.width + "px";
     return line;
   };
 
   // Where the pointer would drop the row: an index into the row list, and
-  // the card-relative y of the gap before that index.
+  // the viewport y of the gap before that index.
   var targetFor = function (y) {
     var rows = rowsOf(drag.table);
-    var cardTop = drag.card.getBoundingClientRect().top;
     var index = rows.length;
     var lineY = null;
     for (var i = 0; i < rows.length; i++) {
@@ -58,13 +63,13 @@
       if (y < b.top + b.height / 2) {
         index = i;
         var prev = rows[i - 1];
-        lineY = prev ? (prev.getBoundingClientRect().bottom + b.top) / 2 - cardTop : b.top - 4 - cardTop;
+        lineY = prev ? (prev.getBoundingClientRect().bottom + b.top) / 2 : b.top - 4;
         break;
       }
     }
     if (lineY === null) {
       var last = rows[rows.length - 1].getBoundingClientRect();
-      lineY = last.bottom + 4 - cardTop;
+      lineY = last.bottom + 4;
     }
     return { index: index, y: lineY };
   };
@@ -120,8 +125,7 @@
     // then hands back to the real row.
     var destTop;
     if (moved) {
-      var cardTop = d.card.getBoundingClientRect().top;
-      destTop = cardTop + d.lineY - (d.target > rowsOf(d.table).indexOf(d.row) ? d.row.getBoundingClientRect().height : 0);
+      destTop = d.lineY - (d.target > rowsOf(d.table).indexOf(d.row) ? d.row.getBoundingClientRect().height : 0);
     } else {
       destTop = d.row.getBoundingClientRect().top;
     }
