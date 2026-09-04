@@ -10,7 +10,8 @@
  *
  * Two files stay plain IIFEs: velocity-lean (it only defines the shared
  * window.ICON.velocityLean, and consumers declare the library dependency) and
- * hero-loader (it must run in <head>, before anything else — see its header).
+ * hero-loader (it runs after the hero's markup and before the CDN scripts, as
+ * in the template — its library is footer-scoped with a negative weight).
  *
  * Prototype-only behaviours (hero, tagline, hero-sphere) are not ported: the
  * pages that use them are outside the system (AGENTS.md).

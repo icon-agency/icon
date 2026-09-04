@@ -28,11 +28,26 @@
  * The box is decorative (aria-hidden) and never present without JS, so nothing
  * is lost from the no-JS baseline: the CSS keeps it display:none there.
  */
-(function () {
+(function boot() {
   "use strict";
 
   var box = document.querySelector("[data-text-box]");
-  if (!box) return;
+  // NO BOX YET is a placement, not an absence. templates/homeC.html puts this
+  // script after the hero's markup, so the query lands first time. A host
+  // that loads it in <head> — Drupal's `header: true` did, Sep 2026 — runs it
+  // before the body is parsed: one query, nothing, silent return, and the
+  // whole boot never starts (the box sits as a static blue cover, .is-covered
+  // never lands, header and counter keep dark ink over blue). So while the
+  // document is still parsing, try once more when it has. This is the safety
+  // net, not the plan: DOMContentLoaded waits on the CDN scripts, which is the
+  // delay this file exists to run ahead of — load it after the markup and
+  // before them, as the template does.
+  if (!box) {
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", boot, { once: true });
+    }
+    return;
+  }
 
   var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 

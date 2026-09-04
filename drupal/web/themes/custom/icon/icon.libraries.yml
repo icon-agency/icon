@@ -104,12 +104,18 @@ work-video:
     - core/once
 
 # ── The homepage system ─────────────────────────────────────────────────────
-# hero-loader must exist on the FIRST frame (docs/animation.md §2): plain IIFE
-# in the <head>, before the CDN libraries.
+# hero-loader lights the loading screen and publishes the show's T0. It has to
+# run AFTER the hero's markup exists and BEFORE the CDN libraries the rest of
+# the show waits on — templates/homeC.html puts it at the end of <body>, ahead
+# of the GSAP/Lenis script tags. It was `header: true` here at first (Sep
+# 2026): that runs it in <head>, before the body is parsed, so its one
+# querySelector found nothing and the boot silently never started — a static
+# blue cover, dark ink, no pop, no T0. Footer scope, weighted ahead of the
+# externals (only negative weights are allowed in a library), is the
+# template's order.
 hero-loader:
-  header: true
   js:
-    js/hero-loader.js: {}
+    js/hero-loader.js: { weight: -20 }
 home-c:
   js:
     js/home-c.js: {}

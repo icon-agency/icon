@@ -9,6 +9,10 @@
       ],
       "port": 4100,
       "autoPort": true
+    },
+    {
+      "name": "icon-drupal",
+      "url": "http://127.0.0.1:57480"
     }
   ]
 }

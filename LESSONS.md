@@ -241,3 +241,27 @@ goes wrong.
   it serves. Resolution: the body moved to Paragraphs, each type rendered
   by the same SDC (`docs/drupal-handoff.md`, "Why not Canvas for the body").
   (4 Sep 2026.)
+
+## A `header: true` library runs before the body exists
+
+- **Symptom:** On the Drupal homepage the hero never booted — a static blue
+  cover, the card pile popping over dark-ink header and counter, no
+  `.is-covered`, the counter jumping (0)→(100). The static template was fine.
+- **Cause:** `hero-loader.js` was attached with `header: true` because its
+  header says "load it early, before the CDN scripts". In Drupal that puts it
+  in `<head>`, where `document.querySelector("[data-text-box]")` runs before
+  the body is parsed, finds nothing, and the IIFE returns silently. Nothing
+  logs; the CSS shows the box in its un-lit state, which happens to be a
+  full-viewport blue rectangle, so it even looked half-intended.
+- **Fix:** Footer scope with `weight: -20` on the file (Drupal only allows
+  negative weights in a library), which puts it after the markup and ahead
+  of the external scripts — the template's order. The loader also grew a
+  guard: no box while the document is still parsing → retry on
+  DOMContentLoaded, so a head placement degrades to a late boot instead of
+  none.
+- **Rule:** "early" for a DOM-querying script means *right after its markup*,
+  not `<head>`. Anything in a `header: true` library must be DOM-free or
+  defer itself. Traced with a class-timeline poll (hero / header / box
+  classes every 100ms) — the first line showed the box never got `.is-lit`
+  and `window.__heroLoaderT0` was undefined.
+

@@ -332,13 +332,34 @@
               bumpCount();
             }, Math.max(0, capAt - performance.now()));
 
-            // THE COUNTER IS REAL NOW. It was a fake clock driven off the animation's
-            // own progress; with load genuinely gating the show, it reports what has
-            // actually arrived. It moves unevenly, the way real loaders do.
+            // THE COUNTER IS REAL NOW — AND IT COUNTS. It was a fake clock driven off
+            // the animation's own progress; with load genuinely gating the show, it
+            // reports what has actually arrived. Each gate contributes a FRACTION,
+            // not a bit: a still is 0 until it decodes; a film is its buffered range
+            // against its duration — the bytes that are actually here, read live
+            // every frame by tick() — until its readyState gate settles, and it
+            // never claims the last 5% on its own: settle() does. Whole-gate counting
+            // moved in 20% steps, and with two stills and two films it read (40)
+            // then a jump to (100) — real, but it looked like a fake. Monotonic
+            // (max) so a re-estimate never runs it backwards.
             var totalGates = cards.length + 1;
             var loadPct = 0;
+            var progressOf = function (host, settled) {
+              if (settled) return 1;
+              var m = host.tagName === "IMG" || host.tagName === "VIDEO"
+                ? host : host.querySelector("img, video");
+              if (!m) return 1;
+              if (m.tagName === "IMG") return m.complete ? 0.9 : 0; // decode pending
+              var buffered = 0;
+              if (m.duration > 0 && m.buffered.length) {
+                buffered = m.buffered.end(m.buffered.length - 1) / m.duration;
+              }
+              return Math.min(0.95, Math.max(m.readyState / 8, buffered));
+            };
             var bumpCount = function () {
-              var done = ready.filter(Boolean).length + (reelReady ? 1 : 0);
+              var done = 0;
+              cards.forEach(function (c, i) { done += progressOf(c, ready[i]); });
+              done += progressOf(slides[slides.length - 1], reelReady);
               loadPct = Math.max(loadPct, Math.round((done / totalGates) * 100));
             };
             if (count) count.textContent = "(0)";
@@ -405,6 +426,7 @@
                   }
                 }
                 if (count && !hero.classList.contains("is-live")) {
+                  bumpCount(); // the films' buffers move between events — read them live
                   count.textContent = "(" + loadPct + ")";
                 }
                 // Progress of the LAST card's open. The subtrahend is the time the
