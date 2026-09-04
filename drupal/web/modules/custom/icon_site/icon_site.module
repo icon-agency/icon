@@ -191,6 +191,9 @@ function _icon_site_panel_node_form_after_build(array $form, FormStateInterface 
 function _icon_site_panel_form_ajax(array $form, FormStateInterface $form_state): AjaxResponse {
   $response = new AjaxResponse();
   if ($form_state->hasAnyErrors()) {
+    // The dialog has no message region: put the errors at the top of the
+    // form itself, or a failed save looks like nothing happened.
+    $form['panel_messages'] = ['#type' => 'status_messages', '#weight' => -100];
     $response->addCommand(new ReplaceCommand('#icon-panel-form', $form));
     return $response;
   }
