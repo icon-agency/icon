@@ -1,0 +1,11 @@
+uuid: fae7bde0-baa1-448c-8973-3b53d5afe134
+langcode: en
+status: true
+dependencies: {  }
+name: 'Hero slide'
+type: hero_slide
+description: 'One slide of the homepage hero: a film or image with the client name and a link. Ordered from the homepage hero’s settings.'
+help: null
+new_revision: true
+preview_mode: 1
+display_submitted: false

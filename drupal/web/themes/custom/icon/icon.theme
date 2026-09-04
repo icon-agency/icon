@@ -179,18 +179,6 @@ function _icon_media_image(?EntityInterface $media, string $style_id): array {
  */
 function icon_preprocess_views_view(array &$variables): void {
   $view = $variables['view'];
-  if ($view->id() === 'clients') {
-    // The marquee's logos: each Logo media's file + its name as the alt.
-    $logos = [];
-    foreach ($view->result as $row) {
-      $media = $row->_entity ?? NULL;
-      if ($media instanceof MediaInterface && !$media->get('field_media_file')->isEmpty() && ($file = $media->get('field_media_file')->entity)) {
-        $logos[] = ['src' => \Drupal::service('file_url_generator')->generateString($file->getFileUri()), 'alt' => $media->label()];
-      }
-    }
-    $variables['client_logos'] = $logos;
-    return;
-  }
   if ($view->id() === 'work' && $view->current_display === 'page_1') {
     $current = $view->args[0] ?? 'all';
     $allowed = \Drupal::service('entity_field.manager')
@@ -231,34 +219,6 @@ function icon_preprocess_views_view(array &$variables): void {
  */
 function icon_preprocess_views_view_unformatted(array &$variables): void {
   $view = $variables['view'];
-  if ($view->id() === 'work' && $view->current_display === 'featured') {
-    // templates/homeC.html: rows [split pair] [wide feature] [tall-left pair].
-    $pattern = [['work__row--split', 2], ['', 1], ['work__row--split work__row--tall-left', 2]];
-    $rows = array_values($variables['rows']);
-    // The Featured work block passes its picks as nid+nid+…; keep that order.
-    if (!empty($view->args[0])) {
-      $order = array_flip(array_map('intval', explode('+', (string) $view->args[0])));
-      usort($rows, fn($a, $b) => ($order[(int) ($a['content']['#node']?->id() ?? 0)] ?? 99) <=> ($order[(int) ($b['content']['#node']?->id() ?? 0)] ?? 99));
-    }
-    $groups = [];
-    $i = 0;
-    foreach ($pattern as [$modifier, $count]) {
-      $items = [];
-      for ($n = 0; $n < $count && $i < count($rows); $n++, $i++) {
-        $content = $rows[$i]['content'];
-        if ($count === 1) {
-          $content['#work_wide'] = TRUE;
-          $content['#cache']['keys'][] = 'wide';
-        }
-        $items[] = $content;
-      }
-      if ($items) {
-        $groups[] = ['modifier' => $modifier, 'items' => $items];
-      }
-    }
-    $variables['work_rows'] = $groups;
-    return;
-  }
   if ($view->id() === 'work') {
     $is_rail = $view->current_display === 'next_up';
     $variables['filtered'] = !$is_rail && ($view->args[0] ?? 'all') !== 'all';

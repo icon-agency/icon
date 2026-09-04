@@ -61,7 +61,13 @@ $stats = function (array $triples) use ($block): Paragraph {
 };
 
 /** Create or update a work node (matched by alias). */
-$project = function (array $d) {
+$project_names = [
+  '/work/raise-it' => 'Raise It', '/work/permanent-protection-visa' => 'Permanent Protection Visa', '/work/fit-for-every-run' => 'Fit for Every Run',
+  '/work/icanquit' => 'iCanQuit', '/work/democracy-cards' => 'Democracy Cards', '/work/melbourne-marathon-running-wings' => 'Running Wings',
+  '/work/care-closer-to-home' => 'Care Closer to Home', '/work/australian-space-agency' => 'Space Agency website', '/work/alcohol-and-drug-foundation' => 'ADF campaign',
+  '/work/fogo' => 'FOGO', '/work/is-this-legit' => 'Is This Legit?', '/work/icanquit-app' => 'iCanQuit app',
+];
+$project = function (array $d) use ($project_names) {
   $nid = \Drupal::service('path_alias.repository')->lookupByAlias($d['alias'], 'en')['path'] ?? NULL;
   $node = $nid ? Node::load((int) substr($nid, 6)) : NULL;
   if (!$node) {
@@ -76,6 +82,8 @@ $project = function (array $d) {
   }
   $node->set('title', $d['title']);
   $node->set('field_work_client', $d['client']);
+  // The short project name lists and pickers show (the title is the card's headline).
+  $node->set('field_work_project', $project_names[$d['alias']] ?? ucwords(str_replace('-', ' ', substr($d['alias'], 6))));
   $node->set('field_work_category', $d['categories']);
   $node->set('field_work_deliverables', $d['deliverables'] ?? []);
   $node->set('field_work_statement', $d['statement'] ?? '');

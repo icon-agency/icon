@@ -1,0 +1,10 @@
+icon_site.client_logos:
+  title: 'Client logos'
+  route_name: icon_site.client_logos
+  base_route: system.admin_content
+  weight: 20
+icon_site.fact_icons:
+  title: 'Fact icons'
+  route_name: icon_site.fact_icons
+  base_route: system.admin_content
+  weight: 21

@@ -3,9 +3,11 @@ langcode: en
 status: true
 dependencies:
   config:
+    - canvas.component.sdc.icon.pull-quote
     - canvas.component.sdc.icon.work-video
 name: Work
 configEntityTypeId: component
 weight: 0
 items:
+  - sdc.icon.pull-quote
   - sdc.icon.work-video

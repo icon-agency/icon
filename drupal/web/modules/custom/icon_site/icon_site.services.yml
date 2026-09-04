@@ -1,0 +1,6 @@
+services:
+  icon_site.twig_extension:
+    class: Drupal\icon_site\Twig\IconSiteExtension
+    arguments: ['@entity_type.manager']
+    tags:
+      - { name: twig.extension }

@@ -1,0 +1,16 @@
+{#
+/**
+ * @file
+ * hero-slide — one pile card of the hero (templates/homeC.html .hero__card).
+ * The client name and link ride on the figure as data attributes; the reel
+ * slide js/home-c.js clones from this card carries them over. A film wins
+ * over an image.
+ */
+#}
+<figure class="hero__card" data-client="{{ client }}"{% if url %} data-client-url="{{ url }}"{% endif %}>
+  {% if video.src %}
+    <video src="{{ video.src }}"{% if video.poster %} poster="{{ video.poster }}"{% endif %} muted playsinline preload="auto"></video>
+  {% elseif image.src %}
+    <img src="{{ image.src }}" alt="{{ image.alt }}"{% if image.width %} width="{{ image.width }}"{% endif %}{% if image.height %} height="{{ image.height }}"{% endif %} />
+  {% endif %}
+</figure>

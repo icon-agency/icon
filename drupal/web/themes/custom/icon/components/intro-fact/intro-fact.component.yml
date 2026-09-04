@@ -2,7 +2,10 @@ $schema: https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schema
 name: Fact card (filmstrip)
 group: Homepage
 status: stable
-description: A blue fact card in the intro filmstrip — brand icon, headline figure, label under a hairline.
+description: >
+  A blue fact card in the intro filmstrip — an icon from the site's Fact
+  icons (Icon media, inlined so it takes the card's white), headline figure,
+  label under a hairline.
 props:
   type: object
   required:
@@ -10,16 +13,12 @@ props:
     - title
   properties:
     icon:
-      type: string
+      type: integer
+      x-icon-media: true
       title: Icon
-      enum: [trophy, world, peace, flame]
-      meta:enum:
-        trophy: Trophy
-        world: World
-        peace: Peace sign
-        flame: Flame
+      description: 'Pick from the site’s icon set. Add, rename, reorder or remove icons at Content → Fact icons (/admin/content/fact-icons); new ones appear here straight away.'
       examples:
-        - trophy
+        - 1
     title:
       type: string
       title: Heading

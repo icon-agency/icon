@@ -1,0 +1,13 @@
+# The Canvas side panel's ordered lists (hero slides, featured picks): card
+# styling, a delegated drag-to-reorder, and Drupal's ajax dialog so Edit /
+# Add open over the editor. Attached to the Canvas editor page by
+# icon_site_page_attachments().
+panel_lists:
+  css:
+    component:
+      css/panel-lists.css: {}
+  js:
+    js/panel-sortable.js: {}
+  dependencies:
+    - core/drupal
+    - core/drupal.dialog.ajax

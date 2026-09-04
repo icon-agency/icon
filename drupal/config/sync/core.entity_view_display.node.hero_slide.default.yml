@@ -1,0 +1,19 @@
+uuid: a01bcc81-50e3-42d3-9a37-c3cde7427c60
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.node.hero_slide.field_slide_link
+    - field.field.node.hero_slide.field_slide_media
+    - node.type.hero_slide
+  module:
+    - user
+id: node.hero_slide.default
+targetEntityType: node
+bundle: hero_slide
+mode: default
+content: {  }
+hidden:
+  field_slide_link: true
+  field_slide_media: true
+  links: true

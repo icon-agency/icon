@@ -265,3 +265,156 @@ goes wrong.
   classes every 100ms) — the first line showed the box never got `.is-lit`
   and `window.__heroLoaderT0` was undefined.
 
+## A slot child renders once; a template that writes a piece twice needs the second copy built
+
+- **Context:** The hero writes every piece twice — a pile card in one container
+  and a reel slide in another. As a Drupal block with an array setting that was
+  a loop in Twig; the editor UX was a settings form with four fixed slots. The
+  ask (add, drag to reorder, delete, media library or upload) is exactly what
+  Canvas does for slot children, but a child component renders in ONE place.
+- **Fix:** The hero SDC took a `slides` slot rendered into the stage; the Hero
+  slide component is the card with the client name and link as data
+  attributes; and `js/home-c.js` builds the reel from the pile when the reel
+  is empty. The static template keeps both lists and never takes the branch.
+- **Rule:** When a design-system piece appears in two DOM places, keep the
+  CMS's authored copy to one and derive the other in the behaviour, guarded so
+  the static markup is untouched. Don't reach for a block form with AJAX
+  add-more/tabledrag inside Canvas's panel — the slot IS the repeater.
+
+## A repeater in Canvas is a slot; a per-row shape is a slot per row
+
+- **Context:** Featured work is five tiles in a fixed rhythm — a split pair,
+  a wide feature, a tall-left pair. As a block it was five autocomplete
+  pickers; the ask was drag-and-drop reordering and a searchable list.
+- **Fix:** One SDC with THREE slots, one per row; a tile component with a
+  single link prop (Canvas's title autocomplete → `entity:node/N`), rendered
+  through a Twig function that resolves the link to the Work item's teaser.
+  The wide tile is wide by its row's modifier, added to the design system
+  next to the tile's own modifier, because a child cannot know its row.
+- **Rule:** When the layout has a fixed rhythm, model each row as a slot and
+  let CSS on the row shape the child; keep the child dumb. And in Canvas
+  1.10, `content-entity-reference` props are for code components only — a
+  link prop with the title autocomplete is the SDC's way to reference content.
+
+## Not everything belongs in the Canvas panel
+
+- **Context:** The client marquee is a Views block; its Canvas settings
+  (items per block, override title) were useless to the editor, who wanted a
+  list with drag-and-drop order, add / edit / delete, and the alt text as the
+  label.
+- **Fix:** A plain Drupal admin form — a tabledrag list of Logo media at
+  /admin/content/client-logos with inline alt text, Edit / Delete operations
+  and an "Add logo" local action — plus a settings-free block whose panel is
+  a link to that list.
+- **Rule:** Content that is a list of entities gets a Drupal list UI; the
+  Canvas panel should say where the list is, not pretend to be it.
+
+## A Canvas block with no settings has no model, and its panel throws
+
+- **Symptom:** Selecting the settings-free marquee block in Canvas 1.10 gave
+  "An unexpected error has occurred while rendering the component's form —
+  Cannot read properties of undefined (reading 'source')".
+- **Cause:** The layout API only builds a client-side model for components
+  whose source `requiresExplicitInput()`; for blocks that is "has default
+  configuration". A block whose only inputs are label / label_display gets no
+  model entry, and the panel reads `model[uuid].source` unguarded. (A
+  prop-less SDC selects without error — it just shows nothing.)
+- **Fix:** Give the block one real setting — here the section's accessible
+  label — so it has a model. Traced by walking the layout API's `layout`
+  against its `model` and listing the instances with no entry.
+
+## The editor wanted the list in the panel — a block form can carry tabledrag in Canvas
+
+- **Context:** The hero slides as slot children put "Hero slide" ×4 in the
+  layers panel with no names (Canvas 1.10 ignores instance labels) and made
+  the hero draggable on the stage, which the editor read as wrong: the hero
+  is the homepage's locked masthead; what they wanted was a list on the
+  right — client names, drag to reorder, add, edit.
+- **Fix:** Slides are content (a Hero slide node type: media library widget
+  for film or image, client name, link) and the hero is a block again whose
+  ONE setting is the order. Its `blockForm()` is a `#tabledrag` table plus
+  links; Canvas hyperscriptifies the form and attaches Drupal behaviours, so
+  the handles work inside the panel and every change auto-saves. Edit / Add
+  open the node forms in a new tab.
+- **Rule:** Content that the editor thinks of as a LIST is a list — entities
+  with their own forms, an ordered list to manage them, and the Canvas panel
+  showing that list. Slots are for composing a page, not for repeating rows.
+  Canvas 1.10 has no per-instance lock: a block in the tree can always be
+  dragged; a truly locked piece has to live outside the tree (a theme region
+  block with a visibility condition) and gives up the panel.
+
+## A content-managed dropdown for an SDC prop is a prop-shape alter
+
+- **Context:** The fact card's icon was a four-value enum baked into the
+  component; the editor asked how to add, edit and delete icons.
+- **Fix:** The prop became `type: integer` with an `x-icon-media` marker, and
+  `hook_canvas_storable_prop_shape_alter()` stores it as an entity reference
+  to an Icon media type (File source, svg, ordered) with the `options_select`
+  widget. The dropdown is now the Fact icons list page; the value the
+  component gets is the media ID, and a Twig function inlines its file so
+  `currentColor` still works.
+- **Trap:** Canvas's widgets display the prop's RESOLVED value, not the stored
+  one. With the prop resolving to the file URI, the select (and the entity
+  autocomplete) showed nothing on load even though the value round-tripped —
+  traced by reading the form endpoint's response: every option
+  `selected:false`. Resolve to the ID the widget shows, and derive the rest in
+  Twig.
+- **Rule:** Core has no `hook_component_info_alter` (it is commented out in
+  `ComponentPluginManager`), so an SDC enum cannot be made dynamic — change
+  the prop's SHAPE and let the storable-prop-shape alter decide how it is
+  stored and edited. SVG can't ride the Image shape (image fields refuse
+  SVG), so a File-source media type is the vehicle.
+
+## Canvas submits a block form with #tree semantics — read nested values
+
+- **Symptom:** After the hero and featured lists were wrapped in a styled
+  container, every pick vanished the moment the panel opened: the selects
+  read "- Choose a project -" and the front page fell back to the latest
+  work.
+- **Cause:** Canvas posts the whole block form under
+  `canvas_component_props[uuid][…]`, so a table inside a container arrives as
+  `getValue(['panel', 'card', 'projects'])`, not `getValue('projects')`.
+  `blockSubmit()` read the flat key, got nothing, and saved an empty list —
+  and the panel auto-submits on open, so the wipe was immediate.
+- **Rule:** In a Canvas block form, read values by their full parents path
+  (with the flat key as a fallback for the ordinary block UI), and keep an
+  eye on the stored inputs after opening the panel — the panel's first
+  auto-save is the test.
+
+## Reordering inside the Canvas panel: not tabledrag, not weight selects
+
+- **Symptom:** The hero and featured lists showed drag handles but nothing
+  moved; when a small custom sorter did move rows and wrote the hidden
+  weight selects, Canvas never marked the page changed.
+- **Cause, twice:** Canvas renders block forms through React and re-renders
+  them on every change, so core tabledrag's instance was bound to a table no
+  longer in the document. And Canvas's form store ignores changes to `#type
+  weight` selects entirely — even calling the React onChange directly left
+  the model untouched — while a select or text field it treats as a value.
+- **Fix:** `js/panel-sortable.js`, a delegated pointer sorter on the document
+  (survives re-renders), which on drop writes ONE hidden text field
+  (`order`, comma-separated row keys) through the input's prototype setter
+  plus input / change / blur; `blockSubmit()` parses it. Verified: a real
+  mouse drag re-posts the form and the auto-save carries the new order.
+- **Rule:** In a Canvas block form, carry state in plain text fields and
+  selects; drive any richer UI with delegated JS; and test with a real drag,
+  reading the auto-save entity afterwards — the panel's "Changed" badge is
+  the only honest signal.
+
+## A Drupal dialog over the Canvas editor needs the admin theme
+
+- **Symptom:** Edit links opened the slide form in a dialog, but Save did
+  nothing and the form arrived as `<drupal-canvas-form>` custom elements.
+- **Cause:** Ajax requests from the editor page carry
+  `ajaxPageState.theme=canvas_stark`, so core's AjaxBasePageNegotiator
+  rendered the node form in Canvas's panel theme. Canvas's own negotiator
+  (priority 1001) switches to the admin theme when the request carries
+  `use_admin_theme=1` — the same switch its media library uses.
+- **Fix:** `?panel=1&use_admin_theme=1` on the Add / Edit links
+  (`data-dialog-type="dialog"` with its own `target`, so the media library's
+  `#drupal-modal` can open on top), an `#ajax` Save that closes the dialog
+  and reloads the editor (Canvas has auto-saved), and an `#after_build` that
+  trims meta / menu / path / revision — those are added by other modules
+  AFTER a plain form alter runs. Note for tests: Drupal ajax buttons fire on
+  `mousedown`, so a scripted `.click()` does nothing.
+

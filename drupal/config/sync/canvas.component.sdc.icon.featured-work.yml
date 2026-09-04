@@ -1,0 +1,27 @@
+uuid: 4e16107e-0bd2-468b-a7fe-e3583e44a469
+langcode: en
+status: false
+dependencies:
+  theme:
+    - icon
+active_version: c911d2c56a1368b7
+versioned_properties:
+  active:
+    settings:
+      prop_field_definitions: {  }
+    fallback_metadata:
+      slot_definitions:
+        pair_top:
+          title: 'Top pair'
+          description: 'Two work tiles — the landscape tile left, the square one right.'
+        feature:
+          title: Feature
+          description: 'One work tile, full width (16:9).'
+        pair_bottom:
+          title: 'Bottom pair'
+          description: 'Two work tiles — the square tile left, the landscape one right.'
+label: 'Featured work'
+id: sdc.icon.featured-work
+provider: icon
+source: sdc
+source_local_id: 'icon:featured-work'

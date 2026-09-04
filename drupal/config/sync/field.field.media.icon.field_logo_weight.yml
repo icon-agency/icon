@@ -1,0 +1,25 @@
+uuid: 8f8cfa45-7197-48a9-a425-bd89a7e184a1
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.media.field_logo_weight
+    - media.type.icon
+id: media.icon.field_logo_weight
+field_name: field_logo_weight
+entity_type: media
+bundle: icon
+label: Order
+description: ''
+required: false
+translatable: true
+default_value:
+  -
+    value: 0
+default_value_callback: ''
+settings:
+  min: null
+  max: null
+  prefix: ''
+  suffix: ''
+field_type: integer

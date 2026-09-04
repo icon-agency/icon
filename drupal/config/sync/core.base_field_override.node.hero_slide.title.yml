@@ -1,0 +1,18 @@
+uuid: 679f4398-3cdf-4b8c-8161-68e891bd1739
+langcode: en
+status: true
+dependencies:
+  config:
+    - node.type.hero_slide
+id: node.hero_slide.title
+field_name: title
+entity_type: node
+bundle: hero_slide
+label: 'Client name'
+description: 'Shown bottom-left while this slide plays.'
+required: true
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

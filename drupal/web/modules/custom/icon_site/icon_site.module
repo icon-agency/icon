@@ -7,6 +7,12 @@
 
 declare(strict_types=1);
 
+use Drupal\canvas\PropExpressions\StructuredData\FieldTypePropExpression;
+use Drupal\canvas\PropShape\CandidateStorablePropShape;
+use Drupal\Core\Ajax\AjaxResponse;
+use Drupal\Core\Ajax\CloseDialogCommand;
+use Drupal\Core\Ajax\InvokeCommand;
+use Drupal\Core\Ajax\ReplaceCommand;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\image\Entity\ImageStyle;
 use Drupal\media\MediaInterface;
@@ -19,6 +25,7 @@ use Drupal\media\MediaInterface;
  * promote and sorts sticky first, then date) — they just need to say so.
  */
 function icon_site_form_node_form_alter(array &$form, FormStateInterface $form_state): void {
+  _icon_site_panel_node_form_alter($form, $form_state);
   $node = $form_state->getFormObject()->getEntity();
   if ($node->bundle() !== 'news') {
     return;
@@ -91,4 +98,105 @@ function icon_site_media_source(?MediaInterface $media, string $style_id): array
     'width' => $dimensions['width'] ?: NULL,
     'height' => $dimensions['height'] ?: NULL,
   ];
+}
+
+/**
+ * Implements hook_canvas_storable_prop_shape_alter().
+ *
+ * An icon prop — `type: integer` with `x-icon-media: true` — is stored as a
+ * reference to an Icon media item and edited as a SELECT of the Fact icons
+ * list (Content → Fact icons), so the dropdown is content-managed. The prop
+ * evaluates to the media ID, which the component hands to icon_inline_svg()
+ * to inline the file. Why an ID rather than the file URI: Canvas's widgets
+ * display the prop's RESOLVED value — a select preselects the option whose
+ * key equals it — so the resolved value must be what the widget shows. And
+ * Canvas has no SVG media shape of its own: the Image shape only matches
+ * Image-source media types, and Drupal's image field refuses SVG, hence the
+ * File-source `icon` type and this mapping.
+ */
+function icon_site_canvas_storable_prop_shape_alter(CandidateStorablePropShape $storable_prop_shape): void {
+  $schema = $storable_prop_shape->shape->schema;
+  if (($schema['type'] ?? NULL) !== 'integer' || empty($schema['x-icon-media'])) {
+    return;
+  }
+  $storable_prop_shape->fieldTypeProp = new FieldTypePropExpression('entity_reference', 'target_id');
+  $storable_prop_shape->fieldStorageSettings = ['target_type' => 'media'];
+  $storable_prop_shape->fieldInstanceSettings = [
+    'handler' => 'default:media',
+    'handler_settings' => [
+      'target_bundles' => ['icon' => 'icon'],
+      'sort' => ['field' => 'field_logo_weight.value', 'direction' => 'ASC'],
+      'auto_create' => FALSE,
+    ],
+  ];
+  $storable_prop_shape->fieldWidget = 'options_select';
+}
+
+/**
+ * Implements hook_page_attachments().
+ *
+ * The Canvas editor is one React page; the side panel's forms are rendered
+ * inside it, and a library attached by a block form's render array does not
+ * reach it. So the panel lists' stylesheet rides on the editor page itself.
+ */
+function icon_site_page_attachments(array &$attachments): void {
+  if (str_starts_with((string) \Drupal::routeMatch()->getRouteName(), 'canvas.')) {
+    $attachments['#attached']['library'][] = 'icon_site/panel_lists';
+  }
+}
+
+/**
+ * A Hero slide form opened from the Canvas panel (?panel=1) lives in a
+ * dialog over the editor: Save submits by ajax and closes the dialog (or
+ * re-renders the form with its errors); Preview and Delete, which would
+ * navigate away, are dropped.
+ */
+function _icon_site_panel_node_form_alter(array &$form, FormStateInterface $form_state): void {
+  $node = $form_state->getFormObject()->getEntity();
+  if ($node->bundle() !== 'hero_slide' || !\Drupal::request()->query->get('panel')) {
+    return;
+  }
+  $form['#prefix'] = '<div id="icon-panel-form">';
+  $form['#suffix'] = '</div>';
+  $form['actions']['submit']['#ajax'] = [
+    'callback' => '_icon_site_panel_form_ajax',
+    'wrapper' => 'icon-panel-form',
+  ];
+  $form['actions']['preview']['#access'] = FALSE;
+  $form['actions']['delete']['#access'] = FALSE;
+  // Other modules (menu_ui, path) add their sections AFTER this alter runs,
+  // so the trimming happens at after-build, when the form is complete.
+  $form['#after_build'][] = '_icon_site_panel_node_form_after_build';
+}
+
+/**
+ * Trims the dialog'd slide form to its fields: no meta, menu, path, revision.
+ */
+function _icon_site_panel_node_form_after_build(array $form, FormStateInterface $form_state): array {
+  // NOT `status`: a widget hidden with #access has no submitted value, and the
+  // save unpublished the slide. Published stays — it is how a slide leaves
+  // the reel without being deleted.
+  // (`footer` is where the node form keeps that checkbox — leave it too.)
+  foreach (['menu', 'meta', 'revision_information', 'revision_log', 'uid', 'created', 'promote', 'sticky', 'path', 'advanced'] as $key) {
+    if (isset($form[$key])) {
+      $form[$key]['#access'] = FALSE;
+    }
+  }
+  return $form;
+}
+
+/**
+ * Save from the dialog: close it, or show the form again with its errors.
+ */
+function _icon_site_panel_form_ajax(array $form, FormStateInterface $form_state): AjaxResponse {
+  $response = new AjaxResponse();
+  if ($form_state->hasAnyErrors()) {
+    $response->addCommand(new ReplaceCommand('#icon-panel-form', $form));
+    return $response;
+  }
+  $response->addCommand(new CloseDialogCommand('#icon-panel-dialog'));
+  // Tell the panel's sortable script a slide changed so it can nudge Canvas
+  // into re-fetching the block form.
+  $response->addCommand(new InvokeCommand('body', 'trigger', ['icon-panel:saved']));
+  return $response;
 }

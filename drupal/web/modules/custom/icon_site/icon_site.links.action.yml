@@ -1,0 +1,20 @@
+icon_site.client_logos.add:
+  title: 'Add logo'
+  route_name: entity.media.add_form
+  route_parameters:
+    media_type: logo
+  options:
+    query:
+      destination: '/admin/content/client-logos'
+  appears_on:
+    - icon_site.client_logos
+icon_site.fact_icons.add:
+  title: 'Add icon'
+  route_name: entity.media.add_form
+  route_parameters:
+    media_type: icon
+  options:
+    query:
+      destination: '/admin/content/fact-icons'
+  appears_on:
+    - icon_site.fact_icons

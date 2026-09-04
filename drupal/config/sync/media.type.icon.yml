@@ -1,0 +1,14 @@
+uuid: be36b3b4-2573-4a17-b5ec-37406e8f4202
+langcode: en
+status: true
+dependencies: {  }
+id: icon
+label: Icon
+description: 'A fact-card icon: a single-colour SVG (fill="currentColor"), inlined on the homepage fact cards. Managed at Content → Fact icons.'
+source: file
+queue_thumbnail_downloads: false
+new_revision: false
+source_configuration:
+  source_field: field_media_file
+field_map:
+  name: name

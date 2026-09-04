@@ -4,6 +4,9 @@ status: true
 dependencies:
   config:
     - canvas.component.sdc.icon.clients
+    - canvas.component.sdc.icon.featured-work
+    - canvas.component.sdc.icon.hero
+    - canvas.component.sdc.icon.hero-slide
     - canvas.component.sdc.icon.intro
     - canvas.component.sdc.icon.intro-expertise
     - canvas.component.sdc.icon.intro-fact
@@ -13,6 +16,9 @@ configEntityTypeId: component
 weight: 0
 items:
   - sdc.icon.clients
+  - sdc.icon.featured-work
+  - sdc.icon.hero
+  - sdc.icon.hero-slide
   - sdc.icon.intro
   - sdc.icon.intro-expertise
   - sdc.icon.intro-fact

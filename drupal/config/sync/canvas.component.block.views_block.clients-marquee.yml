@@ -1,6 +1,6 @@
-uuid: 4eae1c19-da0f-4172-b311-4c884d84b451
+uuid: 69538aff-d42a-4649-a0b2-915011376a86
 langcode: en
-status: true
+status: false
 dependencies:
   config:
     - views.view.clients
@@ -9,6 +9,17 @@ dependencies:
 active_version: 6eb81d6fc90027ef
 versioned_properties:
   active:
+    settings:
+      default_settings:
+        id: 'views_block:clients-marquee'
+        label: 'Clients marquee'
+        label_display: '0'
+        provider: views
+        views_label: ''
+        items_per_page: null
+    fallback_metadata:
+      slot_definitions: null
+  6eb81d6fc90027ef:
     settings:
       default_settings:
         id: 'views_block:clients-marquee'

@@ -1,6 +1,6 @@
-{# intro-fact — a filmstrip fact card (templates/homeC.html .intro__card--fact). #}
+{# intro-fact — a filmstrip fact card (templates/homeC.html .intro__card--fact). The icon is an Icon media item (SVG, fill=currentColor), inlined by icon_site's icon_inline_svg(). #}
 <div class="intro__card intro__card--fact">
-  {% include '@icon/includes/fact-icon.html.twig' with { icon: icon } only %}
+  {{ icon_inline_svg(icon, 'intro__fact-icon') }}
   <p class="intro__fact-title">{{ title }}</p>
   {% if label %}<p class="intro__fact-label" data-rule="top">{{ label }}</p>{% endif %}
 </div>

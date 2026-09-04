@@ -53,6 +53,30 @@
     (function () {
       var cards = Array.prototype.slice.call(hero.querySelectorAll(".hero__card"));
       var slides = Array.prototype.slice.call(hero.querySelectorAll(".hero__slide"));
+      // ONE LIST IN THE MARKUP, TWO ON THE PAGE. The static template writes
+      // every piece twice — a pile card and a reel slide — because the two
+      // live in different containers. A CMS whose editor composes the pieces
+      // as child components renders each ONCE, as a card (Drupal: the hero
+      // SDC's slides slot), so when the reel is empty it is built here from
+      // the pile: same media, same client name and link, `loop` for the reel.
+      // The template's own markup never takes this branch — its reel is
+      // already there.
+      var showInner = hero.querySelector(".hero__show-inner");
+      if (!slides.length && showInner) {
+        cards.forEach(function (c) {
+          var m = c.querySelector("img, video");
+          if (!m) return;
+          var s = m.cloneNode(false);
+          s.className = "hero__slide";
+          if (s.tagName === "VIDEO") { s.loop = true; s.muted = true; }
+          s.setAttribute("data-client", c.getAttribute("data-client") || "");
+          if (c.getAttribute("data-client-url")) {
+            s.setAttribute("data-client-url", c.getAttribute("data-client-url"));
+          }
+          showInner.insertBefore(s, showInner.querySelector(".hero__scrim"));
+        });
+        slides = Array.prototype.slice.call(hero.querySelectorAll(".hero__slide"));
+      }
       var label = hero.querySelector("[data-client-label]");
       var count = hero.querySelector("[data-boot-count]");
       // Stills get a glance; films get room to actually play a beat.

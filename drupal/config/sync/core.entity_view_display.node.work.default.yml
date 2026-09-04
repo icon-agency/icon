@@ -10,11 +10,13 @@ dependencies:
     - field.field.node.work.field_work_content
     - field.field.node.work.field_work_deliverables
     - field.field.node.work.field_work_ink
+    - field.field.node.work.field_work_project
     - field.field.node.work.field_work_statement
     - field.field.node.work.field_work_tile
     - node.type.work
   module:
     - entity_reference_revisions
+    - user
 id: node.work.default
 targetEntityType: node
 bundle: work
@@ -36,6 +38,7 @@ hidden:
   field_work_client: true
   field_work_deliverables: true
   field_work_ink: true
+  field_work_project: true
   field_work_statement: true
   field_work_tile: true
   links: true

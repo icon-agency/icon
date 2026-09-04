@@ -2,13 +2,165 @@ uuid: 3fdda355-4aff-4aba-8e75-1265c7ae45ff
 langcode: en
 status: true
 dependencies:
+  config:
+    - field.field.media.icon.field_media_file
+    - media.type.icon
   module:
+    - file
+    - media
     - options
   theme:
     - icon
-active_version: a050d9d675effccd
+active_version: 9416ca79bd409ee7
 versioned_properties:
   active:
+    settings:
+      prop_field_definitions:
+        icon:
+          required: true
+          field_type: entity_reference
+          field_storage_settings:
+            target_type: media
+          field_instance_settings:
+            handler: 'default:media'
+            handler_settings:
+              target_bundles:
+                icon: icon
+              sort:
+                field: field_logo_weight.value
+                direction: ASC
+              auto_create: false
+          field_widget: options_select
+          default_value:
+            -
+              target_id: '1'
+          expression: ℹ︎entity_reference␟target_id
+          derived_schema_metadata: {  }
+        title:
+          required: true
+          field_type: string
+          field_storage_settings: {  }
+          field_instance_settings: {  }
+          field_widget: string_textfield
+          default_value:
+            -
+              value: '14 Agency of the Year awards'
+          expression: ℹ︎string␟value
+          derived_schema_metadata:
+            string_shape: {  }
+        label:
+          required: false
+          field_type: string
+          field_storage_settings: {  }
+          field_instance_settings: {  }
+          field_widget: string_textfield
+          default_value:
+            -
+              value: 'Since 2021'
+          expression: ℹ︎string␟value
+          derived_schema_metadata:
+            string_shape: {  }
+    fallback_metadata:
+      slot_definitions: {  }
+  294e52188f1d130f:
+    settings:
+      prop_field_definitions:
+        icon:
+          required: true
+          field_type: entity_reference
+          field_storage_settings:
+            target_type: media
+          field_instance_settings:
+            handler: 'default:media'
+            handler_settings:
+              target_bundles:
+                icon: icon
+              sort:
+                field: field_logo_weight.value
+                direction: ASC
+              auto_create: false
+          field_widget: entity_reference_autocomplete
+          default_value: {  }
+          expression: 'ℹ︎entity_reference␟entity␜␜entity:media:icon␝field_media_file␞␟entity␜␜entity:file␝uri␞␟value'
+          derived_schema_metadata:
+            string_shape:
+              format: uri-reference
+        title:
+          required: true
+          field_type: string
+          field_storage_settings: {  }
+          field_instance_settings: {  }
+          field_widget: string_textfield
+          default_value:
+            -
+              value: '14 Agency of the Year awards'
+          expression: ℹ︎string␟value
+          derived_schema_metadata:
+            string_shape: {  }
+        label:
+          required: false
+          field_type: string
+          field_storage_settings: {  }
+          field_instance_settings: {  }
+          field_widget: string_textfield
+          default_value:
+            -
+              value: 'Since 2021'
+          expression: ℹ︎string␟value
+          derived_schema_metadata:
+            string_shape: {  }
+    fallback_metadata:
+      slot_definitions: {  }
+  78ccaf9aecf2f2f4:
+    settings:
+      prop_field_definitions:
+        icon:
+          required: true
+          field_type: entity_reference
+          field_storage_settings:
+            target_type: media
+          field_instance_settings:
+            handler: 'default:media'
+            handler_settings:
+              target_bundles:
+                icon: icon
+              sort:
+                field: field_logo_weight.value
+                direction: ASC
+              auto_create: false
+          field_widget: options_select
+          default_value: {  }
+          expression: 'ℹ︎entity_reference␟entity␜␜entity:media:icon␝field_media_file␞␟entity␜␜entity:file␝uri␞␟value'
+          derived_schema_metadata:
+            string_shape:
+              format: uri-reference
+        title:
+          required: true
+          field_type: string
+          field_storage_settings: {  }
+          field_instance_settings: {  }
+          field_widget: string_textfield
+          default_value:
+            -
+              value: '14 Agency of the Year awards'
+          expression: ℹ︎string␟value
+          derived_schema_metadata:
+            string_shape: {  }
+        label:
+          required: false
+          field_type: string
+          field_storage_settings: {  }
+          field_instance_settings: {  }
+          field_widget: string_textfield
+          default_value:
+            -
+              value: 'Since 2021'
+          expression: ℹ︎string␟value
+          derived_schema_metadata:
+            string_shape: {  }
+    fallback_metadata:
+      slot_definitions: {  }
+  a050d9d675effccd:
     settings:
       prop_field_definitions:
         icon:

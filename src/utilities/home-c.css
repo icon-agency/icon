@@ -1182,8 +1182,15 @@ html:not(.js-animations) .intro__expertise-list li:first-child a {
      .work__figure` is (0,2,0) against the square rule's (0,1,0), so a base-layer
      copy outranked the mobile square at every width and left one 16/9 tile in an
      otherwise square column, whatever the source order. */
-  .work__item--wide .work__figure { aspect-ratio: 16 / 9; }
+  .work__item--wide .work__figure,
+  .work__row--feature .work__item .work__figure { aspect-ratio: 16 / 9; }
 }
+
+/* .work__row--feature is the wide row named on the ROW rather than the tile:
+   a CMS whose tiles are dropped into rows by an editor (Drupal Canvas — the
+   three rows are three slots) cannot put a modifier on the tile, because the
+   tile does not know which row it sits in. Every --wide rule below carries
+   the row form too; the template keeps both. */
 
 /* Tablet: split rows go two-up rather than stacking, on the same 12-column
    structure the desktop layout uses (6 + 6). The per-tile aspect ratios stay
@@ -1197,7 +1204,8 @@ html:not(.js-animations) .intro__expertise-list li:first-child a {
   }
   .work__row--split .work__item:first-child { grid-column: 1 / span 6; }
   .work__row--split .work__item:last-child { grid-column: 7 / span 6; }
-  .work__item--wide { grid-column: 1 / -1; }
+  .work__item--wide,
+  .work__row--feature .work__item { grid-column: 1 / -1; }
   .work__row--split .work__figure { aspect-ratio: 4 / 3; }
 }
 
@@ -1212,7 +1220,8 @@ html:not(.js-animations) .intro__expertise-list li:first-child a {
   }
   .work__row--split .work__item:first-child { grid-column: 1 / span 6; }
   .work__row--split .work__item:last-child { grid-column: 7 / span 6; }
-  .work__item--wide { grid-column: 1 / -1; }
+  .work__item--wide,
+  .work__row--feature .work__item { grid-column: 1 / -1; }
   .work__row--split .work__item:first-child .work__figure {
     aspect-ratio: 3 / 2;
   }

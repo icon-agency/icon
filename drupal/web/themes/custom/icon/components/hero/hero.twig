@@ -2,9 +2,14 @@
 /**
  * @file
  * hero — thin copy of the hero in templates/homeC.html. The loading screen
- * (.text-box) is built by js/hero-loader.js; the reel, pile, headline device,
+ * (.text-box) is built by js/hero-loader.js; the pile, headline device,
  * client label and counter are the markup js/home-c.js drives. The lockup is
  * the shared include (the same artwork the login page draws).
+ *
+ * ONE LIST, NOT TWO. The template writes every piece twice — a pile card in
+ * .hero__stage and a reel slide in .hero__show-inner. Here each slide is a
+ * Hero slide component rendered once, into the stage, and js/home-c.js
+ * builds the reel from the pile when it finds the reel empty.
  */
 #}
 <section class="hero" data-hero>
@@ -12,27 +17,14 @@
 
   <div class="hero__show" aria-hidden="true">
     <div class="hero__show-inner">
-      {% for piece in pieces %}
-        {% if piece.media.type == 'video' %}
-          <video class="hero__slide" data-client="{{ piece.client }}"{% if piece.url %} data-client-url="{{ piece.url }}"{% endif %} src="{{ piece.media.src }}" muted playsinline loop preload="auto"></video>
-        {% else %}
-          <img class="hero__slide" data-client="{{ piece.client }}"{% if piece.url %} data-client-url="{{ piece.url }}"{% endif %} src="{{ piece.media.src }}" alt="" />
-        {% endif %}
-      {% endfor %}
+      {# the reel slides are cloned in here from the cards below, before the scrim #}
       <div class="hero__scrim"></div>
     </div>
   </div>
 
   <div class="hero__stage" aria-hidden="true">
-    {% for piece in pieces %}
-      <figure class="hero__card">
-        {% if piece.media.type == 'video' %}
-          <video src="{{ piece.media.src }}" muted playsinline preload="auto"></video>
-        {% else %}
-          <img src="{{ piece.media.src }}" alt="" />
-        {% endif %}
-      </figure>
-    {% endfor %}
+    {# SLOT slides: Hero slide components, in reel order. #}
+    {{ slides }}
   </div>
 
   <div class="hero__inner">

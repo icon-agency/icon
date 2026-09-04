@@ -1,0 +1,24 @@
+{#
+/**
+ * @file
+ * featured-work — the homepage's Featured Work grid (templates/homeC.html
+ * .work). The three rows are three slots the Featured work block fills with
+ * work-card teasers. The feature row's modifier (.work__row--feature) is what makes
+ * its lone tile wide — the child cannot know which row it sits in.
+ */
+#}
+<section class="work u-container" aria-label="{{ 'Selected work'|t }}">
+  <h2 class="work__heading" data-reveal-words>
+    <span class="lockup-accent masthead-accent">{{ 'Featured'|t }}</span>
+    <span class="lockup-caps">{{ 'Work'|t }}</span>
+  </h2>
+  {# SLOT pair_top: two work tiles. #}
+  <div class="work__row work__row--split">{{ pair_top }}</div>
+  {# SLOT feature: one work tile, full width. #}
+  <div class="work__row work__row--feature">{{ feature }}</div>
+  {# SLOT pair_bottom: two work tiles, tall-left. #}
+  <div class="work__row work__row--split work__row--tall-left">{{ pair_bottom }}</div>
+  <p class="work__more-wrap">
+    <a class="work__more invite-arrow" href="{{ path('view.work.page_1') }}" data-reveal-words aria-label="{{ 'More work'|t }}">{{ 'More'|t }}</a>
+  </p>
+</section>

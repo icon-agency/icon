@@ -1,0 +1,32 @@
+uuid: 166a018c-7a4f-4f86-9851-c7d936ae03ab
+langcode: en
+status: true
+dependencies:
+  module:
+    - icon_site
+active_version: e0929416142d9d77
+versioned_properties:
+  active:
+    settings:
+      default_settings:
+        id: icon_clients_marquee
+        label: 'Clients marquee'
+        label_display: '0'
+        provider: icon_site
+        heading: 'Selected clients'
+    fallback_metadata:
+      slot_definitions: null
+  2d7de8e6552af84c:
+    settings:
+      default_settings:
+        id: icon_clients_marquee
+        label: 'Clients marquee'
+        label_display: '0'
+        provider: icon_site
+    fallback_metadata:
+      slot_definitions: null
+label: 'Clients marquee'
+id: block.icon_clients_marquee
+provider: icon_site
+source: block
+source_local_id: icon_clients_marquee

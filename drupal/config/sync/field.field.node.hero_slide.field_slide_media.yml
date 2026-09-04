@@ -1,0 +1,29 @@
+uuid: 39d4f00d-22d4-487b-b9d2-dbec2303edb0
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_slide_media
+    - media.type.image
+    - media.type.video
+    - node.type.hero_slide
+id: node.hero_slide.field_slide_media
+field_name: field_slide_media
+entity_type: node
+bundle: hero_slide
+label: 'Film or image'
+description: 'A Video (MP4 — films must be 6 seconds long, muted; the reel loops them) or an Image from the media library, or upload one.'
+required: true
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:media'
+  handler_settings:
+    target_bundles:
+      video: video
+      image: image
+    sort:
+      field: _none
+    auto_create: false
+field_type: entity_reference

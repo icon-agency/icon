@@ -1,0 +1,14 @@
+icon_site.client_logos:
+  path: '/admin/content/client-logos'
+  defaults:
+    _form: '\Drupal\icon_site\Form\ClientLogosForm'
+    _title: 'Client logos'
+  requirements:
+    _permission: 'administer media'
+icon_site.fact_icons:
+  path: '/admin/content/fact-icons'
+  defaults:
+    _form: '\Drupal\icon_site\Form\FactIconsForm'
+    _title: 'Fact icons'
+  requirements:
+    _permission: 'administer media'

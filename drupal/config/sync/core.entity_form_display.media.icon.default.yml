@@ -1,0 +1,42 @@
+uuid: 32e0e039-4e00-411a-ad24-d3586fcaadc8
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.media.icon.field_logo_weight
+    - field.field.media.icon.field_media_file
+    - media.type.icon
+  module:
+    - file
+id: media.icon.default
+targetEntityType: media
+bundle: icon
+mode: default
+content:
+  field_media_file:
+    type: file_generic
+    weight: 1
+    region: content
+    settings:
+      progress_indicator: throbber
+    third_party_settings: {  }
+  name:
+    type: string_textfield
+    weight: 0
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  status:
+    type: boolean_checkbox
+    weight: 100
+    region: content
+    settings:
+      display_label: true
+    third_party_settings: {  }
+hidden:
+  created: true
+  field_logo_weight: true
+  path: true
+  uid: true

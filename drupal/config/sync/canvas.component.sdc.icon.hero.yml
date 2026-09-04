@@ -1,0 +1,22 @@
+uuid: cee854f2-7c99-40a2-9b84-66635dcb0b75
+langcode: en
+status: false
+dependencies:
+  theme:
+    - icon
+active_version: a528a7131f31b109
+versioned_properties:
+  active:
+    settings:
+      prop_field_definitions: {  }
+    fallback_metadata:
+      slot_definitions:
+        slides:
+          title: Slides
+          description: |
+            Hero slide components, in reel order — up to eight. Each is a film (6 seconds, muted, loops) or an image from the media library, with the client name and where it links.
+label: 'Homepage hero'
+id: sdc.icon.hero
+provider: icon
+source: sdc
+source_local_id: 'icon:hero'

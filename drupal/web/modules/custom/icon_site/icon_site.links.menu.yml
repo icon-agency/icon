@@ -1,0 +1,12 @@
+icon_site.client_logos:
+  title: 'Client logos'
+  description: 'The logos in the homepage marquee — add, reorder, rename, remove.'
+  route_name: icon_site.client_logos
+  parent: system.admin_content
+  weight: 10
+icon_site.fact_icons:
+  title: 'Fact icons'
+  description: 'The icons the homepage fact cards can use — add, reorder, rename, remove.'
+  route_name: icon_site.fact_icons
+  parent: system.admin_content
+  weight: 11

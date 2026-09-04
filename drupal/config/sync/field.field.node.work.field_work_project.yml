@@ -1,0 +1,19 @@
+uuid: 0a38e254-85c6-494c-a9a4-ad17c9b17166
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_work_project
+    - node.type.work
+id: node.work.field_work_project
+field_name: field_work_project
+entity_type: node
+bundle: work
+label: 'Project name'
+description: 'The short name of the project (e.g. Raise It) — used in lists and pickers. The title is the headline the card shows.'
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

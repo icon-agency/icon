@@ -4,34 +4,20 @@ group: Homepage
 status: stable
 description: >
   The stack-takeover hero (templates/homeC.html, src/utilities/home-c.css,
-  js/home-c.js): work pieces pop onto a pile, take over the screen, then play
+  js/home-c.js): the slides pop onto a pile, take over the screen, then play
   as a reel under the drawn "Make what matters" lockup, each with its client
-  name (a link) bottom-left. Fed by the Homepage hero block (icon_site) —
-  place that block, not this component, on the page.
+  name (a link) bottom-left. The slides are Hero slide components in the
+  slot — add, reorder (drag in the layers panel), edit and delete them there;
+  up to eight. Each renders once, as a pile card; the reel is built from the
+  pile by js/home-c.js.
 libraryOverrides:
   dependencies:
     - icon/hero-loader
     - icon/home-c
-props:
-  type: object
-  required:
-    - pieces
-  properties:
-    pieces:
-      type: array
-      title: Pieces
-      description: Each rendered twice — once as a pile card, once as a reel slide.
-      items:
-        type: object
-        properties:
-          client: { type: string }
-          url: { type: string }
-          media:
-            type: object
-            properties:
-              type: { type: string, enum: [image, video] }
-              src: { type: string }
-              alt: { type: string }
-      examples:
-        - - client: PHN North Western Melbourne
-            media: { type: image, src: https://placehold.co/1600x900, alt: '' }
+slots:
+  slides:
+    title: Slides
+    description: >
+      Hero slide components, in reel order — up to eight. Each is a film
+      (6 seconds, muted, loops) or an image from the media library, with the
+      client name and where it links.

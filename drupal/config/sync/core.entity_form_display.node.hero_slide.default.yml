@@ -1,0 +1,54 @@
+uuid: d27cc2fa-33c6-40ff-ad73-1854094336b5
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.node.hero_slide.field_slide_link
+    - field.field.node.hero_slide.field_slide_media
+    - node.type.hero_slide
+  module:
+    - link
+    - media_library
+id: node.hero_slide.default
+targetEntityType: node
+bundle: hero_slide
+mode: default
+content:
+  field_slide_link:
+    type: link_default
+    weight: 2
+    region: content
+    settings:
+      placeholder_url: ''
+      placeholder_title: ''
+    third_party_settings: {  }
+  field_slide_media:
+    type: media_library_widget
+    weight: 1
+    region: content
+    settings:
+      media_types:
+        - video
+        - image
+    third_party_settings: {  }
+  status:
+    type: boolean_checkbox
+    weight: 120
+    region: content
+    settings:
+      display_label: true
+    third_party_settings: {  }
+  title:
+    type: string_textfield
+    weight: 0
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+hidden:
+  created: true
+  path: true
+  promote: true
+  sticky: true
+  uid: true

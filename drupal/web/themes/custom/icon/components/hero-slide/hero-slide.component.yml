@@ -1,0 +1,44 @@
+$schema: https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json
+name: Hero slide
+group: Homepage
+status: stable
+description: >
+  One slide of the homepage hero — a film or an image with the client name
+  (shown bottom-left while it plays, as a link). Lives in the Homepage hero's
+  Slides slot; rename the instance to the client name so the layers panel
+  reads well. Films must be 6 seconds long and muted — the reel loops them.
+props:
+  type: object
+  required:
+    - client
+  properties:
+    client:
+      type: string
+      title: Client name
+      description: Shown bottom-left while this slide plays.
+      examples:
+        - PHN North Western Melbourne
+    url:
+      type: string
+      title: Link
+      description: 'Where the client name goes, e.g. /work/raise-it. Leave empty for no link.'
+      examples:
+        - /work/raise-it
+    video:
+      $ref: json-schema-definitions://canvas.module/video
+      type: object
+      title: Film
+      description: >
+        Pick a Video from the media library or upload an MP4. Films must be
+        6 seconds long and muted; the reel loops them. A film wins over an
+        image when both are set.
+    image:
+      $ref: json-schema-definitions://canvas.module/image
+      type: object
+      title: Image
+      description: Pick an Image from the media library or upload one. Used when there is no film.
+      examples:
+        - src: https://placehold.co/1600x900
+          alt: ''
+          width: 1600
+          height: 900

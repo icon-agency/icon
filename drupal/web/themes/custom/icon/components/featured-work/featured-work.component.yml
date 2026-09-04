@@ -1,0 +1,20 @@
+$schema: https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json
+name: Featured work
+group: Homepage
+status: stable
+description: >
+  The homepage's Featured Work grid (templates/homeC.html .work): the
+  two-voice masthead, three rows in the split / wide / tall-left rhythm, a
+  centred More. The rows are three slots, filled by the Featured work block
+  (icon_site) with the picked projects' teasers — place that block, not this
+  component: the grid is fixed and the picks are its settings.
+slots:
+  pair_top:
+    title: Top pair
+    description: Two work tiles — the landscape tile left, the square one right.
+  feature:
+    title: Feature
+    description: One work tile, full width (16:9).
+  pair_bottom:
+    title: Bottom pair
+    description: Two work tiles — the square tile left, the landscape one right.
