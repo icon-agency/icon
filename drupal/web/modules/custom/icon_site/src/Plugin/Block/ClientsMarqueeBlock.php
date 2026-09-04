@@ -66,8 +66,7 @@ final class ClientsMarqueeBlock extends BlockBase {
       $rows .= '<tr class="draggable" data-row="' . $media->id() . '"><td>' . self::HANDLE
         . ($src ? '<img class="icon-panel__logo" src="' . $src . '" alt="">' : '')
         . '<div class="icon-panel__text"><p class="icon-panel__name">' . htmlspecialchars($media->label(), ENT_QUOTES) . '</p><p class="icon-panel__meta">' . htmlspecialchars((string) ($file ? strtoupper(pathinfo($file->getFilename(), PATHINFO_EXTENSION)) : ''), ENT_QUOTES) . '</p></div></td>'
-        . '<td class="icon-panel__cell--action"><a class="icon-panel__action use-ajax" href="' . $edit . '"' . $dialog . '>' . $this->t('Edit') . '</a>'
-        . '<a class="icon-panel__action icon-panel__action--quiet use-ajax" href="' . $action . '&id=' . $media->id() . '&op=remove" title="' . $this->t('Take this logo out of the marquee (it stays in the media library, unpublished)') . '">' . $this->t('Remove') . '</a></td></tr>';
+        . '<td class="icon-panel__cell--action"><a class="icon-panel__action use-ajax" href="' . $edit . '"' . $dialog . '>' . $this->t('Edit') . '</a></td></tr>';
     }
     $count = substr_count($rows, '<tr ');
     $form['panel'] = ['#type' => 'container', '#weight' => 0, '#attributes' => ['class' => ['icon-panel', 'icon-panel--clients']]];
@@ -82,7 +81,7 @@ final class ClientsMarqueeBlock extends BlockBase {
       '#markup' => $rows ? '<table class="icon-panel__list"><tbody>' . $rows . '</tbody></table>' : '<p class="icon-panel__note">' . $this->t('No logos yet — add one.') . '</p>',
     ];
     $form['panel']['note'] = [
-      '#markup' => '<p class="icon-panel__note">' . $this->t('The marquee runs these in order. Drag to reorder — the order is saved at once. The name is the alt text screen readers announce. Edit replaces the file (SVG or PNG) or renames it; Remove takes it out of the marquee. The same list is at <a href=":url" target="_blank" rel="noopener">Content → Client logos</a>.', [':url' => Url::fromRoute('icon_site.client_logos')->toString()]) . '</p>',
+      '#markup' => '<p class="icon-panel__note">' . $this->t('The marquee runs these in order. Drag to reorder — the order is saved at once. The name is the alt text screen readers announce. Edit replaces the file (SVG or PNG), renames it, or removes it from the marquee. The same list is at <a href=":url" target="_blank" rel="noopener">Content → Client logos</a>.', [':url' => Url::fromRoute('icon_site.client_logos')->toString()]) . '</p>',
     ];
     return $form;
   }

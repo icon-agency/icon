@@ -224,5 +224,29 @@ function icon_site_form_media_form_alter(array &$form, FormStateInterface $form_
     'wrapper' => 'icon-panel-form',
   ];
   $form['actions']['delete']['#access'] = FALSE;
+  // Removing from the marquee lives HERE, behind Edit, not as a one-click
+  // link in the list: it unpublishes (the file stays in the library).
+  if (isset($form['status']['widget']['value'])) {
+    $form['status']['widget']['value']['#title'] = t('Shown on the site');
+    $form['status']['widget']['value']['#description'] = t('Untick to take it out of the marquee without deleting it.');
+  }
+  $form['actions']['remove'] = [
+    '#type' => 'submit',
+    '#value' => t('Remove from marquee'),
+    '#weight' => 10,
+    '#attributes' => ['class' => ['button', 'button--danger', 'icon-panel__remove']],
+    '#submit' => ['_icon_site_panel_remove_submit', '::submitForm', '::save'],
+    '#ajax' => [
+      'callback' => '_icon_site_panel_form_ajax',
+      'wrapper' => 'icon-panel-form',
+    ],
+  ];
   $form['#after_build'][] = '_icon_site_panel_node_form_after_build';
+}
+
+/**
+ * "Remove from marquee": unpublish, then the normal save.
+ */
+function _icon_site_panel_remove_submit(array &$form, FormStateInterface $form_state): void {
+  $form_state->setValue(['status', 'value'], 0);
 }

@@ -357,5 +357,6 @@ select.icon-panel__count { padding: 4px 24px 4px 8px; border: 1px solid #d9d9e0;
   padding: 3px;
   box-sizing: border-box;
 }
-.icon-panel--clients .icon-panel__list td.icon-panel__cell--action { width: 96px; white-space: nowrap; }
 .form-item:has(> .icon-panel__field), .js-form-item:has(.icon-panel__field) { margin-top: 14px; font-size: 13px; }
+.icon-panel-dialog .icon-panel__remove { margin-left: auto; }
+.icon-panel-dialog .form-actions { display: flex; align-items: center; gap: 12px; }
