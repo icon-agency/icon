@@ -6,11 +6,9 @@ namespace Drupal\icon_site\Plugin\Block;
 
 use Drupal\Core\Block\Attribute\Block;
 use Drupal\Core\Block\BlockBase;
-use Drupal\Core\Cache\Cache;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\StringTranslation\TranslatableMarkup;
 use Drupal\Core\Url;
-use Drupal\node\NodeInterface;
 
 /**
  * The homepage hero. Its slides are Hero slide content (a film or image,
@@ -45,17 +43,7 @@ final class HeroBlock extends BlockBase {
    * @return \Drupal\node\NodeInterface[]
    */
   private function slides(): array {
-    $storage = \Drupal::entityTypeManager()->getStorage('node');
-    $ids = $storage->getQuery()
-      ->accessCheck(TRUE)
-      ->condition('type', 'hero_slide')
-      ->condition('status', 1)
-      ->sort('created', 'ASC')
-      ->execute();
-    $slides = $storage->loadMultiple($ids);
-    $rank = array_flip(array_map('intval', $this->configuration['order'] ?? []));
-    uasort($slides, fn(NodeInterface $a, NodeInterface $b) => ($rank[(int) $a->id()] ?? PHP_INT_MAX) <=> ($rank[(int) $b->id()] ?? PHP_INT_MAX));
-    return $slides;
+    return icon_site_hero_slides($this->configuration['order'] ?? []);
   }
 
   /**
@@ -125,27 +113,21 @@ final class HeroBlock extends BlockBase {
    * {@inheritdoc}
    */
   public function build(): array {
+    $reel = icon_site_hero_reel($this->configuration['order'] ?? []);
     $slots = [];
-    $tags = ['node_list:hero_slide'];
-    foreach (array_slice($this->slides(), 0, self::MAX) as $slide) {
-      $media = $slide->get('field_slide_media')->entity;
-      $source = $media ? icon_site_media_source($media, 'work_media') : [];
-      if (!$source) {
-        continue;
-      }
-      $link = $slide->get('field_slide_link')->first();
+    foreach ($reel['slides'] as $slide) {
+      $source = $slide['source'];
       $slots[] = [
         '#type' => 'component',
         '#component' => 'icon:hero-slide',
         '#props' => [
-          'client' => $slide->label(),
-          'url' => $link ? $link->getUrl()->toString() : '',
+          'client' => $slide['client'],
+          'url' => $slide['url'],
           $source['type'] === 'video' ? 'video' : 'image' => $source['type'] === 'video'
             ? ['src' => $source['src']]
             : ['src' => $source['src'], 'alt' => $source['alt'] ?? '', 'width' => $source['width'] ?? NULL, 'height' => $source['height'] ?? NULL],
         ],
       ];
-      $tags = Cache::mergeTags($tags, $slide->getCacheTags(), $media->getCacheTags());
     }
     if (!$slots) {
       return [];
@@ -154,7 +136,7 @@ final class HeroBlock extends BlockBase {
       '#type' => 'component',
       '#component' => 'icon:hero',
       '#slots' => ['slides' => $slots],
-      '#cache' => ['tags' => $tags],
+      '#cache' => ['tags' => $reel['tags']],
     ];
   }
 

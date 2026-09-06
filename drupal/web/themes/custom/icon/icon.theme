@@ -93,6 +93,17 @@ function icon_preprocess_page(array &$variables): void {
   $route = \Drupal::routeMatch()->getRouteObject();
   $variables['page_title'] = $route ? \Drupal::service('title_resolver')->getTitle($request, $route) : NULL;
   $variables['is_login'] = \Drupal::routeMatch()->getRouteName() === 'user.login';
+  // The account pages' banner (page--user.html.twig) plays the homepage
+  // hero's own reel — the same Hero slide content, in the order the front
+  // page's hero block was given in the Canvas panel — so editing the slides
+  // in Drupal updates both. icon_site_hero_reel() reads it; the cache tags of
+  // everything it read ride along so the page refreshes with the slides.
+  $route_name = (string) \Drupal::routeMatch()->getRouteName();
+  if ((str_starts_with($route_name, 'user.') || str_starts_with($route_name, 'entity.user.')) && function_exists('icon_site_hero_reel')) {
+    $reel = icon_site_hero_reel();
+    $variables['hero_slides'] = $reel['slides'];
+    $variables['hero_cache'] = ['#cache' => ['tags' => $reel['tags']]];
+  }
 }
 
 /**

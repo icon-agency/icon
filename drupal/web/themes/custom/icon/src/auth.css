@@ -44,6 +44,46 @@
   display: block;
 }
 
+/* The homepage hero's reel (page--user.html.twig .auth__reel): every slide
+   fills the banner, only the active one shows, and they cross-fade the way
+   the hero's own reel does (home-c.css .hero__slide). */
+.auth__reel {
+  position: absolute;
+  inset: 0;
+}
+
+.auth__slide {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+  transition: opacity 0.1s linear; /* the hero's super-quick cross-fade */
+}
+
+.auth__slide.is-active {
+  opacity: 1;
+}
+
+/* The client name, where the hero writes its own (home-c.css .hero__client). */
+.auth__client {
+  position: absolute;
+  left: var(--gutter-page);
+  bottom: var(--space-sm);
+  z-index: 2;
+  margin: 0;
+  font-size: var(--voice-mid);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+  color: var(--color-white);
+  text-shadow: 0 1px 12px var(--scrim);
+  transition: opacity 0.15s var(--ease-standard);
+}
+
+.auth__client.is-out {
+  opacity: 0;
+}
+
 /* The hero's scrim, so the lockup reads on any frame (home-c.css .hero__scrim) */
 .auth__scrim {
   position: absolute;
@@ -65,9 +105,12 @@
   padding: var(--space-lg);
 }
 
-/* reduced motion: the still stays, the film does not run */
+/* reduced motion: a film does not run (an image slide, or the poster still,
+   stays); the reel does not turn (auth-reel.js), so no cross-fades either */
 @media (prefers-reduced-motion: reduce) {
-  .auth__film { visibility: hidden; }
+  video.auth__film { visibility: hidden; }
+  .auth__slide,
+  .auth__client { transition: none; }
 }
 
 /* ---- the form side ------------------------------------------------------ */

@@ -159,6 +159,15 @@ auth-lockup:
     - icon/gsap
     - icon/gsap-drawsvg
 
+# The account pages' banner plays the homepage hero's slides
+# (page--user.html.twig .auth__reel).
+auth-reel:
+  js:
+    js-theme/auth-reel.js: {}
+  dependencies:
+    - core/drupal
+    - core/once
+
 # Drupal's status messages as dismissible toasts
 # (templates/misc/status-messages.html.twig, src/toast.css).
 toast:

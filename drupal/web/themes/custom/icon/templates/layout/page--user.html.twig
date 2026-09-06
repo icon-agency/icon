@@ -2,23 +2,49 @@
 /**
  * @file
  * The account pages (/user/login, /user/password, /user/reset/…, /user/N):
- * a split screen — the homepage hero's opening film with its drawn
- * "Make what matters" lockup on the left (icon/auth-lockup), the form
+ * a split screen — the homepage hero's reel with its drawn "Make what
+ * matters" lockup on the left (icon/auth-lockup, icon/auth-reel), the form
  * on the footer's black on the right — with no site header or footer (the
  * chrome's fixed lockup would sit over the form). Drupal-only, so its
  * styles are the theme's own page layer (src/auth.css). Variables from
- * icon_preprocess_page(): page_title, is_login.
+ * icon_preprocess_page(): page_title, is_login, hero_slides (the homepage
+ * hero's slides — client, url, source{type,src,alt,width,height} — in the
+ * order the front page's hero block gives them; icon_site_hero_reel()),
+ * hero_cache (their cache tags). With no slides (no Hero slide content yet,
+ * or icon_site off) the banner falls back to the theme's own film.
  */
 #}
 {% set theme_path = base_path ~ directory %}
 <a class="sr-only" href="#main">{{ 'Skip to content'|t }}</a>
 <main{{ main_attributes.addClass('auth') }}>
   <aside class="auth__banner" aria-hidden="true">
-    <video class="auth__film" src="{{ theme_path }}/assets/banner/NWMPHN.mp4" poster="{{ theme_path }}/assets/banner/moad-question-of-the-day.jpg" muted playsinline loop autoplay preload="metadata"></video>
+    {% if hero_slides %}
+      {# The homepage hero's reel: one .auth__slide per Hero slide, in order.
+         js-theme/auth-reel.js plays them through — a film to its end, an
+         image for the hero's six seconds — and writes the client name. #}
+      <div class="auth__reel" data-auth-reel>
+        {% for slide in hero_slides %}
+          <figure class="auth__slide{{ loop.first ? ' is-active' }}" data-client="{{ slide.client }}">
+            {% if slide.source.type == 'video' %}
+              <video class="auth__film" src="{{ slide.source.src }}" muted playsinline preload="{{ loop.first ? 'auto' : 'metadata' }}"{% if loop.first %} autoplay{% endif %}{% if hero_slides|length == 1 %} loop{% endif %}></video>
+            {% else %}
+              <img class="auth__film" src="{{ slide.source.src }}" alt=""{% if slide.source.width %} width="{{ slide.source.width }}"{% endif %}{% if slide.source.height %} height="{{ slide.source.height }}"{% endif %} />
+            {% endif %}
+          </figure>
+        {% endfor %}
+      </div>
+      {{ hero_cache }}
+      {{ attach_library('icon/auth-reel') }}
+    {% else %}
+      <video class="auth__film" src="{{ theme_path }}/assets/banner/NWMPHN.mp4" poster="{{ theme_path }}/assets/banner/moad-question-of-the-day.jpg" muted playsinline loop autoplay preload="metadata"></video>
+    {% endif %}
     <div class="auth__scrim"></div>
     <div class="auth__lockup">
       {% include '@icon/includes/lockup.html.twig' %}
     </div>
+    {% if hero_slides %}
+      <p class="auth__client" data-auth-client>{{ (hero_slides|first).client }}</p>
+    {% endif %}
   </aside>
   {{ attach_library('icon/auth-lockup') }}
   <div class="auth__side">
