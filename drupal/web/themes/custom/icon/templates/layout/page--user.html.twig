@@ -52,7 +52,10 @@
       <a class="auth__logo" href="{{ path('<front>') }}" aria-label="{{ 'ICON Agency — home'|t }}">
         {% include '@icon/includes/wordmark.html.twig' %}
       </a>
-      {% if page_title %}
+      {# the login page greets; the other account pages keep their route title #}
+      {% if is_login %}
+        <h1 class="auth__title">{{ 'Welcome back'|t }}</h1>
+      {% elseif page_title %}
         <h1 class="auth__title">{{ page_title }}</h1>
       {% endif %}
       {{ page.highlighted }}
