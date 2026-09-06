@@ -207,8 +207,10 @@
 }
 
 /* ---- the action --------------------------------------------------------- */
+/* the same gap the fields keep between themselves (the last field's
+   bottom margin), so field, field, button sit at one rhythm */
 .auth .form-actions {
-  margin-top: var(--space-lg);
+  margin-top: 0;
 }
 
 .auth .form-submit {
