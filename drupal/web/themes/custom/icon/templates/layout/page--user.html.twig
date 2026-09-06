@@ -55,9 +55,6 @@
       {% if page_title %}
         <h1 class="auth__title">{{ page_title }}</h1>
       {% endif %}
-      {% if is_login %}
-        <p class="auth__lede">{{ 'Welcome back. Log in to your account.'|t }}</p>
-      {% endif %}
       {{ page.highlighted }}
       {{ page.content }}
       {% if is_login %}

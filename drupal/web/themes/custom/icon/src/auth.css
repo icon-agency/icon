@@ -137,19 +137,14 @@
 }
 
 /* an h3 register (user call): the page's one h1 for structure, sized quietly */
+/* The title in the client label's voice (home-c.css .hero__client, the
+   intro statement): mid voice, medium weight, the same tight tracking. */
 .auth__title {
   font-family: var(--font-sans);
-  font-size: var(--text-3xl);
-  font-weight: var(--font-weight-bold);
-  line-height: 1.1;
+  font-size: var(--voice-mid);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.2;
   letter-spacing: -0.01em;
-  margin: 0 0 var(--space-2xs);
-}
-
-.auth__lede {
-  font-size: var(--text-lg);
-  line-height: 1.3;
-  color: var(--footer-muted);
   margin: 0 0 var(--space-lg);
 }
 
