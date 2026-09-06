@@ -42,7 +42,8 @@
     <div class="auth__lockup">
       {% include '@icon/includes/lockup.html.twig' %}
     </div>
-    {% if hero_slides %}
+    {# the client name, as the hero writes it — not on the login screen, where the banner is just the film #}
+    {% if hero_slides and not is_login %}
       <p class="auth__client" data-auth-client>{{ (hero_slides|first).client }}</p>
     {% endif %}
   </aside>
