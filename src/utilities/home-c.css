@@ -1325,9 +1325,15 @@ html:not(.js-animations) .intro__expertise-list li:first-child a {
 .work__layer:nth-child(5) { --z: 4; }
 .work__layer:nth-child(6) { --z: 5; }
 
+/* NO ZOOM (user call, Sep 2026): a layer lifted toward the viewer would
+   also grow under the perspective (120px at 1000px reads 13% larger), so
+   each is counter-scaled by exactly what the lift would magnify —
+   (1000 - z) / 1000 — and keeps its own size. What is left is the
+   parallax alone: as the stack tilts, the lifted layers slide against
+   the base. */
 .work__item:hover .work__layer,
 .work__item:focus-visible .work__layer {
-  transform: translateZ(calc(var(--z) * 30px));
+  transform: translateZ(calc(var(--z) * 30px)) scale(calc(1 - var(--z) * 0.03));
 }
 
 /* the layer's image fills its square; no scroll parallax here (the depth is
