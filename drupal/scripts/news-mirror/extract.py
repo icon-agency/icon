@@ -32,6 +32,27 @@ def clean_html(h):
     h=re.sub(r"\s+"," ",h)
     h=re.sub(r"\s*</(p|h[1-6]|li|ul|ol|blockquote)>\s*",r"</\1>\n",h)
     return h.strip()
+def apollo_media(s):
+    """The page's inline Apollo state: every media item of the story, in
+    section order — label, kind, the mp4 URL (a hosted film), the oEmbed URL
+    (YouTube / Vimeo) and the XLARGE thumbnail (a film's poster)."""
+    i=s.find("window.__APOLLO_STATE__=")
+    if i<0: return []
+    try: st=json.JSONDecoder().raw_decode(s[i+len("window.__APOLLO_STATE__="):s.find("</script>",i)])[0].get("defaultClient",{})
+    except Exception: return []
+    out=[]
+    for k,v in st.items():
+        if not (isinstance(v,dict) and k.endswith(".entity") and ".fieldMediaItems." in k and v.get("__typename","").startswith("Media")): continue
+        m={"key":k,"label":v.get("entityLabel",""),"kind":v["__typename"],"oembed":v.get("fieldMediaOembedVideo",""),"file":"","poster":""}
+        f=st.get(k+".fieldMediaVideoFile.entity") or {}
+        m["file"]=f.get("url","")
+        for kk,vv in st.items():
+            if kk.startswith(k+".thumbnail.derivative") and "XLARGE" in kk: m["poster"]=vv.get("url","")
+        out.append(m)
+    def order(m):
+        n=re.search(r"fieldSectionsSimple\.(\d+)",m["key"]); return int(n.group(1)) if n else 0
+    return sorted(out,key=order)
+
 def blocks_of(seg):
     out=[]
     for m in re.finditer(r'<div class="paragraph-type-(wysiwyg-text|media)[^"]*"[^>]*>',seg):
@@ -68,14 +89,15 @@ if len(sys.argv)>3:
         img=re.search(r'<img[^>]+>',inner)
         if img and href not in listing:
             src=re.search(r'src="([^"]+)"',img.group(0)); alt=re.search(r'alt="([^"]*)"',img.group(0))
-            if src: listing[href]={"url":orig(src.group(1)),"alt":html.unescape(alt.group(1)) if alt else ""}
+            cat=re.search(r'<span class="category"[^>]*>(.*?)</span>',inner,re.S)
+            if src: listing[href]={"url":orig(src.group(1)),"alt":html.unescape(alt.group(1)) if alt else "","category":html.unescape(cat.group(1)).strip() if cat else ""}
 res=[]
 for f in sorted(os.listdir(sys.argv[1])):
     if not f.endswith(".html"): continue
     s=open(os.path.join(sys.argv[1],f)).read()
     t=re.search(r"<h1[^>]*>(.*?)</h1>",s,re.S); title=re.sub(r"\s+"," ",html.unescape(re.sub(r"<[^>]+>","",t.group(1)))).strip()
     d=re.search(r'datetime="([^"]+)"',s).group(1)
-    c=re.search(r'<li[^>]*class="category"[^>]*>(.*?)</li>',s,re.S); cat=re.sub(r"<[^>]+>","",c.group(1)).strip()
+    c=re.search(r'<li[^>]*class="category"[^>]*>(.*?)</li>',s,re.S); cat=re.sub(r"<[^>]+>","",c.group(1)).strip() if c else ""
     og=re.search(r'property="og:image"[^>]*content="([^"]*)"',s) or re.search(r'content="([^"]*)"[^>]*property="og:image"',s)
     mb=re.search(r'<div class="media-background[^"]*"[^>]*>(.*?)<section',s,re.S); inner=mb.group(1) if mb else ""
     hi=re.search(r'<img[^>]+>',inner); banner=None
@@ -85,9 +107,24 @@ for f in sorted(os.listdir(sys.argv[1])):
     body_start=s.find("paragraph-type-wysiwyg-text"); body_start=s.rfind("<div",0,body_start)
     body_end=s.find('class="share-links'); seg=s[body_start:body_end]
     path=re.sub(r"^https?://[^/]+","",canon.group(1)) if canon else ""
-    tile=listing.get(path) or {"url":orig(og.group(1)),"alt":title}
+    tile=dict(listing.get(path) or {"url":orig(og.group(1)),"alt":title})
+    # a story with no category on its page takes the listing card's, else Agency
+    cat=cat or tile.pop("category","") or "Agency"
+    tile.pop("category",None)
     if not tile.get("alt"): tile["alt"]=title
-    res.append({"file":f,"title":title,"date":d[:10],"category":cat.lower().replace(" ","-"),"tile":tile,"banner":banner,"blocks":blocks_of(seg),"source":canon.group(1) if canon else ""})
+    blocks=blocks_of(seg)
+    media=apollo_media(s)
+    for b in blocks:
+        if b["type"] not in ("remote_video","local_video"): continue
+        label=b.get("title") or (re.search(r'alt="([^"]*)"',b.get("raw","")) or [0,""])[1]
+        label=html.unescape(label)
+        want="MediaRemoteVideo" if b["type"]=="remote_video" else "MediaVideo"
+        hit=next((m for m in media if m["kind"]==want and m["label"]==label and not m.get("used")),None) or next((m for m in media if m["kind"]==want and not m.get("used")),None)
+        if hit:
+            hit["used"]=True
+            b["title"]=hit["label"]; b["oembed"]=hit["oembed"]; b["file"]=hit["file"]; b["poster"]=hit["poster"].split("?")[0]
+        b.pop("raw",None); b.pop("thumb",None)
+    res.append({"file":f,"title":title,"date":d[:10],"category":cat.lower().replace(" ","-"),"tile":tile,"banner":banner,"blocks":blocks,"source":canon.group(1) if canon else ""})
 json.dump(res,open(sys.argv[2],"w"),indent=1,ensure_ascii=False)
 for r in res:
     print(r["file"],"|",r["category"],"|",r["date"],"|",r["title"][:50],"| tile:",r["tile"]["url"].split("/")[-1][:40],"| banner:",r["banner"]["url"].split("/")[-1][:30] if r["banner"] else "-")
