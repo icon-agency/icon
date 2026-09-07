@@ -1,28 +1,34 @@
-/* news-lazy.js — THEME-AUTHORED (not generated): the /news listing loads
- * the next page of stories as the reader nears the end, instead of the
- * pager. The View still pages server-side (12 a page) — that is the no-JS
- * and search-engine path, and it is what this fetches: the pager's "next"
- * link, from which the new .news-list__item rows are lifted into the list.
- * Each arrival fades up (the listing's own [data-animate] stagger, applied
- * here since js/reveal.js observed only the first page) and gets the
- * behaviours the first page had (js/news.js runs once per page, so the
- * card tilt is re-applied here). The pager is hidden and a status line
- * ("12 of 282 stories") with a loading mark takes its place.
+/* listing-lazy.js — THEME-AUTHORED (not generated): the /news and /work
+ * listings load their next page of rows as the reader nears the end,
+ * instead of the pager. The View still pages server-side (12 a page) —
+ * that is the no-JS and search-engine path, and it is what this fetches:
+ * the pager's "next" link, from which the new rows are lifted into the
+ * list. Each arrival gets the entrance the first page had (the fade-up,
+ * the media reveal, the drawn hairline — js/reveal.js observed only the
+ * first page) and the card tilt (js/news.js and js/work-landing.js ran
+ * once). The pager is hidden and a status line ("12 of 282 stories",
+ * "12 of 40 projects" — the noun is the pager's own) with a loading mark
+ * takes its place.
  *
  * The category chips navigate — a server-side filter is the only honest
- * one over an archive this size — so js/news.js's in-place filter is
- * stepped around (a capture-phase listener lets the chip's own href run).
- * Lives in js-theme/ because js/ is generated from the repo-root
- * behaviours. */
+ * one over a paged archive — so the in-place filters (js/news.js,
+ * js/work-filter.js, js/work-landing.js) are stepped around by a
+ * capture-phase listener that lets the chip's own href run. Lives in
+ * js-theme/ because js/ is generated from the repo-root behaviours. */
 ((Drupal, once) => {
-  Drupal.behaviors.iconNewsLazy = {
+  Drupal.behaviors.iconListingLazy = {
     attach(context) {
-      once("news-lazy", ".news-list", context).forEach((list) => {
+      once("listing-lazy", ".news-list, .work-landing__list", context).forEach((list) => {
+        // the row's class from the list's: news-list → news-list__item,
+        // work-landing__list → work-landing__item
+        var itemSelector = "." + list.classList[0].replace(/__list$/, "") + "__item";
         var section = list.closest("section");
         var pager = section && section.querySelector(".pager");
         var next = pager && pager.querySelector("a.pager__next");
         var status = pager && pager.querySelector(".pager__status");
-        var total = status ? parseInt((status.textContent.match(/\((\d+)/) || [])[1], 10) : NaN;
+        var counted = status ? status.textContent.match(/\((\d+)\s+([^)]+)\)/) : null;
+        var total = counted ? parseInt(counted[1], 10) : NaN;
+        var noun = counted ? counted[2].trim() : Drupal.t("items");
         if (!section || !pager || !("IntersectionObserver" in window)) return;
         var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -37,47 +43,52 @@
 
         section.classList.add("is-lazy");
         var foot = document.createElement("div");
-        foot.className = "news-lazy";
+        foot.className = "listing-lazy";
         foot.innerHTML =
-          '<p class="news-lazy__status" aria-live="polite"></p>' +
-          '<p class="news-lazy__more" aria-hidden="true"><span class="news-lazy__dot"></span><span class="news-lazy__dot"></span><span class="news-lazy__dot"></span></p>';
+          '<p class="listing-lazy__status" aria-live="polite"></p>' +
+          '<p class="listing-lazy__more" aria-hidden="true"><span class="listing-lazy__dot"></span><span class="listing-lazy__dot"></span><span class="listing-lazy__dot"></span></p>';
         pager.insertAdjacentElement("afterend", foot);
-        var statusEl = foot.querySelector(".news-lazy__status");
-        var moreEl = foot.querySelector(".news-lazy__more");
+        var statusEl = foot.querySelector(".listing-lazy__status");
+        var moreEl = foot.querySelector(".listing-lazy__more");
         var nextHref = next ? next.getAttribute("href") : null;
         var loading = false;
 
-        function count() { return list.querySelectorAll(".news-list__item").length; }
+        function count() { return list.querySelectorAll(itemSelector).length; }
         function say() {
           var n = count();
           if (nextHref) {
             statusEl.textContent = isNaN(total)
-              ? Drupal.formatPlural(n, "1 story", "@count stories")
-              : Drupal.t("@shown of @total stories", { "@shown": n, "@total": total });
+              ? n + " " + noun
+              : Drupal.t("@shown of @total @noun", { "@shown": n, "@total": total, "@noun": noun });
           }
           else {
-            statusEl.textContent = Drupal.formatPlural(n, "That is the one story.", "That is all @count stories.");
+            statusEl.textContent = Drupal.t("That is all @count @noun.", { "@count": n, "@noun": noun });
             moreEl.hidden = true;
           }
         }
 
         function reveal(li, i) {
-          // the listing's own entrance, staggered in sixes like the first page
-          li.setAttribute("data-animate", "");
-          li.style.setProperty("--animate-delay", reduce ? "0ms" : ((i % 6) * 60) + "ms");
+          // the listing's own entrance: the news row fades up as a whole
+          // (staggered in sixes like its first page); the work row's caption
+          // and figure carry their own hooks. js/reveal.js observed only the
+          // first page, so every hook here is flipped by hand.
+          if (list.classList.contains("news-list")) {
+            li.setAttribute("data-animate", "");
+            li.style.setProperty("--animate-delay", reduce ? "0ms" : ((i % 6) * 60) + "ms");
+          }
           requestAnimationFrame(function () {
             requestAnimationFrame(function () {
-              li.classList.add("is-visible");
-              // its hairline draws in with it (js/reveal.js observed only the first page)
+              if (li.hasAttribute("data-animate")) li.classList.add("is-visible");
+              li.querySelectorAll("[data-animate]").forEach(function (el) { el.classList.add("is-visible"); });
               if (li.hasAttribute("data-rule")) li.classList.add("is-drawn");
-              var fig = li.querySelector("[data-reveal-img]");
-              if (fig) fig.classList.add("is-revealed");
+              li.querySelectorAll("[data-rule]").forEach(function (el) { el.classList.add("is-drawn"); });
+              li.querySelectorAll("[data-reveal-img]").forEach(function (fig) { fig.classList.add("is-revealed"); });
             });
           });
         }
 
         function tilt(card) {
-          // js/news.js section 2, for the cards that arrive after it ran
+          // js/news.js section 2 and js/work-landing.js section 2 (the same maths), for the cards that arrive after they ran
           if (reduce || !window.matchMedia("(hover: hover)").matches) return;
           var raf = 0, mx = 0, my = 0;
           var write = function () { raf = 0; card.style.setProperty("--mx", mx.toFixed(3)); card.style.setProperty("--my", my.toFixed(3)); };
@@ -95,11 +106,11 @@
           if (loading || !nextHref) return;
           loading = true;
           foot.classList.add("is-loading");
-          fetch(nextHref, { credentials: "same-origin", headers: { "X-Requested-With": "news-lazy" } })
+          fetch(nextHref, { credentials: "same-origin", headers: { "X-Requested-With": "listing-lazy" } })
             .then(function (r) { if (!r.ok) throw new Error(r.status); return r.text(); })
             .then(function (html) {
               var doc = new DOMParser().parseFromString(html, "text/html");
-              var items = Array.prototype.slice.call(doc.querySelectorAll(".news-list .news-list__item"));
+              var items = Array.prototype.slice.call(doc.querySelectorAll("." + list.classList[0] + " " + itemSelector));
               var base = count();
               items.forEach(function (li, i) {
                 li.removeAttribute("data-theme-handover");
@@ -107,7 +118,7 @@
                 var node = document.importNode(li, true);
                 list.appendChild(node);
                 reveal(node, base + i);
-                var card = node.querySelector(".news-card");
+                var card = node.querySelector(".news-card, .work__item");
                 if (card) tilt(card);
                 Drupal.attachBehaviors(node);
               });

@@ -1,4 +1,4 @@
-/* news-lazy.css — the /news listing's lazy load (js-theme/news-lazy.js):
+/* listing-lazy.css — the /news and /work listings' lazy load (js-theme/listing-lazy.js):
    with JS the pager gives way to a status line and a three-dot loading mark
    at the foot of the list; without JS the pager stands. Theme page layer —
    tokens only, same rules as src/auth.css. */
@@ -7,7 +7,7 @@
   display: none;
 }
 
-.news-lazy {
+.listing-lazy {
   display: grid;
   justify-items: center;
   gap: var(--spacing-md);
@@ -15,7 +15,7 @@
   min-height: 3rem;
 }
 
-.news-lazy__status {
+.listing-lazy__status {
   margin: 0;
   font-size: var(--text-sm);
   font-weight: var(--font-weight-medium);
@@ -23,7 +23,7 @@
 }
 
 /* the loading mark: three dots that breathe in turn while a page is fetched */
-.news-lazy__more {
+.listing-lazy__more {
   display: flex;
   gap: 0.5rem;
   margin: 0;
@@ -31,27 +31,27 @@
   transition: opacity var(--duration-normal) var(--ease-standard);
 }
 
-.news-lazy.is-loading .news-lazy__more {
+.listing-lazy.is-loading .listing-lazy__more {
   opacity: 1;
 }
 
-.news-lazy__dot {
+.listing-lazy__dot {
   width: 0.5rem;
   height: 0.5rem;
   border-radius: 50%;
   background: currentColor;
   color: var(--color-icon-grey);
-  animation: news-lazy-breathe 0.9s ease-in-out infinite;
+  animation: listing-lazy-breathe 0.9s ease-in-out infinite;
 }
 
-.news-lazy__dot:nth-child(2) { animation-delay: 0.15s; }
-.news-lazy__dot:nth-child(3) { animation-delay: 0.3s; }
+.listing-lazy__dot:nth-child(2) { animation-delay: 0.15s; }
+.listing-lazy__dot:nth-child(3) { animation-delay: 0.3s; }
 
-@keyframes news-lazy-breathe {
+@keyframes listing-lazy-breathe {
   0%, 100% { opacity: 0.25; transform: translateY(0); }
   50% { opacity: 1; transform: translateY(-0.2rem); }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .news-lazy__dot { animation: none; opacity: 0.6; }
+  .listing-lazy__dot { animation: none; opacity: 0.6; }
 }
