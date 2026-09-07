@@ -378,6 +378,15 @@
   padding-block: var(--space-sm);
 }
 
+/* The news landing's band closes with no line of its own (user call, Sep
+   2026): its stories' drawn hairlines are back, and the first of them is
+   the line under the chips — two lines a gap apart read as a mistake. The
+   markup drops to [data-rule="top"]; the work landing, whose grid has no
+   per-item rules, keeps both. */
+.page-header--stack .page-header__filter-band--open {
+  border-bottom: 0;
+}
+
 .page-header--stack .page-header__filters {
   margin-bottom: 0;
 }
