@@ -257,9 +257,15 @@
 }
 
 /* Category / date, in the same voice as the work cards' client name. */
+/* The article head's caps voice (news-article.css .news-article__meta--caps,
+   user call, Sep 2026): the label voice at bold, uppercase, no tracking —
+   the nav items' register — in the quiet meta colour. */
 .news-card__meta {
   display: block;
-  font-size: var(--voice-meta);
+  font-size: var(--voice-label);
+  font-weight: var(--font-weight-bold);
+  text-transform: uppercase;
+  letter-spacing: 0;
   color: var(--color-icon-grey);
 }
 
