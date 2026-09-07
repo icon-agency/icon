@@ -380,6 +380,22 @@
   display: block;
 }
 
+/* NEWS ARTICLES ONLY (user call, Sep 2026): an image figure in the flow is
+   the image at its own height — no 16/7 crop, no mask entrance, no drift —
+   so a diagram or a portrait reads whole. The modifier is on the news
+   templates' image figures and the theme's news-article-figure SDC; the
+   film figure and the work article's figures keep the band. Declared
+   after the band's rules and the parallax block below at equal
+   specificity, so it wins by order. */
+.news-article__figure--natural,
+.news-article__figure--natural.news-article__figure {
+  aspect-ratio: auto;
+}
+
+@media (min-width: 768px) {
+  .news-article__figure--natural { aspect-ratio: auto; }
+}
+
 /* ---- media parallax — the homepage cards' drift, on the article bands ----
    The news-card.css recipe verbatim: a NAMED view-timeline declared on the
    frame (never bare view() on the img — the overflow:hidden frame is the
@@ -435,6 +451,22 @@
 .news-article__figure {
   transform: skewY(var(--nl-skew, 0deg));
   transform-origin: center center;
+}
+
+/* The natural figure's image: static, full width, its own height — this
+   undoes the parallax recipe above (position/overscan/animation) for the
+   news figure, at the same specificity, later in the sheet. */
+.news-article__figure--natural img {
+  position: static;
+  top: auto;
+  left: auto;
+  /* its own size, centred, never wider than the column: a small diagram is
+     not stretched soft, a wide photo fills */
+  width: auto;
+  max-width: 100%;
+  height: auto;
+  margin-inline: auto;
+  animation: none;
 }
 
 /* Mock-scale prose headings, scoped to this page: the section head

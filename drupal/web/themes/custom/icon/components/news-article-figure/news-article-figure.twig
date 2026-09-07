@@ -1,10 +1,13 @@
 {#
 /**
  * @file
- * news-article-figure — the wide figure between prose chunks
- * (templates/news-article.html). Reveal via the shared .media-reveal primitive.
+ * news-article-figure — an image figure between prose chunks
+ * (templates/news-article.html). On a news article the figure is the image
+ * at its own height, with the prose's fade-up and nothing else: no band
+ * crop, no mask entrance, no drift (src/utilities/news-article.css
+ * .news-article__figure--natural). The film figure keeps the band.
  */
 #}
-<figure class="news-article__figure media-reveal" data-reveal-img>
+<figure class="news-article__figure news-article__figure--natural" data-animate>
   <img src="{{ image.src }}" alt="{{ image.alt }}"{% if image.width %} width="{{ image.width }}"{% endif %}{% if image.height %} height="{{ image.height }}"{% endif %} loading="lazy" />
 </figure>
