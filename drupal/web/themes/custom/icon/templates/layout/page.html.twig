@@ -13,7 +13,10 @@
 <a class="sr-only" href="#main">{{ 'Skip to content'|t }}</a>
 {% include '@icon/includes/site-header.html.twig' %}
 <main{{ main_attributes }}>
-  {{ page.highlighted }}
-  {{ page.content }}
+  {# the extension point a page--403 / page--404 template overrides #}
+  {% block content %}
+    {{ page.highlighted }}
+    {{ page.content }}
+  {% endblock %}
 </main>
 {% include '@icon/includes/site-footer.html.twig' %}

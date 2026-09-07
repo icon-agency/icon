@@ -163,7 +163,7 @@
     var orderUrl = table.closest(".icon-panel__card") && table.closest(".icon-panel__card").getAttribute("data-order-url");
     if (table.closest(".icon-panel--clients") && orderUrl) {
       var ids = rows.map(function (r) { return r.getAttribute("data-row"); }).join(",");
-      fetch(orderUrl + "&ids=" + ids, { headers: { "X-Requested-With": "XMLHttpRequest" }, credentials: "same-origin" })
+      fetch(orderUrl + "&ids=" + ids, { method: "POST", headers: { "X-Requested-With": "XMLHttpRequest" }, credentials: "same-origin" })
         .then(function () { window.location.reload(); });
       return;
     }
@@ -218,7 +218,7 @@
     var actionUrl = row.getAttribute("data-action-url");
     if (actionUrl) {
       closeMenu();
-      fetch(actionUrl + "&nid=" + o.id, { headers: { "X-Requested-With": "XMLHttpRequest" }, credentials: "same-origin" })
+      fetch(actionUrl + "&nid=" + o.id, { method: "POST", headers: { "X-Requested-With": "XMLHttpRequest" }, credentials: "same-origin" })
         .then(function () { window.location.reload(); });
       return;
     }

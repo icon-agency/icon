@@ -4,18 +4,19 @@ icon_site.client_logos:
     _form: '\Drupal\icon_site\Form\ClientLogosForm'
     _title: 'Client logos'
   requirements:
-    _permission: 'administer media'
+    _permission: 'manage icon lists'
 icon_site.fact_icons:
   path: '/admin/content/fact-icons'
   defaults:
     _form: '\Drupal\icon_site\Form\FactIconsForm'
     _title: 'Icons'
   requirements:
-    _permission: 'administer media'
+    _permission: 'manage icon lists'
 icon_site.news_action:
   path: '/icon-site/news-action'
   defaults:
     _controller: '\Drupal\icon_site\Controller\NewsActionController::act'
+  methods: [POST]
   requirements:
     _permission: 'edit any news content'
     _csrf_token: 'TRUE'
@@ -23,8 +24,9 @@ icon_site.logo_action:
   path: '/icon-site/logo-action'
   defaults:
     _controller: '\Drupal\icon_site\Controller\LogoActionController::act'
+  methods: [POST]
   requirements:
-    _permission: 'administer media'
+    _permission: 'manage icon lists'
     _csrf_token: 'TRUE'
 icon_site.offices:
   path: '/admin/content/offices'

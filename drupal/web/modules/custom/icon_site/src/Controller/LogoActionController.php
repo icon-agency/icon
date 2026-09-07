@@ -28,7 +28,11 @@ final class LogoActionController extends ControllerBase {
       foreach ($ids as $weight => $id) {
         $media = $storage->load($id);
         if ($media instanceof MediaInterface && $media->bundle() === 'logo' && $media->access('update') && (int) $media->get('field_logo_weight')->value !== $weight) {
-          $media->set('field_logo_weight', $weight)->save();
+          $media->set('field_logo_weight', $weight);
+          $media->setNewRevision(TRUE);
+          $media->setRevisionUserId((int) $this->currentUser()->id());
+          $media->setRevisionLogMessage('Marquee order (Canvas panel)');
+          $media->save();
         }
       }
       return new JsonResponse(['ok' => TRUE, 'count' => count($ids)]);
@@ -42,6 +46,9 @@ final class LogoActionController extends ControllerBase {
       'restore' => $media->setPublished(),
       default => throw new BadRequestHttpException('Unknown action.'),
     };
+    $media->setNewRevision(TRUE);
+    $media->setRevisionUserId((int) $this->currentUser()->id());
+    $media->setRevisionLogMessage('Marquee: ' . $op . ' (Canvas panel)');
     $media->save();
     if ($request->isXmlHttpRequest() || $request->query->has('_wrapper_format')) {
       $response = new AjaxResponse();

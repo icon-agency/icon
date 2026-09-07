@@ -6,6 +6,7 @@ namespace Drupal\icon_site\Theme;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\Theme\ThemeNegotiatorInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 
@@ -26,13 +27,25 @@ final class PanelDialogThemeNegotiator implements ThemeNegotiatorInterface {
   public function __construct(
     private readonly RequestStack $requestStack,
     private readonly ConfigFactoryInterface $configFactory,
+    private readonly AccountInterface $currentUser,
   ) {}
 
   /**
    * {@inheritdoc}
    */
   public function applies(RouteMatchInterface $route_match): bool {
-    return (bool) $this->requestStack->getCurrentRequest()?->query->get('panel');
+    // Only the forms the Canvas panel opens in its dialog (node and media
+    // add / edit / delete, and the media library inside them), only when
+    // they ask (?panel=1), and only for someone who may see the admin theme.
+    $request = $this->requestStack->getCurrentRequest();
+    if (!$request || !$request->query->get('panel')) {
+      return FALSE;
+    }
+    $route = (string) $route_match->getRouteName();
+    $panel_routes = $route === 'node.add' || $route === 'entity.media.add_form'
+      || str_starts_with($route, 'entity.node.') || str_starts_with($route, 'entity.media.')
+      || str_starts_with($route, 'media_library.');
+    return $panel_routes && $this->currentUser->hasPermission('view the administration theme');
   }
 
   /**

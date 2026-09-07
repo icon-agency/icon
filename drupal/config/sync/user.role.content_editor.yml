@@ -3,10 +3,19 @@ langcode: en
 status: true
 dependencies:
   config:
+    - filter.format.basic_html
+    - node.type.hero_slide
+    - node.type.news
+    - node.type.office
+    - node.type.work
     - taxonomy.vocabulary.tags
   module:
+    - canvas
     - contextual
     - file
+    - filter
+    - icon_site
+    - media
     - navigation
     - node
     - path
@@ -23,13 +32,36 @@ permissions:
   - 'access content overview'
   - 'access contextual links'
   - 'access files overview'
+  - 'access media overview'
   - 'access navigation'
+  - 'administer menu'
   - 'administer url aliases'
+  - 'create hero_slide content'
+  - 'create media'
+  - 'create news content'
+  - 'create office content'
   - 'create terms in tags'
   - 'create url aliases'
+  - 'create work content'
+  - 'delete any hero_slide content'
+  - 'delete any media'
+  - 'delete any news content'
+  - 'delete any office content'
+  - 'delete any work content'
   - 'delete own files'
+  - 'edit any hero_slide content'
+  - 'edit any news content'
+  - 'edit any office content'
+  - 'edit any work content'
+  - 'edit canvas_page'
   - 'edit terms in tags'
+  - 'manage icon footer'
+  - 'manage icon lists'
+  - 'publish auto-saves'
   - 'revert all revisions'
+  - 'update any media'
+  - 'use text format basic_html'
   - 'view all revisions'
+  - 'view media'
   - 'view own unpublished content'
   - 'view the administration theme'

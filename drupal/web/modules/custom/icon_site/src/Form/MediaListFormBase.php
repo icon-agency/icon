@@ -152,7 +152,7 @@ abstract class MediaListFormBase extends FormBase {
     $position = 0;
     foreach ($rows as $id => $row) {
       $item = $storage->load($id);
-      if (!$item instanceof MediaInterface) {
+      if (!$item instanceof MediaInterface || !$item->access('update')) {
         continue;
       }
       $name = trim((string) $row['name']);

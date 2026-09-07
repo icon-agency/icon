@@ -34,6 +34,11 @@ final class NewsActionController extends ControllerBase {
       'unpromote' => $node->setPromoted(FALSE)->setSticky(FALSE),
       default => throw new BadRequestHttpException('Unknown action.'),
     };
+    // every panel change is its own revision, attributed and explained
+    $node->setNewRevision(TRUE);
+    $node->setRevisionUserId((int) $this->currentUser()->id());
+    $node->setRevisionCreationTime(\Drupal::time()->getRequestTime());
+    $node->setRevisionLogMessage('Homepage feed: ' . $op . ' (Canvas panel)');
     $node->save();
     if ($request->isXmlHttpRequest() || $request->query->has('_wrapper_format')) {
       $response = new AjaxResponse();

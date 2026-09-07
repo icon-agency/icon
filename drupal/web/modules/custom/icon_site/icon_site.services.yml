@@ -6,6 +6,6 @@ services:
       - { name: twig.extension }
   icon_site.theme_negotiator.panel_dialog:
     class: Drupal\icon_site\Theme\PanelDialogThemeNegotiator
-    arguments: ['@request_stack', '@config.factory']
+    arguments: ['@request_stack', '@config.factory', '@current_user']
     tags:
       - { name: theme_negotiator, priority: 1002 }

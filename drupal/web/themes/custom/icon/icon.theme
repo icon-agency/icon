@@ -162,7 +162,7 @@ function icon_preprocess_node(array &$variables): void {
     // The optional 2:1 banner picks the head variant (src/utilities/
     // news-article.css, "THE BANNER SLOT IS 2:1"): present → stacked head.
     $variables['banner'] = $node->hasField('field_news_banner') ? _icon_media_image($node->get('field_news_banner')->entity, 'news_hero') : [];
-    $variables['next_up'] = views_embed_view('news', 'next_up', $node->id());
+    $variables['next_up'] = ['#type' => 'view', '#name' => 'news', '#display_id' => 'next_up', '#arguments' => [$node->id()]];
     $variables['#attached']['library'][] = 'icon/news';
     $variables['#attached']['library'][] = 'icon/share';
   }
@@ -398,7 +398,7 @@ function _icon_preprocess_node_work(array &$variables, NodeInterface $node): voi
     $variables['deliverables'] = array_map(fn($item) => $item->value, iterator_to_array($node->get('field_work_deliverables')));
     $variables['banner'] = _icon_media_source($node->get('field_work_banner')->entity, 'work_media')
       ?: _icon_media_source($node->get('field_work_tile')->entity, 'work_media');
-    $variables['next_up'] = views_embed_view('work', 'next_up', $node->id());
+    $variables['next_up'] = ['#type' => 'view', '#name' => 'work', '#display_id' => 'next_up', '#arguments' => [$node->id()]];
     foreach (['icon/share', 'icon/velocity-lean', 'icon/work-article', 'icon/work-video', 'icon/work-scroller'] as $lib) {
       $variables['#attached']['library'][] = $lib;
     }

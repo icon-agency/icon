@@ -107,7 +107,7 @@ final class OfficesForm extends FormBase {
     $position = 0;
     foreach (array_keys($rows) as $id) {
       $office = $storage->load($id);
-      if ($office instanceof NodeInterface && (int) $office->get('field_office_weight')->value !== $position) {
+      if ($office instanceof NodeInterface && $office->access('update') && (int) $office->get('field_office_weight')->value !== $position) {
         $office->set('field_office_weight', $position)->save();
       }
       $position++;

@@ -20,14 +20,21 @@ cache-tagged empty result (hero: the reel's tags; featured work: `node_list:work
 marquee: its logo tags; news feed: the View's config tag) instead of a bare `[]`
 (finding 6, the "empty result never invalidates" part).
 
+## P2 — first pass, 2026-09-08
+
+| # | Finding | Fix | Verified by |
+| --- | --- | --- | --- |
+| 10 | Panel actions over GET, no revisions | The news and logo action routes are `methods: [POST]` (CSRF token and permission kept); the panel script's own calls POST; every change saves a new revision with the user and a log line ("Homepage feed: pin (Canvas panel)"). The Drupal-ajax links already POST. | GET → 405; anonymous POST without a token → 403; a pin from the Canvas panel saved sticky with a second revision and its log message. |
+| 12 | The content editor role cannot use the new content | The role has create / edit any / delete any for News, Work, Hero slide and Office, the media permissions, the Canvas page permissions, the menu permission for the social links, and two scoped permissions of icon_site's: `manage icon lists` (Client logos, Icons, Offices and the marquee's order — replacing `administer media` on those routes) and `manage icon footer`. The list save handlers also check each entity's update access. | A probe user with the role: allowed on every list page, the Footer page, node add and the social menu. |
+| 13 | No `content` block for 403 / 404 templates to extend | `page.html.twig` wraps its main content in `{% block content %}`. | A 404 renders through the block. |
+| 15 | Dependencies, negotiator, deprecated embeds | `icon_site.info.yml` declares media, media_library, file, image, options, path_alias, menu_link_content, paragraphs and canvas; the panel theme negotiator applies only to node / media form routes and the media library, with `?panel=1`, for a user who may view the admin theme; the two `views_embed_view()` calls are `#type: view` render elements. | Next up rails render on a news and a work article; no PHP warnings. |
+
 ## P2 — open
 
 Findings 6 (the rest of the cacheability work), 7 (hero slides as nodes — a
 deliberate trade-off, to discuss), 8 (two logo media types — an integration
-concern), 10 (panel actions over GET, no revisions), 11 (behaviours gated on
-`<html>`), 12 (the content editor role's permissions), 13, 14 (keyboard access
-on the panels, a visible skip link) and 15 (module dependencies, the theme
-negotiator's scope, deprecated `views_embed_view()`) are as the review states.
+concern), 11 (behaviours gated on `<html>`) and 14 (keyboard access on the
+panels, a visible skip link) are as the review states.
 Finding 9 (listing filters over one page) was overtaken on 2026-09-07: the chips
 navigate to the server-side filter and both listings lazy-load from the View's
 pager.

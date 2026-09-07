@@ -1,3 +1,6 @@
 manage icon footer:
   title: 'Manage the global footer'
   description: 'Edit the footer’s words (Content → Footer).'
+manage icon lists:
+  title: 'Manage the site lists (client logos, icons, offices)'
+  description: 'Reorder, rename, add to and remove from the Content → Client logos, Icons and Offices lists, and the marquee panel’s logo order. Each item’s own edit and delete access still applies.'

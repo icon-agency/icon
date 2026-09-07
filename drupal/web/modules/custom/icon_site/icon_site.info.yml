@@ -1,8 +1,17 @@
 name: ICON site
 type: module
-description: "Site glue that belongs to no theme or content type: the Featured work block (pick the homepage's projects in Canvas)."
+description: "Site glue that belongs to no theme or content type: the homepage's Canvas blocks and their panels, the content lists, the footer's words, the inline SVG helper."
 package: ICON
 core_version_requirement: ^11.3
 dependencies:
   - drupal:node
   - drupal:views
+  - drupal:media
+  - drupal:media_library
+  - drupal:file
+  - drupal:image
+  - drupal:options
+  - drupal:path_alias
+  - drupal:menu_link_content
+  - paragraphs:paragraphs
+  - canvas:canvas
