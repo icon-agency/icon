@@ -283,6 +283,9 @@ function icon_preprocess_views_view_unformatted(array &$variables): void {
     // fade-up stagger cycling 0…300ms in sixes, and the handover marker on
     // the first story (the dark opening holds until it reaches the fold).
     $row['attributes']->setAttribute('data-category', $node instanceof NodeInterface ? ($node->get('field_news_category')->value ?? '') : '');
+    // the per-story hairline, drawn in on scroll (news-list.css, the ruled
+    // variant; back on the landing by user call, Sep 2026)
+    $row['attributes']->setAttribute('data-rule', 'top');
     $row['attributes']->setAttribute('data-animate', '');
     if ($delay = ($i % 6) * 60) {
       $row['attributes']->setAttribute('style', "--animate-delay: {$delay}ms");

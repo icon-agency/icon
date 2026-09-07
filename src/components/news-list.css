@@ -2,10 +2,11 @@
  * experiments/rough-news-mockup.png).
  *
  * The per-story hairline (above the first pair and between every group of
- * two) is now OPT-IN, carried by [data-rule] on the <li>: header A wears it
- * because its stories are the page's only rules; the canonical header B does
- * not, because its filter band's bottom rule is the one line under the chips
- * (user call, Aug 2026 — matching the /work landing).
+ * two) is OPT-IN, carried by [data-rule] on the <li>. Both headers wear it
+ * again (user call, Sep 2026: "these originally had our animated lines" —
+ * the Aug 2026 call had dropped them from header B in favour of the filter
+ * band's one rule; the lines are back, drawn in on scroll like every
+ * hairline). Drupal sets the attribute on every listing row.
  *
  * The cards themselves are the SHARED components/news-card.css — the same
  * component the homepage news section renders, so hovers, parallax, tilt and
@@ -57,11 +58,8 @@
 }
 
 /* THE RULED VARIANT. The per-story hairline is opt-in on the markup's own
-   [data-rule] hook, not the default (user call, Aug 2026: the /news landing
-   drops the individual lines above each story and lets the filter band's
-   bottom rule be the one line under the chips, as the /work landing does).
-   Header A (templates/news.html) has no ruled band at all — its stories ARE
-   its only rules — so it keeps the attribute and this treatment. Everything
+   [data-rule] hook (both news headers wear it since Sep 2026; the unruled
+   form above stays for a listing that drops the attribute). Everything
    the rules need hangs off the same selector: the border below, the odd-count
    stub carry, and the lead arrangement's gutter correction. Drop the attribute
    and a story loses all three together. */

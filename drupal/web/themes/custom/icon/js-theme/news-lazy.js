@@ -68,6 +68,8 @@
           requestAnimationFrame(function () {
             requestAnimationFrame(function () {
               li.classList.add("is-visible");
+              // its hairline draws in with it (js/reveal.js observed only the first page)
+              if (li.hasAttribute("data-rule")) li.classList.add("is-drawn");
               var fig = li.querySelector("[data-reveal-img]");
               if (fig) fig.classList.add("is-revealed");
             });
