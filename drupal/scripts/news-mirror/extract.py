@@ -4,7 +4,7 @@
 #      curl -sL "https://iconagency.com.au/news?page=0" | grep -o 'href="/news/[^"]*"' …
 #    Put the ones to mirror in urls.txt, one path per line, then download them:
 #      i=0; while read u; do i=$((i+1)); curl -sL -A Mozilla/5.0 "https://iconagency.com.au$u" -o pages/$(printf %02d $i).html; done < urls.txt
-# 2. Extract: python3 extract.py pages articles.json
+# 2. Extract: python3 extract.py pages articles.json lists   (lists/ = the /news?page=N pages, for each story's LISTING image)
 #    → title, date, category, tile (og:image), banner (the header image, when the
 #      story has one), and the body as blocks: prose (cleaned HTML for basic_html),
 #      figure (the ORIGINAL file behind the old site's image style), remote_video
@@ -57,6 +57,18 @@ def blocks_of(seg):
                     alt=re.search(r'alt="([^"]*)"',img.group(0)); src=re.search(r'src="([^"]+)"',img.group(0))
                     out.append({"type":"figure","url":orig(src.group(1)),"alt":html.unescape(alt.group(1)) if alt else ""})
     return out
+# The listing's tile (a third argument: a folder of the old site's /news?page=N
+# pages) is the story's tile; og:image is only the fallback — the two differ
+# where a story has its own listing image (the old site's "News listing image").
+listing={}
+if len(sys.argv)>3:
+    lists="".join(open(os.path.join(sys.argv[3],f)).read() for f in sorted(os.listdir(sys.argv[3])) if f.endswith(".html"))
+    for m in re.finditer(r'<a[^>]+href="(/news/[^"]+)"[^>]*>(.*?)</a>',lists,re.S):
+        href,inner=m.groups()
+        img=re.search(r'<img[^>]+>',inner)
+        if img and href not in listing:
+            src=re.search(r'src="([^"]+)"',img.group(0)); alt=re.search(r'alt="([^"]*)"',img.group(0))
+            if src: listing[href]={"url":orig(src.group(1)),"alt":html.unescape(alt.group(1)) if alt else ""}
 res=[]
 for f in sorted(os.listdir(sys.argv[1])):
     if not f.endswith(".html"): continue
@@ -72,7 +84,10 @@ for f in sorted(os.listdir(sys.argv[1])):
     canon=re.search(r'<link[^>]+rel="canonical"[^>]+href="([^"]+)"',s) or re.search(r'property="og:url"[^>]*content="([^"]*)"',s)
     body_start=s.find("paragraph-type-wysiwyg-text"); body_start=s.rfind("<div",0,body_start)
     body_end=s.find('class="share-links'); seg=s[body_start:body_end]
-    res.append({"file":f,"title":title,"date":d[:10],"category":cat.lower().replace(" ","-"),"tile":{"url":orig(og.group(1)),"alt":title},"banner":banner,"blocks":blocks_of(seg),"source":canon.group(1) if canon else ""})
+    path=re.sub(r"^https?://[^/]+","",canon.group(1)) if canon else ""
+    tile=listing.get(path) or {"url":orig(og.group(1)),"alt":title}
+    if not tile.get("alt"): tile["alt"]=title
+    res.append({"file":f,"title":title,"date":d[:10],"category":cat.lower().replace(" ","-"),"tile":tile,"banner":banner,"blocks":blocks_of(seg),"source":canon.group(1) if canon else ""})
 json.dump(res,open(sys.argv[2],"w"),indent=1,ensure_ascii=False)
 for r in res:
     print(r["file"],"|",r["category"],"|",r["date"],"|",r["title"][:50],"| tile:",r["tile"]["url"].split("/")[-1][:40],"| banner:",r["banner"]["url"].split("/")[-1][:30] if r["banner"] else "-")
