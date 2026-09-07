@@ -143,6 +143,11 @@
      horizon. Born as header B's stacked title; the /news masthead joined
      it (user call: News & Insights = the article H1's size). */
   --voice-headline-lg: clamp(3.375rem, 5.4vw, 9rem);
+  /* The article's own headline: the large register x 0.9 (user call, Sep
+     2026: "a tad smaller") — its own voice so the /news masthead, which
+     still speaks --voice-headline-lg, does not shrink with it. Ratio-locked
+     to the large register so the two stay a step apart at every width. */
+  --voice-headline-article: calc(var(--voice-headline-lg) * 0.9);
 
   /* Weights */
   --font-weight-normal: 400;

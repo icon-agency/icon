@@ -112,10 +112,10 @@
      REGULAR (user call, Sep 2026): the serif carries the headline, weight
      stays book so the size does the talking. */
   font-family: var(--font-serif);
-  /* the LARGE headline register on BOTH heads (user call, Sep 2026 — the
-     tile head matches the banner head; it ran --voice-headline before),
-     shared with the /news masthead (typography.css) */
-  font-size: var(--voice-headline-lg);
+  /* the article headline voice on BOTH heads (the tile head matches the
+     banner head — user call, Sep 2026): the large register x 0.9, its own
+     token (typography.css) so the /news masthead keeps the full size */
+  font-size: var(--voice-headline-article);
   font-weight: var(--font-weight-normal);
   line-height: 1.05;
   letter-spacing: -0.02em;
