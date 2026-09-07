@@ -1031,14 +1031,16 @@ html:not(.js-animations) .hero__count { display: none; }
 
 
 /* The label LOCKS while everything else scrolls naturally: sticky against the
-   viewport, it holds ~60% down the screen while the list slides up past it,
-   and js inks whichever item sits beside it. Its containing block is the
+   viewport, it holds at the screen's midpoint (50vh — was 60, user call,
+   Sep 2026: "a little higher") while the list slides up past it, and js
+   inks whichever item sits beside it (it reads the label's own box, so it
+   follows this value). Its containing block is the
    expertise row (list height), so it starts beside the first item, rides to
    the last, then releases with the section. */
 .intro__expertise-label {
   flex: none;
   position: sticky;
-  top: 60vh;
+  top: 50vh;
   font-size: var(--voice-mid);
   font-weight: var(--font-weight-medium);
   letter-spacing: -0.01em;
