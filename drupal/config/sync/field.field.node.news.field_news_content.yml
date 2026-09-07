@@ -9,6 +9,7 @@ dependencies:
     - paragraphs.paragraphs_type.news_article_video
     - paragraphs.paragraphs_type.prose
     - paragraphs.paragraphs_type.pull_quote
+    - paragraphs.paragraphs_type.work_video
   module:
     - entity_reference_revisions
 id: node.news.field_news_content
@@ -29,6 +30,7 @@ settings:
       news_article_figure: news_article_figure
       news_article_video: news_article_video
       pull_quote: pull_quote
+      work_video: work_video
     negate: 0
     target_bundles_drag_drop:
       news_article_figure:
@@ -42,5 +44,8 @@ settings:
         enabled: true
       pull_quote:
         weight: 4
+        enabled: true
+      work_video:
+        weight: 5
         enabled: true
 field_type: entity_reference_revisions

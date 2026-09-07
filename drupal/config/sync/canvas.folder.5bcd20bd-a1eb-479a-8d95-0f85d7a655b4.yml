@@ -8,6 +8,7 @@ dependencies:
     - canvas.component.block.icon_hero
     - canvas.component.block.icon_news_latest
     - canvas.component.block.views_block.clients-marquee
+    - canvas.component.block.views_block.news-latest
     - canvas.component.block.views_block.news-next_up
     - canvas.component.block.views_block.work-next_up
 name: ICON
@@ -19,5 +20,6 @@ items:
   - block.icon_hero
   - block.icon_news_latest
   - block.views_block.clients-marquee
+  - block.views_block.news-latest
   - block.views_block.news-next_up
   - block.views_block.work-next_up

@@ -11,6 +11,10 @@
  * Run from drupal/:  ddev drush php:script scripts/news-sample-content.php
  * Idempotent: re-running updates the same nodes (matched by path alias).
  * Images come from drupal/sample-content/news/ (copies of the repo assets).
+ *
+ * SUPERSEDED for the site's news: scripts/news-mirror/ brings the REAL stories
+ * over from iconagency.com.au (the latest fourteen are in), and unpublished the
+ * invented sample stories below. Re-running this republishes them.
  */
 
 use Drupal\file\Entity\File;
