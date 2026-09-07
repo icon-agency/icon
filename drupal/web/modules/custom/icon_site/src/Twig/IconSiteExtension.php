@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Drupal\icon_site\Twig;
 
 use Drupal\Core\Entity\EntityTypeManagerInterface;
+use enshrined\svgSanitize\Sanitizer;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
@@ -44,7 +45,11 @@ final class IconSiteExtension extends AbstractExtension {
     if (ctype_digit($uri)) {
       // A media ID (the fact card's icon prop) — its file.
       $media = $this->entityTypeManager->getStorage('media')->load((int) $uri);
-      $file = $media && $media->hasField('field_media_file') ? $media->get('field_media_file')->entity : NULL;
+      // the media's own view access decides, not the file's public URL
+      if (!$media || !$media->access('view')) {
+        return '';
+      }
+      $file = $media->hasField('field_media_file') ? $media->get('field_media_file')->entity : NULL;
       if (!$file) {
         return '';
       }
@@ -63,14 +68,25 @@ final class IconSiteExtension extends AbstractExtension {
     if (!str_starts_with($uri, 'public://') || !is_file($uri) || !str_ends_with(strtolower($uri), '.svg')) {
       return '';
     }
-    $svg = (string) file_get_contents($uri);
+    // A real SVG sanitiser (enshrined/svg-sanitize — the one svg_image uses):
+    // the document is parsed and rebuilt from an allow-list of elements and
+    // attributes, so scripts, event handlers, javascript: and data: URIs,
+    // foreignObject and remote references are gone by construction rather
+    // than by pattern. An unparseable file renders nothing.
+    $sanitizer = new Sanitizer();
+    $sanitizer->removeRemoteReferences(TRUE);
+    $sanitizer->minify(TRUE);
+    $svg = $sanitizer->sanitize((string) file_get_contents($uri));
+    if (!is_string($svg) || $svg === '') {
+      return '';
+    }
     $start = stripos($svg, '<svg');
     if ($start === FALSE) {
       return '';
     }
     $svg = substr($svg, $start);
-    $svg = preg_replace('#<script\b[^>]*>.*?</script>#is', '', $svg) ?? '';
-    $svg = preg_replace('#\s+on[a-z]+\s*=\s*("[^"]*"|\'[^\']*\')#i', '', $svg) ?? '';
+    // The root's own class / hidden / size attributes give way to the caller's
+    // (the CSS sizes the icon); the sanitiser has already vetted the rest.
     $svg = preg_replace('#\s+(class|aria-hidden|width|height)\s*=\s*("[^"]*"|\'[^\']*\')#i', '', $svg, 4) ?? '';
     $attrs = ($class !== '' ? ' class="' . htmlspecialchars($class, ENT_QUOTES) . '"' : '') . ' aria-hidden="true"';
     return preg_replace('#<svg\b#i', '<svg' . $attrs, $svg, 1) ?? '';

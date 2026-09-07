@@ -18,6 +18,8 @@ use Drupal\Component\Uuid\Php as Uuid;
 use Drupal\file\Entity\File;
 use Drupal\media\Entity\Media;
 
+require_once __DIR__ . '/_guard.php';
+
 $uuid = new Uuid();
 $components = \Drupal::entityTypeManager()->getStorage('component');
 

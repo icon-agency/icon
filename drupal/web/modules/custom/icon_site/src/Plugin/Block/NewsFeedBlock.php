@@ -131,7 +131,7 @@ final class NewsFeedBlock extends BlockBase {
   public function build(): array {
     $view = Views::getView('news');
     if (!$view || !$view->setDisplay('latest')) {
-      return [];
+      return ['#cache' => ['tags' => ['config:views.view.news']]];
     }
     $view->setItemsPerPage(max(1, min(6, (int) ($this->configuration['count'] ?? 3))));
     $build = $view->buildRenderable('latest', [], FALSE) ?: [];

@@ -174,7 +174,9 @@ function icon_preprocess_node(array &$variables): void {
  * Empty array when there is no usable media, so Twig can `{% if image %}`.
  */
 function _icon_media_image(?EntityInterface $media, string $style_id): array {
-  if (!$media instanceof MediaInterface || !$media->hasField('field_media_image') || $media->get('field_media_image')->isEmpty()) {
+  // The media's view access decides (an unpublished item, or one the current
+  // user may not see, renders nothing) — a public file URL is not permission.
+  if (!$media instanceof MediaInterface || !$media->access('view') || !$media->hasField('field_media_image') || $media->get('field_media_image')->isEmpty()) {
     return [];
   }
   $item = $media->get('field_media_image')->first();
@@ -473,7 +475,10 @@ function icon_preprocess_field(array &$variables): void {
     }
   };
   foreach ($variables['element']['#items']->referencedEntities() as $p) {
-    if (!$p instanceof ParagraphInterface || !isset($sdc[$p->bundle()])) {
+    // this path rebuilds the render arrays itself, so it carries the access
+    // check the formatter would have made: an unpublished paragraph, or one
+    // the current user may not view, is left out
+    if (!$p instanceof ParagraphInterface || !isset($sdc[$p->bundle()]) || !$p->access('view')) {
       continue;
     }
     $props = in_array($p->bundle(), ['work_gallery_row', 'work_stats', 'work_video', 'work_scroller'], TRUE) ? _icon_work_paragraph_props($p) : _icon_paragraph_props($p);

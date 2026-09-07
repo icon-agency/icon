@@ -69,7 +69,9 @@ function _icon_site_login_to_front(array &$form, FormStateInterface $form_state)
  * _icon_media_source() delegates here) and the icon_site blocks.
  */
 function icon_site_media_source(?MediaInterface $media, string $style_id): array {
-  if (!$media instanceof MediaInterface) {
+  // The media's view access decides (unpublished, or not for this user →
+  // nothing); a public file URL is not permission to show the item.
+  if (!$media instanceof MediaInterface || !$media->access('view')) {
     return [];
   }
   if ($media->bundle() === 'video' && $media->hasField('field_media_video_file') && !$media->get('field_media_video_file')->isEmpty()) {

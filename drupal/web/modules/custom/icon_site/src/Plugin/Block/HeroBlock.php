@@ -130,7 +130,8 @@ final class HeroBlock extends BlockBase {
       ];
     }
     if (!$slots) {
-      return [];
+      // empty, but tagged: the first slide added invalidates this result
+      return ['#cache' => ['tags' => $reel['tags']]];
     }
     return [
       '#type' => 'component',

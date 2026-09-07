@@ -15,6 +15,8 @@ use Drupal\media\Entity\Media;
 use Drupal\node\Entity\Node;
 use Drupal\paragraphs\Entity\Paragraph;
 
+require_once __DIR__ . '/_guard.php';
+
 $source_dir = DRUPAL_ROOT . '/../sample-content/work';
 $fs = \Drupal::service('file_system');
 $dest = 'public://work';
@@ -73,9 +75,8 @@ $project = function (array $d) use ($project_names) {
   if (!$node) {
     $node = Node::create(['type' => 'work', 'uid' => 1]);
   }
-  foreach ($node->get('field_work_content')->referencedEntities() as $old) {
-    $old->delete();
-  }
+  // the body it had is replaced only once the new one has SAVED (below)
+  $old_body = $node->get('field_work_content')->referencedEntities();
   $body = $d['body'] ?? [];
   foreach ($body as $p) {
     $p->save();
@@ -103,6 +104,9 @@ $project = function (array $d) use ($project_names) {
     throw new \RuntimeException("Validation failed for {$d['title']}");
   }
   $node->save();
+  foreach ($old_body as $old) {
+    $old->delete();
+  }
   echo ($nid ? 'updated ' : 'created ') . "node/{$node->id()}  {$d['alias']}\n";
 };
 

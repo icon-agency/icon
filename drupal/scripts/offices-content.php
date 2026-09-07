@@ -18,6 +18,8 @@ use Drupal\menu_link_content\Entity\MenuLinkContent;
 use Drupal\node\Entity\Node;
 use Drupal\system\Entity\Menu;
 
+require_once __DIR__ . '/_guard.php';
+
 $source_dir = DRUPAL_ROOT . '/../sample-content/icons';
 $fs = \Drupal::service('file_system');
 $dest = 'public://icons';

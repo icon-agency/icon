@@ -184,7 +184,8 @@ final class FeaturedWorkBlock extends BlockBase {
   public function build(): array {
     $tiles = $this->tiles();
     if (!$tiles) {
-      return [];
+      // empty, but tagged: the first Work item invalidates this result
+      return ['#cache' => ['tags' => ['node_list:work']]];
     }
     $builder = \Drupal::entityTypeManager()->getViewBuilder('node');
     $tags = ['node_list:work'];

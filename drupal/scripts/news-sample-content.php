@@ -22,6 +22,8 @@ use Drupal\media\Entity\Media;
 use Drupal\node\Entity\Node;
 use Drupal\paragraphs\Entity\Paragraph;
 
+require_once __DIR__ . '/_guard.php';
+
 $source_dir = DRUPAL_ROOT . '/../sample-content/news';
 $fs = \Drupal::service('file_system');
 $dest = 'public://news';
@@ -60,9 +62,9 @@ $story = function (string $alias, string $title, string $category, string $date,
   $node->set('field_news_date', $date);
   $node->set('field_news_image', ['target_id' => $tile->id()]);
   $node->set('field_news_banner', $banner ? ['target_id' => $banner->id()] : NULL);
-  foreach ($node->get('field_news_content')->referencedEntities() as $old) {
-    $old->delete();
-  }
+  // the body it had is replaced only once the new one has SAVED, so a
+  // validation failure leaves the story as it was
+  $old_body = $node->get('field_news_content')->referencedEntities();
   foreach ($body as $p) {
     $p->save();
   }
@@ -79,6 +81,9 @@ $story = function (string $alias, string $title, string $category, string $date,
     throw new \RuntimeException("Validation failed for $title");
   }
   $node->save();
+  foreach ($old_body as $old) {
+    $old->delete();
+  }
   echo ($nid ? 'updated ' : 'created ') . "node/{$node->id()}  $alias\n";
 };
 

@@ -507,3 +507,15 @@ Creating a `FieldStorageConfig` and then its `FieldConfig` in the same `drush ph
 
 Creating a menu (or a View with a block display) makes Canvas add `canvas.component.block.system_menu_block.<menu>` (or `views_block.<view>-<display>`) to the library on the next cache rebuild, and put it in a folder. If the block is not for editors to place, export it with `status: false` (config edit + `cex`) rather than deleting it — a delete comes back.
 
+## A public file URL is not permission to show the media
+
+The image / media source helpers read the file straight off the media entity, so an unpublished media item (or one the current user may not view) still rendered wherever it was referenced — the review's probe confirmed it. Every helper that turns an entity into scalar props for an SDC must carry the access check the formatter would have made: `$media->access('view')`, `$paragraph->access('view')`. The same goes for a field preprocess that rebuilds render arrays from `referencedEntities()` instead of using the formatter's children.
+
+## Regex is not an SVG sanitiser
+
+Stripping `<script>` and `on*=` attributes with patterns left `javascript:` links, `foreignObject` and remote references in an inlined SVG. Use a real sanitiser (`enshrined/svg-sanitize`, the one `svg_image` uses): it rebuilds the document from an allow-list, so what it cannot vouch for is gone by construction. Apply the caller's class after it, never before.
+
+## Seed scripts that replace content need a gate and a safe order
+
+They match by alias or title and delete the paragraphs a body had — fine on a fresh site, destructive on one with editorial content. Gate them (`scripts/_guard.php`: refuse on production, and unless `ICON_SEED=1`), and delete the old paragraphs only after the new node revision has validated and saved, so a failed run leaves the old body in place.
+

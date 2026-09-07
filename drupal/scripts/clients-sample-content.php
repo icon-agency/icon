@@ -11,6 +11,8 @@
 use Drupal\file\Entity\File;
 use Drupal\media\Entity\Media;
 
+require_once __DIR__ . '/_guard.php';
+
 $fs = \Drupal::service('file_system');
 $dest = 'public://client-logos';
 $fs->prepareDirectory($dest, $fs::CREATE_DIRECTORY | $fs::MODIFY_PERMISSIONS);

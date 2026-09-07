@@ -18,6 +18,8 @@ use Drupal\media\Entity\Media;
 use Drupal\node\Entity\Node;
 use Drupal\paragraphs\Entity\Paragraph;
 
+require_once __DIR__ . '/../_guard.php';
+
 // The folder this script sits in holds articles.json, the media files and
 // (optionally) all-urls.txt — push them all together, run from there.
 $src = __DIR__;
@@ -82,7 +84,8 @@ foreach ($articles as $a) {
   }
   $created = !$node;
   $node = $node ?: Node::create(['type' => 'news', 'uid' => 1]);
-  foreach ($node->get('field_news_content')->referencedEntities() as $old) { $old->delete(); }
+  // the body it had is replaced only once the new one has saved (below)
+  $old_body = $node->get('field_news_content')->referencedEntities();
   $paras = [];
   foreach ($a['blocks'] as $b) {
     switch ($b['type']) {
@@ -138,6 +141,7 @@ foreach ($articles as $a) {
   foreach ($v as $x) { echo "  ! {$x->getPropertyPath()}: {$x->getMessage()}\n"; }
   if (count($v)) { throw new \RuntimeException('invalid ' . $a['title']); }
   $node->save();
+  foreach ($old_body as $old) { $old->delete(); }
   $touched[$node->id()] = TRUE;
   echo ($created ? 'created ' : 'updated ') . "node/{$node->id()}  $alias  (" . count($paras) . " blocks)\n";
 }

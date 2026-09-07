@@ -15,6 +15,8 @@ use Drupal\file\Entity\File;
 use Drupal\media\Entity\Media;
 use Drupal\node\Entity\Node;
 
+require_once __DIR__ . '/_guard.php';
+
 $source_dir = DRUPAL_ROOT . '/../sample-content/work/legacy';
 $fs = \Drupal::service('file_system');
 $dest = 'public://work/legacy';

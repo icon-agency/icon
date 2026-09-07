@@ -119,7 +119,8 @@ final class ClientsMarqueeBlock extends BlockBase {
       $tags = Cache::mergeTags($tags, $media->getCacheTags());
     }
     if (!$logos) {
-      return [];
+      // empty, but tagged: the first logo invalidates this result
+      return ['#cache' => ['tags' => $tags]];
     }
     return [
       '#type' => 'component',
