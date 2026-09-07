@@ -180,7 +180,10 @@
   gap: var(--space-lg) var(--space-md);
 }
 
-@media (min-width: 1024px) {
+/* md, not lg (user call, Sep 2026: "the two columns would still fit at
+   this breakpoint") — the blurb's 20ch column and the office rows both
+   have room from 768. */
+@media (min-width: 768px) {
   .site-footer__body {
     /* the design splits at the half-line: blurb left, offices right */
     grid-template-columns: 1fr 1fr;
