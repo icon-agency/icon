@@ -1,0 +1,8 @@
+uuid: 581f4d7a-caf3-4fdc-a9f5-45cc17b9fd05
+langcode: en
+status: true
+dependencies: {  }
+id: footer-social
+label: 'Social links'
+description: 'The social links in the global footer, in order.'
+locked: false

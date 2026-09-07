@@ -1,0 +1,23 @@
+uuid: e5385a42-377c-45c4-bffe-5764f8f742de
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_office_weight
+    - node.type.office
+id: node.office.field_office_weight
+field_name: field_office_weight
+entity_type: node
+bundle: office
+label: Order
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  min: null
+  max: null
+  prefix: ''
+  suffix: ''
+field_type: integer

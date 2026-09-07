@@ -9,7 +9,7 @@ icon_site.fact_icons:
   path: '/admin/content/fact-icons'
   defaults:
     _form: '\Drupal\icon_site\Form\FactIconsForm'
-    _title: 'Fact icons'
+    _title: 'Icons'
   requirements:
     _permission: 'administer media'
 icon_site.news_action:
@@ -26,3 +26,17 @@ icon_site.logo_action:
   requirements:
     _permission: 'administer media'
     _csrf_token: 'TRUE'
+icon_site.offices:
+  path: '/admin/content/offices'
+  defaults:
+    _form: '\Drupal\icon_site\Form\OfficesForm'
+    _title: 'Offices'
+  requirements:
+    _permission: 'edit any office content'
+icon_site.footer:
+  path: '/admin/content/footer'
+  defaults:
+    _form: '\Drupal\icon_site\Form\FooterSettingsForm'
+    _title: 'Footer'
+  requirements:
+    _permission: 'manage icon footer'

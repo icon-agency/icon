@@ -4,7 +4,17 @@ icon_site.client_logos:
   base_route: system.admin_content
   weight: 20
 icon_site.fact_icons:
-  title: 'Fact icons'
+  title: 'Icons'
   route_name: icon_site.fact_icons
   base_route: system.admin_content
   weight: 21
+icon_site.offices:
+  title: 'Offices'
+  route_name: icon_site.offices
+  base_route: system.admin_content
+  weight: 22
+icon_site.footer:
+  title: 'Footer'
+  route_name: icon_site.footer
+  base_route: system.admin_content
+  weight: 23

@@ -199,6 +199,87 @@ function icon_site_hero_reel(?array $order = NULL, string $style_id = 'work_medi
 }
 
 /**
+ * The global footer's words: icon_site.footer config (Content → Footer), with
+ * the design system's copy as the fallback, plus the social links from the
+ * footer-social menu, in menu order.
+ *
+ * @return array{talk: string, touch: string, touch_url: string, newsletter: string, acknowledgement: string, social: array<int, array{title: string, url: string}>, tags: string[]}
+ */
+function icon_site_footer(): array {
+  $config = \Drupal::config('icon_site.footer');
+  $out = [
+    'talk' => (string) ($config->get('talk') ?: "Let’s talk"),
+    'touch' => (string) ($config->get('touch') ?: 'Get in touch'),
+    'touch_url' => (string) ($config->get('touch_url') ?: '/contact'),
+    'newsletter' => (string) ($config->get('newsletter') ?? 'Join our newsletter for industry insights, news and our latest work'),
+    'acknowledgement' => (string) ($config->get('acknowledgement') ?? 'ICON recognises the First Peoples of this nation and their ongoing connection to culture and country. We acknowledge First Nations Peoples as the Traditional Owners, Custodians and Lore Keepers of the world’s oldest living culture and pay respects to their Elders past, present and emerging.'),
+    'social' => [],
+    'tags' => ['config:icon_site.footer', 'config:system.menu.footer-social'],
+  ];
+  $tree = \Drupal::menuTree();
+  $params = (new \Drupal\Core\Menu\MenuTreeParameters())->setMaxDepth(1)->onlyEnabledLinks();
+  $links = $tree->transform($tree->load('footer-social', $params), [['callable' => 'menu.default_tree_manipulators:checkAccess'], ['callable' => 'menu.default_tree_manipulators:generateIndexAndSort']]);
+  foreach ($links as $element) {
+    if ($element->access && !$element->access->isAllowed()) {
+      continue;
+    }
+    $out['social'][] = ['title' => (string) $element->link->getTitle(), 'url' => $element->link->getUrlObject()->toString()];
+  }
+  return $out;
+}
+
+/**
+ * The global footer's offices: published Office content in list order
+ * (Content → Offices), as the footer template reads them.
+ *
+ * @return array{offices: array<int, array{city: string, place: string, lines: string[], phone: string, phone_href: string, email: string, icon: int|null}>, tags: string[]}
+ */
+function icon_site_offices(): array {
+  $storage = \Drupal::entityTypeManager()->getStorage('node');
+  $ids = $storage->getQuery()
+    ->accessCheck(TRUE)
+    ->condition('type', 'office')
+    ->condition('status', 1)
+    ->sort('field_office_weight', 'ASC')
+    ->sort('title', 'ASC')
+    ->execute();
+  $out = ['offices' => [], 'tags' => ['node_list:office']];
+  foreach ($storage->loadMultiple($ids) as $office) {
+    $phone = trim((string) $office->get('field_office_phone')->value);
+    $digits = preg_replace('/\D+/', '', $phone);
+    $out['offices'][] = [
+      'city' => (string) $office->label(),
+      'place' => (string) $office->get('field_office_place')->value,
+      'lines' => array_values(array_filter(array_map('trim', preg_split('/\r\n|\r|\n/', (string) $office->get('field_office_address')->value)))),
+      'phone' => $phone,
+      'phone_href' => $digits ? 'tel:' . (str_starts_with($digits, '0') ? '+61' . substr($digits, 1) : (str_starts_with($digits, '61') ? '+' . $digits : $digits)) : '',
+      'email' => (string) $office->get('field_office_email')->value,
+      'icon' => $office->get('field_office_icon')->target_id ? (int) $office->get('field_office_icon')->target_id : NULL,
+    ];
+    $out['tags'] = Cache::mergeTags($out['tags'], $office->getCacheTags());
+  }
+  return $out;
+}
+
+/**
+ * Implements hook_preprocess_HOOK() for media.html.twig.
+ *
+ * An Icon in the media library's grid shows the SVG itself (its thumbnail
+ * would be the generic file icon): inlined in the text colour on white.
+ */
+function icon_site_preprocess_media(array &$variables): void {
+  $media = $variables['media'] ?? NULL;
+  if (!$media instanceof MediaInterface || $media->bundle() !== 'icon' || ($variables['view_mode'] ?? '') !== 'media_library') {
+    return;
+  }
+  $svg = (new \Drupal\icon_site\Twig\IconSiteExtension(\Drupal::entityTypeManager()))->inlineSvg((string) $media->id(), '');
+  $variables['content']['icon_svg'] = [
+    '#markup' => \Drupal\Core\Render\Markup::create('<div style="aspect-ratio:1;display:grid;place-items:center;padding:14%;box-sizing:border-box;color:#222;background:#fff">' . $svg . '</div>'),
+    '#weight' => -10,
+  ];
+}
+
+/**
  * Implements hook_canvas_storable_prop_shape_alter().
  *
  * An icon prop — `type: integer` with `x-icon-media: true` — is stored as a

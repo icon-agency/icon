@@ -1,0 +1,55 @@
+uuid: 8e7465a0-4460-4f28-983a-013ee0c2a1a7
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.node.office.field_office_address
+    - field.field.node.office.field_office_email
+    - field.field.node.office.field_office_icon
+    - field.field.node.office.field_office_phone
+    - field.field.node.office.field_office_place
+    - field.field.node.office.field_office_weight
+    - node.type.office
+  module:
+    - user
+id: node.office.default
+targetEntityType: node
+bundle: office
+mode: default
+content:
+  field_office_address:
+    type: basic_string
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    weight: 1
+    region: content
+  field_office_email:
+    type: basic_string
+    label: inline
+    settings: {  }
+    third_party_settings: {  }
+    weight: 3
+    region: content
+  field_office_phone:
+    type: string
+    label: inline
+    settings:
+      link_to_entity: false
+      link_rel: canonical
+    third_party_settings: {  }
+    weight: 2
+    region: content
+  field_office_place:
+    type: string
+    label: hidden
+    settings:
+      link_to_entity: false
+      link_rel: canonical
+    third_party_settings: {  }
+    weight: 0
+    region: content
+hidden:
+  field_office_icon: true
+  field_office_weight: true
+  links: true

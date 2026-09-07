@@ -5,8 +5,20 @@ icon_site.client_logos:
   parent: system.admin_content
   weight: 10
 icon_site.fact_icons:
-  title: 'Fact icons'
-  description: 'The icons the homepage fact cards can use — add, reorder, rename, remove.'
+  title: 'Icons'
+  description: 'The site’s SVG icons — for the homepage fact cards and the footer offices — add, reorder, rename, remove.'
   route_name: icon_site.fact_icons
   parent: system.admin_content
   weight: 11
+icon_site.offices:
+  title: 'Offices'
+  description: 'The offices in the global footer — add, reorder, edit, close one.'
+  route_name: icon_site.offices
+  parent: system.admin_content
+  weight: 12
+icon_site.footer:
+  title: 'Footer'
+  description: 'The footer’s words — the call to action, the newsletter line, the acknowledgement — with links to the offices and social links.'
+  route_name: icon_site.footer
+  parent: system.admin_content
+  weight: 13

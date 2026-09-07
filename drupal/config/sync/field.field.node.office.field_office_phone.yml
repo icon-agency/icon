@@ -1,0 +1,19 @@
+uuid: 0bb7f7a9-1b2c-4ffa-bdf4-1411e2844c6c
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_office_phone
+    - node.type.office
+id: node.office.field_office_phone
+field_name: field_office_phone
+entity_type: node
+bundle: office
+label: Phone
+description: 'As it should read, e.g. 03 9642 4107. The link dials it. Leave empty for none.'
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

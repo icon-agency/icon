@@ -58,3 +58,23 @@ block.settings.icon_news_latest:
         Range:
           min: 1
           max: 6
+
+icon_site.footer:
+  type: config_object
+  label: 'Global footer'
+  mapping:
+    talk:
+      type: label
+      label: 'Call to action'
+    touch:
+      type: label
+      label: 'Call to action link'
+    touch_url:
+      type: string
+      label: 'Call to action URL'
+    newsletter:
+      type: label
+      label: 'Newsletter line'
+    acknowledgement:
+      type: text
+      label: 'Acknowledgement of Country'

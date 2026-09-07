@@ -499,3 +499,11 @@ goes wrong.
   (`node -e` loading the file against a stub document) catches load-time
   errors before the browser does.
 
+## Creating field storages and fields in one Drupal script: clear the field definition cache between them
+
+Creating a `FieldStorageConfig` and then its `FieldConfig` in the same `drush php:script` run threw "field storage does not exist" from the SECOND field on (the first pair worked). The entity field manager caches the storage definitions after the first field is created; the next storage save does not refresh it. `\Drupal::service('entity_field.manager')->clearCachedFieldDefinitions()` after each storage save fixes it. Prefer exporting the config (`drush cex`) once the script has run — the yml is the source of truth, the script is a one-off.
+
+## Drupal Canvas registers a block component for every new menu and View block
+
+Creating a menu (or a View with a block display) makes Canvas add `canvas.component.block.system_menu_block.<menu>` (or `views_block.<view>-<display>`) to the library on the next cache rebuild, and put it in a folder. If the block is not for editors to place, export it with `status: false` (config edit + `cex`) rather than deleting it — a delete comes back.
+

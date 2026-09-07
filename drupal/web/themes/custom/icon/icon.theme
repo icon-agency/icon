@@ -93,6 +93,17 @@ function icon_preprocess_page(array &$variables): void {
   $route = \Drupal::routeMatch()->getRouteObject();
   $variables['page_title'] = $route ? \Drupal::service('title_resolver')->getTitle($request, $route) : NULL;
   $variables['is_login'] = \Drupal::routeMatch()->getRouteName() === 'user.login';
+  // The global footer's content (templates/includes/site-footer.html.twig):
+  // the words from Content → Footer, the offices from Content → Offices, the
+  // social links from the footer-social menu — icon_site reads them all; the
+  // cache tags of everything read ride along so the footer refreshes with it.
+  if (function_exists('icon_site_footer')) {
+    $footer = icon_site_footer();
+    $offices = icon_site_offices();
+    $variables['footer'] = $footer;
+    $variables['offices'] = $offices['offices'];
+    $variables['footer_cache'] = ['#cache' => ['tags' => array_merge($footer['tags'], $offices['tags'])]];
+  }
   // The account pages' banner (page--user.html.twig) plays the homepage
   // hero's own reel — the same Hero slide content, in the order the front
   // page's hero block was given in the Canvas panel — so editing the slides

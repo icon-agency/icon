@@ -1,0 +1,28 @@
+uuid: e540ea7b-91ff-415e-91ce-32287c01a0ad
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_office_icon
+    - media.type.icon
+    - node.type.office
+id: node.office.field_office_icon
+field_name: field_office_icon
+entity_type: node
+bundle: office
+label: Icon
+description: 'An SVG from the Icons library (Content → Icons), or add a new one — single colour, fill="currentColor".'
+required: true
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:media'
+  handler_settings:
+    target_bundles:
+      icon: icon
+    sort:
+      field: field_logo_weight.value
+      direction: ASC
+    auto_create: false
+field_type: entity_reference

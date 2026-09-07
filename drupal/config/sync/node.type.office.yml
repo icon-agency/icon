@@ -1,0 +1,11 @@
+uuid: f1132c94-b16d-4f47-bec9-bc9d34fc67ee
+langcode: en
+status: true
+dependencies: {  }
+name: Office
+type: office
+description: 'An office in the global footer: city, traditional place name, address, phone, email, icon. Ordered on Content → Offices.'
+help: null
+new_revision: true
+preview_mode: 1
+display_submitted: false

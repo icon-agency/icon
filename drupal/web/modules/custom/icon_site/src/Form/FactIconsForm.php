@@ -31,7 +31,7 @@ final class FactIconsForm extends MediaListFormBase {
   }
 
   protected function help(): string {
-    return (string) $this->t('The icons the homepage fact cards can use, in the order the Icon dropdown lists them. Upload SVGs drawn in a single colour with <code>fill="currentColor"</code> — they are inlined and take the card\'s white. Drag to reorder; the name is what the dropdown shows. <em>Edit</em> replaces the file or renames it; <em>Delete</em> removes it (a card still using it shows no icon).');
+    return (string) $this->t('The site\'s SVG icons — the homepage fact cards\' Icon dropdown and the footer offices\' icon picker both list them, in this order. Upload SVGs drawn in a single colour with <code>fill="currentColor"</code> — they are inlined and take the card\'s white. Drag to reorder; the name is what the dropdown shows. <em>Edit</em> replaces the file or renames it; <em>Delete</em> removes it (a card or office still using it shows no icon).');
   }
 
   protected function nameLabel(): string {

@@ -18,3 +18,13 @@ icon_site.fact_icons.add:
       destination: '/admin/content/fact-icons'
   appears_on:
     - icon_site.fact_icons
+icon_site.offices.add:
+  title: 'Add office'
+  route_name: node.add
+  route_parameters:
+    node_type: office
+  options:
+    query:
+      destination: '/admin/content/offices'
+  appears_on:
+    - icon_site.offices

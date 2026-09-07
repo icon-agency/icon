@@ -1,0 +1,27 @@
+uuid: 3f5534b6-dbe9-4ccc-b0f3-be7b1342b1f6
+langcode: en
+status: false
+dependencies:
+  config:
+    - system.menu.footer-social
+  module:
+    - system
+active_version: 6cf31a9d42001dca
+versioned_properties:
+  active:
+    settings:
+      default_settings:
+        id: 'system_menu_block:footer-social'
+        label: 'Social links'
+        label_display: '0'
+        provider: system
+        level: 1
+        depth: null
+        expand_all_items: false
+    fallback_metadata:
+      slot_definitions: null
+label: 'Social links'
+id: block.system_menu_block.footer-social
+provider: system
+source: block
+source_local_id: 'system_menu_block:footer-social'
