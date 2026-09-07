@@ -75,8 +75,14 @@
   color: var(--color-icon-grey);
 }
 
+/* the eyebrow closes with a hairline of its own ([data-rule="bottom"] in
+   markup, drawn in like the date row's), so the head is bracketed: a line
+   under NEWS, the headline, a line over the category / date (user call,
+   Sep 2026) */
 .news-article__meta--eyebrow {
   margin: 0 0 var(--space-sm);
+  padding-bottom: var(--space-sm);
+  border-bottom: var(--rule-weight) solid var(--rule);
 }
 
 /* the one rule of the head: between headline and the category / date row,
