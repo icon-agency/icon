@@ -880,12 +880,6 @@ if (getenv('IS_DDEV_PROJECT') == 'true' && file_exists(__DIR__ . '/settings.ddev
   include __DIR__ . '/settings.ddev.php';
 }
 
-// Upsun (production and its preview environments): the platform's database,
-// paths, salt — web/sites/default/settings.upsun.php, before the local overrides.
-if (getenv('PLATFORM_PROJECT') && file_exists(__DIR__ . '/settings.upsun.php')) {
-  include __DIR__ . '/settings.upsun.php';
-}
-
 /**
  * Load local development override configuration, if available.
  *
