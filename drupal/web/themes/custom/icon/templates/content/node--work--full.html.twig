@@ -30,7 +30,7 @@
   {% if banner %}
     <figure class="work-article__banner media-reveal" data-reveal-img data-theme-handover="gone" data-theme-handover-class="theme-work-article">
       {% if banner.type == 'video' %}
-        <video autoplay muted loop playsinline preload="auto" src="{{ banner.src }}" aria-label="{{ banner.alt|default(label ~ ' — banner film') }}"></video>
+        <video autoplay muted loop playsinline preload="auto" src="{{ banner.src }}" aria-label="{{ banner.alt|default(node.label ~ ' — banner film') }}"></video>
       {% else %}
         <img src="{{ banner.src }}" alt="{{ banner.alt }}"{% if banner.width %} width="{{ banner.width }}"{% endif %}{% if banner.height %} height="{{ banner.height }}"{% endif %} />
       {% endif %}
