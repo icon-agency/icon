@@ -1,0 +1,100 @@
+# Upsun — the Drupal site in drupal/ is the one application; MariaDB is its
+# one service. Local > GitHub (icon-agency/icon, main) > this. The theme's CSS
+# and JS are committed (npm run build:theme runs locally), so the build is
+# composer only. Settings for this platform: web/sites/default/settings.upsun.php.
+applications:
+  drupal:
+    source:
+      root: "drupal"
+    type: "php:8.4"
+    dependencies:
+      php:
+        composer/composer: "^2.8"
+    runtime:
+      extensions:
+        - sodium
+        - apcu
+    relationships:
+      database: "db:mysql"
+    variables:
+      php:
+        memory_limit: "256M"
+        upload_max_filesize: "128M"
+        post_max_size: "128M"
+    build:
+      flavor: none
+    hooks:
+      build: |
+        set -e
+        composer install --no-ansi --no-interaction --no-progress --prefer-dist --optimize-autoloader --no-dev
+      deploy: |
+        set -e
+        php scripts/upsun-drush-uri.php
+        cd web
+        drush deploy -y
+    crons:
+      drupal:
+        spec: "*/30 * * * *"
+        commands:
+          start: "cd web && drush core-cron -y"
+    mounts:
+      "/web/sites/default/files":
+        source: local
+        source_path: "files"
+      "/tmp":
+        source: local
+        source_path: "tmp"
+      "/private":
+        source: local
+        source_path: "private"
+      "/.drush":
+        source: local
+        source_path: "drush"
+      "/drush-backups":
+        source: local
+        source_path: "drush-backups"
+    web:
+      locations:
+        "/":
+          root: "web"
+          expires: 5m
+          passthru: "/index.php"
+          allow: false
+          headers:
+            Referrer-Policy: strict-origin-when-cross-origin
+          rules:
+            '\.(jpe?g|png|gif|svgz?|css|js|map|ico|bmp|eot|woff2?|otf|ttf|webp|avif|mp4|webm|ogv|txt|json)$':
+              allow: true
+            '^/robots\.txt$':
+              allow: true
+            '^/sitemap\.xml$':
+              allow: true
+            '^/sites/sites\.php$':
+              scripts: false
+            '^/sites/[^/]+/settings.*?\.php$':
+              scripts: false
+        "/sites/default/files":
+          allow: true
+          expires: 5m
+          passthru: "/index.php"
+          root: "web/sites/default/files"
+          scripts: false
+          rules:
+            '^/sites/default/files/(css|js)':
+              expires: 2w
+
+services:
+  db:
+    type: mariadb:11.8
+    disk: 2048
+
+routes:
+  "https://{default}/":
+    type: upstream
+    upstream: "drupal:http"
+    cache:
+      enabled: true
+      cookies: ['/^SS?ESS/', '/^Drupal_visitor_/', '/^has_js$/']
+  "https://www.{default}/":
+    type: redirect
+    to: "https://{default}/"
