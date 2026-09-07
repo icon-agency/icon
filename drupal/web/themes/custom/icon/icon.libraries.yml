@@ -150,6 +150,15 @@ lenis:
 # ── Theme-authored (js-theme/, not generated) ──────────────────────────────
 # The account pages' drawn lockup — js/home-c.js §2d transcribed without the
 # hero's scroll gating (templates/layout/page--user.html.twig).
+# The /news listing loads the next page as the reader nears the end.
+news-lazy:
+  js:
+    js-theme/news-lazy.js: {}
+  dependencies:
+    - core/drupal
+    - core/once
+    - icon/news
+
 auth-lockup:
   js:
     js-theme/auth-lockup.js: {}

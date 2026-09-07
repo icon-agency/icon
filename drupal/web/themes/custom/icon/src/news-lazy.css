@@ -1,0 +1,57 @@
+/* news-lazy.css — the /news listing's lazy load (js-theme/news-lazy.js):
+   with JS the pager gives way to a status line and a three-dot loading mark
+   at the foot of the list; without JS the pager stands. Theme page layer —
+   tokens only, same rules as src/auth.css. */
+
+.is-lazy .pager {
+  display: none;
+}
+
+.news-lazy {
+  display: grid;
+  justify-items: center;
+  gap: var(--spacing-md);
+  margin-block: var(--space-section-sm);
+  min-height: 3rem;
+}
+
+.news-lazy__status {
+  margin: 0;
+  font-size: var(--text-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-icon-grey);
+}
+
+/* the loading mark: three dots that breathe in turn while a page is fetched */
+.news-lazy__more {
+  display: flex;
+  gap: 0.5rem;
+  margin: 0;
+  opacity: 0;
+  transition: opacity var(--duration-normal) var(--ease-standard);
+}
+
+.news-lazy.is-loading .news-lazy__more {
+  opacity: 1;
+}
+
+.news-lazy__dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: currentColor;
+  color: var(--color-icon-grey);
+  animation: news-lazy-breathe 0.9s ease-in-out infinite;
+}
+
+.news-lazy__dot:nth-child(2) { animation-delay: 0.15s; }
+.news-lazy__dot:nth-child(3) { animation-delay: 0.3s; }
+
+@keyframes news-lazy-breathe {
+  0%, 100% { opacity: 0.25; transform: translateY(0); }
+  50% { opacity: 1; transform: translateY(-0.2rem); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .news-lazy__dot { animation: none; opacity: 0.6; }
+}

@@ -232,6 +232,9 @@ function icon_preprocess_views_view(array &$variables): void {
     $variables['chips'] = $chips;
     $variables['pager']['#noun'] = t('stories');
     $variables['#attached']['library'][] = 'icon/news';
+    // The next page arrives as the reader nears the end (js-theme/news-lazy.js);
+    // the pager stays in the markup for no-JS and crawlers.
+    $variables['#attached']['library'][] = 'icon/news-lazy';
     $variables['#attached']['library'][] = 'icon/subscribe-reveal';
   }
 }
