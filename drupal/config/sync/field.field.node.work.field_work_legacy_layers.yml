@@ -1,0 +1,27 @@
+uuid: c562e726-6260-4e51-bb31-72df1c41c4b8
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_work_legacy_layers
+    - media.type.image
+    - node.type.work
+id: node.work.field_work_legacy_layers
+field_name: field_work_legacy_layers
+entity_type: node
+bundle: work
+label: Layers
+description: 'Square cut-out images, back to front — one to six. The first is the base.'
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:media'
+  handler_settings:
+    target_bundles:
+      image: image
+    sort:
+      field: _none
+    auto_create: false
+field_type: entity_reference

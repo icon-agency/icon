@@ -27,6 +27,7 @@ use Drupal\node\NodeInterface;
  * promote and sorts sticky first, then date) — they just need to say so.
  */
 function icon_site_form_node_form_alter(array &$form, FormStateInterface $form_state): void {
+  _icon_site_work_legacy_group($form, $form_state);
   _icon_site_panel_node_form_alter($form, $form_state);
   $node = $form_state->getFormObject()->getEntity();
   if ($node->bundle() !== 'news') {
@@ -277,6 +278,26 @@ function icon_site_preprocess_media(array &$variables): void {
     '#markup' => \Drupal\Core\Render\Markup::create('<div style="aspect-ratio:1;display:grid;place-items:center;padding:14%;box-sizing:border-box;color:#222;background:#fff">' . $svg . '</div>'),
     '#weight' => -10,
   ];
+}
+
+/**
+ * The Work form's legacy folio card: the Layers field sits closed in its own
+ * details, out of the way of the new tile, for the projects brought over
+ * from the old site. Called from icon_site_form_node_form_alter().
+ */
+function _icon_site_work_legacy_group(array &$form, FormStateInterface $form_state): void {
+  $node = $form_state->getFormObject()->getEntity();
+  if ($node->bundle() !== 'work' || !isset($form['field_work_legacy_layers'])) {
+    return;
+  }
+  $form['legacy'] = [
+    '#type' => 'details',
+    '#title' => t('Legacy folio card (old site)'),
+    '#description' => t('For a project brought over from iconagency.com.au: its tile there was a stack of square cut-out images that tilts to the cursor, each layer lifting a step further on hover. Add the layers here, back to front (one to six square PNGs), and the card uses that instead of the Tile above. Leave empty for the new tile.'),
+    '#open' => !$node->get('field_work_legacy_layers')->isEmpty(),
+    '#weight' => $form['field_work_tile']['#weight'] ?? 0,
+  ];
+  $form['field_work_legacy_layers']['#group'] = 'legacy';
 }
 
 /**

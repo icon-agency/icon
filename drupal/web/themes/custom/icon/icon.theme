@@ -373,6 +373,11 @@ function _icon_preprocess_node_work(array &$variables, NodeInterface $node): voi
       'url' => $node->toUrl()->toString(),
       'client' => $node->get('field_work_client')->value ?? '',
       'media' => _icon_media_source($node->get('field_work_tile')->entity, 'work_media'),
+      // the legacy layered tile (an old-site folio item): the Layers field,
+      // back to front — see the Work form's "Legacy folio card" details
+      'layers' => $node->hasField('field_work_legacy_layers')
+        ? array_values(array_filter(array_map(fn($m) => _icon_media_image($m, 'work_media'), $node->get('field_work_legacy_layers')->referencedEntities())))
+        : [],
     ];
     $variables['card_heading_level'] = $variables['elements']['#work_heading_level'] ?? 'h2';
     $variables['card_delay'] = $variables['elements']['#work_delay'] ?? 0;

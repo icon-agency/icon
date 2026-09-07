@@ -3,11 +3,23 @@
  * @file
  * work-card — thin copy of the project tile in templates/work-landing-b.html.
  * Root is the homepage's .work__item; reveal via .media-reveal (js/reveal.js),
- * tilt + lean by the host page (js/work-landing.js / js/home-c.js).
+ * tilt + lean by the host page (js/work-landing.js / js/home-c.js). With
+ * `layers` (an old-site folio item) the media is the legacy layered tile —
+ * .work__figure--legacy in src/utilities/home-c.css.
  */
 #}
 {% set tag = heading_level|default('h2') %}
 <a class="work__item{{ wide ? ' work__item--wide' }}" href="{{ url }}" aria-label="{{ title }} — {{ client }}">
+  {% if layers %}
+    {# the legacy layered tile (old-site folio items): square cut-outs, back to front #}
+    <figure class="work__figure work__figure--legacy media-reveal" data-reveal-img>
+      <div class="work__layers">
+        {% for layer in layers %}
+          <span class="work__layer"><img class="work__img" loading="lazy" src="{{ layer.src }}" alt="{{ loop.first ? media.alt|default(client) : '' }}"{% if layer.width %} width="{{ layer.width }}"{% endif %}{% if layer.height %} height="{{ layer.height }}"{% endif %} /></span>
+        {% endfor %}
+      </div>
+    </figure>
+  {% else %}
   <figure class="work__figure media-reveal" data-reveal-img>
     {% if media.type == 'video' %}
       <video class="work__img" src="{{ media.src }}" autoplay loop muted playsinline preload="auto" aria-label="{{ media.alt|default(client ~ ' — campaign film') }}"></video>
@@ -15,6 +27,7 @@
       <img class="work__img" loading="lazy" src="{{ media.src }}" alt="{{ media.alt }}"{% if media.width %} width="{{ media.width }}"{% endif %}{% if media.height %} height="{{ media.height }}"{% endif %} />
     {% endif %}
   </figure>
+  {% endif %}
   <div class="work__caption" data-animate{% if delay %} style="--animate-delay: {{ delay }}ms"{% endif %}>
     <{{ tag }} class="work__title">{{ title }}</{{ tag }}>
     <span class="work__meta">{{ client }}</span>

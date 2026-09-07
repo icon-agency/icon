@@ -52,6 +52,23 @@ props:
           alt: Campaign creative
           width: 1600
           height: 1067
+    layers:
+      type: array
+      title: Legacy layers
+      description: >
+        An old-site folio tile: square cut-out images, back to front (one to six).
+        When set, the tile is the layered 3D card and `media` is only read for its alt.
+      items:
+        type: object
+        properties:
+          src:
+            type: string
+          width:
+            type: integer
+          height:
+            type: integer
+      examples:
+        - []
     heading_level:
       type: string
       title: Heading level

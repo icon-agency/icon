@@ -1279,6 +1279,69 @@ html:not(.js-animations) .intro__expertise-list li:first-child a {
   view-timeline-name: --work-media;
 }
 
+/* ---- THE LEGACY TILE — the old site's layered card ----------------------
+   For folio items brought over from iconagency.com.au, whose tile is not one
+   image but a STACK of square cut-out layers (one to six PNGs, back to
+   front): the old site's 3D illusion. The stack sits in perspective and
+   tilts toward the cursor further than the frame does (the frame keeps its
+   own 2.2deg above), and on hover every layer lifts a step further in Z
+   than the one below it, so the parallax between them reads as depth. The
+   frame's mask, reveal and caption are untouched: .work__figure--legacy
+   only swaps the media for .work__layers. The tilt reads the same --mx/--my
+   the frame does (js/work-landing.js, js/home-c.js), so a legacy tile
+   needs no script of its own. */
+.work__figure--legacy {
+  aspect-ratio: 1 / 1; /* the layers are square cut-outs */
+}
+
+.work__layers {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  transform: perspective(1000px)
+    rotateX(calc(var(--my, 0) * -9deg))
+    rotateY(calc(var(--mx, 0) * 9deg));
+  transition: transform 0.4s var(--ease-decelerate);
+}
+
+.work__layer {
+  --z: 0;
+  position: absolute;
+  inset: 0;
+  display: block;
+  transform: translateZ(calc(var(--z) * 0px));
+  transition: transform 0.4s var(--ease-decelerate);
+}
+
+/* back to front: each layer one step deeper than the last (the old site's
+   30px steps), only felt while the pointer is on the tile */
+.work__layer:nth-child(2) { --z: 1; }
+.work__layer:nth-child(3) { --z: 2; }
+.work__layer:nth-child(4) { --z: 3; }
+.work__layer:nth-child(5) { --z: 4; }
+.work__layer:nth-child(6) { --z: 5; }
+
+.work__item:hover .work__layer,
+.work__item:focus-visible .work__layer {
+  transform: translateZ(calc(var(--z) * 30px));
+}
+
+/* the layer's image fills its square; no scroll parallax here (the depth is
+   the effect), so the oversize the flat tile carries is undone */
+.work__layer .work__img {
+  top: 0;
+  height: 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .work__layers,
+  .work__layer,
+  .work__item:hover .work__layer {
+    transform: none;
+    transition: none;
+  }
+}
+
 /* Oversized + offset so the scroll parallax translate never exposes an edge. */
 .work__img {
   position: absolute;
