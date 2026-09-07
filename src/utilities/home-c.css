@@ -1301,7 +1301,9 @@ html:not(.js-animations) .intro__expertise-list li:first-child a {
   transform: perspective(1000px)
     rotateX(calc(var(--my, 0) * -9deg))
     rotateY(calc(var(--mx, 0) * 9deg));
-  transition: transform 0.4s var(--ease-decelerate);
+  transition:
+    transform 0.4s var(--ease-decelerate),
+    scale 0.4s var(--ease-decelerate);
 }
 
 .work__layer {
@@ -1454,6 +1456,13 @@ html:not(.js-animations) .intro__expertise-list li:first-child a {
   .work__item:hover .work__img,
   .work__item:focus-visible .work__img {
     filter: brightness(1.08);
+  }
+  /* the legacy stack settles back a tad as the frame closes on it — a
+     shade less than the mask's inset (user call, Sep 2026, matching the
+     flat tile's feel) — while its front layers lift out of the shrink */
+  .work__item:hover .work__layers,
+  .work__item:focus-visible .work__layers {
+    scale: 0.98;
   }
 }
 
