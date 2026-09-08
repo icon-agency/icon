@@ -284,6 +284,15 @@
   height: 1.5em;
 }
 
+/* The two glyphs read the same size (user call, Sep 2026): both drawings are
+   cropped to their INK (the arrow's viewBox is 4 4 16 16, the envelope's
+   2 4 20 16 — its rect plus the stroke's half-width), so both fill their
+   box's height; the envelope, a landscape shape, gets the width its 20:16
+   ink needs at that height. */
+.subscribe-bar__svg--mail {
+  width: 1.875em;
+}
+
 .subscribe-bar__input {
   flex: 1;
   min-width: 0;
