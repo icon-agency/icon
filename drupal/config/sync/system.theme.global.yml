@@ -1,10 +1,10 @@
 _core:
   default_config_hash: KZiV2LB312xgJBphfq5BTjmp16xiR5KM8InBJ-pff7Y
 favicon:
-  mimetype: image/vnd.microsoft.icon
-  path: ''
+  mimetype: image/svg+xml
+  path: themes/custom/icon/assets/brand/favicon/favicon.svg
   url: ''
-  use_default: true
+  use_default: false
 features:
   comment_user_picture: true
   comment_user_verification: true

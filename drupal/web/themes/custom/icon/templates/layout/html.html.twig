@@ -19,6 +19,13 @@
   <head>
     <head-placeholder token="{{ placeholder_token }}">
     <title>{{ head_title|safe_join(' — ') }}</title>
+    {# The old site's icons (iconagency.com.au, brought over 8 Sep 2026):
+       the favicon itself is the SVG mark, set in the theme's Favicon
+       setting (system.theme.global) so Drupal emits its link; the touch
+       icon, the web manifest and the theme colour are here. #}
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ file_url(directory ~ '/assets/brand/favicon/apple-touch-icon.png') }}">
+    <link rel="manifest" href="{{ file_url(directory ~ '/assets/brand/favicon/manifest.json') }}">
+    <meta name="theme-color" content="#0000ff">
     <script>document.documentElement.classList.add("js-animations");</script>
     <css-placeholder token="{{ placeholder_token }}">
     <js-placeholder token="{{ placeholder_token }}">
