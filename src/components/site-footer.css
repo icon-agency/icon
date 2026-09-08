@@ -183,7 +183,7 @@
 }
 
 /* md, not lg (user call, Sep 2026: "the two columns would still fit at
-   this breakpoint") — the blurb's 20ch column and the office rows both
+   this breakpoint") — the blurb's 28ch column and the office rows both
    have room from 768. */
 @media (min-width: 768px) {
   .site-footer__body {
@@ -200,7 +200,7 @@
    so nothing inherits it. */
 .site-footer__newsletter {
   font-size: var(--footer-voice-mid);
-  max-width: 20ch;
+  max-width: 28ch; /* was 20ch: wider (user call, Sep 2026) — the blurb settles on two lines and the Subscribe pill gets its room; the half-line split from 768 still holds */
 }
 
 .site-footer__blurb {
