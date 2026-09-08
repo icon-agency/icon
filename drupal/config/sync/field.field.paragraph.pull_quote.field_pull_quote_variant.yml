@@ -11,8 +11,8 @@ id: paragraph.pull_quote.field_pull_quote_variant
 field_name: field_pull_quote_variant
 entity_type: paragraph
 bundle: pull_quote
-label: Style
-description: 'Upright is the news article treatment; italic the default elsewhere.'
+label: 'Font style'
+description: 'Miller text in normal font is nicer than the italic (just saying).'
 required: true
 translatable: false
 default_value:
