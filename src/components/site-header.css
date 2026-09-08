@@ -411,7 +411,10 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: var(--spacing-xs);
+  /* The glyph is 1.5em (below) inside a box the same height as a link's
+     (1em of text + the padding): the extra half-em comes out of the vertical
+     padding, so a bigger glyph never grows the pill. */
+  padding: calc(var(--spacing-xs) - 0.25em) var(--spacing-xs);
   border: 0;
   border-radius: var(--radius-sm);
   background: none;
@@ -431,9 +434,12 @@
   color: var(--color-icon-blue);
 }
 
+/* 1.5em, and the magnifier's circle fills its 24-unit box (r 8.5 of 24), so
+   the circle reads at about 1.06em — twice the 0.54em it was at 1em with the
+   r 6.5 drawing (user call, Sep 2026). The X shares the box and the stroke. */
 .site-nav__glyph {
-  width: 1em;
-  height: 1em;
+  width: 1.5em;
+  height: 1.5em;
 }
 
 .site-nav__search-input {
