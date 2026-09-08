@@ -1,0 +1,23 @@
+uuid: 47775d4a-18f8-4473-81ae-99f55934b5bc
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.media.field_media_category
+    - media.type.image
+  module:
+    - options
+id: media.image.field_media_category
+field_name: field_media_category
+entity_type: media
+bundle: image
+label: Type
+description: 'Where this belongs — the media library filters on it.'
+required: false
+translatable: true
+default_value:
+  -
+    value: content
+default_value_callback: ''
+settings: {  }
+field_type: list_string

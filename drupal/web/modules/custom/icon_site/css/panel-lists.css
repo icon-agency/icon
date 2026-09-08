@@ -404,7 +404,7 @@ select.icon-panel__count { padding: 4px 24px 4px 8px; border: 1px solid #d9d9e0;
 /* the hero row's actions sit on one line (Edit · Remove — or Add to reel
    under Available), the cell as wide as they need, never off the card */
 .icon-panel--hero .icon-panel__list td.icon-panel__cell--action {
-  width: auto;
+  width: 1%; /* shrink to its word; the name column takes the rest */
   white-space: nowrap;
 }
 .icon-panel__empty-note.is-hidden { display: none; }

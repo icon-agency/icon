@@ -3,6 +3,7 @@ langcode: en
 status: true
 dependencies:
   config:
+    - field.field.media.video.field_media_category
     - field.field.media.video.field_media_video_file
     - media.type.video
   module:
@@ -18,6 +19,12 @@ content:
   created:
     type: datetime_timestamp
     weight: 10
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_media_category:
+    type: options_select
+    weight: 2
     region: content
     settings: {  }
     third_party_settings: {  }

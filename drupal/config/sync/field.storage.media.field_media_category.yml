@@ -1,0 +1,39 @@
+uuid: 3417f6b7-656f-427d-9be1-ee97ea534cb2
+langcode: en
+status: true
+dependencies:
+  module:
+    - media
+    - options
+id: media.field_media_category
+field_name: field_media_category
+entity_type: media
+type: list_string
+settings:
+  allowed_values:
+    -
+      value: intro
+      label: 'Intro (team & social photos)'
+    -
+      value: hero
+      label: 'Hero slides'
+    -
+      value: work
+      label: Work
+    -
+      value: news
+      label: News
+    -
+      value: content
+      label: 'Content (pages)'
+    -
+      value: other
+      label: Other
+  allowed_values_function: ''
+module: options
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

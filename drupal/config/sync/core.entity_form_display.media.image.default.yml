@@ -3,6 +3,7 @@ langcode: en
 status: true
 dependencies:
   config:
+    - field.field.media.image.field_media_category
     - field.field.media.image.field_media_image
     - image.style.thumbnail
     - media.type.image
@@ -19,6 +20,12 @@ content:
   created:
     type: datetime_timestamp
     weight: 10
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_media_category:
+    type: options_select
+    weight: 2
     region: content
     settings: {  }
     third_party_settings: {  }
