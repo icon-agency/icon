@@ -554,14 +554,17 @@
 .site-nav__search-input {
   flex: 1;
   min-width: 0;
-  padding: 0.55em 0.25em;
+  /* Regular weight and a third bigger than the labels (user call, Sep 2026:
+     the bold label voice read oddly as a field). No block padding, so at
+     1.2 line-height the field is 1.6 label-em tall — inside the row's 2em. */
+  padding: 0 0.25em;
   border: 0;
   border-radius: var(--radius-sm);
   background: none;
   font: inherit;
-  font-size: var(--nav-voice);
-  font-weight: var(--font-weight-bold);
-  line-height: 1;
+  font-size: calc(var(--nav-voice) * 1.35);
+  font-weight: var(--font-weight-normal);
+  line-height: 1.2;
   color: var(--color-foreground);
   appearance: none;
   outline: none;
@@ -569,7 +572,7 @@
 
 @media (min-width: 768px) {
   .site-nav__search-input {
-    padding: var(--spacing-xs) var(--spacing-2xs);
+    padding: 0 var(--spacing-2xs);
   }
 }
 
