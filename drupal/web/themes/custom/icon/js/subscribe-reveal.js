@@ -31,6 +31,18 @@
           var input = bar.querySelector("[data-subscribe-input]");
           if (!input) return;
           var over = false;
+          var field = bar.querySelector(".subscribe-bar__field");
+          var hint = bar.querySelector(".subscribe-bar__hint");
+
+          // Where the hint rests: centred in the closed field, as a pixel offset
+          // from its left edge (subscribe-bar.css --hint-rest-x). Measured closed,
+          // and again when the layout changes; a percentage would ride the field's
+          // width while it animates.
+          function place() {
+            if (!field || !hint || bar.classList.contains("is-open")) return;
+            var x = Math.max(0, (field.clientWidth - hint.offsetWidth) / 2);
+            bar.style.setProperty("--hint-rest-x", Math.round(x) + "px");
+          }
 
           function sync() {
             var focused = document.activeElement === input;
@@ -56,6 +68,13 @@
               input.value = "";
               input.blur();
             }
+          });
+
+          place();
+          if (document.fonts && document.fonts.ready) document.fonts.ready.then(place);
+          window.addEventListener("resize", place, { passive: true });
+          bar.addEventListener("transitionend", function (e) {
+            if (e.propertyName === "width" && !bar.classList.contains("is-open")) place();
           });
         });
       })();

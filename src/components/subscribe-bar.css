@@ -159,11 +159,15 @@
   top: 0;
   bottom: 0;
   /* CENTRED at rest between the glyphs (user call, Sep 2026): the box is as
-     wide as its word and sits on the field's midline; as the pill opens it
-     slides to the field's left edge, where the typed address will start, on
-     the width's own easing. */
-  left: 50%;
-  translate: -50% 0;
+     wide as its word, anchored at the field's left edge and pushed to the
+     midline by --hint-rest-x — a PIXEL offset js/subscribe-reveal.js
+     measures while the pill is closed. As the pill opens the offset goes to
+     nothing on the width's own easing, so the hint travels one straight line
+     to where the typed address starts. (A percentage midline would move with
+     the growing field and send the hint right before left — the jump the
+     footer showed, Sep 2026.) Without JS the hint simply sits left. */
+  left: 0;
+  translate: var(--hint-rest-x, 0px) 0;
   width: max-content;
   max-width: 100%;
   display: grid;
@@ -178,12 +182,10 @@
   overflow: hidden;
   transition:
     opacity var(--duration-fast) var(--ease-standard),
-    left 0.45s var(--ease-decelerate),
     translate 0.45s var(--ease-decelerate);
 }
 
 .subscribe-bar.is-open .subscribe-bar__hint {
-  left: 0;
   translate: 0 0;
 }
 
