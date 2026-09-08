@@ -16,6 +16,9 @@
     ],
     "require": {
         "composer/installers": "^2.3",
+        "drupal/ai": "^1.4",
+        "drupal/ai_image_alt_text": "^1.0",
+        "drupal/ai_provider_openai": "^1.2",
         "drupal/canvas": "^1.10",
         "drupal/config_split": "^2.0",
         "drupal/core-composer-scaffold": "^11.4",
@@ -24,6 +27,7 @@
         "drupal/core-recommended": "^11.4",
         "drupal/environment_indicator": "^4.0",
         "drupal/paragraphs": "^1.19",
+        "drupal/redis": "^1.11",
         "drush/drush": "^13.7",
         "enshrined/svg-sanitize": "^1.0"
     },

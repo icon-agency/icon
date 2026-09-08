@@ -925,3 +925,8 @@ if (file_exists($app_root . '/' . $site_path . '/settings.local.php')) {
 
 /* Config lives in git beside the site: drupal/config/sync (drush cex / cim). */
 $settings['config_sync_directory'] = '../config/sync';
+
+// Include settings required for Redis cache.
+if (getenv('IS_DDEV_PROJECT') == 'true' && file_exists(__DIR__ . '/settings.ddev.redis.php')) {
+  include __DIR__ . '/settings.ddev.redis.php';
+}

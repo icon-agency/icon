@@ -22,6 +22,8 @@ use Drupal\Core\Cache\Cache;
 use Drupal\Core\Cache\CacheableMetadata;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\image\Entity\ImageStyle;
+use Drupal\file\FileInterface;
+use Drupal\image\Plugin\Field\FieldWidget\ImageWidget;
 use Drupal\media\MediaInterface;
 
 /**
@@ -573,4 +575,49 @@ function icon_site_form_media_form_alter(array &$form, FormStateInterface $form_
  */
 function _icon_site_panel_remove_submit(array &$form, FormStateInterface $form_state): void {
   $form_state->setValue(['status', 'value'], 0);
+}
+
+/**
+ * Implements hook_module_implements_alter().
+ *
+ * Our image-widget alter runs after ai_image_alt_text's, so it can take the
+ * AI button off a widget that one has just added.
+ */
+function icon_site_module_implements_alter(array &$implementations, string $hook): void {
+  if ($hook !== 'field_widget_single_element_form_alter' || !isset($implementations['icon_site'])) {
+    return;
+  }
+  $group = $implementations['icon_site'];
+  unset($implementations['icon_site']);
+  $implementations['icon_site'] = $group;
+}
+
+/**
+ * Implements hook_field_widget_single_element_form_alter().
+ *
+ * AI alt-text generation (ai_image_alt_text) sends the image to a vision
+ * model, which cannot read an SVG: the button is taken off an SVG upload
+ * and the description says why. Lifted from the Drupal AI build's
+ * icon_ai_alt_text module (Frank Recalde, Sep 2026).
+ */
+function icon_site_field_widget_single_element_form_alter(array &$element, FormStateInterface $form_state, array $context): void {
+  if (!$context['widget'] instanceof ImageWidget || empty($element['ai_alt_text_generation'])) {
+    return;
+  }
+  $fid = $element['#default_value']['fids'][0] ?? NULL;
+  if (!$fid) {
+    return;
+  }
+  $file = \Drupal::entityTypeManager()->getStorage('file')->load($fid);
+  if (!$file instanceof FileInterface) {
+    return;
+  }
+  $extension = strtolower(pathinfo($file->getFilename(), PATHINFO_EXTENSION));
+  if ($file->getMimeType() !== 'image/svg+xml' && $extension !== 'svg') {
+    return;
+  }
+  unset($element['ai_alt_text_generation']);
+  $message = t('AI alt text generation is not available for SVG files. Enter alt text by hand, or upload a PNG, JPEG, WebP or AVIF version if you want it generated.');
+  $description = trim((string) ($element['#description'] ?? ''));
+  $element['#description'] = $description === '' ? $message : $description . '<br>' . $message;
 }
