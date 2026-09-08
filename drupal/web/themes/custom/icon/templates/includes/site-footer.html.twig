@@ -104,7 +104,7 @@
         {% if footer_slides is not empty %}
           {% for slide in footer_slides %}
             {% if slide.source.type == 'video' %}
-              <video class="site-footer__slide{{ loop.first ? ' is-current' }}" src="{{ slide.source.src }}" muted playsinline loop preload="none"></video>
+              <video class="site-footer__slide{{ loop.first ? ' is-current' }}" src="{{ slide.source.src }}"{% if slide.source.poster %} poster="{{ slide.source.poster }}"{% endif %} muted playsinline loop preload="none"></video>
             {% else %}
               <img class="site-footer__slide{{ loop.first ? ' is-current' }}" src="{{ slide.source.src }}" alt="" loading="lazy" decoding="async"{% if slide.source.width %} width="{{ slide.source.width }}"{% endif %}{% if slide.source.height %} height="{{ slide.source.height }}"{% endif %}>
             {% endif %}

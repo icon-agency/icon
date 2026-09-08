@@ -4,6 +4,7 @@ status: true
 dependencies:
   config:
     - field.field.media.video.field_media_category
+    - field.field.media.video.field_media_poster
     - field.field.media.video.field_media_video_file
     - media.type.video
   module:
@@ -33,6 +34,7 @@ content:
 hidden:
   created: true
   field_media_category: true
+  field_media_poster: true
   name: true
   thumbnail: true
   uid: true

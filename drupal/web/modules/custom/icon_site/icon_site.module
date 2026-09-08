@@ -25,6 +25,8 @@ use Drupal\image\Entity\ImageStyle;
 use Drupal\file\FileInterface;
 use Drupal\image\Plugin\Field\FieldWidget\ImageWidget;
 use Drupal\media\MediaInterface;
+use Drupal\Core\Render\Element;
+use Drupal\media_library\MediaLibraryState;
 
 /**
  * Implements hook_form_BASE_FORM_ID_alter() for node_form.
@@ -93,11 +95,28 @@ function icon_site_media_source(?MediaInterface $media, string $style_id, ?Cache
     if ($file) {
       $cache?->addCacheableDependency($file);
     }
-    return $file ? [
+    if (!$file) {
+      return [];
+    }
+    $source = [
       'type' => 'video',
       'src' => \Drupal::service('file_url_generator')->generateString($file->getFileUri()),
       'alt' => $media->label(),
-    ] : [];
+    ];
+    // The optional poster: the still the site shows before the film plays,
+    // at the caller's style so it matches the frame it fills.
+    if ($media->hasField('field_media_poster') && !$media->get('field_media_poster')->isEmpty()) {
+      $poster = $media->get('field_media_poster')->entity;
+      $style = ImageStyle::load($style_id);
+      if ($poster) {
+        $cache?->addCacheableDependency($poster);
+        if ($style) {
+          $cache?->addCacheableDependency($style);
+        }
+        $source['poster'] = $style ? $style->buildUrl($poster->getFileUri()) : \Drupal::service('file_url_generator')->generateString($poster->getFileUri());
+      }
+    }
+    return $source;
   }
   if (!$media->hasField('field_media_image') || $media->get('field_media_image')->isEmpty()) {
     return [];
@@ -639,4 +658,52 @@ function icon_site_page_top(array &$page_top): void {
     return;
   }
   $page_top['indicator'] = ['#attached' => $page_top['indicator']['#attached'] ?? []];
+}
+
+/**
+ * Implements hook_ENTITY_TYPE_presave() for media.
+ *
+ * A film with a Poster wears it as its thumbnail — the picture the media
+ * library and every admin list show — in place of the generic play glyph
+ * core gives a video file. Runs after core's own thumbnail update.
+ */
+function icon_site_media_presave(MediaInterface $media): void {
+  if ($media->bundle() !== 'video' || !$media->hasField('field_media_poster') || $media->get('field_media_poster')->isEmpty()) {
+    return;
+  }
+  $poster = $media->get('field_media_poster')->entity;
+  if ($poster instanceof FileInterface) {
+    $media->set('thumbnail', [
+      'target_id' => $poster->id(),
+      'alt' => (string) ($media->get('field_media_poster')->alt ?: $media->label()),
+    ]);
+  }
+}
+
+/**
+ * Implements hook_form_BASE_FORM_ID_alter() for media_library_add_form.
+ *
+ * Media added from inside a content form is almost always for that content:
+ * the Type (field_media_category) on each new item defaults to the content
+ * type the library was opened from — Work, News, Hero — so an editor on a
+ * Work page is not asked what a work image is for. The editor can still
+ * change it; media added from the library itself keeps no default.
+ */
+function icon_site_form_media_library_add_form_alter(array &$form, FormStateInterface $form_state): void {
+  $state = $form_state->get('media_library_state');
+  if (!$state instanceof MediaLibraryState) {
+    return;
+  }
+  $bundle = $state->getOpenerParameters()['bundle'] ?? '';
+  $type = ['work' => 'work', 'news' => 'news', 'hero_slide' => 'hero'][$bundle] ?? NULL;
+  if (!$type || empty($form['media']) || !is_array($form['media'])) {
+    return;
+  }
+  foreach (Element::children($form['media']) as $delta) {
+    $widget = &$form['media'][$delta]['fields']['field_media_category']['widget'] ?? NULL;
+    if (is_array($widget) && empty($widget['#default_value'])) {
+      $widget['#default_value'] = [$type];
+    }
+    unset($widget);
+  }
 }

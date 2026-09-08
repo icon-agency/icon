@@ -22,7 +22,7 @@
   {% else %}
   <figure class="work__figure media-reveal" data-reveal-img>
     {% if media.type == 'video' %}
-      <video class="work__img" src="{{ media.src }}" autoplay loop muted playsinline preload="auto" aria-label="{{ media.alt|default(client ~ ' — campaign film') }}"></video>
+      <video class="work__img" src="{{ media.src }}"{% if media.poster %} poster="{{ media.poster }}"{% endif %} autoplay loop muted playsinline preload="auto" aria-label="{{ media.alt|default(client ~ ' — campaign film') }}"></video>
     {% else %}
       <img class="work__img" loading="lazy" src="{{ media.src }}" alt="{{ media.alt }}"{% if media.width %} width="{{ media.width }}"{% endif %}{% if media.height %} height="{{ media.height }}"{% endif %} />
     {% endif %}

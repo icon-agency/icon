@@ -9,7 +9,7 @@
 #}
 {% macro medium(m, extra) %}
   {% if m.type == 'video' %}
-    <video autoplay muted loop playsinline preload="auto" src="{{ m.src }}"{% if m.alt %} aria-label="{{ m.alt }}"{% endif %}></video>
+    <video autoplay muted loop playsinline preload="auto" src="{{ m.src }}"{% if m.poster %} poster="{{ m.poster }}"{% endif %}{% if m.alt %} aria-label="{{ m.alt }}"{% endif %}></video>
   {% else %}
     <img loading="lazy" src="{{ m.src }}" alt="{{ m.alt }}"{% if m.width %} width="{{ m.width }}"{% endif %}{% if m.height %} height="{{ m.height }}"{% endif %} />
   {% endif %}

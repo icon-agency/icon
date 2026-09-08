@@ -170,7 +170,7 @@ final class HeroBlock extends BlockBase {
           'client' => $slide['client'],
           'url' => $slide['url'],
           $source['type'] === 'video' ? 'video' : 'image' => $source['type'] === 'video'
-            ? ['src' => $source['src']]
+            ? ['src' => $source['src'], 'poster' => $source['poster'] ?? '']
             : [
               'src' => $source['src'],
               'alt' => $source['alt'] ?? '',

@@ -1,0 +1,38 @@
+uuid: b72910b5-590d-4f02-86a4-512bac74c9d9
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.media.field_media_poster
+    - media.type.video
+  module:
+    - image
+id: media.video.field_media_poster
+field_name: field_media_poster
+entity_type: media
+bundle: video
+label: Poster
+description: 'Optional: a still from the film (JPEG, PNG or WebP). It is the picture the media library shows for this film, and the frame the site shows before the film plays.'
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:file'
+  handler_settings: {  }
+  file_directory: posters
+  file_extensions: 'png jpg jpeg webp avif'
+  max_filesize: ''
+  max_resolution: ''
+  min_resolution: ''
+  alt_field: true
+  alt_field_required: false
+  title_field: false
+  title_field_required: false
+  default_image:
+    uuid: null
+    alt: ''
+    title: ''
+    width: null
+    height: null
+field_type: image
