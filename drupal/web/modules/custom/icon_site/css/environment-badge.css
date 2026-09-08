@@ -1,0 +1,9 @@
+/* environment-badge.css — the environment name in the Navigation top bar,
+   in the colours environment_indicator is configured with (see
+   EnvironmentBadge). Rides the top bar's own badge shape; the selector wears
+   the same specificity hack as Navigation's badge component, which is what
+   its palette is written under. */
+:is(#extra-specificity-hack, [data-drupal-admin-styles]) .toolbar-badge.icon-environment-badge {
+  background-color: var(--icon-env-bg);
+  color: var(--icon-env-fg);
+}

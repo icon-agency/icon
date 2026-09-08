@@ -581,10 +581,12 @@ function _icon_site_panel_remove_submit(array &$form, FormStateInterface $form_s
  * Implements hook_module_implements_alter().
  *
  * Our image-widget alter runs after ai_image_alt_text's, so it can take the
- * AI button off a widget that one has just added.
+ * AI button off a widget that one has just added; our page_top runs after
+ * environment_indicator's, so it can take that module's bar back out (core
+ * has no page_top alter hook).
  */
 function icon_site_module_implements_alter(array &$implementations, string $hook): void {
-  if ($hook !== 'field_widget_single_element_form_alter' || !isset($implementations['icon_site'])) {
+  if (!in_array($hook, ['field_widget_single_element_form_alter', 'page_top'], TRUE) || !isset($implementations['icon_site'])) {
     return;
   }
   $group = $implementations['icon_site'];
@@ -620,4 +622,21 @@ function icon_site_field_widget_single_element_form_alter(array &$element, FormS
   $message = t('AI alt text generation is not available for SVG files. Enter alt text by hand, or upload a PNG, JPEG, WebP or AVIF version if you want it generated.');
   $description = trim((string) ($element['#description'] ?? ''));
   $element['#description'] = $description === '' ? $message : $description . '<br>' . $message;
+}
+
+/**
+ * Implements hook_page_top().
+ *
+ * Environment Indicator's fallback bar is an in-flow block at the top of the
+ * page. With the Navigation module that bar sits under Navigation's fixed top
+ * bar (invisible) while still pushing the page down by its height. The bar
+ * goes; its attachments (the environment favicon) stay; the environment name
+ * moves into the top bar (Plugin\TopBarItem\EnvironmentBadge). Ordered after
+ * environment_indicator's hook by icon_site_module_implements_alter().
+ */
+function icon_site_page_top(array &$page_top): void {
+  if (!isset($page_top['indicator']) || !\Drupal::moduleHandler()->moduleExists('navigation')) {
+    return;
+  }
+  $page_top['indicator'] = ['#attached' => $page_top['indicator']['#attached'] ?? []];
 }

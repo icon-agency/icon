@@ -11,3 +11,9 @@ panel_lists:
   dependencies:
     - core/drupal
     - core/drupal.dialog.ajax
+
+# The environment name as a badge in the Navigation top bar (EnvironmentBadge).
+environment_badge:
+  css:
+    component:
+      css/environment-badge.css: {}

@@ -539,3 +539,7 @@ Drupal Canvas 1.10 keeps two preview iframes and renders each edit as a whole ne
 
 Enabling `search` and creating a `node_search` page by hand gave a 403 for everyone: the `node` module's `NodeSearch` plugin is a deprecated stub in 11.4 whose `access()` returns forbidden and whose `isSearchExecutable()` is false. Content search is the `search_node` module now — enable that and it installs `search.page.node_search` itself. Canvas auto-registers the search-form block as a component (`status: false` to keep it out of the editor).
 
+## There is no `hook_page_top_alter`
+
+Core invokes `hook_page_top` and `hook_page_bottom` and renders the result — no alter pass. To undo what another module put in `page_top`, implement `hook_page_top` yourself and order it after theirs with `hook_module_implements_alter`. The first attempt here was an `_alter` that was registered, ran in a manual dry-run, and never ran in a request.
+
