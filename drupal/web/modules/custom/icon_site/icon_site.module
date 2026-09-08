@@ -684,18 +684,19 @@ function icon_site_media_presave(MediaInterface $media): void {
  * Implements hook_form_BASE_FORM_ID_alter() for media_library_add_form.
  *
  * Media added from inside a content form is almost always for that content:
- * the Type (field_media_category) on each new item defaults to the content
- * type the library was opened from — Work, News, Hero — so an editor on a
- * Work page is not asked what a work image is for. The editor can still
- * change it; media added from the library itself keeps no default.
+ * the folder (field_media_category) on each new item is pre-selected from the
+ * bundle the library was opened from — a Work page or any of its work_*
+ * blocks, a News story or its news_* blocks, a Hero slide — so an editor on a
+ * Work page is not asked where a work image belongs. The field is required,
+ * so where nothing can be inferred (a shared block, the library itself) the
+ * editor picks one.
  */
 function icon_site_form_media_library_add_form_alter(array &$form, FormStateInterface $form_state): void {
   $state = $form_state->get('media_library_state');
   if (!$state instanceof MediaLibraryState) {
     return;
   }
-  $bundle = $state->getOpenerParameters()['bundle'] ?? '';
-  $type = ['work' => 'work', 'news' => 'news', 'hero_slide' => 'hero'][$bundle] ?? NULL;
+  $type = _icon_site_media_folder_for((string) ($state->getOpenerParameters()['bundle'] ?? ''));
   if (!$type || empty($form['media']) || !is_array($form['media'])) {
     return;
   }
@@ -706,4 +707,25 @@ function icon_site_form_media_library_add_form_alter(array &$form, FormStateInte
     }
     unset($widget);
   }
+}
+
+/**
+ * The media folder a content or paragraph bundle belongs to.
+ *
+ * A Work page and every work_* paragraph (a gallery figure, a scroller, a
+ * film) are Work; a News story and its news_* paragraphs are News; a Hero
+ * slide is Hero. The shared blocks (prose, pull quote) say nothing, and the
+ * editor chooses.
+ */
+function _icon_site_media_folder_for(string $bundle): ?string {
+  if ($bundle === 'hero_slide') {
+    return 'hero';
+  }
+  if ($bundle === 'work' || str_starts_with($bundle, 'work_')) {
+    return 'work';
+  }
+  if ($bundle === 'news' || str_starts_with($bundle, 'news_')) {
+    return 'news';
+  }
+  return NULL;
 }

@@ -334,7 +334,7 @@ display:
           exposed: true
           expose:
             operator_id: field_media_category_value_op
-            label: Type
+            label: Folder
             description: ''
             use_operator: false
             operator: field_media_category_value_op
@@ -375,7 +375,7 @@ display:
           exposed: true
           expose:
             operator_id: bundle_op
-            label: 'Media type'
+            label: Folder
             description: ''
             use_operator: false
             operator: bundle_op
@@ -1065,7 +1065,7 @@ display:
           exposed: true
           expose:
             operator_id: field_media_category_value_op
-            label: Type
+            label: Folder
             description: ''
             use_operator: false
             operator: field_media_category_value_op
@@ -1392,7 +1392,7 @@ display:
           exposed: true
           expose:
             operator_id: field_media_category_value_op
-            label: Type
+            label: Folder
             description: ''
             use_operator: false
             operator: field_media_category_value_op

@@ -11,13 +11,11 @@ id: media.image.field_media_category
 field_name: field_media_category
 entity_type: media
 bundle: image
-label: Type
-description: 'Where this belongs — the media library filters on it.'
-required: false
+label: 'Folder to save in'
+description: 'The folder the media library files this under; the library filters on it. Pre-selected from the page you are adding to, when there is one.'
+required: true
 translatable: true
-default_value:
-  -
-    value: content
+default_value: {  }
 default_value_callback: ''
 settings: {  }
 field_type: list_string
