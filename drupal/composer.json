@@ -27,6 +27,8 @@
         "drupal/core-recommended": "^11.4",
         "drupal/environment_indicator": "^4.0",
         "drupal/paragraphs": "^1.19",
+        "drupal/pathauto": "^1.15",
+        "drupal/redirect": "^1.13",
         "drupal/redis": "^1.11",
         "drush/drush": "^13.7",
         "enshrined/svg-sanitize": "^1.0"

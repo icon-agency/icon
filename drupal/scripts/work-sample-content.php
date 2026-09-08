@@ -6,7 +6,7 @@
  * four of them with case-study bodies after the client folios (iCanQuit, The
  * Athlete's Foot, Melbourne Marathon / Nike, MoAD) and the master's block
  * order. Run from drupal/:  ddev drush php:script scripts/work-sample-content.php
- * Idempotent: re-running updates the same nodes (matched by path alias) and
+ * Idempotent: re-running updates the same nodes (matched by project name) and
  * replaces their blocks. Media come from drupal/sample-content/work/.
  */
 
@@ -70,8 +70,11 @@ $project_names = [
   '/work/fogo' => 'FOGO', '/work/is-this-legit' => 'Is This Legit?', '/work/icanquit-app' => 'iCanQuit app',
 ];
 $project = function (array $d) use ($project_names) {
-  $nid = \Drupal::service('path_alias.repository')->lookupByAlias($d['alias'], 'en')['path'] ?? NULL;
-  $node = $nid ? Node::load((int) substr($nid, 6)) : NULL;
+  // Matched by project name (the title): the URL is Pathauto's now
+  // (/work/{project}-{client}), so the seeded alias is only a key here.
+  $name = $project_names[$d['alias']] ?? ucwords(str_replace('-', ' ', substr($d['alias'], 6)));
+  $found = \Drupal::entityQuery('node')->accessCheck(FALSE)->condition('type', 'work')->condition('title', $name)->range(0, 1)->execute();
+  $node = $found ? Node::load((int) reset($found)) : NULL;
   if (!$node) {
     $node = Node::create(['type' => 'work', 'uid' => 1]);
   }
@@ -81,10 +84,11 @@ $project = function (array $d) use ($project_names) {
   foreach ($body as $p) {
     $p->save();
   }
-  $node->set('title', $d['title']);
+  // The title IS the short project name (Sep 2026); the sample's headline
+  // sentences are kept in the data as `headline` for reference only.
+  $node->set('title', $project_names[$d['alias']] ?? ucwords(str_replace('-', ' ', substr($d['alias'], 6))));
   $node->set('field_work_client', $d['client']);
   // The short project name lists and pickers show (the title is the card's headline).
-  $node->set('field_work_project', $project_names[$d['alias']] ?? ucwords(str_replace('-', ' ', substr($d['alias'], 6))));
   $node->set('field_work_category', $d['categories']);
   $node->set('field_work_deliverables', $d['deliverables'] ?? []);
   $node->set('field_work_statement', $d['statement'] ?? '');
@@ -93,7 +97,6 @@ $project = function (array $d) use ($project_names) {
   $node->set('field_work_bg', $d['bg'] ?? '#0000ff');
   $node->set('field_work_ink', $d['ink'] ?? '#ffffff');
   $node->set('field_work_content', array_map(fn(Paragraph $p) => ['target_id' => $p->id(), 'target_revision_id' => $p->getRevisionId()], $body));
-  $node->set('path', ['alias' => $d['alias']]);
   $node->set('status', 1);
   $node->set('created', $d['created']);
   $violations = $node->validate();
@@ -101,7 +104,7 @@ $project = function (array $d) use ($project_names) {
     foreach ($violations as $v) {
       echo "  ! {$v->getPropertyPath()}: {$v->getMessage()}\n";
     }
-    throw new \RuntimeException("Validation failed for {$d['title']}");
+    throw new \RuntimeException("Validation failed for {$d['alias']}");
   }
   $node->save();
   foreach ($old_body as $old) {
@@ -116,7 +119,7 @@ $day = 86400;
 
 // ── The twelve projects, in the landing's order (newest first) ──────────────
 $icq = [
-  'alias' => '/work/icanquit', 'title' => 'iCanQuit is more than breaking a habit—it’s an identity transformation', 'client' => 'Cancer Institute NSW',
+  'alias' => '/work/icanquit', 'headline' => 'iCanQuit is more than breaking a habit—it’s an identity transformation', 'client' => 'Cancer Institute NSW',
   'categories' => ['websites', 'behaviour-change'], 'bg' => '#ebe5fe', 'ink' => '#441170', 'created' => $t - 3 * $day,
   'tile' => $media('icanquit.png', 'iCanQuit — Cancer Institute NSW'), 'banner' => $media('icq-banner.jpg', 'The iCanQuit service on desktop and phone'),
   'statement' => 'iCanQuit is more than breaking a habit—it’s an identity transformation.',
@@ -136,7 +139,7 @@ $icq = [
   ],
 ];
 $taf = [
-  'alias' => '/work/fit-for-every-run', 'title' => 'Celebrating movement in all its forms', 'client' => 'The Athlete’s Foot',
+  'alias' => '/work/fit-for-every-run', 'headline' => 'Celebrating movement in all its forms', 'client' => 'The Athlete’s Foot',
   'categories' => ['brand'], 'bg' => '#910098', 'ink' => '#ffffff', 'created' => $t - 2 * $day,
   'tile' => $media('athletes-foot-fit-for-every-run.mp4'), 'banner' => $media('athletes-foot-fit-for-every-run.mp4'),
   'statement' => 'Fit for every run — a brand platform that celebrates movement in all its forms.',
@@ -153,7 +156,7 @@ $taf = [
   ],
 ];
 $nike = [
-  'alias' => '/work/melbourne-marathon-running-wings', 'title' => 'Giving a running festival wings across every channel', 'client' => 'Melbourne Marathon Festival',
+  'alias' => '/work/melbourne-marathon-running-wings', 'headline' => 'Giving a running festival wings across every channel', 'client' => 'Melbourne Marathon Festival',
   'categories' => ['brand', 'creative'], 'bg' => '#cc0000', 'ink' => '#ffffff', 'created' => $t - 9 * $day,
   'tile' => $media('running-wings-campaign.jpeg', 'Running Wings campaign hero'), 'banner' => $media('nike-banner.mp4'),
   'statement' => 'A festival, not a race: a campaign that ran across every channel the city has.',
@@ -166,7 +169,7 @@ $nike = [
   ],
 ];
 $moad = [
-  'alias' => '/work/democracy-cards', 'title' => 'Democracy Cards – pre-election public education campaign', 'client' => 'Museum of Australian Democracy (MoAD)',
+  'alias' => '/work/democracy-cards', 'headline' => 'Democracy Cards – pre-election public education campaign', 'client' => 'Museum of Australian Democracy (MoAD)',
   'categories' => ['creative'], 'bg' => '#58b4e4', 'ink' => '#08283c', 'created' => $t - 4 * $day,
   'tile' => $media('democracy-cards-tile.jpg', 'The Democracy Cards deck'), 'banner' => $media('moad-hero.png', 'Women with the Democracy Cards'),
   'statement' => 'Fifty-two questions about how the country works, in a deck that fits in a pocket.',
@@ -179,16 +182,16 @@ $moad = [
   ],
 ];
 $projects = [
-  ['alias' => '/work/raise-it', 'title' => 'Transforming the elephant in the room into conversations that change lives', 'client' => 'PHN North Western Melbourne', 'categories' => ['behaviour-change'], 'tile' => $media('nwmphn-raise-it.mp4'), 'created' => $t],
-  ['alias' => '/work/permanent-protection-visa', 'title' => 'Changing CALD community conversations on protection visas', 'client' => 'Permanent Protection Visa', 'categories' => ['communications'], 'tile' => $media('ppv.jpg', 'Permanent Protection Visa community campaign'), 'created' => $t - 1 * $day],
+  ['alias' => '/work/raise-it', 'headline' => 'Transforming the elephant in the room into conversations that change lives', 'client' => 'PHN North Western Melbourne', 'categories' => ['behaviour-change'], 'tile' => $media('nwmphn-raise-it.mp4'), 'created' => $t],
+  ['alias' => '/work/permanent-protection-visa', 'headline' => 'Changing CALD community conversations on protection visas', 'client' => 'Permanent Protection Visa', 'categories' => ['communications'], 'tile' => $media('ppv.jpg', 'Permanent Protection Visa community campaign'), 'created' => $t - 1 * $day],
   $taf, $icq, $moad,
-  ['alias' => '/work/care-closer-to-home', 'title' => 'Connecting communities with care closer to home', 'client' => 'Victorian Department of Health', 'categories' => ['communications'], 'tile' => $media('health-services-campaign.png', 'Health services campaign creative'), 'created' => $t - 5 * $day],
-  ['alias' => '/work/australian-space-agency', 'title' => 'A launch pad for Australia’s space ambitions', 'client' => 'Australian Space Agency', 'categories' => ['websites'], 'tile' => $media('space-agency-website.png', 'Australian Space Agency website on desktop and mobile'), 'created' => $t - 6 * $day],
-  ['alias' => '/work/alcohol-and-drug-foundation', 'title' => 'Shifting the conversation on alcohol and other drugs', 'client' => 'Alcohol and Drug Foundation', 'categories' => ['reputation'], 'tile' => $media('alcohol-and-drug-foundation.mp4'), 'created' => $t - 7 * $day],
-  ['alias' => '/work/fogo', 'title' => 'Turning kitchen scraps into a kerbside habit', 'client' => 'City of Whittlesea', 'categories' => ['creative'], 'tile' => $media('fogo-hero-campaign.png', 'FOGO kerbside campaign creative'), 'created' => $t - 8 * $day],
+  ['alias' => '/work/care-closer-to-home', 'headline' => 'Connecting communities with care closer to home', 'client' => 'Victorian Department of Health', 'categories' => ['communications'], 'tile' => $media('health-services-campaign.png', 'Health services campaign creative'), 'created' => $t - 5 * $day],
+  ['alias' => '/work/australian-space-agency', 'headline' => 'A launch pad for Australia’s space ambitions', 'client' => 'Australian Space Agency', 'categories' => ['websites'], 'tile' => $media('space-agency-website.png', 'Australian Space Agency website on desktop and mobile'), 'created' => $t - 6 * $day],
+  ['alias' => '/work/alcohol-and-drug-foundation', 'headline' => 'Shifting the conversation on alcohol and other drugs', 'client' => 'Alcohol and Drug Foundation', 'categories' => ['reputation'], 'tile' => $media('alcohol-and-drug-foundation.mp4'), 'created' => $t - 7 * $day],
+  ['alias' => '/work/fogo', 'headline' => 'Turning kitchen scraps into a kerbside habit', 'client' => 'City of Whittlesea', 'categories' => ['creative'], 'tile' => $media('fogo-hero-campaign.png', 'FOGO kerbside campaign creative'), 'created' => $t - 8 * $day],
   $nike,
-  ['alias' => '/work/is-this-legit', 'title' => 'Turning scam awareness into a social-first movement', 'client' => 'Meta', 'categories' => ['reputation'], 'tile' => $media('meta-is-this-legit.png', 'Is This Legit? — Meta scam awareness campaign'), 'created' => $t - 10 * $day],
-  ['alias' => '/work/icanquit-app', 'title' => 'A quit companion built around identity change', 'client' => 'Cancer Institute NSW', 'categories' => ['websites'], 'tile' => $media('icanquit-app.png', 'iCanQuit app screens'), 'created' => $t - 11 * $day],
+  ['alias' => '/work/is-this-legit', 'headline' => 'Turning scam awareness into a social-first movement', 'client' => 'Meta', 'categories' => ['reputation'], 'tile' => $media('meta-is-this-legit.png', 'Is This Legit? — Meta scam awareness campaign'), 'created' => $t - 10 * $day],
+  ['alias' => '/work/icanquit-app', 'headline' => 'A quit companion built around identity change', 'client' => 'Cancer Institute NSW', 'categories' => ['websites'], 'tile' => $media('icanquit-app.png', 'iCanQuit app screens'), 'created' => $t - 11 * $day],
 ];
 foreach ($projects as $d) {
   if (empty($d['body'])) {

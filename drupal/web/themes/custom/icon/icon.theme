@@ -29,6 +29,16 @@ use Drupal\paragraphs\ParagraphInterface;
  * with their page templates and only ever touch $variables['html_attributes'].
  */
 function icon_preprocess_html(array &$variables): void {
+  // A Work item's page title carries its client (user call, Sep 2026: the
+  // project name is the short title, so the tab and the search result say
+  // whose project it was): "Raise It for NWMPHN — ICON Agency".
+  $node = \Drupal::routeMatch()->getParameter('node');
+  if ($node instanceof NodeInterface && $node->bundle() === 'work' && \Drupal::routeMatch()->getRouteName() === 'entity.node.canonical') {
+    $client = trim((string) ($node->get('field_work_client')->value ?? ''));
+    if ($client !== '' && isset($variables['head_title']['title'])) {
+      $variables['head_title']['title'] = t('@project for @client', ['@project' => $node->label(), '@client' => $client]);
+    }
+  }
   // Font preconnects, as the static templates ship them.
   $variables['#attached']['html_head_link'][] = [['rel' => 'preconnect', 'href' => 'https://fonts.googleapis.com']];
   $variables['#attached']['html_head_link'][] = [

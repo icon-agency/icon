@@ -1,0 +1,11 @@
+uuid: 302e904e-ce5a-458e-ac1d-2803ad53e490
+langcode: en
+status: true
+dependencies:
+  module:
+    - canvas
+id: canvas_page.token
+label: Token
+description: null
+targetEntityType: canvas_page
+cache: true

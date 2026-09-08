@@ -76,12 +76,11 @@ final class FeaturedWorkBlock extends BlockBase implements ContainerFactoryPlugi
   }
 
   /**
-   * A Work item's short project name (its title when none is set) + client.
+   * A Work item's project name (its title) + client.
    */
   private static function names(NodeInterface $node): array {
-    $project = $node->hasField('field_work_project') ? trim((string) $node->get('field_work_project')->value) : '';
     return [
-      'project' => $project !== '' ? $project : $node->label(),
+      'project' => $node->label(),
       'client' => trim((string) ($node->get('field_work_client')->value ?? '')),
     ];
   }

@@ -1,0 +1,18 @@
+uuid: f4f39655-2c25-4e86-9415-10e8342a5c9c
+langcode: en
+status: true
+dependencies:
+  config:
+    - node.type.work
+id: node.work.title
+field_name: title
+entity_type: node
+bundle: work
+label: 'Project name'
+description: 'The short name of the project (e.g. Raise It). It is the headline on the card and the case-study page, the start of the URL, and, with the client, the page title search engines show.'
+required: true
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

@@ -11,7 +11,6 @@ dependencies:
     - field.field.node.work.field_work_deliverables
     - field.field.node.work.field_work_ink
     - field.field.node.work.field_work_legacy_layers
-    - field.field.node.work.field_work_project
     - field.field.node.work.field_work_statement
     - field.field.node.work.field_work_tile
     - node.type.work
@@ -40,7 +39,6 @@ hidden:
   field_work_deliverables: true
   field_work_ink: true
   field_work_legacy_layers: true
-  field_work_project: true
   field_work_statement: true
   field_work_tile: true
   links: true
