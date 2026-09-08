@@ -610,6 +610,15 @@
   --ws-card-max: calc(var(--wa-banner-h, 100vh) - 2 * var(--overlay-pad, 5vw));
 }
 
+/* A scroller beside a gallery keeps the GALLERY'S rhythm (user call, Sep
+   2026): the flow's --space-lg gap between chunks is pulled back to the
+   --spacing-md the gallery's own rows sit at, whichever side of the gallery
+   the scroller is on — the strip reads as one more row of the gallery. */
+.work-article__flow > .work-gallery + .work-scroller,
+.work-article__flow > .work-scroller + .work-gallery {
+  margin-top: calc(var(--spacing-md) - var(--space-lg));
+}
+
 /* ---- 4. Next up — on the CLIENT theme, under a drawn line ---------------- */
 /* Settled over three passes (white → site-dark → this, all user calls): the
    rail STAYS in the chameleon — no hand-back, the client pair runs to the
