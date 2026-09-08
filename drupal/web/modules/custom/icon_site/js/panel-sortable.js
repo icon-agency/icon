@@ -79,15 +79,10 @@
    * reel; "Remove" moves it back (oldest first is not kept — it lands at
    * the end of Available, which is fine for a holding list). Both write
    * the order the way a drop does. */
-  document.addEventListener("click", function (e) {
-    var add = e.target.closest && e.target.closest(".icon-panel__reel-add");
-    var off = e.target.closest && e.target.closest(".icon-panel__reel-remove");
-    if (!add && !off) return;
-    e.preventDefault();
-    var row = (add || off).closest("tr");
+  var onReel = function (row) { return !!row.closest(".icon-panel__list--reel"); };
+  var moveRow = function (row, add) {
     var panel = row.closest(".icon-panel--hero");
-    if (!panel) return;
-    var to = panel.querySelector(add ? ".icon-panel__list--reel tbody" : ".icon-panel__list--available tbody");
+    var to = panel && panel.querySelector(add ? ".icon-panel__list--reel tbody" : ".icon-panel__list--available tbody");
     if (!to) return;
     to.appendChild(row);
     var name = (row.querySelector(".icon-panel__name") || {}).textContent || "";
@@ -95,7 +90,42 @@
     var focus = row.querySelector(add ? ".icon-panel__handle" : ".icon-panel__reel-add");
     if (focus) focus.focus();
     sync(panel.querySelector(".icon-panel__list--reel"));
+  };
+  document.addEventListener("click", function (e) {
+    var add = e.target.closest && e.target.closest(".icon-panel__reel-add");
+    if (!add) return;
+    e.preventDefault();
+    moveRow(add.closest("tr"), true);
   });
+  // The slide dialog's reel action (icon_site_form_node_form_alter): reads
+  // as "Remove from reel" for a slide on the reel, "Add to reel" for one
+  // under Available; the click moves the row and closes the dialog.
+  var reelLink = function (link) {
+    var row = document.querySelector('.icon-panel--hero tr[data-row="' + link.getAttribute("data-nid") + '"]');
+    if (!row) { link.hidden = true; return null; }
+    var on = onReel(row);
+    link.textContent = on ? "Remove from reel" : "Add to reel";
+    link.classList.toggle("button--danger", on);
+    link.classList.toggle("button--primary", !on);
+    return row;
+  };
+  document.addEventListener("click", function (e) {
+    var link = e.target.closest && e.target.closest(".icon-panel__dialog-reel");
+    if (!link) return;
+    e.preventDefault();
+    var row = reelLink(link);
+    if (!row) return;
+    var add = !onReel(row);
+    if (window.jQuery && window.jQuery.fn.dialog) {
+      try { window.jQuery("#icon-panel-dialog").dialog("close"); } catch (err) {}
+    }
+    moveRow(row, add);
+  });
+  if (window.jQuery) {
+    window.jQuery(window).on("dialog:aftercreate", function () {
+      document.querySelectorAll(".icon-panel__dialog-reel").forEach(reelLink);
+    });
+  }
 
   /* ---- The drag ----------------------------------------------------------
    * Pick a row up by its handle: a GHOST of it follows the pointer, the row

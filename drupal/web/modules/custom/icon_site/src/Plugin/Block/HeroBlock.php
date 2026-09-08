@@ -105,7 +105,6 @@ final class HeroBlock extends BlockBase {
         . '<td class="icon-panel__cell--action">'
         . '<a href="#" role="button" class="icon-panel__action icon-panel__reel-add" aria-label="' . htmlspecialchars((string) $this->t('Add @name to the reel', ['@name' => $slide->label()]), ENT_QUOTES) . '">' . $this->t('Add to reel') . '</a>'
         . '<a class="icon-panel__action use-ajax" href="' . $edit . '"' . $dialog . '>' . $this->t('Edit') . '</a>'
-        . '<a href="#" role="button" class="icon-panel__action icon-panel__action--quiet icon-panel__reel-remove" aria-label="' . htmlspecialchars((string) $this->t('Remove @name from the reel', ['@name' => $slide->label()]), ENT_QUOTES) . '" title="' . $this->t('Off the reel — the slide stays under Available, ready to add back') . '">' . $this->t('Remove') . '</a>'
         . '</td></tr>';
     };
     $reel = implode('', array_map($row, array_values($slides)));
@@ -122,7 +121,7 @@ final class HeroBlock extends BlockBase {
     $form['panel']['spare']['card'] = ['#type' => 'container', '#attributes' => ['class' => ['icon-panel__card', 'icon-panel__card--spare']]];
     $form['panel']['spare']['card']['list'] = ['#markup' => '<table class="icon-panel__list icon-panel__list--available"><tbody>' . $spare . '</tbody></table>'];
     $form['panel']['note'] = [
-      '#markup' => '<p class="icon-panel__note">' . $this->t('The reel plays top to bottom — drag to reorder. Edit opens the slide (film or image, client name, link) over the page. Remove takes it off the reel but keeps it under Available; a new slide goes straight onto the reel. Films must be 6 seconds long, muted.') . '</p>',
+      '#markup' => '<p class="icon-panel__note">' . $this->t('The reel plays top to bottom — drag to reorder. Edit opens the slide (film or image, client name, link) over the page, with Remove from reel — the slide stays under Available, ready to add back. A new slide goes straight onto the reel. Films must be 6 seconds long, muted.') . '</p>',
     ];
     return $form;
   }

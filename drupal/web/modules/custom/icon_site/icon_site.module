@@ -405,6 +405,16 @@ function _icon_site_panel_node_form_alter(array &$form, FormStateInterface $form
   }
   $form['#prefix'] = '<div id="icon-panel-form">';
   $form['#suffix'] = '</div>';
+  // An existing slide's dialog carries the reel action — "Remove from reel"
+  // or "Add to reel", which one the panel script decides from where the
+  // slide's row sits when the dialog opens. The reel is the block's setting
+  // (Canvas autosaves it), so the move is made client-side, not saved here.
+  if (!$node->isNew()) {
+    $form['actions']['reel'] = [
+      '#markup' => '<a href="#" role="button" class="button button--danger icon-panel__remove icon-panel__dialog-reel" data-nid="' . (int) $node->id() . '">' . t('Remove from reel') . '</a>',
+      '#weight' => 10,
+    ];
+  }
   // remember whether this save CREATES the item (read after the save)
   array_unshift($form['actions']['submit']['#submit'], '_icon_site_panel_note_new');
   $form['actions']['submit']['#ajax'] = [
