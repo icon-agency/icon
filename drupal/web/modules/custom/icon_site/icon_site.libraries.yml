@@ -17,3 +17,10 @@ environment_badge:
   css:
     component:
       css/environment-badge.css: {}
+
+# The Work body's Add Block dialog in groups (block-picker.css); attached by
+# icon_site_field_widget_complete_form_alter() on that widget.
+block_picker:
+  css:
+    component:
+      css/block-picker.css: {}

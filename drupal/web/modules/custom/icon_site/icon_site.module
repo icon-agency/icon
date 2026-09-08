@@ -729,3 +729,25 @@ function _icon_site_media_folder_for(string $bundle): ?string {
   }
   return NULL;
 }
+
+/**
+ * Implements hook_field_widget_complete_form_alter().
+ *
+ * The Work body's Add Block dialog reads in groups (user call, Sep 2026):
+ * Content, Pull quote / Gallery, Gallery scroller / Video embed, Video hosted
+ * / Results and stats. Paragraphs lists its add buttons in the field's own
+ * order (target_bundles_drag_drop); the first button of each group is
+ * marked, and css/block-picker.css opens its row with a hairline.
+ */
+function icon_site_field_widget_complete_form_alter(array &$field_widget_complete_form, FormStateInterface $form_state, array $context): void {
+  if ($context['items']->getFieldDefinition()->getName() !== 'field_work_content' || empty($field_widget_complete_form['widget']['add_more'])) {
+    return;
+  }
+  $add_more = &$field_widget_complete_form['widget']['add_more'];
+  foreach (['prose', 'work_gallery_row', 'news_article_video', 'work_stats'] as $first) {
+    if (isset($add_more['add_more_button_' . $first])) {
+      $add_more['add_more_button_' . $first]['#attributes']['class'][] = 'icon-block-group-start';
+    }
+  }
+  $field_widget_complete_form['#attached']['library'][] = 'icon_site/block_picker';
+}

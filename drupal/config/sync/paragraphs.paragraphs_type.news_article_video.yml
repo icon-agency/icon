@@ -3,7 +3,7 @@ langcode: en
 status: true
 dependencies: {  }
 id: news_article_video
-label: Video
+label: 'Video embed (YouTube, Vimeo)'
 icon_uuid: null
 icon_default: null
 description: 'An embedded film (YouTube or Vimeo) at 16:9.'

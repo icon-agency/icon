@@ -3,7 +3,7 @@ langcode: en
 status: true
 dependencies: {  }
 id: work_stats
-label: Results
+label: 'Results and stats'
 icon_uuid: null
 icon_default: null
 description: 'The results band: figures with a unit and a label.'

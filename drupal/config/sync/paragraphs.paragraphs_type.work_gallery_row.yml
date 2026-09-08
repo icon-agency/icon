@@ -3,7 +3,7 @@ langcode: en
 status: true
 dependencies: {  }
 id: work_gallery_row
-label: 'Gallery row'
+label: Gallery
 icon_uuid: null
 icon_default: null
 description: 'One or two figures breaking wide between text; rows next to each other form one gallery.'

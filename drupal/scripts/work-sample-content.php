@@ -44,7 +44,7 @@ $block = fn(string $type, array $fields) => Paragraph::create(['type' => $type] 
 $prose = fn(string $html) => $block('prose', ['field_prose_text' => ['value' => $html, 'format' => 'basic_html']]);
 $quote = fn(string $text, string $cite = '') => $block('pull_quote', ['field_pull_quote_text' => $text, 'field_pull_quote_variant' => 'upright', 'field_pull_quote_cite' => $cite]);
 // A gallery row is one or two FIGURES (Sep 2026): each a picture of its own,
-// or a float (its last media) over a ground (its first, or a colour).
+// or a float (its FIRST media, the foreground) over a ground (its last, or a colour).
 $figure = function (array $medias, string $style = 'plain', string $ground = '', string $inset = '') use ($block): Paragraph {
   // saved here: the row references it by revision
   $p = $block('work_gallery_figure', [
@@ -173,10 +173,10 @@ $nike = [
   'deliverables' => ['Campaign creative', 'Film', 'Social', 'Press and partnerships'],
   'body' => [
     $prose('<h2>Race day</h2><p>The reel over the start-line crowd — the layered figure, film floating on a photograph.</p>'),
-    $row([$figure([$media('nike-bg.jpg', 'The start line'), $media('nike-race-day-reel.mp4')], 'layered', '', '')]),
+    $row([$figure([$media('nike-race-day-reel.mp4'), $media('nike-bg.jpg', 'The start line')], 'layered', '', '')]),
     // the old folio's pair of square layered tiles: the reel under the lockup, the runners on a flat ground
     $row([
-      $figure([$media('nike-race-day-reel.mp4'), $media('nike-logo.png', 'Nike Melbourne Marathon Festival lockup')], 'layered_square', '', '22%'),
+      $figure([$media('nike-logo.png', 'Nike Melbourne Marathon Festival lockup'), $media('nike-race-day-reel.mp4')], 'layered_square', '', '22%'),
       $figure([$media('nike-female-runners.png', 'Runners on Swanston Street')], 'layered_square', '#2e2e2e', '22%'),
     ]),
     $prose('<p>Placeholder copy from the sample-content script; replace with the project story.</p>'),

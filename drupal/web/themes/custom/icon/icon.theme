@@ -532,9 +532,16 @@ function _icon_work_paragraph_props(ParagraphInterface $p, ?CacheableMetadata $c
           $cache->addCacheableDependency($figure);
         }
         $media = array_values(array_filter(array_map(fn($m) => _icon_media_source($m, 'work_media', $cache), $figure->get('field_work_figure_media')->referencedEntities())));
+        $style = $figure->get('field_work_figure_style')->value ?: 'plain';
+        // Editors list the FOREGROUND first and the background last (user
+        // call, Sep 2026); the component wants the ground first, so a
+        // layered figure's media are reversed here.
+        if (str_starts_with($style, 'layered')) {
+          $media = array_reverse($media);
+        }
         if ($media) {
           $figures[] = [
-            'style' => $figure->get('field_work_figure_style')->value ?: 'plain',
+            'style' => $style,
             'ground' => $figure->get('field_work_figure_ground')->value ?? '',
             'pad' => $figure->get('field_work_figure_inset')->value ?? '',
             'media' => $media,
