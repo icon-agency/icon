@@ -21,6 +21,9 @@
         var mobileHome = document.querySelector("[data-mobile-home]");
         var toggle = document.querySelector("[data-menu-toggle]");
         var menu = document.querySelector("[data-mobile-menu]");
+        // The search flip closes the SERVICES drawer before it rolls; the drawer's
+        // close is defined inside its own block below and handed up through this.
+        var closeSubmenu = function () {};
 
         // ---- Scroll state: frosted pill (>10px), then the hero-exit swap at >100px —
         //      the wordmark fades out as the home glyph (pill + mobile button) fades in.
@@ -123,6 +126,7 @@
             nav.classList.remove("is-submenu-open");
             smTrigger.setAttribute("aria-expanded", "false");
           }
+          closeSubmenu = smClose;
           function smScheduleClose() {
             if (smTimer) clearTimeout(smTimer);
             smTimer = window.setTimeout(smClose, 150);
@@ -201,6 +205,73 @@
           window.addEventListener("scroll", function () { if (smIsOpen()) smSyncOffset(); }, { passive: true });
           window.addEventListener("resize", smSyncOffset, { passive: true });
           smSyncOffset(); // warm --submenu-offset before the first interaction
+        }
+
+        // ---- Search flip (the pill rolls over to a search face) ----
+        // CSS owns the 3D (site-header.css, "Search flip"); JS owns the open state,
+        // the depth measurement, focus hand-over and the inert swap between faces.
+        var sCube = document.querySelector("[data-search-cube]");
+        var sFront = document.querySelector("[data-search-front]");
+        var sFace = document.querySelector("[data-search-face]");
+        var sOpenBtn = document.querySelector("[data-search-open]");
+        var sCloseBtn = document.querySelector("[data-search-close]");
+        var sInput = document.querySelector("[data-search-input]");
+
+        if (nav && sCube && sFront && sFace && sOpenBtn && sInput) {
+          function sIsOpen() { return nav.classList.contains("is-search-open"); }
+
+          // Half the pill's REST height (row + padding, never the drawer) — the
+          // distance both faces stand off the cube's centre. Measured, so a retune
+          // of the label voice can't leave a face floating above or sunk below the
+          // surface.
+          function sDepth() {
+            var row = sFront.querySelector(".site-nav__row");
+            var cs = getComputedStyle(sFront);
+            var h = (row ? row.offsetHeight : sFront.offsetHeight) +
+              (parseFloat(cs.paddingTop) || 0) + (parseFloat(cs.paddingBottom) || 0);
+            nav.style.setProperty("--nav-depth", (h / 2) + "px");
+          }
+
+          function sOpen() {
+            if (sIsOpen()) return;
+            closeSubmenu();
+            sDepth();
+            nav.classList.add("is-search-open");
+            sOpenBtn.setAttribute("aria-expanded", "true");
+            sFront.inert = true;
+            sFace.inert = false;
+            sInput.focus({ preventScroll: true });
+          }
+
+          function sClose(returnFocus) {
+            if (!sIsOpen()) return;
+            nav.classList.remove("is-search-open");
+            sOpenBtn.setAttribute("aria-expanded", "false");
+            sFace.inert = true;
+            sFront.inert = false;
+            if (returnFocus) sOpenBtn.focus({ preventScroll: true });
+          }
+
+          sFace.inert = true; // the search face starts edge-on: unreachable until opened
+          sOpenBtn.addEventListener("click", sOpen);
+          if (sCloseBtn) sCloseBtn.addEventListener("click", function () { sClose(true); });
+
+          // An empty search just keeps the field.
+          sFace.addEventListener("submit", function (e) {
+            if (!sInput.value.trim()) {
+              e.preventDefault();
+              sInput.focus();
+            }
+          });
+
+          // Esc rolls back to the nav; a click anywhere else rolls back quietly.
+          document.addEventListener("keydown", function (e) {
+            if (e.key === "Escape" && sIsOpen()) sClose(true);
+          });
+          document.addEventListener("click", function (e) {
+            if (sIsOpen() && !sCube.contains(e.target)) sClose(false);
+          });
+          window.addEventListener("resize", function () { if (sIsOpen()) sDepth(); }, { passive: true });
         }
       })();
 

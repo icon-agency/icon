@@ -39,6 +39,9 @@ module:
   page_cache: 0
   path: 0
   path_alias: 0
+  redis: 0
+  search: 0
+  search_node: 0
   system: 0
   taxonomy: 0
   text: 0

@@ -535,3 +535,7 @@ Drupal Canvas 1.10 keeps two preview iframes and renders each edit as a whole ne
 
 `npm run check` runs PHPCS (Drupal, DrupalPractice, PHP 8.4), PHPStan level 1 with the Drupal extension, Drupal Rector, ESLint, Stylelint and the design system's verifier; CI runs the same on every push. Three things from getting it green: (1) PHPStan's Drupal rules reject `private` injected properties on any class carrying `DependencySerializationTrait` (block plugins, config forms) — use `protected readonly`; (2) Drupal's docblock rule wants the first line to be ONE short sentence, then a blank line — the explanation stays, restructured; (3) on a machine without PHP the PHP checks run inside DDEV — the root scripts fall back to `ddev exec` — so the gate is the same command everywhere.
 
+## Drupal 11.4 moved content search out of `node`
+
+Enabling `search` and creating a `node_search` page by hand gave a 403 for everyone: the `node` module's `NodeSearch` plugin is a deprecated stub in 11.4 whose `access()` returns forbidden and whose `isSearchExecutable()` is false. Content search is the `search_node` module now — enable that and it installs `search.page.node_search` itself. Canvas auto-registers the search-form block as a component (`status: false` to keep it out of the editor).
+

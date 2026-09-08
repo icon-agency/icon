@@ -189,10 +189,17 @@
   min-height: 2rem;
 }
 
-/* Frosted when scrolled OR when the submenu is open/hovered — so the drawer
-   reads even at the top of the page. -webkit- first (LESSONS). */
+/* Frosted when scrolled, when the pill is HOVERED anywhere (user call, Sep
+   2026: at the top of the page the pill sits bare over the hero, so the hover
+   brings up the same background the scroll state does — once scrolled the
+   background is already there and the hover is a no-op), when the submenu is
+   open/hovered, and while the search face is showing (both faces of the flip
+   carry the background so the roll reads as one solid pill). -webkit- first
+   (LESSONS). */
 .site-nav.is-scrolled .site-nav__pill,
+.site-nav.is-search-open .site-nav__pill,
 .site-nav.is-submenu-open .site-nav__pill,
+.site-nav__pill:hover,
 .site-nav__pill:has(.site-nav__item--has-submenu:hover),
 .site-nav__pill:has(.site-nav__drawer:hover) {
   background: var(--nav-bg-scrolled);
@@ -324,6 +331,151 @@
   }
 }
 
+/* ---- Search flip -------------------------------------------------------- *
+ * The pill is the front face of a drum: click the search glyph and the whole
+ * pill rolls away downward (rotateX) while an identically shaped search face
+ * rolls in from above — the Runway (runway.airforce.gov.au) header flip,
+ * rebuilt on this pill. Geometry: .site-nav carries the perspective; the cube
+ * is a preserve-3d box pushed back by half the pill's height (--nav-depth,
+ * measured by js/header.js from the row + the pill's padding, so any retune of
+ * the label voice keeps the faces exactly on the surface); the nav face is
+ * pushed forward by the same amount and the search face stands at +90°
+ * pushed forward too. At rest the two cancel and the nav face renders at
+ * z = 0 as if there were no cube at all — so the SERVICES drawer, which
+ * grows the front face taller, is unaffected (the flip only ever runs with
+ * the drawer closed; the JS closes it first).
+ *
+ * Both faces share .site-nav__pill, so the frosted background, radius and
+ * padding are one rule — and the same padding is what puts the search face's
+ * close (X) EXACTLY where the search glyph was on the nav face: both are the
+ * last item of a row inset by the same padding in a face of the same width.
+ *
+ * A face that has rolled out of view is visibility:hidden (after the roll)
+ * and inert (immediately, JS) so nothing behind the drum can be tabbed to. */
+@media (min-width: 768px) {
+  .site-nav {
+    perspective: 1000px; /* Runway's value — soft enough that the roll reads as a drum, not a swing */
+  }
+}
+
+.site-nav {
+  --nav-flip: 0.8s; /* Runway's roll duration */
+}
+
+.site-nav__cube {
+  position: relative;
+  transform-style: preserve-3d;
+  transform: translateZ(calc(-1 * var(--nav-depth, 1.75rem)));
+  transition: transform var(--nav-flip) var(--ease-standard);
+}
+
+.site-nav.is-search-open .site-nav__cube {
+  transform: translateZ(calc(-1 * var(--nav-depth, 1.75rem))) rotateX(-90deg);
+}
+
+.site-nav__pill--nav {
+  transform: translateZ(var(--nav-depth, 1.75rem));
+}
+
+.site-nav__pill--search {
+  position: absolute;
+  inset: 0;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.375rem;
+  margin: 0;
+  transform: rotateX(90deg) translateZ(var(--nav-depth, 1.75rem));
+}
+
+/* Visibility hands over AFTER the roll (the delay), so the face is painted
+   for the whole animation and unreachable once it's edge-on. */
+.site-nav__pill--search,
+.site-nav.is-search-open .site-nav__pill--nav {
+  visibility: hidden;
+  transition:
+    background var(--duration-normal) var(--ease-standard),
+    visibility 0s linear var(--nav-flip);
+}
+
+.site-nav.is-search-open .site-nav__pill--search {
+  visibility: visible;
+  transition-delay: 0s, 0s;
+}
+
+/* The glyph buttons wear the nav link's box (same padding, voice and hover),
+   so the search glyph sits in the row as a sixth item and the close X matches
+   it one-for-one on the other face. */
+.site-nav__search-trigger,
+.site-nav__search-submit,
+.site-nav__search-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-xs);
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: none;
+  font-size: var(--voice-label);
+  line-height: 1;
+  color: var(--color-foreground);
+  cursor: pointer;
+  transition:
+    color var(--duration-normal) var(--ease-standard),
+    background var(--duration-normal) var(--ease-standard);
+}
+
+.site-nav__search-trigger:hover,
+.site-nav__search-submit:hover,
+.site-nav__search-close:hover {
+  background: color-mix(in srgb, var(--color-background) 20%, transparent);
+  color: var(--color-icon-blue);
+}
+
+.site-nav__glyph {
+  width: 1em;
+  height: 1em;
+}
+
+.site-nav__search-input {
+  flex: 1;
+  min-width: 0;
+  padding: var(--spacing-xs) var(--spacing-2xs);
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: none;
+  font: inherit;
+  font-size: var(--voice-label);
+  font-weight: var(--font-weight-bold);
+  line-height: 1;
+  color: var(--color-foreground);
+  appearance: none;
+  outline: none;
+}
+
+.site-nav__search-input::placeholder {
+  color: currentColor;
+  opacity: 0.55;
+  text-transform: uppercase; /* the nav's voice; what you type stays as typed */
+}
+
+.site-nav__search-input::-webkit-search-cancel-button,
+.site-nav__search-input::-webkit-search-decoration {
+  appearance: none;
+}
+
+/* The pill is the focus frame, so the field only underlines itself. */
+.site-nav__search-input:focus-visible {
+  box-shadow: inset 0 -2px 0 currentColor;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-nav__cube,
+  .site-nav__pill--search,
+  .site-nav.is-search-open .site-nav__pill--nav {
+    transition: none;
+  }
+}
+
 /* ---- Over-hero inversion ------------------------------------------------ *
  * While the fixed header overlaps a dark hero, force it to light-on-dark so the
  * wordmark + nav stay legible on the hero media WHATEVER the page theme (in dark
@@ -335,14 +487,20 @@
 .site-header.is-over-hero .site-logo,
 .site-header.is-over-hero .site-nav__link,
 .site-header.is-over-hero .site-nav__home,
-.site-header.is-over-hero .site-nav__submenu-link {
+.site-header.is-over-hero .site-nav__submenu-link,
+.site-header.is-over-hero .site-nav__search-trigger,
+.site-header.is-over-hero .site-nav__search-submit,
+.site-header.is-over-hero .site-nav__search-close,
+.site-header.is-over-hero .site-nav__search-input {
   color: var(--color-white);
 }
 
 /* Keep the frosted pill dark-tinted when it appears over the hero, so the white
    links read against it (the light-theme pill would wash them out). */
 .site-header.is-over-hero .site-nav.is-scrolled .site-nav__pill,
+.site-header.is-over-hero .site-nav.is-search-open .site-nav__pill,
 .site-header.is-over-hero .site-nav.is-submenu-open .site-nav__pill,
+.site-header.is-over-hero .site-nav__pill:hover,
 .site-header.is-over-hero .site-nav__pill:has(.site-nav__item--has-submenu:hover),
 .site-header.is-over-hero .site-nav__pill:has(.site-nav__drawer:hover) {
   background: var(--nav-bg-over-hero);
