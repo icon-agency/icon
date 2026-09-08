@@ -22,6 +22,35 @@
   color: var(--color-icon-grey);
 }
 
+/* "Load more" — once a list's unasked pages are spent (data-lazy-auto), the
+   next page waits for a click. The news landing's chip recipe (a fully round
+   pill at the label voice, a wash of the foreground) so it belongs to the
+   page it sits under. */
+.listing-lazy__button {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  padding: 0.5em 1.1em;
+  border: 0;
+  border-radius: 9999px;
+  background: color-mix(in srgb, var(--color-foreground) 10%, transparent);
+  font-family: inherit;
+  font-size: var(--voice-label);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--color-foreground);
+  cursor: pointer;
+  transition:
+    background var(--duration-normal) var(--ease-standard),
+    color var(--duration-normal) var(--ease-standard);
+}
+
+.listing-lazy__button:hover,
+.listing-lazy__button:focus-visible {
+  background: color-mix(in srgb, var(--color-foreground) 20%, transparent);
+}
+
 /* the loading mark: three dots that breathe in turn while a page is fetched */
 .listing-lazy__more {
   display: flex;

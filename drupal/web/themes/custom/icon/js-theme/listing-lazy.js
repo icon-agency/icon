@@ -3,7 +3,10 @@
  * instead of the pager. The View still pages server-side (12 a page) —
  * that is the no-JS and search-engine path, and it is what this fetches:
  * the pager's "next" link, from which the new rows are lifted into the
- * list. Each arrival gets the entrance the first page had (the fade-up,
+ * list. A list may cap how many pages arrive on their own (data-lazy-auto:
+ * /news sets 1, so the first 20 stories come unasked and a "Load more"
+ * button brings each 10 after that — user call, Sep 2026); without the
+ * attribute every page arrives as the reader nears the end. Each arrival gets the entrance the first page had (the fade-up,
  * the media reveal, the drawn hairline — js/reveal.js observed only the
  * first page) and the card tilt (js/news.js and js/work-landing.js ran
  * once). The pager is hidden and a status line ("12 of 282 stories",
@@ -52,6 +55,17 @@
         var moreEl = foot.querySelector(".listing-lazy__more");
         var nextHref = next ? next.getAttribute("href") : null;
         var loading = false;
+        // how many pages arrive unasked; then the button takes over
+        var autoPages = parseInt(list.getAttribute("data-lazy-auto"), 10);
+        if (isNaN(autoPages)) autoPages = Infinity;
+        var autoLoaded = 0;
+        var button = document.createElement("button");
+        button.type = "button";
+        button.className = "listing-lazy__button";
+        button.textContent = Drupal.t("Load more");
+        button.hidden = true;
+        foot.appendChild(button);
+        button.addEventListener("click", function () { load(true); });
 
         function count() { return list.querySelectorAll(itemSelector).length; }
         function say() {
@@ -64,6 +78,7 @@
           else {
             statusEl.textContent = Drupal.t("That is all @count @noun.", { "@count": n, "@noun": noun });
             moreEl.hidden = true;
+            button.hidden = true;
           }
         }
 
@@ -102,9 +117,15 @@
           card.addEventListener("pointerleave", function () { if (raf) { cancelAnimationFrame(raf); raf = 0; } mx = my = 0; write(); });
         }
 
-        function load() {
+        function load(asked) {
           if (loading || !nextHref) return;
+          if (!asked && autoLoaded >= autoPages) {
+            // the unasked pages are spent: the reader asks for the rest
+            button.hidden = false;
+            return;
+          }
           loading = true;
+          button.hidden = true;
           foot.classList.add("is-loading");
           fetch(nextHref, { credentials: "same-origin", headers: { "X-Requested-With": "listing-lazy" } })
             .then(function (r) { if (!r.ok) throw new Error(r.status); return r.text(); })
@@ -124,10 +145,15 @@
               });
               var n = doc.querySelector("a.pager__next");
               nextHref = n ? n.getAttribute("href") : null;
+              if (!asked) autoLoaded += 1;
               say();
-              // more to come and the foot still in reach (a short page, a
-              // fast scroll): keep going without waiting for a new crossing
-              if (nextHref) near();
+              // more to come: either keep going while the foot is in reach
+              // (a short page, a fast scroll) or, the unasked pages spent,
+              // offer the button
+              if (nextHref) {
+                if (autoLoaded >= autoPages) button.hidden = false;
+                else near();
+              }
             })
             .catch(function () {
               // leave the pager reachable: the reader can still click Next

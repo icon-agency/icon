@@ -11,7 +11,7 @@
  * chips are plain links.
  */
 #}
-<ul class="news-list"{% if not filtered %} data-news-list{% endif %} role="list">
+<ul class="news-list"{% if not filtered %} data-news-list{% endif %} data-lazy-auto="1" role="list">
   {% for row in rows %}
     <li{{ row.attributes.addClass('news-list__item') }}>
       {{ row.content }}
