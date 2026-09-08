@@ -160,7 +160,7 @@ missing.
 
 | Behaviour | File | Library dep | Drupal.behaviors → library |
 |---|---|---|---|
-| Header (scroll state, mobile menu, drawer offset) | `js/header.js` | — | `iconHeader` → `icon/header` |
+| Header (scroll state, the search flip, EXPERTISE drawer offset — a drop-up below md, where the pill sits at the bottom; the parked mobile menu's handlers stay) | `js/header.js` | — | `iconHeader` → `icon/header` |
 | Shared scroll-reveal | `js/reveal.js` | — | `iconReveal` → `icon/reveal` |
 | Homepage system | `js/home-c.js` | gsap, SplitText, lenis | `iconHomeC` → `icon/home-c` |
 | Hero loading screen | `js/hero-loader.js` | — (deliberately) | part of the hero SDC; its 16 rows become a Twig loop |
@@ -168,7 +168,7 @@ missing.
 | News listing (filter + card motion) | `js/news.js` | — | `iconNews` → `icon/news` |
 | Dark-opening theme handover (every dark-opening page: news listing, both articles, work landing) | `js/theme-handover.js` | — | `iconThemeHandover` → `icon/theme-handover` |
 | Article Share rail (copy link + email) | `js/share.js` | — | `iconShare` → `icon/share` |
-| Header-B Subscribe disclosure (news-b) | `js/subscribe-reveal.js` | — | `iconSubscribeReveal` → `icon/subscribe-reveal` |
+| Subscribe bar hint state (news-b and work-landing-b mastheads, the footer) | `js/subscribe-reveal.js` | — | `iconSubscribeReveal` → `icon/subscribe-reveal` |
 | Work landing (filter + card motion) | `js/work-landing.js` | — | `iconWorkLanding` → `icon/work-landing` |
 | Work section (swipe, underline, hover-video) | `js/work.js` | — | `iconWork` → `icon/work` |
 | Work listing filter | `js/work-filter.js` | — | `iconWorkFilter` → `icon/work-filter` |

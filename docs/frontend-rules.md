@@ -60,8 +60,9 @@ xl:   1280px  (Tailwind default)
 4xl:  2560px  (custom: --breakpoint-4xl: 160rem)
 ```
 
-`lg` (1024) is the mobile-menu → desktop cutoff (the nav and SERVICES drawer
-switch here). In markup, use the variant prefixes:
+`md` (768) is where the ONE pill nav moves from the bottom of the viewport
+to the top (there is no separate mobile menu; the EXPERTISE drawer drops up
+below md and down from it); `lg` (1024) is where the filter chips centre. In markup, use the variant prefixes:
 
 ```html
 <div class="grid-cols-1 md:grid-cols-2 3xl:gap-3xl">…</div>

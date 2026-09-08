@@ -11,7 +11,7 @@ This is the canonical a11y home for the project. Other docs (e.g. definition-of-
 ## Keyboard
 - All interactive elements are keyboard reachable.
 - Focus order is logical.
-- No keyboard traps (the mobile menu and SERVICES drawer must return focus and be Esc-dismissable).
+- No keyboard traps (the header's search flip and EXPERTISE drawer must return focus and be Esc-dismissable; the rolled-away face of the search flip is `inert`).
 - Skip link is present and visible on focus.
 
 ## Focus
@@ -53,14 +53,14 @@ Generic form a11y principles to carry into any multi-step / contact flow:
 
 ## WCAG 2.2 specifics
 The project targets WCAG 2.2 AA. Criteria new in 2.2 that automated tools largely miss:
-- **Target size minimum (2.5.8):** interactive targets ≥ 24×24 px — check the nav pill links, the `menu-toggle` hamburger, and the mobile `icon-button` home/contact glyphs.
+- **Target size minimum (2.5.8):** interactive targets ≥ 24×24 px — check the nav pill links and glyph buttons at the smallest phone width, where the pill's type shrinks to fit (the glyph boxes keep the link's box height), and the Load more pill.
 - **Consistent help (3.2.6):** persistent help/contact entry points sit in the same place on every screen — the primary nav and contact button are consistent across pages.
-- **Focus not obscured (2.4.11):** the fixed/sticky header and the SERVICES drawer must not cover the focused element when tabbing.
+- **Focus not obscured (2.4.11):** the fixed pill (top from md, BOTTOM of the viewport below it) and the EXPERTISE drawer must not cover the focused element when tabbing; the footer pads its last edge by the bottom pill's clearance.
 - **Redundant entry (3.3.7):** multi-step forms re-use previously entered data across Back/Continue (in-session state, no client-side draft storage).
 - **4.1.1 Parsing was removed in 2.2** — disregard legacy audit findings about parsing errors.
 
 ## Testing
-- Keyboard test (Tab through, Enter / Space on interactive elements, Esc on the mobile menu and SERVICES drawer).
+- Keyboard test (Tab through, Enter / Space on interactive elements, Esc on the search flip, the EXPERTISE drawer and the Subscribe field).
 - Reduced-motion check (toggle the OS setting, reload — GSAP and parallax should be inert).
 - Zoom and reflow check (200% zoom, narrow viewport).
 - Target-size check (≥ 24×24 px on the nav pill, menu-toggle, icon-buttons).
