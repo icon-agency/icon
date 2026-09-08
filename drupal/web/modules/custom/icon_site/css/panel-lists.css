@@ -401,11 +401,10 @@ select.icon-panel__count { padding: 4px 24px 4px 8px; border: 1px solid #d9d9e0;
 .icon-panel__reel-add { color: #0b64ee; font-weight: 600; }
 .icon-panel__card--spare { opacity: 0.92; }
 
-/* the hero row's actions sit on one line (Edit · Remove — or Add to reel
-   under Available), the cell as wide as they need, never off the card */
-.icon-panel--hero .icon-panel__list td.icon-panel__cell--action {
-  width: 1%; /* shrink to its word; the name column takes the rest */
-  white-space: nowrap;
+/* the hero row's action cell is the base 44px (Edit alone on the reel);
+   the Available rows' "Add to reel" needs a little more */
+.icon-panel--hero .icon-panel__list--available td.icon-panel__cell--action {
+  width: 84px;
 }
 .icon-panel__empty-note.is-hidden { display: none; }
 
