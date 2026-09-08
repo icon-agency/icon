@@ -96,7 +96,9 @@ div:has(> .icon-panel__hidden) {
   padding-right: 10px;
 }
 .icon-panel__list tr.draggable:hover td { border-color: #c9cbd3; }
-.icon-panel__list td.icon-panel__cell--action { width: 44px; text-align: right; white-space: nowrap; }
+/* 44px was 8 + 12 padding and a border around a 24px "Edit": the word sat on
+   the card's edge (user call, Sep 2026). 60 gives it its own air. */
+.icon-panel__list td.icon-panel__cell--action { width: 60px; text-align: right; white-space: nowrap; }
 .icon-panel__list tr.draggable td:first-child,
 .icon-panel__row {
   display: flex;
