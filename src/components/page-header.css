@@ -299,8 +299,8 @@
 
 .subscribe-bar__svg {
   flex: none;
-  width: 1.5em;
-  height: 1.5em;
+  width: 1.3em; /* a tad under the search face's 1.5em (user call, Sep 2026) */
+  height: 1.3em;
 }
 
 /* The two glyphs read the same size (user call, Sep 2026): both drawings are
@@ -309,7 +309,7 @@
    box's height; the envelope, a landscape shape, gets the width its 20:16
    ink needs at that height. */
 .subscribe-bar__svg--mail {
-  width: 1.875em;
+  width: 1.625em; /* 1.3em × 20/16 */
 }
 
 .subscribe-bar__input {
