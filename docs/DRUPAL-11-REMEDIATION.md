@@ -41,11 +41,17 @@ marquee: its logo tags; news feed: the View's config tag) instead of a bare `[]`
 | --- | --- | --- | --- |
 | 7 | Every published slide appeared in every hero; the login page found its hero by walking the front page's Canvas tree | Slides stay nodes (the dialogs, revisions and content list are theirs), but the hero block's `order` is now an explicit SELECTION: only chosen slides show. The panel gains an "Available — not on this reel" group with Add to reel, and Take off on reel rows; a slide created from the panel goes straight onto the reel. The login page names its hero: Content → Footer → Login page → "Hero reel to play" (a Canvas page, the front page by default), with a fallback to the front page when the named page is gone. The front page's selection was migrated to what it already showed. | In the editor: Take off wrote the order without the slide and showed it under Available (handle hidden, Add shown, "Cancer Council Victoria taken off the reel" announced); Add to reel restored the order; the save event for a new slide appended its id. The login page plays five slides with the setting on the front page, on page 1, and on a missing page. |
 
+## P2 — cacheability and the preview, 2026-09-08
+
+| # | Finding | Fix | Verified by |
+| --- | --- | --- | --- |
+| 6 | Media props lose access and file/style dependencies; contexts and max-age not carried | Both media helpers take a `CacheableMetadata` collector and record the media, its access result (with its contexts), the file and the image style; every caller — the news and work node preprocess, the paragraph preprocess, the Work body's field rebuild (each paragraph's access result too), the hero reel and the hero, featured-work and marquee blocks — merges it into what it renders (`_icon_apply_cache()` for preprocess variables, `applyTo()` for blocks). The access-checked queries add `user.permissions`. | Rendered as anonymous: a work article bubbles `user.permissions`, `user.node_grants:view` and 17 media / file / image-style tags; a news article 13; teasers 2–3; the hero block `user.permissions` + 8 tags, featured work 6, the marquee 37; max-age permanent throughout; the empty hero keeps `node_list:hero_slide`. Every page type renders, no PHP warnings. |
+| 11 | Behaviours gated on `<html>` would miss AJAX-inserted components | Checked before changing anything: Canvas renders every edit as a NEW document into its second preview iframe and swaps frames (a marker set on the preview's window was gone after a change; the new document had its reveals applied). Behaviours therefore attach fresh on each change and the gap never shows in the editor; visitor pages are full loads. Left as is, recorded here. | The marker test in the editor, described. |
+
 ## P2 — open
 
-Findings 6 (the rest of the cacheability work), 8 (two logo media types — an
-integration concern) and 11 (behaviours gated on `<html>`) are as the review
-states.
+Finding 8 (two logo media types) is an integration concern for the other
+codebase. Everything else in the review is closed above.
 Finding 9 (listing filters over one page) was overtaken on 2026-09-07: the chips
 navigate to the server-side filter and both listings lazy-load from the View's
 pager.

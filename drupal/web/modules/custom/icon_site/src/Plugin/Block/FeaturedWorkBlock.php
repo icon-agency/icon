@@ -6,7 +6,7 @@ namespace Drupal\icon_site\Plugin\Block;
 
 use Drupal\Core\Block\Attribute\Block;
 use Drupal\Core\Block\BlockBase;
-use Drupal\Core\Cache\Cache;
+use Drupal\Core\Cache\CacheableMetadata;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\StringTranslation\TranslatableMarkup;
 use Drupal\Core\Url;
@@ -201,12 +201,15 @@ final class FeaturedWorkBlock extends BlockBase {
    */
   public function build(): array {
     $tiles = $this->tiles();
+    // the list tag (the first Work item invalidates an empty result), the
+    // access-checked picks' contexts, and every tile's own dependencies
+    $cache = (new CacheableMetadata())->addCacheTags(['node_list:work'])->addCacheContexts(['user.permissions']);
     if (!$tiles) {
-      // empty, but tagged: the first Work item invalidates this result
-      return ['#cache' => ['tags' => ['node_list:work']]];
+      $build = [];
+      $cache->applyTo($build);
+      return $build;
     }
     $builder = \Drupal::entityTypeManager()->getViewBuilder('node');
-    $tags = ['node_list:work'];
     $teasers = [];
     foreach ($tiles as $i => $node) {
       $teaser = $builder->view($node, 'teaser');
@@ -215,9 +218,9 @@ final class FeaturedWorkBlock extends BlockBase {
         $teaser['#cache']['keys'][] = 'wide';
       }
       $teasers[] = $teaser;
-      $tags = Cache::mergeTags($tags, $node->getCacheTags());
+      $cache->addCacheableDependency($node)->addCacheableDependency($node->access('view', NULL, TRUE));
     }
-    return [
+    $build = [
       '#type' => 'component',
       '#component' => 'icon:featured-work',
       '#slots' => [
@@ -225,8 +228,9 @@ final class FeaturedWorkBlock extends BlockBase {
         'feature' => array_slice($teasers, 2, 1),
         'pair_bottom' => array_slice($teasers, 3, 2),
       ],
-      '#cache' => ['tags' => $tags],
     ];
+    $cache->applyTo($build);
+    return $build;
   }
 
 }

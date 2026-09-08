@@ -523,3 +523,11 @@ They match by alias or title and delete the paragraphs a body had — fine on a 
 
 An `aria-label="Reorder Nike Melbourne: arrow keys…"` inside `#markup` came out as `" arrow keys…"`: the admin XSS filter runs bad-protocol filtering on every attribute value, and anything before a colon looks like a scheme. No colons in attribute values that pass through `#markup` — use a dash.
 
+## The Canvas editor preview is a new document on every change
+
+Drupal Canvas 1.10 keeps two preview iframes and renders each edit as a whole new document into the inactive one, then swaps — it does not patch fragments into the live preview. So behaviours gated on `once(…, 'html', context)` attach fresh on every change in the editor, and the "AJAX fragment never contains html" concern does not arise there. Checked with a marker on the preview window: gone after a change, reveals applied in the new document.
+
+## Cacheability set in a preprocess hook does bubble
+
+`$variables['#cache']` (and `#attached`) set in a `hook_preprocess_*` are merged by the theme manager like a render array's — so a preprocess that reads entities and access results can carry their contexts and tags: collect into a `CacheableMetadata`, then `createFromRenderArray($variables)->merge($cache)->applyTo($variables)`.
+

@@ -156,16 +156,12 @@ final class HeroBlock extends BlockBase {
         ],
       ];
     }
-    if (!$slots) {
-      // empty, but tagged: the first slide added invalidates this result
-      return ['#cache' => ['tags' => $reel['tags']]];
-    }
-    return [
-      '#type' => 'component',
-      '#component' => 'icon:hero',
-      '#slots' => ['slides' => $slots],
-      '#cache' => ['tags' => $reel['tags']],
-    ];
+    $build = $slots ? ['#type' => 'component', '#component' => 'icon:hero', '#slots' => ['slides' => $slots]] : [];
+    // the reel's full cacheability — tags, the slides' and media's access
+    // contexts, max-age — on the result, empty or not (the first slide
+    // added invalidates an empty one)
+    $reel['cache']->applyTo($build);
+    return $build;
   }
 
 }

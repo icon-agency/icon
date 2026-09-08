@@ -6,7 +6,7 @@ namespace Drupal\icon_site\Plugin\Block;
 
 use Drupal\Core\Block\Attribute\Block;
 use Drupal\Core\Block\BlockBase;
-use Drupal\Core\Cache\Cache;
+use Drupal\Core\Cache\CacheableMetadata;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\StringTranslation\TranslatableMarkup;
 use Drupal\Core\Url;
@@ -114,28 +114,29 @@ final class ClientsMarqueeBlock extends BlockBase {
       ->sort('name', 'ASC')
       ->execute();
     $logos = [];
-    $tags = ['media_list'];
+    // the list tag (the first logo invalidates an empty result), the
+    // access-checked query's context, and every logo's own dependencies
+    $cache = (new CacheableMetadata())->addCacheTags(['media_list:logo'])->addCacheContexts(['user.permissions']);
     foreach ($storage->loadMultiple($ids) as $media) {
-      $file = $media->get('field_media_file')->entity;
+      $access = $media->access('view', NULL, TRUE);
+      $cache->addCacheableDependency($media)->addCacheableDependency($access);
+      $file = $access->isAllowed() ? $media->get('field_media_file')->entity : NULL;
       if (!$file) {
         continue;
       }
+      $cache->addCacheableDependency($file);
       $logos[] = [
         'src' => \Drupal::service('file_url_generator')->generateString($file->getFileUri()),
         'alt' => $media->label(),
       ];
-      $tags = Cache::mergeTags($tags, $media->getCacheTags());
     }
-    if (!$logos) {
-      // empty, but tagged: the first logo invalidates this result
-      return ['#cache' => ['tags' => $tags]];
-    }
-    return [
+    $build = $logos ? [
       '#type' => 'component',
       '#component' => 'icon:clients',
       '#props' => ['logos' => $logos, 'heading' => $this->configuration['heading'] ?: 'Selected clients'],
-      '#cache' => ['tags' => $tags],
-    ];
+    ] : [];
+    $cache->applyTo($build);
+    return $build;
   }
 
 }

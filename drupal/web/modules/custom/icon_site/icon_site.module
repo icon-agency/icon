@@ -14,6 +14,7 @@ use Drupal\Core\Ajax\CloseDialogCommand;
 use Drupal\Core\Ajax\InvokeCommand;
 use Drupal\Core\Ajax\ReplaceCommand;
 use Drupal\Core\Cache\Cache;
+use Drupal\Core\Cache\CacheableMetadata;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\image\Entity\ImageStyle;
 use Drupal\media\MediaInterface;
@@ -68,14 +69,24 @@ function _icon_site_login_to_front(array &$form, FormStateInterface $form_state)
  * array when there is nothing usable. Shared by the theme (its
  * _icon_media_source() delegates here) and the icon_site blocks.
  */
-function icon_site_media_source(?MediaInterface $media, string $style_id): array {
+function icon_site_media_source(?MediaInterface $media, string $style_id, ?CacheableMetadata $cache = NULL): array {
   // The media's view access decides (unpublished, or not for this user →
-  // nothing); a public file URL is not permission to show the item.
-  if (!$media instanceof MediaInterface || !$media->access('view')) {
+  // nothing); a public file URL is not permission to show the item. What
+  // that decision and the file depend on goes into the caller's $cache —
+  // the media, its access result (its contexts), the file, the image style.
+  if (!$media instanceof MediaInterface) {
+    return [];
+  }
+  $access = $media->access('view', NULL, TRUE);
+  $cache?->addCacheableDependency($media)->addCacheableDependency($access);
+  if (!$access->isAllowed()) {
     return [];
   }
   if ($media->bundle() === 'video' && $media->hasField('field_media_video_file') && !$media->get('field_media_video_file')->isEmpty()) {
     $file = $media->get('field_media_video_file')->entity;
+    if ($file) {
+      $cache?->addCacheableDependency($file);
+    }
     return $file ? [
       'type' => 'video',
       'src' => \Drupal::service('file_url_generator')->generateString($file->getFileUri()),
@@ -95,7 +106,9 @@ function icon_site_media_source(?MediaInterface $media, string $style_id): array
   $dimensions = ['width' => (int) $item->width, 'height' => (int) $item->height];
   if ($style) {
     $style->transformDimensions($dimensions, $uri);
+    $cache?->addCacheableDependency($style);
   }
+  $cache?->addCacheableDependency($file);
   return [
     'type' => 'image',
     'src' => $style ? $style->buildUrl($uri) : \Drupal::service('file_url_generator')->generateString($uri),
@@ -201,22 +214,25 @@ function icon_site_hero_available(array $order): array {
  * at the hero's maximum. The Homepage hero block renders these as Hero slide
  * components; the login page's banner plays the same rows as its film.
  *
- * @return array{slides: array<int, array{client: string, url: string, source: array}>, tags: string[]}
+ * @return array{slides: array<int, array{client: string, url: string, source: array}>, tags: string[], cache: \Drupal\Core\Cache\CacheableMetadata}
  *   Each slide's client name, link (may be empty) and media source
  *   (icon_site_media_source(): type video|image, src, alt, width, height),
- *   and the cache tags of everything read.
+ *   the cache tags of everything read, and the full cacheability (tags,
+ *   contexts, max-age — the slides' and media's access results included)
+ *   for the caller to apply to what it renders.
  */
 function icon_site_hero_reel(?array $order = NULL, string $style_id = 'work_media'): array {
-  $tags = ['node_list:hero_slide'];
+  $cache = (new CacheableMetadata())->addCacheTags(['node_list:hero_slide']);
   if ($order === NULL) {
     $read = icon_site_hero_order();
     $order = $read['order'];
-    $tags = Cache::mergeTags($tags, $read['tags']);
+    $cache->addCacheTags($read['tags']);
   }
   $slides = [];
   foreach (array_slice(icon_site_hero_slides($order), 0, \Drupal\icon_site\Plugin\Block\HeroBlock::MAX, TRUE) as $slide) {
+    $cache->addCacheableDependency($slide)->addCacheableDependency($slide->access('view', NULL, TRUE));
     $media = $slide->get('field_slide_media')->entity;
-    $source = icon_site_media_source($media, $style_id);
+    $source = icon_site_media_source($media, $style_id, $cache);
     if (!$source) {
       continue;
     }
@@ -226,9 +242,8 @@ function icon_site_hero_reel(?array $order = NULL, string $style_id = 'work_medi
       'url' => $link ? $link->getUrl()->toString() : '',
       'source' => $source,
     ];
-    $tags = Cache::mergeTags($tags, $slide->getCacheTags(), $media->getCacheTags());
   }
-  return ['slides' => $slides, 'tags' => $tags];
+  return ['slides' => $slides, 'tags' => $cache->getCacheTags(), 'cache' => $cache];
 }
 
 /**

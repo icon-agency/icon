@@ -33,7 +33,9 @@ Detail and verification are in DRUPAL-11-REMEDIATION.md.
 
 - Four findings describe the other codebase the design system was imported into: the old footer blocks, its custom error pages, its second client-logo media type. They only matter if the two sites are merged.
 
+- Page caching now records everything each image, film and logo depends on, including who may see it, so cached pages cannot show the wrong media to the wrong person.
+- The Canvas editor preview was checked: it rebuilds the whole preview on every change, so the scripts concern in the review does not arise. Recorded, nothing to change.
+
 ## Still open
 
-- Deeper cache metadata for media helpers: a hardening item, not a correctness bug today.
-- Front-end behaviours in the Canvas live preview: components added inside the editor preview do not get their scripts until the page reloads. Planned as its own piece of work.
+- Nothing from the review. The one remaining item, a second client-logo media type, belongs to the other codebase and only matters if the two sites merge.

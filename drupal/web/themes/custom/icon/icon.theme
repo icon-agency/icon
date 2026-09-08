@@ -10,6 +10,7 @@
  * component preprocess arrives with each SDC.
  */
 
+use Drupal\Core\Cache\CacheableMetadata;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Template\Attribute;
 use Drupal\Core\Url;
@@ -113,7 +114,8 @@ function icon_preprocess_page(array &$variables): void {
   if ((str_starts_with($route_name, 'user.') || str_starts_with($route_name, 'entity.user.')) && function_exists('icon_site_hero_reel')) {
     $reel = icon_site_hero_reel();
     $variables['hero_slides'] = $reel['slides'];
-    $variables['hero_cache'] = ['#cache' => ['tags' => $reel['tags']]];
+    $variables['hero_cache'] = [];
+    $reel['cache']->applyTo($variables['hero_cache']);
   }
 }
 
@@ -139,17 +141,19 @@ function icon_preprocess_node(array &$variables): void {
   $category = $node->get('field_news_category')->value ?: '';
   $allowed = $node->get('field_news_category')->getFieldDefinition()->getSetting('allowed_values');
   $date = $node->get('field_news_date')->value ?: date('Y-m-d', (int) $node->getCreatedTime());
+  $cache = new CacheableMetadata();
 
   if ($variables['view_mode'] === 'teaser') {
     $variables['card'] = [
       'title' => $node->label(),
       'url' => $node->toUrl()->toString(),
-      'image' => _icon_media_image($node->get('field_news_image')->entity, 'news_tile'),
+      'image' => _icon_media_image($node->get('field_news_image')->entity, 'news_tile', $cache),
       'category' => $allowed[$category] ?? $category,
       'date' => $date,
     ];
     // The rail (the news View's next_up display) sits under a section h2.
     $variables['card_heading_level'] = ($variables['elements']['#news_heading_level'] ?? 'h2');
+    _icon_apply_cache($variables, $cache);
     return;
   }
 
@@ -158,10 +162,11 @@ function icon_preprocess_node(array &$variables): void {
     $variables['category_url'] = Url::fromRoute('view.news.page_1', [], ['query' => ['category' => $category]])->toString();
     $variables['date_iso'] = $date;
     $variables['date'] = \Drupal::service('date.formatter')->format(strtotime($date), 'custom', 'j M Y');
-    $variables['image'] = _icon_media_image($node->get('field_news_image')->entity, 'news_banner');
+    $variables['image'] = _icon_media_image($node->get('field_news_image')->entity, 'news_banner', $cache);
     // The optional 2:1 banner picks the head variant (src/utilities/
     // news-article.css, "THE BANNER SLOT IS 2:1"): present → stacked head.
-    $variables['banner'] = $node->hasField('field_news_banner') ? _icon_media_image($node->get('field_news_banner')->entity, 'news_hero') : [];
+    $variables['banner'] = $node->hasField('field_news_banner') ? _icon_media_image($node->get('field_news_banner')->entity, 'news_hero', $cache) : [];
+    _icon_apply_cache($variables, $cache);
     $variables['next_up'] = ['#type' => 'view', '#name' => 'news', '#display_id' => 'next_up', '#arguments' => [$node->id()]];
     $variables['#attached']['library'][] = 'icon/news';
     $variables['#attached']['library'][] = 'icon/share';
@@ -173,10 +178,18 @@ function icon_preprocess_node(array &$variables): void {
  *
  * Empty array when there is no usable media, so Twig can `{% if image %}`.
  */
-function _icon_media_image(?EntityInterface $media, string $style_id): array {
+function _icon_media_image(?EntityInterface $media, string $style_id, ?CacheableMetadata $cache = NULL): array {
   // The media's view access decides (an unpublished item, or one the current
   // user may not see, renders nothing) — a public file URL is not permission.
-  if (!$media instanceof MediaInterface || !$media->access('view') || !$media->hasField('field_media_image') || $media->get('field_media_image')->isEmpty()) {
+  // What the decision and the image depend on (the media, its access result
+  // and that result's contexts, the file, the image style) goes into the
+  // caller's $cache, which the caller applies to what it renders.
+  if (!$media instanceof MediaInterface) {
+    return [];
+  }
+  $access = $media->access('view', NULL, TRUE);
+  $cache?->addCacheableDependency($media)->addCacheableDependency($access);
+  if (!$access->isAllowed() || !$media->hasField('field_media_image') || $media->get('field_media_image')->isEmpty()) {
     return [];
   }
   $item = $media->get('field_media_image')->first();
@@ -184,11 +197,13 @@ function _icon_media_image(?EntityInterface $media, string $style_id): array {
   if (!$file) {
     return [];
   }
+  $cache?->addCacheableDependency($file);
   $style = ImageStyle::load($style_id);
   $uri = $file->getFileUri();
   $dimensions = ['width' => (int) $item->width, 'height' => (int) $item->height];
   if ($style) {
     $style->transformDimensions($dimensions, $uri);
+    $cache?->addCacheableDependency($style);
   }
   return [
     'src' => $style ? $style->buildUrl($uri) : \Drupal::service('file_url_generator')->generateString($uri),
@@ -335,15 +350,17 @@ function icon_preprocess_paragraph(array &$variables): void {
   if (!$paragraph instanceof ParagraphInterface) {
     return;
   }
+  $cache = new CacheableMetadata();
   $variables['sdc_props'] = in_array($paragraph->bundle(), ['work_gallery_row', 'work_stats', 'work_video', 'work_scroller'], TRUE)
-    ? _icon_work_paragraph_props($paragraph)
-    : _icon_paragraph_props($paragraph);
+    ? _icon_work_paragraph_props($paragraph, $cache)
+    : _icon_paragraph_props($paragraph, $cache);
+  _icon_apply_cache($variables, $cache);
 }
 
 /**
  * The SDC props for the shared article paragraphs (prose, quote, image, video).
  */
-function _icon_paragraph_props(ParagraphInterface $paragraph): array {
+function _icon_paragraph_props(ParagraphInterface $paragraph, ?CacheableMetadata $cache = NULL): array {
   return match ($paragraph->bundle()) {
     'prose' => [
       'text' => [
@@ -357,7 +374,7 @@ function _icon_paragraph_props(ParagraphInterface $paragraph): array {
       'variant' => $paragraph->get('field_pull_quote_variant')->value ?: 'italic',
       'cite' => $paragraph->get('field_pull_quote_cite')->value ?? '',
     ],
-    'news_article_figure' => ($image = _icon_media_image($paragraph->get('field_news_article_figure_image')->entity, 'news_hero')) ? ['image' => $image] : [],
+    'news_article_figure' => ($image = _icon_media_image($paragraph->get('field_news_article_figure_image')->entity, 'news_hero', $cache)) ? ['image' => $image] : [],
     'news_article_video' => [
       'embed_url' => $paragraph->get('field_news_article_video_url')->uri ?? '',
       'title' => $paragraph->get('field_news_article_video_title')->value ?? '',
@@ -371,21 +388,23 @@ function _icon_paragraph_props(ParagraphInterface $paragraph): array {
  */
 function _icon_preprocess_node_work(array &$variables, NodeInterface $node): void {
   $allowed = $node->get('field_work_category')->getFieldDefinition()->getSetting('allowed_values');
+  $cache = new CacheableMetadata();
   if ($variables['view_mode'] === 'teaser') {
     $variables['card'] = [
       'title' => $node->label(),
       'url' => $node->toUrl()->toString(),
       'client' => $node->get('field_work_client')->value ?? '',
-      'media' => _icon_media_source($node->get('field_work_tile')->entity, 'work_media'),
+      'media' => _icon_media_source($node->get('field_work_tile')->entity, 'work_media', $cache),
       // the legacy layered tile (an old-site folio item): the Layers field,
       // back to front — see the Work form's "Legacy folio card" details
       'layers' => $node->hasField('field_work_legacy_layers')
-        ? array_values(array_filter(array_map(fn($m) => _icon_media_image($m, 'work_media'), $node->get('field_work_legacy_layers')->referencedEntities())))
+        ? array_values(array_filter(array_map(fn($m) => _icon_media_image($m, 'work_media', $cache), $node->get('field_work_legacy_layers')->referencedEntities())))
         : [],
     ];
     $variables['card_heading_level'] = $variables['elements']['#work_heading_level'] ?? 'h2';
     $variables['card_delay'] = $variables['elements']['#work_delay'] ?? 0;
     $variables['card_wide'] = !empty($variables['elements']['#work_wide']);
+    _icon_apply_cache($variables, $cache);
     return;
   }
   if ($variables['view_mode'] === 'full') {
@@ -396,8 +415,9 @@ function _icon_preprocess_node_work(array &$variables, NodeInterface $node): voi
       'url' => Url::fromRoute('view.work.page_1', [], ['query' => ['category' => $item->value]])->toString(),
     ], iterator_to_array($node->get('field_work_category')));
     $variables['deliverables'] = array_map(fn($item) => $item->value, iterator_to_array($node->get('field_work_deliverables')));
-    $variables['banner'] = _icon_media_source($node->get('field_work_banner')->entity, 'work_media')
-      ?: _icon_media_source($node->get('field_work_tile')->entity, 'work_media');
+    $variables['banner'] = _icon_media_source($node->get('field_work_banner')->entity, 'work_media', $cache)
+      ?: _icon_media_source($node->get('field_work_tile')->entity, 'work_media', $cache);
+    _icon_apply_cache($variables, $cache);
     $variables['next_up'] = ['#type' => 'view', '#name' => 'work', '#display_id' => 'next_up', '#arguments' => [$node->id()]];
     foreach (['icon/share', 'icon/velocity-lean', 'icon/work-article', 'icon/work-video', 'icon/work-scroller'] as $lib) {
       $variables['#attached']['library'][] = $lib;
@@ -411,17 +431,25 @@ function _icon_preprocess_node_work(array &$variables, NodeInterface $node): voi
  * Images go through the image style; videos are the file itself. Empty
  * array when there is nothing usable.
  */
-function _icon_media_source(?EntityInterface $media, string $style_id): array {
-  return $media instanceof MediaInterface ? icon_site_media_source($media, $style_id) : [];
+function _icon_media_source(?EntityInterface $media, string $style_id, ?CacheableMetadata $cache = NULL): array {
+  return $media instanceof MediaInterface ? icon_site_media_source($media, $style_id, $cache) : [];
+}
+
+/**
+ * Merges collected cacheability into a preprocess's variables (the theme
+ * manager bubbles `$variables['#cache']` like a render array's).
+ */
+function _icon_apply_cache(array &$variables, CacheableMetadata $cache): void {
+  CacheableMetadata::createFromRenderArray($variables)->merge($cache)->applyTo($variables);
 }
 
 /**
  * The SDC props for a work-article paragraph, by bundle.
  */
-function _icon_work_paragraph_props(ParagraphInterface $p): array {
+function _icon_work_paragraph_props(ParagraphInterface $p, ?CacheableMetadata $cache = NULL): array {
   switch ($p->bundle()) {
     case 'work_gallery_row':
-      $media = array_values(array_filter(array_map(fn($m) => _icon_media_source($m, 'work_media'), $p->get('field_work_gallery_media')->referencedEntities())));
+      $media = array_values(array_filter(array_map(fn($m) => _icon_media_source($m, 'work_media', $cache), $p->get('field_work_gallery_media')->referencedEntities())));
       return $media ? ['rows' => [[
         'style' => $p->get('field_work_gallery_style')->value ?: 'default',
         'ground' => $p->get('field_work_gallery_ground')->value ?? '',
@@ -441,12 +469,12 @@ function _icon_work_paragraph_props(ParagraphInterface $p): array {
       return $items ? ['items' => $items] : [];
 
     case 'work_video':
-      $film = _icon_media_source($p->get('field_work_video_media')->entity, 'work_media');
-      $cover = _icon_media_image($p->get('field_work_video_cover')->entity, 'work_media');
+      $film = _icon_media_source($p->get('field_work_video_media')->entity, 'work_media', $cache);
+      $cover = _icon_media_image($p->get('field_work_video_cover')->entity, 'work_media', $cache);
       return ($film && $cover) ? ['video_src' => $film['src'], 'cover' => $cover, 'title' => $p->get('field_work_video_title')->value ?? ''] : [];
 
     case 'work_scroller':
-      $items = array_values(array_filter(array_map(fn($m) => _icon_media_image($m, 'work_media'), $p->get('field_work_scroller_media')->referencedEntities())));
+      $items = array_values(array_filter(array_map(fn($m) => _icon_media_image($m, 'work_media', $cache), $p->get('field_work_scroller_media')->referencedEntities())));
       return $items ? ['items' => $items, 'ground' => $p->get('field_work_scroller_ground')->value ?? ''] : [];
   }
   return [];
@@ -474,14 +502,21 @@ function icon_preprocess_field(array &$variables): void {
       $gallery_rows = [];
     }
   };
+  $cache = new CacheableMetadata();
   foreach ($variables['element']['#items']->referencedEntities() as $p) {
     // this path rebuilds the render arrays itself, so it carries the access
-    // check the formatter would have made: an unpublished paragraph, or one
-    // the current user may not view, is left out
-    if (!$p instanceof ParagraphInterface || !isset($sdc[$p->bundle()]) || !$p->access('view')) {
+    // check the formatter would have made — and its cacheability: an
+    // unpublished paragraph, or one the current user may not view, is left
+    // out, and the decision's contexts and tags bubble with the field
+    if (!$p instanceof ParagraphInterface || !isset($sdc[$p->bundle()])) {
       continue;
     }
-    $props = in_array($p->bundle(), ['work_gallery_row', 'work_stats', 'work_video', 'work_scroller'], TRUE) ? _icon_work_paragraph_props($p) : _icon_paragraph_props($p);
+    $access = $p->access('view', NULL, TRUE);
+    $cache->addCacheableDependency($p)->addCacheableDependency($access);
+    if (!$access->isAllowed()) {
+      continue;
+    }
+    $props = in_array($p->bundle(), ['work_gallery_row', 'work_stats', 'work_video', 'work_scroller'], TRUE) ? _icon_work_paragraph_props($p, $cache) : _icon_paragraph_props($p, $cache);
     if (!$props) {
       continue;
     }
@@ -506,4 +541,5 @@ function icon_preprocess_field(array &$variables): void {
   }
   $flush_gallery();
   $variables['groups'] = $groups;
+  _icon_apply_cache($variables, $cache);
 }
