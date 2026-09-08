@@ -117,7 +117,7 @@ final class FeaturedWorkBlock extends BlockBase {
       '#type' => 'container',
       '#attributes' => [
         'class' => ['icon-panel__card', $latest ? 'icon-panel__card--auto' : ''],
-        'data-options' => json_encode($options, JSON_UNESCAPED_UNICODE),
+        'data-options' => json_encode(array_merge([['id' => 0, 'project' => (string) $this->t('Show latest'), 'client' => (string) $this->t('The newest work article, whichever it is'), 'latest' => TRUE]], $options), JSON_UNESCAPED_UNICODE),
       ],
     ];
     $rows = '';
@@ -127,7 +127,7 @@ final class FeaturedWorkBlock extends BlockBase {
       $picked = $node instanceof NodeInterface && $node->bundle() === 'work' ? self::names($node) : NULL;
       $display = $picked
         ? '<p class="icon-panel__name">' . htmlspecialchars($picked['project'], ENT_QUOTES) . '</p><p class="icon-panel__meta">' . htmlspecialchars($picked['client'], ENT_QUOTES) . '</p>'
-        : '<p class="icon-panel__name icon-panel__name--empty">' . $this->t('No project yet') . '</p>';
+        : '<p class="icon-panel__name icon-panel__name--empty">' . $this->t('Show latest') . '</p><p class="icon-panel__meta">' . $this->t('The newest work article, whichever it is') . '</p>';
       $rows .= '<tr class="draggable" data-row="' . $i . '" data-id="' . ($picked ? (int) $nid : '') . '"><td>' . self::handle((string) $this->t('tile @n', ['@n' => $i + 1]))
         . '<a href="#" class="icon-panel__pickable" role="button" aria-haspopup="listbox"><span class="icon-panel__text">' . $display . '</span><span class="icon-panel__chevron" aria-hidden="true"></span></a></td></tr>';
     }
@@ -135,7 +135,7 @@ final class FeaturedWorkBlock extends BlockBase {
     $form['panel']['note'] = [
       '#markup' => '<p class="icon-panel__note">' . ($latest
         ? $this->t('Showing the five newest work items, newest first — this list is what visitors see. Turn the switch off to pick and order tiles yourself.')
-        : $this->t('A split pair, the wide feature, a tall-left pair. Drag rows to reorder; click a tile to search and pick its project.')) . '</p>',
+        : $this->t('A split pair, the wide feature, a tall-left pair. Drag rows to reorder; click a tile to search and pick its project, or choose Show latest and that tile is always the newest work article.')) . '</p>',
     ];
     return $form;
   }
@@ -165,25 +165,35 @@ final class FeaturedWorkBlock extends BlockBase {
    */
   private function tiles(): array {
     $storage = \Drupal::entityTypeManager()->getStorage('node');
-    $picks = empty($this->configuration['latest']) ? array_values(array_filter(array_map('intval', $this->configuration['projects'] ?? []))) : [];
-    $nodes = [];
+    // Each slot is a pick, or "Show latest" (empty / 0): a latest slot takes
+    // the newest work item not placed elsewhere — in its own position, so
+    // "latest" in slot 2 is slot 2, and two latest slots are the two newest.
+    $picks = empty($this->configuration['latest'])
+      ? array_map('intval', array_pad(array_values($this->configuration['projects'] ?? []), self::SLOTS, 0))
+      : array_fill(0, self::SLOTS, 0);
+    $picks = array_slice($picks, 0, self::SLOTS);
+    $placed = [];
     foreach ($picks as $nid) {
-      $node = $storage->load($nid);
-      if ($node instanceof NodeInterface && $node->bundle() === 'work' && $node->access('view')) {
-        $nodes[$nid] = $node;
-      }
-    }
-    if (count($nodes) < self::SLOTS) {
-      $ids = $storage->getQuery()->accessCheck(TRUE)->condition('type', 'work')->condition('status', 1)
-        ->sort('created', 'DESC')->range(0, self::SLOTS + count($nodes))->execute();
-      foreach ($storage->loadMultiple($ids) as $node) {
-        if (count($nodes) >= self::SLOTS) {
-          break;
+      if ($nid) {
+        $node = $storage->load($nid);
+        if ($node instanceof NodeInterface && $node->bundle() === 'work' && $node->access('view')) {
+          $placed[$nid] = $node;
         }
-        $nodes[$node->id()] ??= $node;
       }
     }
-    return array_slice(array_values($nodes), 0, self::SLOTS);
+    $ids = $storage->getQuery()->accessCheck(TRUE)->condition('type', 'work')->condition('status', 1)
+      ->sort('created', 'DESC')->range(0, self::SLOTS * 2)->execute();
+    $newest = array_values(array_filter($storage->loadMultiple($ids), fn(NodeInterface $n) => !isset($placed[$n->id()])));
+    $tiles = [];
+    foreach ($picks as $nid) {
+      if ($nid && isset($placed[$nid])) {
+        $tiles[] = $placed[$nid];
+      }
+      elseif ($next = array_shift($newest)) {
+        $tiles[] = $next;
+      }
+    }
+    return $tiles;
   }
 
   /**

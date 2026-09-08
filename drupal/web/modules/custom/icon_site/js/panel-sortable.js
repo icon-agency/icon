@@ -267,7 +267,7 @@
     menu.list.innerHTML = items.length
       ? items.map(function (o, i) {
           return '<li class="icon-panel__menu-item' + (o.id === menu.current ? " is-current" : "") + '" data-id="' + o.id + '" id="icon-panel-option-' + o.id + '" role="option" aria-selected="false">' +
-            '<p class="icon-panel__name">' + escapeHtml(o.project) + "</p>" +
+            '<p class="icon-panel__name' + (o.latest ? " icon-panel__name--empty" : "") + '">' + escapeHtml(o.project) + "</p>" +
             (o.client ? '<p class="icon-panel__meta">' + escapeHtml(o.client) + "</p>" : "") + "</li>";
         }).join("")
       : '<li class="icon-panel__menu-empty" role="presentation">No matching project</li>';
@@ -288,10 +288,11 @@
         .then(function () { window.location.reload(); });
       return;
     }
-    row.setAttribute("data-id", String(o.id));
+    // "Show latest" is the empty pick: the slot takes the newest work item
+    row.setAttribute("data-id", o.latest ? "" : String(o.id));
     var text = row.querySelector(".icon-panel__pickable .icon-panel__text");
     if (text) {
-      text.innerHTML = '<p class="icon-panel__name">' + escapeHtml(o.project) + "</p>" +
+      text.innerHTML = '<p class="icon-panel__name' + (o.latest ? " icon-panel__name--empty" : "") + '">' + escapeHtml(o.project) + "</p>" +
         (o.client ? '<p class="icon-panel__meta">' + escapeHtml(o.client) + "</p>" : "");
     }
     closeMenu();
@@ -319,7 +320,7 @@
       var cardRect = card.getBoundingClientRect();
       el.style.top = (rowRect.bottom - cardRect.top + 4) + "px";
       card.appendChild(el);
-      menu = { el: el, row: row, options: options, list: el.querySelector("ul"), current: parseInt(row.getAttribute("data-id") || "0", 10), active: -1 };
+      menu = { el: el, row: row, options: options, list: el.querySelector("ul"), current: parseInt(row.getAttribute("data-id") || "0", 10) || 0, active: -1 };
       renderList("");
       // after the click has fully bubbled: Canvas's own handlers refocus the
       // clicked control, so the search box takes focus on the next tick
