@@ -184,3 +184,12 @@ toast:
   dependencies:
     - core/drupal
     - core/once
+
+# A Work card with a square AND a wide tile: the film of the showing variant
+# gets its src (js-theme/work-tile-variants.js). Attached with the teaser.
+work-tile-variants:
+  js:
+    js-theme/work-tile-variants.js: {}
+  dependencies:
+    - core/drupal
+    - core/once

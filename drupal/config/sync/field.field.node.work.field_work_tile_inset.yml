@@ -1,0 +1,19 @@
+uuid: 6ae08b3a-066c-41d0-9305-6b3bdec9cb81
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_work_tile_inset
+    - node.type.work
+id: node.work.field_work_tile_inset
+field_name: field_work_tile_inset
+entity_type: node
+bundle: work
+label: 'Foreground inset'
+description: "How far the foreground sits in from the tile's edges, e.g. 22%. Leave empty for the default."
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

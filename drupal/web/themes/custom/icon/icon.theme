@@ -464,6 +464,12 @@ function _icon_preprocess_node_work(array &$variables, NodeInterface $node): voi
       'url' => $node->toUrl()->toString(),
       'client' => $node->get('field_work_client')->value ?? '',
       'media' => _icon_media_source($node->get('field_work_tile')->entity, 'work_media', $cache),
+      // The wide tile for the landscape frames, and the foreground that
+      // floats over either (Sep 2026) — the card shows whichever variant its
+      // frame calls for (work-card.twig, home-c.css).
+      'media_wide' => $node->hasField('field_work_tile_wide') ? _icon_media_source($node->get('field_work_tile_wide')->entity, 'work_media', $cache) : [],
+      'foreground' => $node->hasField('field_work_tile_fg') ? _icon_media_image($node->get('field_work_tile_fg')->entity, 'work_media', $cache) : [],
+      'inset' => $node->hasField('field_work_tile_inset') ? trim((string) ($node->get('field_work_tile_inset')->value ?? '')) : '',
       // The legacy layered tile (an old-site folio item): the Layers field,
       // back to front — see the Work form's "Legacy folio card" details.
       'layers' => $node->hasField('field_work_legacy_layers')
@@ -473,6 +479,9 @@ function _icon_preprocess_node_work(array &$variables, NodeInterface $node): voi
     $variables['card_heading_level'] = $variables['elements']['#work_heading_level'] ?? 'h2';
     $variables['card_delay'] = $variables['elements']['#work_delay'] ?? 0;
     $variables['card_wide'] = !empty($variables['elements']['#work_wide']);
+    if ($variables['card']['media_wide']) {
+      $variables['#attached']['library'][] = 'icon/work-tile-variants';
+    }
     _icon_apply_cache($variables, $cache);
     return;
   }

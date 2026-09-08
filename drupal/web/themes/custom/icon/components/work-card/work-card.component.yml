@@ -52,6 +52,51 @@ props:
           alt: Campaign creative
           width: 1600
           height: 1067
+    media_wide:
+      type: object
+      title: Wide tile media
+      description: >
+        Optional: the tile for the landscape frames (the 16:9 feature, the 3:2 pairs).
+        Same shape as `media`; `media` stays the square tile.
+      properties:
+        type:
+          type: string
+          enum: [image, video]
+        src:
+          type: string
+        alt:
+          type: string
+        width:
+          type: integer
+        height:
+          type: integer
+        poster:
+          type: string
+      examples:
+        - {}
+    foreground:
+      type: object
+      title: Tile foreground
+      description: >
+        Optional. A picture that floats over the tile, centred, inset by `inset`.
+      properties:
+        src:
+          type: string
+        alt:
+          type: string
+        width:
+          type: integer
+        height:
+          type: integer
+      examples:
+        - {}
+    inset:
+      type: string
+      title: Foreground inset
+      description: >
+        How far the foreground sits in from the tile's edges (a CSS length or percentage); empty for the default.
+      examples:
+        - ''
     layers:
       type: array
       title: Legacy layers

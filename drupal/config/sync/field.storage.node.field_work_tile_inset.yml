@@ -1,0 +1,21 @@
+uuid: 1718bfdf-8126-42be-b2d6-057348e4994a
+langcode: en
+status: true
+dependencies:
+  module:
+    - node
+id: node.field_work_tile_inset
+field_name: field_work_tile_inset
+entity_type: node
+type: string
+settings:
+  max_length: 16
+  case_sensitive: false
+  is_ascii: false
+module: core
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

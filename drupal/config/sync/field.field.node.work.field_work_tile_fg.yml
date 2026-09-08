@@ -1,0 +1,29 @@
+uuid: fbecd699-730d-4469-a234-ddac1215e71e
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_work_tile_fg
+    - media.type.image
+    - node.type.work
+id: node.work.field_work_tile_fg
+field_name: field_work_tile_fg
+entity_type: node
+bundle: work
+label: 'Tile foreground'
+description: "Optional: a picture that floats over the tile, centred, the way a gallery figure's foreground does — a logo or a cut-out. A transparent PNG or SVG. It floats over the wide tile too."
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:media'
+  handler_settings:
+    target_bundles:
+      image: image
+    sort:
+      field: _none
+      direction: ASC
+    auto_create: false
+    auto_create_bundle: ''
+field_type: entity_reference

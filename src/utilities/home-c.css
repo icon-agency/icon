@@ -1189,7 +1189,12 @@ html:not(.js-animations) .intro__expertise-list li:first-child a {
 /* Ratios return with the grid. Below this the tiles are square (see
    .work__figure) because a single stacked column has no composition to serve. */
 @media (min-width: 768px) {
-  .work__figure { aspect-ratio: 4 / 3; }
+  .work__figure {
+    aspect-ratio: 4 / 3;
+    /* a landscape frame shows the WIDE tile where a card carries one */
+    --tile-square: none;
+    --tile-wide: block;
+  }
   /* 16/9 is the campaign film's OWN frame (measured: 1920x1080). At the old
      21/9 the figure was 2.33 against the video's 1.78, so object-fit cropped
      24% off the top and bottom of every frame — heads and feet — and it read as
@@ -1243,14 +1248,20 @@ html:not(.js-animations) .intro__expertise-list li:first-child a {
   }
   .work__row--split .work__item:last-child .work__figure {
     aspect-ratio: 1 / 1;
+    --tile-square: block;
+    --tile-wide: none;
   }
   /* Mirror the split for this row — the taller (square) figure on the LEFT,
      the shorter (landscape) one on the right. Extra class → wins over the above. */
   .work__row--split.work__row--tall-left .work__item:first-child .work__figure {
     aspect-ratio: 1 / 1;
+    --tile-square: block;
+    --tile-wide: none;
   }
   .work__row--split.work__row--tall-left .work__item:last-child .work__figure {
     aspect-ratio: 3 / 2;
+    --tile-square: none;
+    --tile-wide: block;
   }
 }
 
@@ -1380,6 +1391,38 @@ html:not(.js-animations) .intro__expertise-list li:first-child a {
   transition: filter 0.35s var(--ease-standard);
 }
 
+/* TWO TILES, ONE FRAME (Sep 2026): a card may carry a square tile and a wide
+   one; the frame's shape picks — the landscape rules (the 4/3 base from 768,
+   the 16/9 feature, the 3/2 split) set --tile-wide: block, the square rules
+   set --tile-square: block, and each variant reads its own switch. A hidden
+   image is lazy and never fetched; a hidden film's src is withheld by
+   js-theme/work-tile-variants.js. A card with one tile has no variant class
+   and ignores all this. */
+.work__img--square {
+  display: var(--tile-square, block);
+}
+
+.work__img--wide {
+  display: var(--tile-wide, none);
+}
+
+/* THE FOREGROUND (Sep 2026): a picture floating over the tile the way a
+   gallery figure's float does — centred, inset by --overlay-pad on every
+   side, filling the inset frame's height with its own proportions, above the
+   tile and its parallax. It rides the frame's tilt and mask like the tile. */
+.work__float {
+  position: absolute;
+  z-index: 1;
+  inset: var(--overlay-pad, 18%);
+  margin: auto;
+  height: calc(100% - var(--overlay-pad, 18%) * 2);
+  width: auto;
+  max-width: calc(100% - var(--overlay-pad, 18%) * 2);
+  object-fit: contain;
+  pointer-events: none;
+  transition: filter 0.35s var(--ease-standard);
+}
+
 /* Subtle parallax + zoom on scroll, once the crop-zoom reveal has settled. The
    reveal drives the individual `scale` property; this drives `transform`, so the
    two compose on the same element without fighting. Compositor-driven via the
@@ -1476,7 +1519,9 @@ html:not(.js-animations) .intro__expertise-list li:first-child a {
   }
   /* lift the media a touch so the card reads as "live" under the cursor */
   .work__item:hover .work__img,
-  .work__item:focus-visible .work__img {
+  .work__item:focus-visible .work__img,
+  .work__item:hover .work__float,
+  .work__item:focus-visible .work__float {
     filter: brightness(1.08);
   }
   /* the legacy stack settles back a tad as the frame closes on it — a

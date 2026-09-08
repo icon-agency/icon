@@ -94,6 +94,9 @@
   .work-landing__item:nth-child(5n + 2 of .work-landing__item:not([hidden])) .work__figure,
   .work-landing__item:nth-child(5n + 4 of .work-landing__item:not([hidden])) .work__figure {
     aspect-ratio: 1 / 1;
+    /* the square slots show the square tile (home-c.css: two tiles, one frame) */
+    --tile-square: block;
+    --tile-wide: none;
   }
 }
 

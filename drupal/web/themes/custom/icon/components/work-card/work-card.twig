@@ -20,11 +20,30 @@
       </div>
     </figure>
   {% else %}
-  <figure class="work__figure media-reveal" data-reveal-img>
-    {% if media.type == 'video' %}
-      <video class="work__img" src="{{ media.src }}"{% if media.poster %} poster="{{ media.poster }}"{% endif %} autoplay loop muted playsinline preload="auto" aria-label="{{ media.alt|default(client ~ ' — campaign film') }}"></video>
+  {# One tile, or two: with a wide tile the figure carries both and the frame's
+     CSS shows the one its shape calls for (--tile-square / --tile-wide, set by
+     the landscape rules in home-c.css and work-landing.css). A hidden variant
+     costs nothing: images are lazy, and a film's src waits in data-src until
+     js-theme/work-tile-variants.js sees which variant is showing. #}
+  {% macro tile(m, variant, client, lazySrc) %}
+    {% set cls = 'work__img' ~ (variant ? ' work__img--' ~ variant) %}
+    {% if m.type == 'video' %}
+      <video class="{{ cls }}"{% if lazySrc %} data-src="{{ m.src }}" preload="none"{% else %} src="{{ m.src }}" preload="auto"{% endif %}{% if m.poster %} poster="{{ m.poster }}"{% endif %} autoplay loop muted playsinline aria-label="{{ m.alt|default(client ~ ' — campaign film') }}"></video>
     {% else %}
-      <img class="work__img" loading="lazy" src="{{ media.src }}" alt="{{ media.alt }}"{% if media.width %} width="{{ media.width }}"{% endif %}{% if media.height %} height="{{ media.height }}"{% endif %} />
+      <img class="{{ cls }}" loading="lazy" src="{{ m.src }}" alt="{{ m.alt }}"{% if m.width %} width="{{ m.width }}"{% endif %}{% if m.height %} height="{{ m.height }}"{% endif %} />
+    {% endif %}
+  {% endmacro %}
+  {% import _self as card %}
+  {% set two = media_wide.src is defined and media_wide.src %}
+  <figure class="work__figure{{ foreground.src ? ' work__figure--layered' }} media-reveal" data-reveal-img{% if two %} data-tile-variants{% endif %}{% if foreground.src and inset %} style="--overlay-pad: {{ inset }}"{% endif %}>
+    {% if two %}
+      {{ card.tile(media, 'square', client, true) }}
+      {{ card.tile(media_wide, 'wide', client, true) }}
+    {% else %}
+      {{ card.tile(media, '', client, false) }}
+    {% endif %}
+    {% if foreground.src %}
+      <img class="work__float" loading="lazy" src="{{ foreground.src }}" alt="{{ foreground.alt }}"{% if foreground.width %} width="{{ foreground.width }}"{% endif %}{% if foreground.height %} height="{{ foreground.height }}"{% endif %} />
     {% endif %}
   </figure>
   {% endif %}

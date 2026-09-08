@@ -13,6 +13,9 @@ dependencies:
     - field.field.node.work.field_work_legacy_layers
     - field.field.node.work.field_work_statement
     - field.field.node.work.field_work_tile
+    - field.field.node.work.field_work_tile_fg
+    - field.field.node.work.field_work_tile_inset
+    - field.field.node.work.field_work_tile_wide
     - node.type.work
   module:
     - entity_reference_revisions
@@ -41,4 +44,7 @@ hidden:
   field_work_legacy_layers: true
   field_work_statement: true
   field_work_tile: true
+  field_work_tile_fg: true
+  field_work_tile_inset: true
+  field_work_tile_wide: true
   links: true
