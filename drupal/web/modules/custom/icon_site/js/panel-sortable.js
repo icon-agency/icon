@@ -76,7 +76,7 @@
 
   /* ---- The hero's reel and its spares --------------------------------------
    * "Add to reel" moves a row from the Available table to the end of the
-   * reel; "Take off" moves it back (oldest first is not kept — it lands at
+   * reel; "Remove" moves it back (oldest first is not kept — it lands at
    * the end of Available, which is fine for a holding list). Both write
    * the order the way a drop does. */
   document.addEventListener("click", function (e) {
@@ -91,7 +91,7 @@
     if (!to) return;
     to.appendChild(row);
     var name = (row.querySelector(".icon-panel__name") || {}).textContent || "";
-    say(name.trim() + (add ? " added to the reel" : " taken off the reel"));
+    say(name.trim() + (add ? " added to the reel" : " removed from the reel"));
     var focus = row.querySelector(add ? ".icon-panel__handle" : ".icon-panel__reel-add");
     if (focus) focus.focus();
     sync(panel.querySelector(".icon-panel__list--reel"));
