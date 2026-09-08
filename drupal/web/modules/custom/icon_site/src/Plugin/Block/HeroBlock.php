@@ -25,8 +25,16 @@ use Drupal\Core\Url;
 )]
 final class HeroBlock extends BlockBase {
 
-  /** The drag handle (js/panel-sortable.js listens for it). */
-  private const HANDLE = '<span class="icon-panel__handle" title="Drag to reorder" aria-hidden="true"></span>';
+  /**
+   * The row's reorder handle: dragged by pointer, moved by keyboard (the
+   * arrow keys, Home and End — js/panel-sortable.js), so it is a real,
+   * focusable control named for its row. No colon in the label: the admin
+   * markup filter reads "Name:" as a URL scheme and strips it.
+   */
+  private static function handle(string $name): string {
+    $label = htmlspecialchars((string) t('Reorder @name — arrow keys move it up or down', ['@name' => $name]), ENT_QUOTES);
+    return '<a class="icon-panel__handle" role="button" href="#" aria-label="' . $label . '" title="' . htmlspecialchars((string) t('Drag, or use the arrow keys, to reorder'), ENT_QUOTES) . '"></a>';
+  }
 
   public const int MAX = 8;
 
@@ -83,7 +91,7 @@ final class HeroBlock extends BlockBase {
       $link = $slide->get('field_slide_link')->first();
       $meta = $kind . ($link ? ' · ' . preg_replace('#^https?://[^/]+#', '', $link->getUrl()->toString()) : '');
       $edit = $slide->toUrl('edit-form', ['query' => ['panel' => 1, 'use_admin_theme' => 1]])->toString();
-      $rows .= '<tr class="draggable" data-row="' . $slide->id() . '"><td>' . self::HANDLE
+      $rows .= '<tr class="draggable" data-row="' . $slide->id() . '"><td>' . self::handle((string) $slide->label())
         . '<div class="icon-panel__text"><p class="icon-panel__name">' . htmlspecialchars($slide->label(), ENT_QUOTES) . '</p><p class="icon-panel__meta">' . htmlspecialchars((string) $meta, ENT_QUOTES) . '</p></div></td>'
         . '<td class="icon-panel__cell--action"><a class="icon-panel__action use-ajax" href="' . $edit . '"' . $dialog . '>' . $this->t('Edit') . '</a></td></tr>';
     }

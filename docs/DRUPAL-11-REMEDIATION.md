@@ -29,12 +29,17 @@ marquee: its logo tags; news feed: the View's config tag) instead of a bare `[]`
 | 13 | No `content` block for 403 / 404 templates to extend | `page.html.twig` wraps its main content in `{% block content %}`. | A 404 renders through the block. |
 | 15 | Dependencies, negotiator, deprecated embeds | `icon_site.info.yml` declares media, media_library, file, image, options, path_alias, menu_link_content, paragraphs and canvas; the panel theme negotiator applies only to node / media form routes and the media library, with `?panel=1`, for a user who may view the admin theme; the two `views_embed_view()` calls are `#type: view` render elements. | Next up rails render on a news and a work article; no PHP warnings. |
 
+## P2 — keyboard access, 2026-09-08
+
+| # | Finding | Fix | Verified by |
+| --- | --- | --- | --- |
+| 14 | Pointer-only reorder, a picker with no keyboard, no visible skip link | Each row's handle is a focusable `role=button` named for its row ("Reorder Nike Melbourne Marathon Festival — arrow keys move it up or down"): ArrowUp / ArrowDown move the row a place, Home / End to the ends, focus travels with it, and a live region announces the new position; the order is written the same way a drop writes it. The picker's search box is a `combobox` over a `listbox`: the arrow keys, Home and End move the highlighted option (`aria-activedescendant`), Enter picks it, Escape closes and returns focus to the control that opened it, which carries `aria-expanded`. Focus rings on the handle and the pickable. The skip link is `.skip-link`, shown on `:focus` as a pill at the top-left (design system `src/base/reset.css`, outside the base layer so the sr-only utility cannot beat it) on every shell. | In the Canvas editor: ArrowDown on the first hero handle rewrote the order field (26,27,… → 27,26,…), focus stayed on the handle, the announcement read "PHN North Western Melbourne moved to position 2 of 5"; the picker's arrows moved the highlight with `aria-activedescendant` following and Escape returned focus; the skip link renders as a 160×45 pill when focused. |
+
 ## P2 — open
 
 Findings 6 (the rest of the cacheability work), 7 (hero slides as nodes — a
 deliberate trade-off, to discuss), 8 (two logo media types — an integration
-concern), 11 (behaviours gated on `<html>`) and 14 (keyboard access on the
-panels, a visible skip link) are as the review states.
+concern) and 11 (behaviours gated on `<html>`) are as the review states.
 Finding 9 (listing filters over one page) was overtaken on 2026-09-07: the chips
 navigate to the server-side filter and both listings lazy-load from the View's
 pager.

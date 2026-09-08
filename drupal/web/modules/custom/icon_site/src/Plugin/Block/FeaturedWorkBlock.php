@@ -27,8 +27,16 @@ use Drupal\node\NodeInterface;
 )]
 final class FeaturedWorkBlock extends BlockBase {
 
-  /** The drag handle (js/panel-sortable.js listens for it). */
-  private const HANDLE = '<span class="icon-panel__handle" title="Drag to reorder" aria-hidden="true"></span>';
+  /**
+   * The row's reorder handle: dragged by pointer, moved by keyboard (the
+   * arrow keys, Home and End — js/panel-sortable.js), so it is a real,
+   * focusable control named for its row. No colon in the label: the admin
+   * markup filter reads "Name:" as a URL scheme and strips it.
+   */
+  private static function handle(string $name): string {
+    $label = htmlspecialchars((string) t('Reorder @name — arrow keys move it up or down', ['@name' => $name]), ENT_QUOTES);
+    return '<a class="icon-panel__handle" role="button" href="#" aria-label="' . $label . '" title="' . htmlspecialchars((string) t('Drag, or use the arrow keys, to reorder'), ENT_QUOTES) . '"></a>';
+  }
 
   public const int SLOTS = 5;
 
@@ -120,7 +128,7 @@ final class FeaturedWorkBlock extends BlockBase {
       $display = $picked
         ? '<p class="icon-panel__name">' . htmlspecialchars($picked['project'], ENT_QUOTES) . '</p><p class="icon-panel__meta">' . htmlspecialchars($picked['client'], ENT_QUOTES) . '</p>'
         : '<p class="icon-panel__name icon-panel__name--empty">' . $this->t('No project yet') . '</p>';
-      $rows .= '<tr class="draggable" data-row="' . $i . '" data-id="' . ($picked ? (int) $nid : '') . '"><td>' . self::HANDLE
+      $rows .= '<tr class="draggable" data-row="' . $i . '" data-id="' . ($picked ? (int) $nid : '') . '"><td>' . self::handle((string) $this->t('tile @n', ['@n' => $i + 1]))
         . '<a href="#" class="icon-panel__pickable" role="button" aria-haspopup="listbox"><span class="icon-panel__text">' . $display . '</span><span class="icon-panel__chevron" aria-hidden="true"></span></a></td></tr>';
     }
     $form['panel']['card']['list'] = ['#markup' => '<table class="icon-panel__list"><tbody>' . $rows . '</tbody></table>'];

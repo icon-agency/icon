@@ -41,3 +41,30 @@
     }
   }
 }
+
+/* The skip link ("Skip to content", the first thing in every shell): hidden
+   the sr-only way until it has focus, then a small pill at the top-left so
+   a keyboard user can see where they are. `:focus`, not `:focus-visible`:
+   nothing but the keyboard can reach an sr-only link, and a programmatic
+   focus (a test, a script) must show it too. Outside @layer base on
+   purpose — the sr-only utility sits in Tailwind's utilities layer, which
+   would beat a layered rule whatever its specificity. */
+.skip-link:focus {
+  position: fixed;
+  top: var(--space-sm);
+  left: var(--space-sm);
+  z-index: 1000;
+  width: auto;
+  height: auto;
+  margin: 0;
+  padding: 0.5em 0.9em;
+  overflow: visible;
+  clip: auto;
+  clip-path: none;
+  white-space: nowrap;
+  color: var(--color-background);
+  background: var(--color-foreground);
+  border-radius: var(--radius-icon);
+  text-decoration: none;
+}
+

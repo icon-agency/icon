@@ -24,8 +24,16 @@ use Drupal\Core\Url;
 )]
 final class ClientsMarqueeBlock extends BlockBase {
 
-  /** The drag handle (js/panel-sortable.js listens for it). */
-  private const HANDLE = '<span class="icon-panel__handle" title="Drag to reorder" aria-hidden="true"></span>';
+  /**
+   * The row's reorder handle: dragged by pointer, moved by keyboard (the
+   * arrow keys, Home and End — js/panel-sortable.js), so it is a real,
+   * focusable control named for its row. No colon in the label: the admin
+   * markup filter reads "Name:" as a URL scheme and strips it.
+   */
+  private static function handle(string $name): string {
+    $label = htmlspecialchars((string) t('Reorder @name — arrow keys move it up or down', ['@name' => $name]), ENT_QUOTES);
+    return '<a class="icon-panel__handle" role="button" href="#" aria-label="' . $label . '" title="' . htmlspecialchars((string) t('Drag, or use the arrow keys, to reorder'), ENT_QUOTES) . '"></a>';
+  }
 
   /**
    * {@inheritdoc}
@@ -63,7 +71,7 @@ final class ClientsMarqueeBlock extends BlockBase {
       $file = $media->get('field_media_file')->entity;
       $src = $file ? \Drupal::service('file_url_generator')->generateString($file->getFileUri()) : '';
       $edit = $media->toUrl('edit-form', ['query' => ['panel' => 1, 'use_admin_theme' => 1]])->toString();
-      $rows .= '<tr class="draggable" data-row="' . $media->id() . '"><td>' . self::HANDLE
+      $rows .= '<tr class="draggable" data-row="' . $media->id() . '"><td>' . self::handle((string) $media->label())
         . ($src ? '<img class="icon-panel__logo" src="' . $src . '" alt="">' : '')
         . '<div class="icon-panel__text"><p class="icon-panel__name">' . htmlspecialchars($media->label(), ENT_QUOTES) . '</p><p class="icon-panel__meta">' . htmlspecialchars((string) ($file ? strtoupper(pathinfo($file->getFilename(), PATHINFO_EXTENSION)) : ''), ENT_QUOTES) . '</p></div></td>'
         . '<td class="icon-panel__cell--action"><a class="icon-panel__action use-ajax" href="' . $edit . '"' . $dialog . '>' . $this->t('Edit') . '</a></td></tr>';

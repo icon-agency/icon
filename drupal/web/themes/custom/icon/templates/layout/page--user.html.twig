@@ -15,7 +15,7 @@
  */
 #}
 {% set theme_path = base_path ~ directory %}
-<a class="sr-only" href="#main">{{ 'Skip to content'|t }}</a>
+<a class="sr-only skip-link" href="#main">{{ 'Skip to content'|t }}</a>
 <main{{ main_attributes.addClass('auth') }}>
   <aside class="auth__banner" aria-hidden="true">
     {% if hero_slides %}

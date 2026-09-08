@@ -30,6 +30,50 @@
     return Array.prototype.slice.call(table.querySelectorAll("tr.draggable"));
   };
 
+  // What a screen reader hears after a keyboard move or a pick.
+  var say = function (text) {
+    var live = document.querySelector(".icon-panel__live");
+    if (!live) {
+      live = document.createElement("p");
+      live.className = "icon-panel__live";
+      live.setAttribute("aria-live", "polite");
+      document.body.appendChild(live);
+    }
+    live.textContent = "";
+    setTimeout(function () { live.textContent = text; }, 30);
+  };
+
+  /* ---- Keyboard reorder --------------------------------------------------
+   * The handle is a focusable control (role=button, named for its row):
+   * ArrowUp / ArrowDown move the row one place, Home / End to the ends,
+   * and the order is written the same way a drop writes it. Focus stays
+   * on the handle, which travels with its row. */
+  document.addEventListener("keydown", function (e) {
+    var handle = e.target.closest && e.target.closest(".icon-panel__handle");
+    if (!handle || drag) return;
+    var keys = { ArrowUp: -1, ArrowDown: 1, Home: -Infinity, End: Infinity };
+    if (!(e.key in keys)) return;
+    e.preventDefault();
+    var row = handle.closest("tr.draggable");
+    var table = row && row.closest("table");
+    if (!table) return;
+    var rows = rowsOf(table);
+    var from = rows.indexOf(row);
+    var to = Math.max(0, Math.min(rows.length - 1, keys[e.key] === -Infinity ? 0 : keys[e.key] === Infinity ? rows.length - 1 : from + keys[e.key]));
+    if (to === from) return;
+    var tbody = row.parentNode;
+    if (to > from) tbody.insertBefore(row, rows[to].nextSibling);
+    else tbody.insertBefore(row, rows[to]);
+    handle.focus();
+    var name = (row.querySelector(".icon-panel__name") || {}).textContent || "";
+    say((name ? name.trim() + " " : "") + "moved to position " + (to + 1) + " of " + rows.length);
+    sync(table);
+  });
+  // the handle is a link only so the markup filter keeps it; a click is not a jump
+  document.addEventListener("click", function (e) {
+    if (e.target.closest && e.target.closest(".icon-panel__handle")) e.preventDefault();
+  });
+
   /* ---- The drag ----------------------------------------------------------
    * Pick a row up by its handle: a GHOST of it follows the pointer, the row
    * itself stays in the list, dimmed, and a blue line with a dot marks the
@@ -186,8 +230,28 @@
   var menu = null;
 
   function closeMenu() {
-    if (menu) { menu.el.remove(); menu = null; }
+    if (!menu) return;
+    var opener = menu.row.querySelector(".icon-panel__pickable") || menu.row;
+    opener.setAttribute("aria-expanded", "false");
+    menu.el.remove();
+    menu = null;
+    // focus returns to the control that opened the list
+    if (opener.focus) opener.focus();
   }
+
+  // the highlighted option (arrow keys move it; Enter picks it)
+  var setActive = function (index) {
+    var items = Array.prototype.slice.call(menu.list.querySelectorAll(".icon-panel__menu-item"));
+    if (!items.length) { menu.active = -1; return; }
+    menu.active = Math.max(0, Math.min(items.length - 1, index));
+    items.forEach(function (li, i) {
+      li.classList.toggle("is-active", i === menu.active);
+      li.setAttribute("aria-selected", i === menu.active ? "true" : "false");
+    });
+    var input = menu.el.querySelector("input");
+    input.setAttribute("aria-activedescendant", items[menu.active].id);
+    items[menu.active].scrollIntoView({ block: "nearest" });
+  };
 
   var escapeHtml = function (s) {
     return String(s).replace(/[&<>"]/g, function (c) {
@@ -201,12 +265,14 @@
       return !needle || (o.project + " " + o.client).toLowerCase().indexOf(needle) !== -1;
     });
     menu.list.innerHTML = items.length
-      ? items.map(function (o) {
-          return '<li class="icon-panel__menu-item' + (o.id === menu.current ? " is-current" : "") + '" data-id="' + o.id + '" role="option">' +
+      ? items.map(function (o, i) {
+          return '<li class="icon-panel__menu-item' + (o.id === menu.current ? " is-current" : "") + '" data-id="' + o.id + '" id="icon-panel-option-' + o.id + '" role="option" aria-selected="false">' +
             '<p class="icon-panel__name">' + escapeHtml(o.project) + "</p>" +
             (o.client ? '<p class="icon-panel__meta">' + escapeHtml(o.client) + "</p>" : "") + "</li>";
         }).join("")
-      : '<li class="icon-panel__menu-empty">No matching project</li>';
+      : '<li class="icon-panel__menu-empty" role="presentation">No matching project</li>';
+    // the first match is highlighted, ready for Enter
+    setActive(0);
   };
 
   var pick = function (id) {
@@ -229,6 +295,7 @@
         (o.client ? '<p class="icon-panel__meta">' + escapeHtml(o.client) + "</p>" : "");
     }
     closeMenu();
+    say(o.project + (o.client ? ", " + o.client : "") + " chosen");
     sync(row.closest("table"));
   };
 
@@ -244,15 +311,19 @@
       try { options = JSON.parse(card.getAttribute("data-options") || "[]"); } catch (err) {}
       var el = document.createElement("div");
       el.className = "icon-panel__menu";
-      el.innerHTML = '<input type="text" class="icon-panel__menu-search" placeholder="Search project or client\u2026" autocomplete="off">' +
-        '<ul class="icon-panel__menu-list" role="listbox"></ul>';
+      var listId = "icon-panel-listbox-" + Date.now();
+      el.innerHTML = '<input type="text" class="icon-panel__menu-search" placeholder="Search project or client\u2026" autocomplete="off" role="combobox" aria-expanded="true" aria-autocomplete="list" aria-controls="' + listId + '" aria-label="Search project or client">' +
+        '<ul class="icon-panel__menu-list" role="listbox" id="' + listId + '"></ul>';
+      button.setAttribute("aria-expanded", "true");
       var rowRect = row.getBoundingClientRect();
       var cardRect = card.getBoundingClientRect();
       el.style.top = (rowRect.bottom - cardRect.top + 4) + "px";
       card.appendChild(el);
-      menu = { el: el, row: row, options: options, list: el.querySelector("ul"), current: parseInt(row.getAttribute("data-id") || "0", 10) };
+      menu = { el: el, row: row, options: options, list: el.querySelector("ul"), current: parseInt(row.getAttribute("data-id") || "0", 10), active: -1 };
       renderList("");
-      el.querySelector("input").focus();
+      // after the click has fully bubbled: Canvas's own handlers refocus the
+      // clicked control, so the search box takes focus on the next tick
+      setTimeout(function () { var input = el.querySelector("input"); if (input) input.focus(); }, 0);
       return;
     }
     if (!menu) return;
@@ -267,11 +338,17 @@
 
   document.addEventListener("keydown", function (e) {
     if (!menu) return;
-    if (e.key === "Escape") { closeMenu(); return; }
-    if (e.key === "Enter" && e.target === menu.el.querySelector("input")) {
+    if (e.key === "Escape") { e.preventDefault(); closeMenu(); return; }
+    if (e.target !== menu.el.querySelector("input")) return;
+    var items = menu.list.querySelectorAll(".icon-panel__menu-item");
+    if (e.key === "ArrowDown") { e.preventDefault(); setActive(menu.active + 1); return; }
+    if (e.key === "ArrowUp") { e.preventDefault(); setActive(menu.active - 1); return; }
+    if (e.key === "Home") { e.preventDefault(); setActive(0); return; }
+    if (e.key === "End") { e.preventDefault(); setActive(items.length - 1); return; }
+    if (e.key === "Enter") {
       e.preventDefault();
-      var first = menu.list.querySelector(".icon-panel__menu-item");
-      if (first) pick(parseInt(first.getAttribute("data-id"), 10));
+      var chosen = items[menu.active] || items[0];
+      if (chosen) pick(parseInt(chosen.getAttribute("data-id"), 10));
     }
   });
 
