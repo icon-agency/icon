@@ -1,62 +1,41 @@
-/* subscribe-reveal.js — the header-B Subscribe disclosure. The masthead's
- * Subscribe swaps for the email form on click (user call): the field is
- * FOCUSED and typable immediately, and the whole thing collapses back to
- * the lone button on click-away, focus leaving the slot, or Escape (which
- * also returns focus to the trigger). The animation is pure CSS — this
- * file only swaps .is-open and keeps the hidden half `inert`, because a
- * collapsed 0fr/overflow-hidden box is invisible but still TABBABLE
- * without it.
+/* subscribe-reveal.js — the masthead Subscribe bar's hint swap (the pill that
+ * is the header search face's twin; page-header.css "the Subscribe bar").
+ * Three states live in the one field: at rest its hint reads "Subscribe";
+ * while the pointer is over the bar or the field has focus the hint is
+ * "Your email"; typed, the address shows in the field's own face. The hints
+ * come from the markup (data-hint-rest / data-hint-hover) so Drupal's |t
+ * owns the words. Esc empties the field and lets it go.
  *
- * The revealed Subscribe stays the shared inert [data-subscribe] hook —
- * submitting ships with the newsletter slice, same as the footer.
+ * Submitting stays the shared inert [data-subscribe] hook — it ships with
+ * the newsletter slice, same as the footer.
  *
  * Drupal: Drupal.behaviors.iconSubscribeReveal via `icon/subscribe-reveal`. */
 (function () {
   "use strict";
 
-  var slot = document.querySelector("[data-subscribe-slot]");
-  if (!slot) return;
-  var trigger = slot.querySelector("[data-subscribe-open]");
-  var closed = slot.querySelector(".page-header__subscribe-closed");
-  var reveal = slot.querySelector(".page-header__subscribe-reveal");
-  var input = slot.querySelector(".page-header__email");
-  if (!trigger || !closed || !reveal || !input) return;
+  var bars = document.querySelectorAll("[data-subscribe-bar]");
+  Array.prototype.forEach.call(bars, function (bar) {
+    var input = bar.querySelector("[data-subscribe-input]");
+    if (!input) return;
+    var rest = input.getAttribute("data-hint-rest") || input.placeholder;
+    var hover = input.getAttribute("data-hint-hover") || rest;
+    var over = false;
 
-  reveal.setAttribute("inert", "");
+    function sync() {
+      var active = over || document.activeElement === input;
+      input.placeholder = active ? hover : rest;
+      bar.classList.toggle("is-hinting", active);
+    }
 
-  var open = function () {
-    slot.classList.add("is-open");
-    trigger.setAttribute("aria-expanded", "true");
-    reveal.removeAttribute("inert");
-    closed.setAttribute("inert", "");
-    // typable at once, mid-animation; preventScroll — the field is already
-    // in view and a focus jump would fight the height ease
-    input.focus({ preventScroll: true });
-  };
-
-  var close = function (refocus) {
-    if (!slot.classList.contains("is-open")) return;
-    slot.classList.remove("is-open");
-    trigger.setAttribute("aria-expanded", "false");
-    reveal.setAttribute("inert", "");
-    closed.removeAttribute("inert");
-    if (refocus) trigger.focus({ preventScroll: true });
-  };
-
-  trigger.addEventListener("click", open);
-
-  // pointerdown, not click: a click that starts a drag outside still closes,
-  // and closing before the other element's click means no double-handling
-  document.addEventListener("pointerdown", function (e) {
-    if (!slot.contains(e.target)) close(false);
-  });
-
-  slot.addEventListener("focusout", function (e) {
-    // relatedTarget is null when focus leaves the document — treat as away
-    if (!e.relatedTarget || !slot.contains(e.relatedTarget)) close(false);
-  });
-
-  document.addEventListener("keydown", function (e) {
-    if (e.key === "Escape") close(true);
+    bar.addEventListener("pointerenter", function () { over = true; sync(); });
+    bar.addEventListener("pointerleave", function () { over = false; sync(); });
+    input.addEventListener("focus", sync);
+    input.addEventListener("blur", sync);
+    input.addEventListener("keydown", function (e) {
+      if (e.key === "Escape") {
+        input.value = "";
+        input.blur();
+      }
+    });
   });
 })();

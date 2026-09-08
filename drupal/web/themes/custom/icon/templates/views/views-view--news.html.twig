@@ -17,21 +17,12 @@
       <span class="page-header__lockup-accent masthead-accent">{{ 'News'|t }}</span>
       <span class="page-header__lockup-caps">{{ 'The latest updates and insights'|t }}</span>
     </h1>
-    <div class="page-header__subscribe-slot" data-subscribe-slot data-animate style="--animate-delay: 80ms">
-      <div class="page-header__subscribe-closed">
-        <div class="page-header__slot-clip">
-          <button class="page-header__subscribe quiet-link invite-arrow" type="button" data-subscribe-open aria-expanded="false">{{ 'Subscribe'|t }}</button>
-        </div>
-      </div>
-      <div class="page-header__subscribe-reveal">
-        <div class="page-header__slot-clip">
-          <label class="sr-only" for="header-email">{{ 'Email address'|t }}</label>
-          <div class="page-header__email-row">
-            <input class="page-header__email" id="header-email" type="email" name="email" placeholder="{{ 'Your email'|t }}" autocomplete="email" />
-            <button class="page-header__email-go invite-arrow" type="button" data-subscribe aria-label="{{ 'Subscribe'|t }}"></button>
-          </div>
-        </div>
-      </div>
+    <!-- Subscribe: the search face's twin (page-header.css "the Subscribe bar"); the field hints Subscribe, then Your email on hover (js/subscribe-reveal.js) -->
+    <div class="page-header__subscribe-bar subscribe-bar" data-subscribe-bar data-animate style="--animate-delay: 80ms">
+      <span class="subscribe-bar__glyph" aria-hidden="true"><svg class="subscribe-bar__svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2" /><path d="m3 8 9 6 9-6" /></svg></span>
+      <label class="sr-only" for="header-email">{{ 'Email address'|t }}</label>
+      <input class="subscribe-bar__input" id="header-email" type="email" name="email" placeholder="{{ 'Subscribe'|t }}" autocomplete="email" data-subscribe-input data-hint-rest="{{ 'Subscribe'|t }}" data-hint-hover="{{ 'Your email'|t }}">
+      <button class="subscribe-bar__go" type="button" data-subscribe aria-label="{{ 'Subscribe'|t }}"><svg class="subscribe-bar__svg" viewBox="4 4 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 5v10h12" /><path d="m14 11 4 4-4 4" /></svg></button>
     </div>
   </div>
 

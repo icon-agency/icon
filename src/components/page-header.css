@@ -223,151 +223,93 @@
   text-wrap: balance;
 }
 
-.page-header--stack .page-header__subscribe {
-  font-size: var(--voice-mid);
-  font-weight: var(--font-weight-medium);
-  letter-spacing: -0.01em;
-}
-
-/* ---- the Subscribe disclosure (js/subscribe-reveal.js) -------------------
-   The lone button swaps for the email form on click. Each state sits in its
-   own 0fr/1fr grid wrap (the footer accordion's height trick, transition-
-   able without JS measuring): the open class collapses one and grows the
-   other, so the masthead's height EASES between the two instead of
-   jumping, while the pair cross-fade. The hidden half is kept `inert` by
-   the JS — collapsed is invisible, not untabbable, on its own. */
-.page-header__subscribe-slot {
-  margin-top: var(--space-sm);
-}
-
-.page-header__subscribe-closed,
-.page-header__subscribe-reveal {
-  display: grid;
-  grid-template-rows: 1fr;
-  transition:
-    grid-template-rows 0.45s var(--ease-decelerate),
-    opacity 0.3s var(--ease-standard);
-}
-
-.page-header__slot-clip {
-  overflow: hidden;
-  min-height: 0;
-}
-
-.page-header__subscribe-reveal {
-  grid-template-rows: 0fr;
-  opacity: 0;
-}
-
-.page-header__subscribe-slot.is-open .page-header__subscribe-closed {
-  grid-template-rows: 0fr;
-  opacity: 0;
-}
-
-.page-header__subscribe-slot.is-open .page-header__subscribe-reveal {
-  grid-template-rows: 1fr;
-  opacity: 1;
-}
-
-/* The form: the FOOTER's newsletter recipe (blurb-measure column, hairline
-   field, arrowed Subscribe) re-cut in THEME tokens — the footer's own are
-   fixed to its permanent near-black, this masthead flips light after the
-   handover. Centred as a column; the text stays left-aligned so it reads
-   as a form. Promote to a shared component at a third consumer. */
-.page-header__subscribe-reveal .page-header__slot-clip {
-  width: min(100%, 24rem);
-  margin-inline: auto;
-  text-align: left;
-}
-
-.page-header__email {
-  display: block;
-  width: 100%;
-  margin: 0.25rem 0 var(--space-2xs); /* a whisker of caret headroom above */
-  /* equal OPTICAL air either side of the hairline — the footer's measured
-     correction, same two voices (see site-footer.css for the derivation) */
-  padding: 0 0
-    calc(var(--space-2xs) + 0.215 * var(--voice-mid) - 0.244 * var(--voice-meta));
-  background: none;
-  border: 0;
-  border-bottom: var(--rule-weight) solid var(--rule);
-  border-radius: 0;
-  font-family: inherit;
-  font-size: var(--voice-meta);
-  font-weight: var(--font-weight-medium);
-  letter-spacing: -0.01em;
-  line-height: 1.2;
-  color: var(--color-icon-black);
-  caret-color: var(--color-icon-black);
-  transition: border-color var(--duration-fast) var(--ease-standard);
-}
-
-.page-header__email::placeholder {
-  color: var(--color-icon-grey);
-  opacity: 1; /* Firefox dims placeholders on its own */
-}
-
-.page-header__email:focus {
-  outline: none;
-  border-bottom-color: var(--color-icon-black);
-}
-
-/* the field row: the input's hairline runs to the arrow, which sits just
-   past its right end — the submit, wordless (user sketch) */
-.page-header__email-row {
+/* ---- the Subscribe bar (js/subscribe-reveal.js) ---------------------------
+   The masthead's Subscribe is the header search face's twin (user call, Sep
+   2026): the same pill — the frosted nav ground, radius, padding, a glyph in
+   the same box at each end — with its three states in the field itself. At
+   rest the hint reads "Subscribe"; hovered or focused it swaps to "Your
+   email" (the JS swaps the placeholder, and the hint brightens); typed, the
+   address sits in the field's own regular face, a third bigger than the
+   labels — the search field's recipe. The arrow at the right is the submit
+   (inert until the newsletter slice: the shared [data-subscribe] hook).
+   Every colour is a theme token, so it flips with the news page's handover
+   from its dark opening. The slot is a <div>, not a <form>: a lone field
+   would submit implicitly on Enter with nothing to receive it yet. */
+.subscribe-bar {
   display: flex;
-  align-items: flex-end;
-  gap: var(--space-xs);
+  align-items: center;
+  gap: 0.375rem;
+  width: min(100%, 26rem);
+  margin: var(--space-sm) auto 0;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-md);
+  background: var(--nav-bg-scrolled);
+  -webkit-backdrop-filter: blur(24px);
+  backdrop-filter: blur(24px);
+  text-align: left;
+  font-size: var(--voice-label);
+  color: var(--color-foreground);
 }
 
-.page-header__email-row .page-header__email {
-  flex: 1;
-  width: auto;
-}
-
-.page-header__email-go {
-  margin: 0;
+.subscribe-bar__glyph,
+.subscribe-bar__go {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: calc(var(--spacing-xs) - 0.25em) var(--spacing-xs);
   border: 0;
-  padding: 0 0
-    calc(var(--space-2xs) + 0.215 * var(--voice-mid) - 0.244 * var(--voice-meta));
+  border-radius: var(--radius-sm);
   background: none;
+  font-size: var(--voice-label);
+  line-height: 1;
+  color: inherit;
+}
+
+.subscribe-bar__go {
   cursor: pointer;
-  color: var(--color-icon-grey);
-  /* the trigger's arrow scale — it must read as the SAME arrow, arrived */
-  font-size: var(--voice-mid);
-  line-height: 1.2;
-  /* THE SLIDE (user sketch: the arrow travels right off the trigger text
-     into place): parked back where the trigger's arrow stood, gliding to
-     rest as the reveal opens. Its own transition, slightly behind the
-     height ease, so the arrow lands as the field settles. */
-  translate: -12rem 0;
-  opacity: 0;
   transition:
-    translate 0.55s var(--ease-decelerate) 0.05s,
-    opacity 0.3s var(--ease-standard) 0.1s,
-    color var(--duration-fast) var(--ease-standard);
+    color var(--duration-normal) var(--ease-standard),
+    background var(--duration-normal) var(--ease-standard);
 }
 
-.page-header__email-go::before {
-  margin-right: 0; /* standalone glyph — no trailing text to space */
+.subscribe-bar__go:hover,
+.subscribe-bar__go:focus-visible {
+  background: color-mix(in srgb, var(--color-background) 20%, transparent);
+  color: var(--color-icon-blue);
 }
 
-.page-header__subscribe-slot.is-open .page-header__email-go {
-  translate: 0 0;
-  opacity: 1;
+.subscribe-bar__svg {
+  flex: none;
+  width: 1.5em;
+  height: 1.5em;
 }
 
-.page-header__email-go:hover,
-.page-header__email-go:focus-visible {
-  color: var(--color-icon-black);
+.subscribe-bar__input {
+  flex: 1;
+  min-width: 0;
+  padding: 0 var(--spacing-2xs);
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: none;
+  font: inherit;
+  font-size: calc(var(--voice-label) * 1.35);
+  font-weight: var(--font-weight-normal);
+  line-height: 1.2;
+  color: inherit;
+  caret-color: currentColor;
+  appearance: none;
+  outline: none;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .page-header__subscribe-closed,
-  .page-header__subscribe-reveal,
-  .page-header__email-go {
-    transition: none;
-  }
+.subscribe-bar__input::placeholder {
+  color: currentColor;
+  opacity: 0.55;
+  transition: opacity var(--duration-fast) var(--ease-standard);
+}
+
+/* the hover / focus state: the hint has swapped to "Your email" and steps up */
+.subscribe-bar.is-hinting .subscribe-bar__input::placeholder {
+  opacity: 0.8;
 }
 
 /* the filter band: two hairlines frame the pills, drawn in by rules.css
