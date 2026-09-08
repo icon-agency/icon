@@ -1,3 +1,27 @@
 _core:
   default_config_hash: jdY7AU0tU-QsjmiOw3W8vwpYMb-By--_MSFgbqKUTYM
-definitions: {  }
+definitions:
+  navigation__content__node_type__news:
+    menu_name: content
+    parent: navigation.create
+    weight: -10
+    expanded: false
+    enabled: true
+  navigation__content__node_type__work:
+    menu_name: content
+    parent: navigation.create
+    weight: -5
+    expanded: false
+    enabled: true
+  navigation__content__node_type__hero_slide:
+    menu_name: content
+    parent: navigation.create
+    weight: 0
+    expanded: false
+    enabled: true
+  navigation__content__node_type__office:
+    menu_name: content
+    parent: navigation.create
+    weight: 5
+    expanded: false
+    enabled: true
