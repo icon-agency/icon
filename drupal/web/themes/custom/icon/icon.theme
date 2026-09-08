@@ -255,7 +255,6 @@ function icon_preprocess_views_view(array &$variables): void {
     // The next page arrives as the reader nears the end
     // (js-theme/listing-lazy.js)
     $variables['#attached']['library'][] = 'icon/listing-lazy';
-    $variables['#attached']['library'][] = 'icon/subscribe-reveal';
     return;
   }
   if ($view->id() !== 'news') {
@@ -291,7 +290,6 @@ function icon_preprocess_views_view(array &$variables): void {
     // (js-theme/listing-lazy.js); the pager stays in the markup for no-JS and
     // crawlers.
     $variables['#attached']['library'][] = 'icon/listing-lazy';
-    $variables['#attached']['library'][] = 'icon/subscribe-reveal';
   }
 }
 

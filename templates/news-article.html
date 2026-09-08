@@ -403,9 +403,12 @@
                the newsletter slice, and a form here would let Enter fire a
                phantom submit. Drupal: webform/newsletter block renders the
                real form; these two stay its visual spec. -->
-          <label class="sr-only" for="footer-email">Email address</label>
-          <input class="site-footer__email" id="footer-email" type="email" name="email" placeholder="Your email" autocomplete="email" />
-          <button class="site-footer__subscribe invite-arrow" type="button" data-subscribe>Subscribe</button>
+          <div class="subscribe-bar subscribe-bar--footer" data-subscribe-bar>
+            <span class="subscribe-bar__glyph" aria-hidden="true"><svg class="subscribe-bar__svg subscribe-bar__svg--mail" viewBox="2 4 20 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2" /><path d="m3 8 9 6 9-6" /></svg></span>
+            <label class="sr-only" for="footer-email">Email address</label>
+            <input class="subscribe-bar__input" id="footer-email" type="email" name="email" placeholder="Subscribe" autocomplete="email" data-subscribe-input data-hint-rest="Subscribe" data-hint-hover="Your email">
+            <button class="subscribe-bar__go" type="button" data-subscribe aria-label="Subscribe"><svg class="subscribe-bar__svg" viewBox="4 4 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 5v10h12" /><path d="m14 11 4 4-4 4" /></svg></button>
+          </div>
         </div>
 
         <div class="site-footer__locations">

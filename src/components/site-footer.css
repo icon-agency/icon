@@ -214,77 +214,9 @@
   line-height: 1.2;
 }
 
-/* The email field — the site's first INPUT, so it speaks the house
-   language: no box, no fill, just THE hairline underneath (the footer
-   ground is fixed near-black, so the on-colour rule) wearing the blurb's
-   own voice. Focus makes the quiet->ink step every footer control makes —
-   the line brightens to full ink in place of the UA outline. */
-.site-footer__email {
-  display: block;
-  width: 100%; /* the column's measure above is the cap — see .site-footer__newsletter */
-  /* EQUAL AIR EITHER SIDE OF THE HAIRLINE — optically, not just in boxes
-     (user call). One token sets both gaps, but the INK sat closer above the
-     line than below it: the line->Subscribe side clears Subscribe's much
-     larger mid voice, whose half-leading and ascender gap are bigger than
-     this field's. Measured in-browser with canvas metrics (Kumbh at 1.2
-     leading): the dead space below this field's ink is 0.244em of its own
-     size, the dead space above Subscribe's ink is 0.215em of the mid voice
-     — so padding gains that difference and the two gaps land equal at every
-     width, both voices being fluid. (Ran 21.1 vs 24.7px; now 24.7 = 24.7.) */
-  margin: 0 0 var(--space-2xs);
-  padding: 0 0
-    calc(
-      var(--space-2xs) + 0.215 * var(--footer-voice-mid) - 0.244 * var(--footer-voice-meta)
-    );
-  background: none;
-  border: 0;
-  border-bottom: var(--rule-weight) solid var(--rule);
-  border-radius: 0;
-  font-family: inherit;
-  /* ONE quiet size (user calls, settled after a bigger-placeholder trial:
-     "make Your email the smaller font"): placeholder and typed value both
-     run the acknowledgement's meta voice. */
-  font-size: var(--footer-voice-meta);
-  font-weight: var(--font-weight-medium);
-  letter-spacing: -0.01em;
-  line-height: 1.2;
-  color: var(--footer-ink);
-  caret-color: var(--footer-ink);
-  transition: border-color var(--duration-fast) var(--ease-standard);
-}
-
-.site-footer__email::placeholder {
-  color: var(--footer-muted);
-  opacity: 1; /* Firefox dims placeholders on its own */
-}
-
-.site-footer__email:focus {
-  /* :focus, not :focus-visible — a text field is always visibly focused
-     (caret), and the brightened line must never depend on the browser's
-     keyboard heuristics */
-  outline: none;
-  border-bottom-color: var(--footer-ink);
-}
-
-/* Subscribe — same element + hook as the mobile menu's control, so one
-   future behaviour serves both. */
-.site-footer__subscribe {
-  padding: 0;
-  border: 0;
-  background: none;
-  cursor: pointer;
-  font-family: inherit;
-  font-size: var(--footer-voice-mid);
-  font-weight: var(--font-weight-medium);
-  letter-spacing: -0.01em;
-  line-height: 1.2;
-  color: var(--footer-muted);
-}
-
-.site-footer__subscribe:hover,
-.site-footer__subscribe:focus-visible {
-  color: var(--footer-ink);
-}
+/* The field and Subscribe are the shared subscribe-bar (components/
+   subscribe-bar.css, --footer variant, Sep 2026) — the footer only sets the
+   blurb above it. */
 
 /* The ↳ before Subscribe and Get in touch is the shared .invite-arrow
    utility (effects.css), applied in markup — promoted out of this file when

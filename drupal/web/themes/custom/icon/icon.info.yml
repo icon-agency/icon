@@ -13,6 +13,7 @@ libraries:
   - icon/reveal
   - icon/velocity-lean
   - icon/site-footer
+  - icon/subscribe-reveal
   - icon/toast
 # Two regions, on purpose. The header and footer are hand-authored Twig
 # includes (templates/includes/), not block regions, because their markup IS
