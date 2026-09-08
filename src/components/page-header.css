@@ -230,6 +230,25 @@
   /* the double class outranks the component's own margin reset, which is
      imported after this file (an order slip that left the bar flush left) */
   margin: var(--space-sm) auto 0;
+  /* COMPACT AT REST (user call, Sep 2026): just wide enough for the glyph,
+     the word and the arrow; a click into it (or a typed value) grows it to
+     the search face's width, and it shrinks back when it is left empty.
+     js/subscribe-reveal.js sets .is-open; a click anywhere on the pill
+     focuses the field. */
+  width: min(100%, 13rem);
+  transition:
+    width 0.45s var(--ease-decelerate),
+    background var(--duration-normal) var(--ease-standard);
+}
+
+.page-header__subscribe-bar.subscribe-bar.is-open {
+  width: min(100%, 26rem);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-header__subscribe-bar.subscribe-bar {
+    transition: background var(--duration-normal) var(--ease-standard);
+  }
 }
 
 /* the filter band: two hairlines frame the pills, drawn in by rules.css

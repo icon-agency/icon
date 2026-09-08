@@ -13,9 +13,11 @@
        * pointer is over the bar or the field has focus the hint is "Your email";
        * typed, the address shows in the field's own face. The hints are two
        * overlaid spans in the markup (so Drupal's |t owns the words) and the CSS
-       * crossfades them — this file only keeps .is-hinting true while the field
-       * is focused or the bar is under the pointer. Esc empties the field and
-       * lets it go.
+       * crossfades them — this file keeps .is-hinting true while the field is
+       * focused or the bar is under the pointer, and .is-open while it is focused
+       * or holds a value (the masthead's compact pill grows on it). A click
+       * anywhere on the pill focuses the field. Esc empties the field and lets
+       * it go.
        *
        * Submitting stays the shared inert [data-subscribe] hook — it ships with
        * the newsletter slice, same as the footer.
@@ -31,13 +33,24 @@
           var over = false;
 
           function sync() {
-            bar.classList.toggle("is-hinting", over || document.activeElement === input);
+            var focused = document.activeElement === input;
+            bar.classList.toggle("is-hinting", over || focused);
+            // open while the field is in use or holds something — the masthead's
+            // compact pill grows on this (page-header.css)
+            bar.classList.toggle("is-open", focused || input.value !== "");
           }
 
           bar.addEventListener("pointerenter", function () { over = true; sync(); });
           bar.addEventListener("pointerleave", function () { over = false; sync(); });
           input.addEventListener("focus", sync);
           input.addEventListener("blur", sync);
+          input.addEventListener("input", sync);
+          // a click anywhere on the pill is a click into the field
+          bar.addEventListener("click", function (e) {
+            if (e.target.closest("button")) return;
+            input.focus();
+            sync(); // activeElement is already the field; the focus event may lag (or never fire while the window is unfocused)
+          });
           input.addEventListener("keydown", function (e) {
             if (e.key === "Escape") {
               input.value = "";
