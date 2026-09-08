@@ -10,7 +10,7 @@ field_name: field_work_statement
 entity_type: node
 bundle: work
 label: 'Feature statement'
-description: 'The project outcome in one line. It is the headline on the card (on /work and the homepage) and the serif statement under the banner on the case-study page; the card shows the project name when this is empty.'
+description: 'The project outcome in one line (e.g. Transforming the elephant in the room into conversations that change lives). It is the headline on the card (on /work and the homepage) and the serif statement under the banner on the case-study page; the card shows the project name when this is empty.'
 required: false
 translatable: false
 default_value: {  }
