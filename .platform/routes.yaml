@@ -1,0 +1,19 @@
+# Routes: the bare domain serves the app; www redirects to it. The HTTP cache
+# stays off — Drupal's own page cache and Redis do the work, and a router
+# cache in front of authenticated editors is a source of stale pages.
+"https://{default}/":
+  type: upstream
+  upstream: "drupal:http"
+  cache:
+    enabled: false
+    cookies: ["/^SS?ESS/", "/^Drupal.visitor/"]
+  tls:
+    min_version: TLSv1.3
+    strict_transport_security:
+      enabled: true
+      include_subdomains: true
+      preload: false
+
+"https://www.{default}/":
+  type: redirect
+  to: "https://{default}/"

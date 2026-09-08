@@ -31,7 +31,8 @@
         "drupal/redirect": "^1.13",
         "drupal/redis": "^1.11",
         "drush/drush": "^13.7",
-        "enshrined/svg-sanitize": "^1.0"
+        "enshrined/svg-sanitize": "^1.0",
+        "platformsh/config-reader": "^3.0"
     },
     "conflict": {
         "drupal/drupal": "*"

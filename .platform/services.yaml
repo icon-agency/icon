@@ -1,0 +1,10 @@
+# The services beside the Drupal app on Platform.sh (docs/BACKEND-FOUNDATION.md
+# items 4 and 9): the database and the Redis cache. Solr is not provisioned —
+# nothing on the site searches through it yet; core search runs in the
+# database. Add it here when a search or AI-retrieval need arrives.
+db:
+  type: mariadb:11.8
+  disk: 1024
+
+cache:
+  type: redis:8.0

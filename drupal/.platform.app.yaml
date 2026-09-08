@@ -1,0 +1,96 @@
+# The Drupal app on Platform.sh. This file sits in drupal/ because the app
+# lives there: the repository root is the design system, and the theme's CSS
+# and JS are built from it and COMMITTED (npm run build:theme; the verify gate
+# keeps them current), so the host needs no Node build — Composer only.
+# Adapted from icon-agency/iconagency-drupal-ai's, without Solr.
+name: "drupal"
+type: "php:8.4"
+
+dependencies:
+  php:
+    composer/composer: "^2.8"
+
+runtime:
+  extensions:
+    - redis
+    - sodium
+    - apcu
+
+relationships:
+  database: "db:mysql"
+  redis: "cache:redis"
+
+# 3 GB: the public files are 1.8 GB of films and stills (the plan's 5 GB is
+# shared with the 1 GB database disk).
+disk: 3072
+
+mounts:
+  "/web/sites/default/files":
+    source: local
+    source_path: "files"
+  "/tmp":
+    source: local
+    source_path: "tmp"
+  "/private":
+    source: local
+    source_path: "private"
+  "/.drush":
+    source: local
+    source_path: "drush"
+  "/drush-backups":
+    source: local
+    source_path: "drush-backups"
+
+build:
+  flavor: none
+
+hooks:
+  build: |
+    set -e
+    composer install --no-ansi --no-interaction --no-progress --prefer-dist --optimize-autoloader
+  deploy: |
+    set -e
+    php ./drush/platformsh_generate_drush_yml.php
+    cd web
+    drush deploy
+
+web:
+  locations:
+    "/":
+      root: "web"
+      expires: 5m
+      passthru: "/index.php"
+      allow: false
+      headers:
+        Referrer-Policy: strict-origin-when-cross-origin
+      rules:
+        '\.(jpe?g|png|gif|svgz?|css|js|map|ico|bmp|eot|woff2?|otf|ttf|webp|avif|mp4|webm|ogv)$':
+          allow: true
+        '^/robots\.txt$':
+          allow: true
+        '^/sitemap\.xml$':
+          allow: true
+        '^/sites/sites\.php$':
+          scripts: false
+        '^/sites/[^/]+/settings.*?\.php$':
+          scripts: false
+    "/sites/default/files":
+      allow: true
+      expires: 5m
+      passthru: "/index.php"
+      root: "web/sites/default/files"
+      scripts: false
+      rules:
+        # aggregated CSS and JS, and image-style derivatives, are content-hashed
+        # or itok-signed: a long life lets the hero's stills and the footer's
+        # mask reuse them from the browser cache (docs/drupal-handoff.md)
+        "^/sites/default/files/(css|js)":
+          expires: 2w
+        "^/sites/default/files/styles/":
+          expires: 1y
+
+crons:
+  drupal:
+    spec: "*/29 * * * *"
+    commands:
+      start: "cd web ; drush core-cron"
