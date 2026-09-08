@@ -5,7 +5,9 @@
    It is the same pill — the frosted nav ground, radius, padding, a glyph in
    the same box at each end — with its three states in the field itself. At
    rest the hint reads "Subscribe"; hovered or focused it swaps to "Your
-   email" (the JS swaps the placeholder, and the hint brightens); typed, the
+   email" — the two hints are overlaid spans that CROSSFADE and slide (the
+   JS only toggles .is-hinting; the native placeholder is a lone space so
+   :placeholder-shown still tells an empty field from a typed one); typed, the
    address sits in the field's own regular face, a third bigger than the
    labels — the search field's recipe. The arrow at the right is the submit
    (inert until the newsletter slice: the shared [data-subscribe] hook).
@@ -89,6 +91,13 @@
   width: 1.625em; /* 1.3em × 20/16 */
 }
 
+.subscribe-bar__field {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  display: flex;
+}
+
 .subscribe-bar__input {
   flex: 1;
   min-width: 0;
@@ -106,10 +115,62 @@
   outline: none;
 }
 
-.subscribe-bar__input::placeholder {
+/* The hints: one box over the field, the two words stacked in it. At rest
+   "Subscribe" shows; hinting, it rises and fades as "Your email" rises in
+   from just below — one motion, 0.3s. The box carries the shared quietness,
+   and it clears entirely once there is a typed value. */
+.subscribe-bar__hint {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  align-items: center;
+  padding: 0 var(--spacing-2xs);
+  pointer-events: none;
+  font-size: calc(var(--voice-label) * 1.35);
+  font-weight: var(--font-weight-normal);
+  line-height: 1.2;
   color: currentColor;
   opacity: var(--hint-opacity);
+  overflow: hidden;
   transition: opacity var(--duration-fast) var(--ease-standard);
+}
+
+.subscribe-bar__hint-rest,
+.subscribe-bar__hint-hover {
+  grid-area: 1 / 1;
+  white-space: nowrap;
+  transition:
+    opacity 0.3s var(--ease-standard),
+    translate 0.3s var(--ease-decelerate);
+}
+
+.subscribe-bar__hint-hover {
+  opacity: 0;
+  translate: 0 0.5em;
+}
+
+.subscribe-bar:hover .subscribe-bar__hint-rest,
+.subscribe-bar.is-hinting .subscribe-bar__hint-rest {
+  opacity: 0;
+  translate: 0 -0.5em;
+}
+
+.subscribe-bar:hover .subscribe-bar__hint-hover,
+.subscribe-bar.is-hinting .subscribe-bar__hint-hover {
+  opacity: 1;
+  translate: 0 0;
+}
+
+.subscribe-bar__input:not(:placeholder-shown) + .subscribe-bar__hint {
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .subscribe-bar__hint-rest,
+  .subscribe-bar__hint-hover {
+    transition: opacity 0.3s var(--ease-standard);
+    translate: none;
+  }
 }
 
 /* ---- --footer: the footer's newsletter ------------------------------------
