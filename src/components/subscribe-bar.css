@@ -50,8 +50,22 @@
   width: var(--subscribe-bar-open, min(100%, 26rem));
 }
 
+/* The mastheads' bar also rides the page's fade-up reveal ([data-animate],
+   utilities/animations.css), whose rule outranks .subscribe-bar's and was
+   taking the width easing with it — the pill snapped open (user report, Sep
+   2026). One rule carries both: the width and ground here, the reveal's
+   opacity and rise with its delay. */
+.js-animations .subscribe-bar[data-animate] {
+  transition:
+    width 0.45s var(--ease-decelerate),
+    background var(--duration-normal) var(--ease-standard),
+    opacity var(--duration-slow) var(--ease-standard) var(--animate-delay, 0ms),
+    transform var(--duration-slow) var(--ease-standard) var(--animate-delay, 0ms);
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .subscribe-bar {
+  .subscribe-bar,
+  .js-animations .subscribe-bar[data-animate] {
     transition: background var(--duration-normal) var(--ease-standard);
   }
 }

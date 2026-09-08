@@ -230,6 +230,10 @@
   /* the double class outranks the component's own margin reset, which is
      imported after this file (an order slip that left the bar flush left) */
   margin: var(--space-sm) auto 0;
+  /* on the masthead's flat ground the blur adds nothing and costs a re-blur
+     on every frame of the width easing */
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
 }
 
 /* the filter band: two hairlines frame the pills, drawn in by rules.css
