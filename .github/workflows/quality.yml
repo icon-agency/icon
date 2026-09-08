@@ -1,0 +1,55 @@
+name: Quality checks
+
+on:
+  pull_request:
+  push:
+    branches: [main, "claude/**"]
+  workflow_dispatch:
+
+concurrency:
+  group: quality-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  checks:
+    name: PHPCS, PHPStan, Rector, ESLint, Stylelint, CSS build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.4"
+          extensions: apcu, gd, mbstring, pdo_mysql, sodium
+          coverage: none
+          tools: composer:v2
+
+      - name: Cache Composer
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.composer/cache/files
+            drupal/vendor
+          key: composer-${{ runner.os }}-${{ hashFiles('drupal/composer.lock') }}
+          restore-keys: composer-${{ runner.os }}-
+
+      - name: Install the Drupal project (dev dependencies included)
+        run: composer install --no-interaction --no-progress --prefer-dist
+        working-directory: drupal
+
+      - name: Validate composer.json
+        run: composer validate --strict --no-check-publish
+        working-directory: drupal
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install Node dependencies
+        run: npm ci --no-audit
+
+      - name: Run the quality checks
+        run: npm run check

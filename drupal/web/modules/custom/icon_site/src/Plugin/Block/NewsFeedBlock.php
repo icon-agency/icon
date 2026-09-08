@@ -6,14 +6,18 @@ namespace Drupal\icon_site\Plugin\Block;
 
 use Drupal\Core\Block\Attribute\Block;
 use Drupal\Core\Block\BlockBase;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\StringTranslation\TranslatableMarkup;
 use Drupal\Core\Url;
 use Drupal\node\NodeInterface;
 use Drupal\views\Views;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * The homepage news feed: the newest promoted stories, pinned ones first.
+ *
  * Its one setting is how many; its Canvas panel shows the stories in the
  * feed with a pin toggle, Edit (a dialog) and Remove, plus a searchable
  * "Add a story" that promotes one. The rule stays the site's own promote /
@@ -24,7 +28,28 @@ use Drupal\views\Views;
   admin_label: new TranslatableMarkup('News feed (homepage)'),
   category: new TranslatableMarkup('ICON'),
 )]
-final class NewsFeedBlock extends BlockBase {
+final class NewsFeedBlock extends BlockBase implements ContainerFactoryPluginInterface {
+
+  public function __construct(
+    array $configuration,
+    $plugin_id,
+    $plugin_definition,
+    protected readonly EntityTypeManagerInterface $entityTypeManager,
+  ) {
+    parent::__construct($configuration, $plugin_id, $plugin_definition);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition): static {
+    return new static(
+      $configuration,
+      $plugin_id,
+      $plugin_definition,
+      $container->get('entity_type.manager'),
+    );
+  }
 
   /**
    * {@inheritdoc}
@@ -37,9 +62,10 @@ final class NewsFeedBlock extends BlockBase {
    * The feed: promoted, published, pinned first, then newest.
    *
    * @return \Drupal\node\NodeInterface[]
+   *   The news nodes in the feed, keyed by node ID.
    */
   private function feed(int $count): array {
-    $storage = \Drupal::entityTypeManager()->getStorage('node');
+    $storage = $this->entityTypeManager->getStorage('node');
     $ids = $storage->getQuery()->accessCheck(TRUE)
       ->condition('type', 'news')->condition('status', 1)->condition('promote', 1)
       ->sort('sticky', 'DESC')->sort('field_news_date', 'DESC')->sort('created', 'DESC')
@@ -48,7 +74,7 @@ final class NewsFeedBlock extends BlockBase {
   }
 
   /**
-   * "Category · date" for a story.
+   * The "Category · date" line for a story.
    */
   private static function meta(NodeInterface $node): string {
     $allowed = $node->get('field_news_category')->getFieldDefinition()->getSetting('allowed_values');
@@ -90,7 +116,7 @@ final class NewsFeedBlock extends BlockBase {
     // (js/panel-sortable.js filters it as you type). Adding one pins it —
     // the feed is the newest by date, so an older story only shows when
     // pinned; unpin it later and it falls back into date order.
-    $storage = \Drupal::entityTypeManager()->getStorage('node');
+    $storage = $this->entityTypeManager->getStorage('node');
     $in_feed = array_map(fn(NodeInterface $n) => (int) $n->id(), $this->feed($count));
     $ids = $storage->getQuery()->accessCheck(TRUE)->condition('type', 'news')->condition('status', 1)->sort('field_news_date', 'DESC')->execute();
     $options = [];
@@ -100,17 +126,24 @@ final class NewsFeedBlock extends BlockBase {
       }
       $options[] = ['id' => (int) $node->id(), 'project' => $node->label(), 'client' => self::meta($node)];
     }
-    $form['panel'] = ['#type' => 'container', '#weight' => 2, '#attributes' => ['class' => ['icon-panel', 'icon-panel--news']]];
+    $form['panel'] = [
+      '#type' => 'container',
+      '#weight' => 2,
+      '#attributes' => ['class' => ['icon-panel', 'icon-panel--news']],
+    ];
     $form['panel']['bar'] = [
       '#markup' => '<div class="icon-panel__bar"><p class="icon-panel__title">' . $this->t('On the homepage · @n', ['@n' => substr_count($rows, '<tr ')]) . '</p><a class="icon-panel__button" href="' . Url::fromRoute('system.admin_content', [], ['query' => ['type' => 'news']])->toString() . '" target="_blank" rel="noopener">' . $this->t('All news') . '</a></div>',
     ];
     $form['panel']['card'] = [
       '#type' => 'container',
-      '#attributes' => ['class' => ['icon-panel__card'], 'data-options' => json_encode($options, JSON_UNESCAPED_UNICODE)],
+      '#attributes' => [
+        'class' => ['icon-panel__card'],
+        'data-options' => json_encode($options, JSON_UNESCAPED_UNICODE),
+      ],
     ];
     $form['panel']['card']['list'] = [
       '#markup' => ($rows ? '<table class="icon-panel__list"><tbody>' . $rows . '</tbody></table>' : '<p class="icon-panel__note">' . $this->t('No stories are promoted to the homepage yet.') . '</p>')
-        . '<a href="#" class="icon-panel__pickable icon-panel__pickable--add" role="button" data-action-url="' . $action . '&op=promote" aria-haspopup="listbox"><span class="icon-panel__text"><p class="icon-panel__name icon-panel__name--empty">' . $this->t('+ Add a story to the homepage') . '</p></span><span class="icon-panel__chevron" aria-hidden="true"></span></a>',
+      . '<a href="#" class="icon-panel__pickable icon-panel__pickable--add" role="button" data-action-url="' . $action . '&op=promote" aria-haspopup="listbox"><span class="icon-panel__text"><p class="icon-panel__name icon-panel__name--empty">' . $this->t('+ Add a story to the homepage') . '</p></span><span class="icon-panel__chevron" aria-hidden="true"></span></a>',
     ];
     $form['panel']['note'] = [
       '#markup' => '<p class="icon-panel__note">' . $this->t('The feed is the newest promoted stories, by date. A pinned story stays at the top whatever its date — so adding an older story pins it. Pin, Remove and Add take effect at once and refresh the editor; Edit opens the story over the page. The same switches are on every story\'s form as "Promote to homepage" and "Pin on homepage".') . '</p>',

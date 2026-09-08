@@ -44,6 +44,7 @@
    js/theme-handover.js), the row hairlines read ON-COLOUR — the same
    decision as .dark .news-article: the border grey is lost on near-black. */
 .dark .news-list {
+  /* the dark theme needs no override here — kept so the pair of rules reads together */
 }
 
 /* UNRULED rows (the canonical header B): with no hairline to seat, the rows

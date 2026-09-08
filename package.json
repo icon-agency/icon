@@ -2,16 +2,31 @@
   "name": "icon-agency",
   "version": "0.1.0",
   "private": true,
-  "description": "ICON Agency site — semantic HTML + Tailwind v4 + GSAP, built for Drupal (SDC / Canvas) handoff.",
+  "description": "ICON Agency site \u2014 semantic HTML + Tailwind v4 + GSAP, built for Drupal (SDC / Canvas) handoff.",
   "scripts": {
     "dev": "tailwindcss -i src/main.css -o css/main.css --watch",
     "build": "tailwindcss -i src/main.css -o css/main.css --minify",
     "verify": "node scripts/verify.mjs",
     "build:theme": "tailwindcss -i drupal/web/themes/custom/icon/src/main.css -o drupal/web/themes/custom/icon/css/main.css --minify && node scripts/theme-js.mjs",
-    "dev:theme": "tailwindcss -i drupal/web/themes/custom/icon/src/main.css -o drupal/web/themes/custom/icon/css/main.css --watch"
+    "dev:theme": "tailwindcss -i drupal/web/themes/custom/icon/src/main.css -o drupal/web/themes/custom/icon/css/main.css --watch",
+    "check": "npm run check:php && npm run check:drupal && npm run check:rector && npm run check:js && npm run check:styles && npm run verify",
+    "check:php": "cd drupal && if command -v php >/dev/null 2>&1; then scripts/checks/php; else ddev exec scripts/checks/php; fi",
+    "check:php:fix": "cd drupal && if command -v php >/dev/null 2>&1; then scripts/checks/php --fix; else ddev exec scripts/checks/php --fix; fi",
+    "check:drupal": "cd drupal && if command -v php >/dev/null 2>&1; then scripts/checks/drupal; else ddev exec scripts/checks/drupal; fi",
+    "check:rector": "cd drupal && if command -v php >/dev/null 2>&1; then scripts/checks/rector; else ddev exec scripts/checks/rector; fi",
+    "check:rector:fix": "cd drupal && if command -v php >/dev/null 2>&1; then vendor/bin/rector process; else ddev exec vendor/bin/rector process; fi",
+    "check:js": "eslint .",
+    "check:js:fix": "eslint . --fix",
+    "check:styles": "stylelint \"src/**/*.css\" \"drupal/web/themes/custom/icon/src/**/*.css\" \"drupal/web/modules/custom/**/*.css\"",
+    "check:styles:fix": "stylelint \"src/**/*.css\" \"drupal/web/themes/custom/icon/src/**/*.css\" \"drupal/web/modules/custom/**/*.css\" --fix"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@tailwindcss/cli": "^4.1.9",
+    "eslint": "^10.10.0",
+    "globals": "^17.12.0",
+    "stylelint": "^17.15.0",
+    "stylelint-config-standard": "^40.0.0",
     "tailwindcss": "^4.1.9"
   },
   "dependencies": {

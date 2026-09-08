@@ -4,21 +4,41 @@ declare(strict_types=1);
 
 namespace Drupal\icon_site\Controller;
 
+use Drupal\Component\Datetime\TimeInterface;
 use Drupal\Core\Ajax\AjaxResponse;
 use Drupal\Core\Ajax\InvokeCommand;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\node\NodeInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 /**
- * The news feed panel's one-click actions: pin / unpin (sticky) and
- * promote / unpromote (the homepage flag). Ajax callers get a command that
- * reloads the editor; anything else is sent back where it came from.
+ * The news feed panel's one-click actions.
+ *
+ * Pin / unpin (sticky) and promote / unpromote (the homepage flag). Ajax
+ * callers get a command that reloads the editor; anything else is sent back
+ * where it came from.
  */
 final class NewsActionController extends ControllerBase {
 
+  public function __construct(
+    private readonly TimeInterface $time,
+  ) {}
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container): static {
+    return new static(
+      $container->get('datetime.time'),
+    );
+  }
+
+  /**
+   * Applies the `op` query parameter's action to the requested story.
+   */
   public function act(Request $request): AjaxResponse|RedirectResponse {
     $node = $this->entityTypeManager()->getStorage('node')->load((int) $request->query->get('nid'));
     $op = (string) $request->query->get('op');
@@ -34,10 +54,10 @@ final class NewsActionController extends ControllerBase {
       'unpromote' => $node->setPromoted(FALSE)->setSticky(FALSE),
       default => throw new BadRequestHttpException('Unknown action.'),
     };
-    // every panel change is its own revision, attributed and explained
+    // Every panel change is its own revision, attributed and explained.
     $node->setNewRevision(TRUE);
     $node->setRevisionUserId((int) $this->currentUser()->id());
-    $node->setRevisionCreationTime(\Drupal::time()->getRequestTime());
+    $node->setRevisionCreationTime($this->time->getRequestTime());
     $node->setRevisionLogMessage('Homepage feed: ' . $op . ' (Canvas panel)');
     $node->save();
     if ($request->isXmlHttpRequest() || $request->query->has('_wrapper_format')) {

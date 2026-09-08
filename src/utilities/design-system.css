@@ -303,6 +303,7 @@
    page-layer tokens (.page-home). --grid-gutter used to be supplied here;
    it is a FOUNDATION now (theme/spacing.css), so the stage inherits it. */
 .ds-demo--home-context {
+  /* the stage inherits the foundation; nothing to set */
 }
 
 /* Demo-stage neutralisers: the intro strip full-bleeds against the REAL

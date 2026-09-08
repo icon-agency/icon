@@ -4,16 +4,40 @@ declare(strict_types=1);
 
 namespace Drupal\icon_site\Form;
 
+use Drupal\Core\Config\ConfigFactoryInterface;
+use Drupal\Core\Config\TypedConfigManagerInterface;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * The global footer's words (Content → Footer): the call to action, the
- * newsletter line, the acknowledgement. The offices and the social links
- * are lists of their own, linked from here.
+ * The global footer's words (Content → Footer).
+ *
+ * The call to action, the newsletter line, the acknowledgement. The offices
+ * and the social links are lists of their own, linked from here.
  */
 final class FooterSettingsForm extends ConfigFormBase {
+
+  public function __construct(
+    ConfigFactoryInterface $config_factory,
+    TypedConfigManagerInterface $typedConfigManager,
+    protected readonly EntityTypeManagerInterface $entityTypeManager,
+  ) {
+    parent::__construct($config_factory, $typedConfigManager);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container): static {
+    return new static(
+      $container->get('config.factory'),
+      $container->get('config.typed'),
+      $container->get('entity_type.manager'),
+    );
+  }
 
   /**
    * {@inheritdoc}
@@ -78,7 +102,7 @@ final class FooterSettingsForm extends ConfigFormBase {
     ];
     // The login page's reel: the hero block of a Canvas page.
     $pages = ['' => $this->t('The front page (default)')];
-    foreach (\Drupal::entityTypeManager()->getStorage('canvas_page')->loadMultiple() as $page) {
+    foreach ($this->entityTypeManager->getStorage('canvas_page')->loadMultiple() as $page) {
       if (icon_site_hero_order_of($page) || $page->access('view')) {
         $pages[$page->id()] = $page->label() . (icon_site_hero_order_of($page) ? '' : ' — ' . $this->t('no hero block'));
       }

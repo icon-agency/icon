@@ -10,8 +10,9 @@ use Drupal\node\NodeInterface;
 use Drupal\node\Plugin\EntityReferenceSelection\NodeSelection;
 
 /**
- * Work items, searched by project name, client or title, labelled
- * "Project — Client" — the pickers' search box.
+ * Work items for the pickers' search box.
+ *
+ * Searched by project name, client or title, labelled "Project — Client".
  */
 #[EntityReferenceSelection(
   id: 'icon_work',
@@ -62,7 +63,7 @@ final class WorkSelection extends NodeSelection {
   }
 
   /**
-   * "Project — Client" (the title when there is no project name).
+   * The label "Project — Client" (the title when there is no project name).
    */
   public static function label(NodeInterface $node): string {
     $project = trim((string) ($node->get('field_work_project')->value ?? '')) ?: $node->label();

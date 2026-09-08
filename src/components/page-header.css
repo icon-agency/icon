@@ -185,6 +185,7 @@
 }
 
 .dark .page-header--stack {
+  /* the dark theme needs no override here */
 }
 
 .page-header--stack .page-header__inner {

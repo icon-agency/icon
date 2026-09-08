@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# PHPStan with the Drupal extension and deprecation rules over the custom code.
+set -euo pipefail
+cd "$(dirname "$0")/../.."
+vendor/bin/phpstan analyse --memory-limit=1G "$@"

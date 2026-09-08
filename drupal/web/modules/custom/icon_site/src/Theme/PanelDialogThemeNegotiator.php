@@ -11,9 +11,10 @@ use Drupal\Core\Theme\ThemeNegotiatorInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
- * Every request of a form opened from the Canvas panel (`?panel=1`) renders
- * in the admin theme — including the ajax posts the form makes from inside
- * its dialog.
+ * Renders forms opened from the Canvas panel (`?panel=1`) in the admin theme.
+ *
+ * Every request of such a form renders in the admin theme — including the
+ * ajax posts the form makes from inside its dialog.
  *
  * Canvas's own negotiator (priority 1001) switches to the admin theme on
  * `use_admin_theme`, but deliberately switches BACK to canvas_stark for the

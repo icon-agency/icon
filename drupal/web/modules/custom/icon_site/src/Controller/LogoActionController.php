@@ -14,12 +14,17 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 /**
- * The marquee panel's actions on Logo media: `order` (ids, in order, written
- * to the Order field) and `remove` (unpublish — the file stays in the
- * library). Ajax callers get a command that reloads the editor.
+ * The marquee panel's actions on Logo media.
+ *
+ * `order` (ids, in order, written to the Order field) and `remove`
+ * (unpublish — the file stays in the library). Ajax callers get a command
+ * that reloads the editor.
  */
 final class LogoActionController extends ControllerBase {
 
+  /**
+   * Applies the `op` query parameter's action to the requested logo(s).
+   */
   public function act(Request $request): AjaxResponse|JsonResponse|RedirectResponse {
     $storage = $this->entityTypeManager()->getStorage('media');
     $op = (string) $request->query->get('op');

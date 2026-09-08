@@ -31,7 +31,13 @@ use Drupal\paragraphs\ParagraphInterface;
 function icon_preprocess_html(array &$variables): void {
   // Font preconnects, as the static templates ship them.
   $variables['#attached']['html_head_link'][] = [['rel' => 'preconnect', 'href' => 'https://fonts.googleapis.com']];
-  $variables['#attached']['html_head_link'][] = [['rel' => 'preconnect', 'href' => 'https://fonts.gstatic.com', 'crossorigin' => TRUE]];
+  $variables['#attached']['html_head_link'][] = [
+    [
+      'rel' => 'preconnect',
+      'href' => 'https://fonts.gstatic.com',
+      'crossorigin' => TRUE,
+    ],
+  ];
 
   // The dark-opening pages (templates/news-b.html, news-article.html): the
   // class is in the markup so there is no flash, and iconThemeHandover hands
@@ -167,7 +173,12 @@ function icon_preprocess_node(array &$variables): void {
     // news-article.css, "THE BANNER SLOT IS 2:1"): present → stacked head.
     $variables['banner'] = $node->hasField('field_news_banner') ? _icon_media_image($node->get('field_news_banner')->entity, 'news_hero', $cache) : [];
     _icon_apply_cache($variables, $cache);
-    $variables['next_up'] = ['#type' => 'view', '#name' => 'news', '#display_id' => 'next_up', '#arguments' => [$node->id()]];
+    $variables['next_up'] = [
+      '#type' => 'view',
+      '#name' => 'news',
+      '#display_id' => 'next_up',
+      '#arguments' => [$node->id()],
+    ];
     $variables['#attached']['library'][] = 'icon/news';
     $variables['#attached']['library'][] = 'icon/share';
   }
@@ -222,14 +233,27 @@ function icon_preprocess_views_view(array &$variables): void {
     $current = $view->args[0] ?? 'all';
     $allowed = \Drupal::service('entity_field.manager')
       ->getFieldStorageDefinitions('node')['field_work_category']->getSetting('allowed_values');
-    $chips = [['key' => 'all', 'label' => t('All'), 'url' => Url::fromRoute('view.work.page_1')->toString(), 'active' => $current === 'all']];
+    $chips = [
+      [
+        'key' => 'all',
+        'label' => t('All'),
+        'url' => Url::fromRoute('view.work.page_1')->toString(),
+        'active' => $current === 'all',
+      ],
+    ];
     foreach ($allowed as $key => $label) {
-      $chips[] = ['key' => $key, 'label' => $label, 'url' => Url::fromRoute('view.work.page_1', [], ['query' => ['category' => $key]])->toString(), 'active' => $current === $key];
+      $chips[] = [
+        'key' => $key,
+        'label' => $label,
+        'url' => Url::fromRoute('view.work.page_1', [], ['query' => ['category' => $key]])->toString(),
+        'active' => $current === $key,
+      ];
     }
     $variables['chips'] = $chips;
     $variables['pager']['#noun'] = t('projects');
     $variables['#attached']['library'][] = 'icon/work-landing';
-    // the next page arrives as the reader nears the end (js-theme/listing-lazy.js)
+    // The next page arrives as the reader nears the end
+    // (js-theme/listing-lazy.js)
     $variables['#attached']['library'][] = 'icon/listing-lazy';
     $variables['#attached']['library'][] = 'icon/subscribe-reveal';
     return;
@@ -244,15 +268,28 @@ function icon_preprocess_views_view(array &$variables): void {
     $current = $view->args[0] ?? 'all';
     $allowed = \Drupal::service('entity_field.manager')
       ->getFieldStorageDefinitions('node')['field_news_category']->getSetting('allowed_values');
-    $chips = [['key' => 'all', 'label' => t('All'), 'url' => Url::fromRoute('view.news.page_1')->toString(), 'active' => $current === 'all']];
+    $chips = [
+      [
+        'key' => 'all',
+        'label' => t('All'),
+        'url' => Url::fromRoute('view.news.page_1')->toString(),
+        'active' => $current === 'all',
+      ],
+    ];
     foreach ($allowed as $key => $label) {
-      $chips[] = ['key' => $key, 'label' => $label, 'url' => Url::fromRoute('view.news.page_1', [], ['query' => ['category' => $key]])->toString(), 'active' => $current === $key];
+      $chips[] = [
+        'key' => $key,
+        'label' => $label,
+        'url' => Url::fromRoute('view.news.page_1', [], ['query' => ['category' => $key]])->toString(),
+        'active' => $current === $key,
+      ];
     }
     $variables['chips'] = $chips;
     $variables['pager']['#noun'] = t('stories');
     $variables['#attached']['library'][] = 'icon/news';
-    // The next page arrives as the reader nears the end (js-theme/listing-lazy.js);
-    // the pager stays in the markup for no-JS and crawlers.
+    // The next page arrives as the reader nears the end
+    // (js-theme/listing-lazy.js); the pager stays in the markup for no-JS and
+    // crawlers.
     $variables['#attached']['library'][] = 'icon/listing-lazy';
     $variables['#attached']['library'][] = 'icon/subscribe-reveal';
   }
@@ -302,7 +339,7 @@ function icon_preprocess_views_view_unformatted(array &$variables): void {
     // fade-up stagger cycling 0…300ms in sixes, and the handover marker on
     // the first story (the dark opening holds until it reaches the fold).
     $row['attributes']->setAttribute('data-category', $node instanceof NodeInterface ? ($node->get('field_news_category')->value ?? '') : '');
-    // the per-story hairline, drawn in on scroll (news-list.css, the ruled
+    // The per-story hairline, drawn in on scroll (news-list.css, the ruled
     // variant; back on the landing by user call, Sep 2026)
     $row['attributes']->setAttribute('data-rule', 'top');
     $row['attributes']->setAttribute('data-animate', '');
@@ -331,7 +368,12 @@ function icon_preprocess_pager(array &$variables): void {
   $pages = max(1, $pager->getTotalPages());
   $current = $pager->getCurrentPage() + 1;
   $noun = $variables['pager']['#noun'] ?? t('items');
-  $variables['status'] = t('Page @current of @pages (@count @noun)', ['@current' => $current, '@pages' => $pages, '@count' => $total_items, '@noun' => $noun]);
+  $variables['status'] = t('Page @current of @pages (@count @noun)', [
+    '@current' => $current,
+    '@pages' => $pages,
+    '@count' => $total_items,
+    '@noun' => $noun,
+  ]);
   // Always render the pill, even on a single page (the static template does).
   if (empty($variables['items'])) {
     $variables['items'] = ['pages' => []];
@@ -351,7 +393,13 @@ function icon_preprocess_paragraph(array &$variables): void {
     return;
   }
   $cache = new CacheableMetadata();
-  $variables['sdc_props'] = in_array($paragraph->bundle(), ['work_gallery_row', 'work_stats', 'work_video', 'work_scroller'], TRUE)
+  $work_bundles = [
+    'work_gallery_row',
+    'work_stats',
+    'work_video',
+    'work_scroller',
+  ];
+  $variables['sdc_props'] = in_array($paragraph->bundle(), $work_bundles, TRUE)
     ? _icon_work_paragraph_props($paragraph, $cache)
     : _icon_paragraph_props($paragraph, $cache);
   _icon_apply_cache($variables, $cache);
@@ -395,8 +443,8 @@ function _icon_preprocess_node_work(array &$variables, NodeInterface $node): voi
       'url' => $node->toUrl()->toString(),
       'client' => $node->get('field_work_client')->value ?? '',
       'media' => _icon_media_source($node->get('field_work_tile')->entity, 'work_media', $cache),
-      // the legacy layered tile (an old-site folio item): the Layers field,
-      // back to front — see the Work form's "Legacy folio card" details
+      // The legacy layered tile (an old-site folio item): the Layers field,
+      // back to front — see the Work form's "Legacy folio card" details.
       'layers' => $node->hasField('field_work_legacy_layers')
         ? array_values(array_filter(array_map(fn($m) => _icon_media_image($m, 'work_media', $cache), $node->get('field_work_legacy_layers')->referencedEntities())))
         : [],
@@ -418,7 +466,12 @@ function _icon_preprocess_node_work(array &$variables, NodeInterface $node): voi
     $variables['banner'] = _icon_media_source($node->get('field_work_banner')->entity, 'work_media', $cache)
       ?: _icon_media_source($node->get('field_work_tile')->entity, 'work_media', $cache);
     _icon_apply_cache($variables, $cache);
-    $variables['next_up'] = ['#type' => 'view', '#name' => 'work', '#display_id' => 'next_up', '#arguments' => [$node->id()]];
+    $variables['next_up'] = [
+      '#type' => 'view',
+      '#name' => 'work',
+      '#display_id' => 'next_up',
+      '#arguments' => [$node->id()],
+    ];
     foreach (['icon/share', 'icon/velocity-lean', 'icon/work-article', 'icon/work-video', 'icon/work-scroller'] as $lib) {
       $variables['#attached']['library'][] = $lib;
     }
@@ -436,8 +489,9 @@ function _icon_media_source(?EntityInterface $media, string $style_id, ?Cacheabl
 }
 
 /**
- * Merges collected cacheability into a preprocess's variables (the theme
- * manager bubbles `$variables['#cache']` like a render array's).
+ * Merges collected cacheability into a preprocess's variables.
+ *
+ * The theme manager bubbles `$variables['#cache']` like a render array's.
  */
 function _icon_apply_cache(array &$variables, CacheableMetadata $cache): void {
   CacheableMetadata::createFromRenderArray($variables)->merge($cache)->applyTo($variables);
@@ -450,12 +504,15 @@ function _icon_work_paragraph_props(ParagraphInterface $p, ?CacheableMetadata $c
   switch ($p->bundle()) {
     case 'work_gallery_row':
       $media = array_values(array_filter(array_map(fn($m) => _icon_media_source($m, 'work_media', $cache), $p->get('field_work_gallery_media')->referencedEntities())));
-      return $media ? ['rows' => [[
-        'style' => $p->get('field_work_gallery_style')->value ?: 'default',
-        'ground' => $p->get('field_work_gallery_ground')->value ?? '',
-        'pad' => $p->get('field_work_gallery_pad')->value ?? '',
-        'media' => $media,
-      ]]] : [];
+      return $media ? [
+        'rows' => [[
+          'style' => $p->get('field_work_gallery_style')->value ?: 'default',
+          'ground' => $p->get('field_work_gallery_ground')->value ?? '',
+          'pad' => $p->get('field_work_gallery_pad')->value ?? '',
+          'media' => $media,
+        ],
+        ],
+      ] : [];
 
     case 'work_stats':
       $items = [];
@@ -471,7 +528,11 @@ function _icon_work_paragraph_props(ParagraphInterface $p, ?CacheableMetadata $c
     case 'work_video':
       $film = _icon_media_source($p->get('field_work_video_media')->entity, 'work_media', $cache);
       $cover = _icon_media_image($p->get('field_work_video_cover')->entity, 'work_media', $cache);
-      return ($film && $cover) ? ['video_src' => $film['src'], 'cover' => $cover, 'title' => $p->get('field_work_video_title')->value ?? ''] : [];
+      return ($film && $cover) ? [
+        'video_src' => $film['src'],
+        'cover' => $cover,
+        'title' => $p->get('field_work_video_title')->value ?? '',
+      ] : [];
 
     case 'work_scroller':
       $items = array_values(array_filter(array_map(fn($m) => _icon_media_image($m, 'work_media', $cache), $p->get('field_work_scroller_media')->referencedEntities())));
@@ -489,7 +550,15 @@ function icon_preprocess_field(array &$variables): void {
   if ($variables['field_name'] !== 'field_work_content') {
     return;
   }
-  $sdc = ['prose' => 'prose', 'pull_quote' => 'pull-quote', 'news_article_video' => 'news-article-video', 'work_gallery_row' => 'work-gallery', 'work_stats' => 'work-stats', 'work_video' => 'work-video', 'work_scroller' => 'work-scroller'];
+  $sdc = [
+    'prose' => 'prose',
+    'pull_quote' => 'pull-quote',
+    'news_article_video' => 'news-article-video',
+    'work_gallery_row' => 'work-gallery',
+    'work_stats' => 'work-stats',
+    'work_video' => 'work-video',
+    'work_scroller' => 'work-scroller',
+  ];
   // A "run" is text and what travels with it under one Share rail; the rest
   // breaks the flow (templates/work-article-master.html).
   $run_types = ['prose', 'work_video', 'news_article_video', 'work_stats'];
@@ -498,16 +567,23 @@ function icon_preprocess_field(array &$variables): void {
   $gallery_rows = [];
   $flush_gallery = function () use (&$groups, &$gallery_rows) {
     if ($gallery_rows) {
-      $groups[] = ['type' => 'block', 'item' => ['#type' => 'component', '#component' => 'icon:work-gallery', '#props' => ['rows' => $gallery_rows]]];
+      $groups[] = [
+        'type' => 'block',
+        'item' => [
+          '#type' => 'component',
+          '#component' => 'icon:work-gallery',
+          '#props' => ['rows' => $gallery_rows],
+        ],
+      ];
       $gallery_rows = [];
     }
   };
   $cache = new CacheableMetadata();
   foreach ($variables['element']['#items']->referencedEntities() as $p) {
-    // this path rebuilds the render arrays itself, so it carries the access
+    // This path rebuilds the render arrays itself, so it carries the access
     // check the formatter would have made — and its cacheability: an
     // unpublished paragraph, or one the current user may not view, is left
-    // out, and the decision's contexts and tags bubble with the field
+    // out, and the decision's contexts and tags bubble with the field.
     if (!$p instanceof ParagraphInterface || !isset($sdc[$p->bundle()])) {
       continue;
     }

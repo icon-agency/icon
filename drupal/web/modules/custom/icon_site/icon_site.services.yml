@@ -1,7 +1,7 @@
 services:
   icon_site.twig_extension:
     class: Drupal\icon_site\Twig\IconSiteExtension
-    arguments: ['@entity_type.manager']
+    arguments: ['@entity_type.manager', '@stream_wrapper_manager']
     tags:
       - { name: twig.extension }
   icon_site.theme_negotiator.panel_dialog:

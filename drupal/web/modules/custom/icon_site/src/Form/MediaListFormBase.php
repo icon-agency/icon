@@ -13,10 +13,13 @@ use Drupal\media\MediaInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * One media bundle as one list: drag to reorder (a weight field), rename
- * inline (the name is the alt text / label), Edit (replace the file or
- * rename), Delete, add from the local action at the top. The client logos
- * and the fact-card icons are both this.
+ * One media bundle as one list.
+ *
+ * Drag to reorder (a weight field), rename inline (the name is the alt text
+ * / label), Edit (replace the file or rename), Delete, add from the local
+ * action at the top. The client logos and the fact-card icons are both this.
+ *
+ * @phpstan-consistent-constructor
  */
 abstract class MediaListFormBase extends FormBase {
 
@@ -35,25 +38,32 @@ abstract class MediaListFormBase extends FormBase {
     );
   }
 
-  /** The media bundle listed. */
+  /**
+   * The media bundle listed. */
   abstract protected function bundle(): string;
 
-  /** The bundle's file source field. */
+  /**
+   * The bundle's file source field. */
   abstract protected function fileField(): string;
 
-  /** The bundle's order field. */
+  /**
+   * The bundle's order field. */
   abstract protected function weightField(): string;
 
-  /** The route of this list (operations come back here). */
+  /**
+   * The route of this list (operations come back here). */
   abstract protected function routeName(): string;
 
-  /** The intro paragraph. */
+  /**
+   * The intro paragraph. */
   abstract protected function help(): string;
 
-  /** Column label for the name (e.g. "Alt text"). */
+  /**
+   * Column label for the name (e.g. "Alt text"). */
   abstract protected function nameLabel(): string;
 
-  /** Column label for the file (e.g. "Logo"). */
+  /**
+   * Column label for the file (e.g. "Logo"). */
   abstract protected function fileLabel(): string;
 
   /**
@@ -80,7 +90,8 @@ abstract class MediaListFormBase extends FormBase {
         'action' => 'order',
         'relationship' => 'sibling',
         'group' => 'item-weight',
-      ]],
+      ],
+      ],
     ];
     $delta = max(10, count($items));
     $weight = 0;
@@ -96,7 +107,8 @@ abstract class MediaListFormBase extends FormBase {
             'src' => $this->fileUrlGenerator->generateString($file->getFileUri()),
             'alt' => '',
             // Fixed box + contain: an SVG without its own width/height would
-            // otherwise render at 0px; the faint ground keeps white marks visible.
+            // otherwise render at 0px; the faint ground keeps white marks
+            // visible.
             'style' => 'width: 120px; height: 48px; object-fit: contain; background: #eee; padding: 4px; box-sizing: border-box;',
           ],
         ] : ['#markup' => $this->t('(no file)')],

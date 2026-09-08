@@ -7,6 +7,11 @@
 
 declare(strict_types=1);
 
+use Drupal\Core\Render\Markup;
+use Drupal\icon_site\Twig\IconSiteExtension;
+use Drupal\Core\Menu\MenuTreeParameters;
+use Drupal\icon_site\Plugin\Block\HeroBlock;
+use Drupal\Core\Entity\EntityInterface;
 use Drupal\canvas\PropExpressions\StructuredData\FieldTypePropExpression;
 use Drupal\canvas\PropShape\CandidateStorablePropShape;
 use Drupal\Core\Ajax\AjaxResponse;
@@ -18,7 +23,6 @@ use Drupal\Core\Cache\CacheableMetadata;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\image\Entity\ImageStyle;
 use Drupal\media\MediaInterface;
-use Drupal\node\NodeInterface;
 
 /**
  * Implements hook_form_BASE_FORM_ID_alter() for node_form.
@@ -119,9 +123,11 @@ function icon_site_media_source(?MediaInterface $media, string $style_id, ?Cache
 }
 
 /**
- * The hero reel the LOGIN page plays: the hero block on the page named in
- * icon_site.footer `login_hero` (Content → Footer → Login page), else the
- * front page. Its `order` is that block's explicit slide selection.
+ * The hero reel the LOGIN page plays.
+ *
+ * The hero block on the page named in icon_site.footer `login_hero`
+ * (Content → Footer → Login page), else the front page. Its `order` is that
+ * block's explicit slide selection.
  *
  * @return array{order: int[], tags: string[]}
  *   The chosen slide node IDs in order (empty when no hero block is on the
@@ -149,12 +155,15 @@ function icon_site_hero_order(): array {
 }
 
 /**
- * A Canvas page's hero block selection: the `order` input of the first
- * block.icon_hero component in its (published) tree, else nothing.
+ * A Canvas page's hero block selection.
+ *
+ * The `order` input of the first block.icon_hero component in its
+ * (published) tree, else nothing.
  *
  * @return int[]
+ *   The chosen slide node IDs, in order.
  */
-function icon_site_hero_order_of(\Drupal\Core\Entity\EntityInterface $page): array {
+function icon_site_hero_order_of(EntityInterface $page): array {
   if (!$page->hasField('components')) {
     return [];
   }
@@ -170,10 +179,12 @@ function icon_site_hero_order_of(\Drupal\Core\Entity\EntityInterface $page): arr
 }
 
 /**
- * The hero's slides: the CHOSEN ones, in order (a hero shows only the slides
- * its block selected — Content → the panel's reel; a published slide not in
- * the selection is "available", not shown). Pass NULL for the login page's
- * hero (icon_site_hero_order()). Unpublished or inaccessible slides drop out.
+ * The hero's slides: the CHOSEN ones, in order.
+ *
+ * A hero shows only the slides its block selected — Content → the panel's
+ * reel; a published slide not in the selection is "available", not shown.
+ * Pass NULL for the login page's hero (icon_site_hero_order()). Unpublished
+ * or inaccessible slides drop out.
  *
  * @return \Drupal\node\NodeInterface[]
  *   Keyed by node ID, in the given order.
@@ -190,15 +201,17 @@ function icon_site_hero_slides(?array $order = NULL): array {
       $slides[(int) $id] = $slide;
     }
   }
-  // loadMultiple keys by id but not in the asked order
+  // loadMultiple keys by id but not in the asked order.
   return array_replace(array_flip(array_filter($order, fn($id) => isset($slides[$id]))), $slides);
 }
 
 /**
- * Every published Hero slide NOT in the given selection, oldest first: what
- * the hero panel offers to add to its reel.
+ * Every published Hero slide NOT in the given selection, oldest first.
+ *
+ * What the hero panel offers to add to its reel.
  *
  * @return \Drupal\node\NodeInterface[]
+ *   The slide nodes, keyed by node ID.
  */
 function icon_site_hero_available(array $order): array {
   $storage = \Drupal::entityTypeManager()->getStorage('node');
@@ -210,9 +223,11 @@ function icon_site_hero_available(array $order): array {
 }
 
 /**
- * The hero reel as data: one row per slide that has media, in order, capped
- * at the hero's maximum. The Homepage hero block renders these as Hero slide
- * components; the login page's banner plays the same rows as its film.
+ * The hero reel as data.
+ *
+ * One row per slide that has media, in order, capped at the hero's maximum.
+ * The Homepage hero block renders these as Hero slide components; the login
+ * page's banner plays the same rows as its film.
  *
  * @return array{slides: array<int, array{client: string, url: string, source: array}>, tags: string[], cache: \Drupal\Core\Cache\CacheableMetadata}
  *   Each slide's client name, link (may be empty) and media source
@@ -229,7 +244,7 @@ function icon_site_hero_reel(?array $order = NULL, string $style_id = 'work_medi
     $cache->addCacheTags($read['tags']);
   }
   $slides = [];
-  foreach (array_slice(icon_site_hero_slides($order), 0, \Drupal\icon_site\Plugin\Block\HeroBlock::MAX, TRUE) as $slide) {
+  foreach (array_slice(icon_site_hero_slides($order), 0, HeroBlock::MAX, TRUE) as $slide) {
     $cache->addCacheableDependency($slide)->addCacheableDependency($slide->access('view', NULL, TRUE));
     $media = $slide->get('field_slide_media')->entity;
     $source = icon_site_media_source($media, $style_id, $cache);
@@ -247,11 +262,15 @@ function icon_site_hero_reel(?array $order = NULL, string $style_id = 'work_medi
 }
 
 /**
- * The global footer's words: icon_site.footer config (Content → Footer), with
- * the design system's copy as the fallback, plus the social links from the
- * footer-social menu, in menu order.
+ * The global footer's words.
+ *
+ * The icon_site.footer config (Content → Footer), with the design system's
+ * copy as the fallback, plus the social links from the footer-social menu,
+ * in menu order.
  *
  * @return array{talk: string, touch: string, touch_url: string, newsletter: string, acknowledgement: string, social: array<int, array{title: string, url: string}>, tags: string[]}
+ *   The words, the social links (title and URL each) and the cache tags of
+ *   everything read.
  */
 function icon_site_footer(): array {
   $config = \Drupal::config('icon_site.footer');
@@ -265,22 +284,32 @@ function icon_site_footer(): array {
     'tags' => ['config:icon_site.footer', 'config:system.menu.footer-social'],
   ];
   $tree = \Drupal::menuTree();
-  $params = (new \Drupal\Core\Menu\MenuTreeParameters())->setMaxDepth(1)->onlyEnabledLinks();
-  $links = $tree->transform($tree->load('footer-social', $params), [['callable' => 'menu.default_tree_manipulators:checkAccess'], ['callable' => 'menu.default_tree_manipulators:generateIndexAndSort']]);
+  $params = (new MenuTreeParameters())->setMaxDepth(1)->onlyEnabledLinks();
+  $links = $tree->transform($tree->load('footer-social', $params), [
+    ['callable' => 'menu.default_tree_manipulators:checkAccess'],
+    ['callable' => 'menu.default_tree_manipulators:generateIndexAndSort'],
+  ]);
   foreach ($links as $element) {
     if ($element->access && !$element->access->isAllowed()) {
       continue;
     }
-    $out['social'][] = ['title' => (string) $element->link->getTitle(), 'url' => $element->link->getUrlObject()->toString()];
+    $out['social'][] = [
+      'title' => (string) $element->link->getTitle(),
+      'url' => $element->link->getUrlObject()->toString(),
+    ];
   }
   return $out;
 }
 
 /**
- * The global footer's offices: published Office content in list order
- * (Content → Offices), as the footer template reads them.
+ * The global footer's offices.
+ *
+ * Published Office content in list order (Content → Offices), as the footer
+ * template reads them.
  *
  * @return array{offices: array<int, array{city: string, place: string, lines: string[], phone: string, phone_href: string, email: string, icon: int|null}>, tags: string[]}
+ *   One row per office (city, place, address lines, phone and its tel: href,
+ *   email, icon media ID) and the cache tags of everything read.
  */
 function icon_site_offices(): array {
   $storage = \Drupal::entityTypeManager()->getStorage('node');
@@ -320,17 +349,19 @@ function icon_site_preprocess_media(array &$variables): void {
   if (!$media instanceof MediaInterface || $media->bundle() !== 'icon' || ($variables['view_mode'] ?? '') !== 'media_library') {
     return;
   }
-  $svg = (new \Drupal\icon_site\Twig\IconSiteExtension(\Drupal::entityTypeManager()))->inlineSvg((string) $media->id(), '');
+  $svg = (new IconSiteExtension(\Drupal::entityTypeManager(), \Drupal::service('stream_wrapper_manager')))->inlineSvg((string) $media->id(), '');
   $variables['content']['icon_svg'] = [
-    '#markup' => \Drupal\Core\Render\Markup::create('<div style="aspect-ratio:1;display:grid;place-items:center;padding:14%;box-sizing:border-box;color:#222;background:#fff">' . $svg . '</div>'),
+    '#markup' => Markup::create('<div style="aspect-ratio:1;display:grid;place-items:center;padding:14%;box-sizing:border-box;color:#222;background:#fff">' . $svg . '</div>'),
     '#weight' => -10,
   ];
 }
 
 /**
- * The Work form's legacy folio card: the Layers field sits closed in its own
- * details, out of the way of the new tile, for the projects brought over
- * from the old site. Called from icon_site_form_node_form_alter().
+ * The Work form's legacy folio card.
+ *
+ * The Layers field sits closed in its own details, out of the way of the new
+ * tile, for the projects brought over from the old site. Called from
+ * icon_site_form_node_form_alter().
  */
 function _icon_site_work_legacy_group(array &$form, FormStateInterface $form_state): void {
   $node = $form_state->getFormObject()->getEntity();
@@ -393,10 +424,11 @@ function icon_site_page_attachments(array &$attachments): void {
 }
 
 /**
- * A Hero slide form opened from the Canvas panel (?panel=1) lives in a
- * dialog over the editor: Save submits by ajax and closes the dialog (or
- * re-renders the form with its errors); Preview and Delete, which would
- * navigate away, are dropped.
+ * Fits a Hero slide form opened from the Canvas panel (?panel=1) to a dialog.
+ *
+ * The form lives in a dialog over the editor: Save submits by ajax and
+ * closes the dialog (or re-renders the form with its errors); Preview and
+ * Delete, which would navigate away, are dropped.
  */
 function _icon_site_panel_node_form_alter(array &$form, FormStateInterface $form_state): void {
   $node = $form_state->getFormObject()->getEntity();
@@ -415,7 +447,7 @@ function _icon_site_panel_node_form_alter(array &$form, FormStateInterface $form
       '#weight' => 10,
     ];
   }
-  // remember whether this save CREATES the item (read after the save)
+  // Remember whether this save CREATES the item (read after the save)
   array_unshift($form['actions']['submit']['#submit'], '_icon_site_panel_note_new');
   $form['actions']['submit']['#ajax'] = [
     'callback' => '_icon_site_panel_form_ajax',
@@ -437,7 +469,20 @@ function _icon_site_panel_node_form_after_build(array $form, FormStateInterface 
   // the reel without being deleted.
   // (`footer` is where the node form keeps that checkbox — leave it too.)
   // (`field_logo_weight`: the marquee panel's drag writes the order.)
-  foreach (['menu', 'meta', 'revision_information', 'revision_log', 'uid', 'created', 'promote', 'sticky', 'path', 'advanced', 'field_logo_weight'] as $key) {
+  $hidden = [
+    'menu',
+    'meta',
+    'revision_information',
+    'revision_log',
+    'uid',
+    'created',
+    'promote',
+    'sticky',
+    'path',
+    'advanced',
+    'field_logo_weight',
+  ];
+  foreach ($hidden as $key) {
     if (isset($form[$key])) {
       $form[$key]['#access'] = FALSE;
     }
@@ -446,12 +491,15 @@ function _icon_site_panel_node_form_after_build(array $form, FormStateInterface 
 }
 
 /**
- * Save from the dialog: close it, or show the form again with its errors.
+ * Submit handler: notes whether this save creates the entity.
  */
 function _icon_site_panel_note_new(array &$form, FormStateInterface $form_state): void {
   $form_state->set('icon_panel_was_new', $form_state->getFormObject()->getEntity()->isNew());
 }
 
+/**
+ * Save from the dialog: close it, or show the form again with its errors.
+ */
 function _icon_site_panel_form_ajax(array $form, FormStateInterface $form_state): AjaxResponse {
   $response = new AjaxResponse();
   if ($form_state->hasAnyErrors()) {
@@ -467,7 +515,15 @@ function _icon_site_panel_form_ajax(array $form, FormStateInterface $form_state)
   // the reel) — so it can write the change and nudge Canvas to re-fetch
   // the block form.
   $entity = $form_state->getFormObject()->getEntity();
-  $response->addCommand(new InvokeCommand('body', 'trigger', ['icon-panel:saved', [[(int) $entity->id(), (bool) $form_state->get('icon_panel_was_new')]]]));
+  $response->addCommand(new InvokeCommand('body', 'trigger', [
+    'icon-panel:saved',
+    [
+      [
+        (int) $entity->id(),
+        (bool) $form_state->get('icon_panel_was_new'),
+      ],
+    ],
+  ]));
   return $response;
 }
 
@@ -485,7 +541,7 @@ function icon_site_form_media_form_alter(array &$form, FormStateInterface $form_
   }
   $form['#prefix'] = '<div id="icon-panel-form">';
   $form['#suffix'] = '</div>';
-  // remember whether this save CREATES the item (read after the save)
+  // Remember whether this save CREATES the item (read after the save)
   array_unshift($form['actions']['submit']['#submit'], '_icon_site_panel_note_new');
   $form['actions']['submit']['#ajax'] = [
     'callback' => '_icon_site_panel_form_ajax',
@@ -513,7 +569,7 @@ function icon_site_form_media_form_alter(array &$form, FormStateInterface $form_
 }
 
 /**
- * "Remove from marquee": unpublish, then the normal save.
+ * Submit handler for "Remove from marquee": unpublish, then the normal save.
  */
 function _icon_site_panel_remove_submit(array &$form, FormStateInterface $form_state): void {
   $form_state->setValue(['status', 'value'], 0);

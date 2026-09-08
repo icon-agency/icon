@@ -7,31 +7,59 @@ namespace Drupal\icon_site\Plugin\Block;
 use Drupal\Core\Block\Attribute\Block;
 use Drupal\Core\Block\BlockBase;
 use Drupal\Core\Cache\CacheableMetadata;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\StringTranslation\TranslatableMarkup;
 use Drupal\Core\Url;
 use Drupal\node\NodeInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * The homepage's Featured Work grid — a FIXED five-tile rhythm (a split
- * pair, the wide feature, a tall-left pair). The block's one setting is the
- * five picks, in order: the Canvas panel is a draggable list of five rows,
- * each a dropdown of every published Work item by title with an Edit link
- * to the article. Empty picks fall back to the latest work. Renders the
- * featured-work SDC, filling its three row slots with the picks' teasers.
+ * The homepage's Featured Work grid.
+ *
+ * A FIXED five-tile rhythm (a split pair, the wide feature, a tall-left
+ * pair). The block's one setting is the five picks, in order: the Canvas
+ * panel is a draggable list of five rows, each a dropdown of every published
+ * Work item by title with an Edit link to the article. Empty picks fall back
+ * to the latest work. Renders the featured-work SDC, filling its three row
+ * slots with the picks' teasers.
  */
 #[Block(
   id: 'icon_featured_work',
   admin_label: new TranslatableMarkup('Featured work'),
   category: new TranslatableMarkup('ICON'),
 )]
-final class FeaturedWorkBlock extends BlockBase {
+final class FeaturedWorkBlock extends BlockBase implements ContainerFactoryPluginInterface {
+
+  public function __construct(
+    array $configuration,
+    $plugin_id,
+    $plugin_definition,
+    protected readonly EntityTypeManagerInterface $entityTypeManager,
+  ) {
+    parent::__construct($configuration, $plugin_id, $plugin_definition);
+  }
 
   /**
-   * The row's reorder handle: dragged by pointer, moved by keyboard (the
-   * arrow keys, Home and End — js/panel-sortable.js), so it is a real,
-   * focusable control named for its row. No colon in the label: the admin
-   * markup filter reads "Name:" as a URL scheme and strips it.
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition): static {
+    return new static(
+      $configuration,
+      $plugin_id,
+      $plugin_definition,
+      $container->get('entity_type.manager'),
+    );
+  }
+
+  /**
+   * The row's reorder handle.
+   *
+   * Dragged by pointer, moved by keyboard (the arrow keys, Home and End —
+   * js/panel-sortable.js), so it is a real, focusable control named for its
+   * row. No colon in the label: the admin markup filter reads "Name:" as a
+   * URL scheme and strips it.
    */
   private static function handle(string $name): string {
     $label = htmlspecialchars((string) t('Reorder @name — arrow keys move it up or down', ['@name' => $name]), ENT_QUOTES);
@@ -70,7 +98,7 @@ final class FeaturedWorkBlock extends BlockBase {
    * is markup only; (3) blockSubmit() reads values, never configuration.
    */
   public function blockForm($form, FormStateInterface $form_state): array {
-    $storage = \Drupal::entityTypeManager()->getStorage('node');
+    $storage = $this->entityTypeManager->getStorage('node');
     $latest = !empty($this->configuration['latest']);
     $picks = array_values(array_filter(array_map('intval', $this->configuration['projects'] ?? [])));
     $shown = $latest ? array_map(fn(NodeInterface $n) => (int) $n->id(), $this->tiles()) : $picks;
@@ -93,14 +121,24 @@ final class FeaturedWorkBlock extends BlockBase {
       '#default_value' => $latest,
       '#attributes' => ['class' => ['icon-panel__toggle']],
     ];
-    $form['projects'] = ['#type' => 'container', '#tree' => TRUE, '#weight' => 3, '#attributes' => ['class' => ['icon-panel__hidden']]];
+    $form['projects'] = [
+      '#type' => 'container',
+      '#tree' => TRUE,
+      '#weight' => 3,
+      '#attributes' => ['class' => ['icon-panel__hidden']],
+    ];
     for ($i = 0; $i < self::SLOTS; $i++) {
       $form['projects'][$i] = [
         '#type' => 'textfield',
         '#title' => $this->t('Project @n', ['@n' => $i + 1]),
         '#title_display' => 'invisible',
         '#default_value' => isset($picks[$i]) ? (string) $picks[$i] : '',
-        '#attributes' => ['class' => ['icon-panel__project'], 'data-index' => $i, 'autocomplete' => 'off', 'tabindex' => '-1'],
+        '#attributes' => [
+          'class' => ['icon-panel__project'],
+          'data-index' => $i,
+          'autocomplete' => 'off',
+          'tabindex' => '-1',
+        ],
         '#size' => 6,
       ];
     }
@@ -112,12 +150,23 @@ final class FeaturedWorkBlock extends BlockBase {
       $options[] = ['id' => (int) $node->id(), 'project' => $n['project'], 'client' => $n['client']];
     }
     usort($options, fn(array $a, array $b) => strcasecmp($a['project'], $b['project']));
-    $form['panel'] = ['#type' => 'container', '#weight' => 2, '#attributes' => ['class' => ['icon-panel', 'icon-panel--featured']]];
+    $form['panel'] = [
+      '#type' => 'container',
+      '#weight' => 2,
+      '#attributes' => ['class' => ['icon-panel', 'icon-panel--featured']],
+    ];
     $form['panel']['card'] = [
       '#type' => 'container',
       '#attributes' => [
         'class' => ['icon-panel__card', $latest ? 'icon-panel__card--auto' : ''],
-        'data-options' => json_encode(array_merge([['id' => 0, 'project' => (string) $this->t('Show latest'), 'client' => (string) $this->t('The newest work article, whichever it is'), 'latest' => TRUE]], $options), JSON_UNESCAPED_UNICODE),
+        'data-options' => json_encode(array_merge([
+          [
+            'id' => 0,
+            'project' => (string) $this->t('Show latest'),
+            'client' => (string) $this->t('The newest work article, whichever it is'),
+            'latest' => TRUE,
+          ],
+        ], $options), JSON_UNESCAPED_UNICODE),
       ],
     ];
     $rows = '';
@@ -162,9 +211,10 @@ final class FeaturedWorkBlock extends BlockBase {
    * The five tiles: the picks in order, topped up with the latest work.
    *
    * @return \Drupal\node\NodeInterface[]
+   *   The Work nodes, one per slot, in slot order.
    */
   private function tiles(): array {
-    $storage = \Drupal::entityTypeManager()->getStorage('node');
+    $storage = $this->entityTypeManager->getStorage('node');
     // Each slot is a pick, or "Show latest" (empty / 0): a latest slot takes
     // the newest work item not placed elsewhere — in its own position, so
     // "latest" in slot 2 is slot 2, and two latest slots are the two newest.
@@ -201,15 +251,15 @@ final class FeaturedWorkBlock extends BlockBase {
    */
   public function build(): array {
     $tiles = $this->tiles();
-    // the list tag (the first Work item invalidates an empty result), the
-    // access-checked picks' contexts, and every tile's own dependencies
+    // The list tag (the first Work item invalidates an empty result), the
+    // access-checked picks' contexts, and every tile's own dependencies.
     $cache = (new CacheableMetadata())->addCacheTags(['node_list:work'])->addCacheContexts(['user.permissions']);
     if (!$tiles) {
       $build = [];
       $cache->applyTo($build);
       return $build;
     }
-    $builder = \Drupal::entityTypeManager()->getViewBuilder('node');
+    $builder = $this->entityTypeManager->getViewBuilder('node');
     $teasers = [];
     foreach ($tiles as $i => $node) {
       $teaser = $builder->view($node, 'teaser');

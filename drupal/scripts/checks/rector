@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# Drupal Rector, dry-run: what the deprecation fixers would change.
+set -euo pipefail
+cd "$(dirname "$0")/../.."
+vendor/bin/rector process --dry-run "$@"

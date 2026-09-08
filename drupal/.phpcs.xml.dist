@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ruleset name="ICON">
+  <description>Drupal coding standards for the custom module, theme and scripts.</description>
+  <file>web/modules/custom</file>
+  <file>web/themes/custom</file>
+
+  <rule ref="Drupal" />
+  <rule ref="DrupalPractice" />
+  <rule ref="PHPCompatibility" />
+  <config name="testVersion" value="8.4" />
+  <rule ref="SlevomatCodingStandard.TypeHints.DeclareStrictTypes">
+    <properties>
+      <property name="spacesCountAroundEqualsSign" value="0" />
+    </properties>
+  </rule>
+
+  <exclude-pattern>*/node_modules/*</exclude-pattern>
+  <exclude-pattern>*/vendor/*</exclude-pattern>
+  <exclude-pattern>*/contrib/*</exclude-pattern>
+  <exclude-pattern>*/web/core/*</exclude-pattern>
+  <!-- the theme's JS is generated from the design system (scripts/theme-js.mjs) -->
+  <exclude-pattern>*/themes/custom/icon/js/*</exclude-pattern>
+  <!-- the news mirror's extractor is Python -->
+  <exclude-pattern>*.py</exclude-pattern>
+
+  <arg name="extensions" value="php,module,inc,install,test,profile,theme,yml" />
+  <arg name="colors" />
+  <arg value="p" />
+</ruleset>

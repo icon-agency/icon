@@ -7,28 +7,59 @@ namespace Drupal\icon_site\Plugin\Block;
 use Drupal\Core\Block\Attribute\Block;
 use Drupal\Core\Block\BlockBase;
 use Drupal\Core\Cache\CacheableMetadata;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\File\FileUrlGeneratorInterface;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\StringTranslation\TranslatableMarkup;
 use Drupal\Core\Url;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * The client logos marquee: every Logo media item, in the order of the
- * Client logos list (/admin/content/client-logos), rendered by the clients
- * SDC. The one setting is the section's accessible label; the panel points
- * at the list for everything else.
+ * The client logos marquee.
+ *
+ * Every Logo media item, in the order of the Client logos list
+ * (/admin/content/client-logos), rendered by the clients SDC. The one
+ * setting is the section's accessible label; the panel points at the list
+ * for everything else.
  */
 #[Block(
   id: 'icon_clients_marquee',
   admin_label: new TranslatableMarkup('Clients marquee'),
   category: new TranslatableMarkup('ICON'),
 )]
-final class ClientsMarqueeBlock extends BlockBase {
+final class ClientsMarqueeBlock extends BlockBase implements ContainerFactoryPluginInterface {
+
+  public function __construct(
+    array $configuration,
+    $plugin_id,
+    $plugin_definition,
+    protected readonly EntityTypeManagerInterface $entityTypeManager,
+    protected readonly FileUrlGeneratorInterface $fileUrlGenerator,
+  ) {
+    parent::__construct($configuration, $plugin_id, $plugin_definition);
+  }
 
   /**
-   * The row's reorder handle: dragged by pointer, moved by keyboard (the
-   * arrow keys, Home and End — js/panel-sortable.js), so it is a real,
-   * focusable control named for its row. No colon in the label: the admin
-   * markup filter reads "Name:" as a URL scheme and strips it.
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition): static {
+    return new static(
+      $configuration,
+      $plugin_id,
+      $plugin_definition,
+      $container->get('entity_type.manager'),
+      $container->get('file_url_generator'),
+    );
+  }
+
+  /**
+   * The row's reorder handle.
+   *
+   * Dragged by pointer, moved by keyboard (the arrow keys, Home and End —
+   * js/panel-sortable.js), so it is a real, focusable control named for its
+   * row. No colon in the label: the admin markup filter reads "Name:" as a
+   * URL scheme and strips it.
    */
   private static function handle(string $name): string {
     $label = htmlspecialchars((string) t('Reorder @name — arrow keys move it up or down', ['@name' => $name]), ENT_QUOTES);
@@ -63,13 +94,18 @@ final class ClientsMarqueeBlock extends BlockBase {
     ];
     $dialog = ' data-dialog-type="dialog" data-dialog-options=\'{"target":"icon-panel-dialog","modal":true,"width":"760","classes":{"ui-dialog":"icon-panel-dialog"}}\'';
     $action = Url::fromRoute('icon_site.logo_action')->toString();
-    $add = Url::fromRoute('entity.media.add_form', ['media_type' => 'logo'], ['query' => ['panel' => 1, 'use_admin_theme' => 1]])->toString();
-    $storage = \Drupal::entityTypeManager()->getStorage('media');
+    $add = Url::fromRoute('entity.media.add_form', ['media_type' => 'logo'], [
+      'query' => [
+        'panel' => 1,
+        'use_admin_theme' => 1,
+      ],
+    ])->toString();
+    $storage = $this->entityTypeManager->getStorage('media');
     $ids = $storage->getQuery()->accessCheck(TRUE)->condition('bundle', 'logo')->condition('status', 1)->sort('field_logo_weight', 'ASC')->sort('name', 'ASC')->execute();
     $rows = '';
     foreach ($storage->loadMultiple($ids) as $media) {
       $file = $media->get('field_media_file')->entity;
-      $src = $file ? \Drupal::service('file_url_generator')->generateString($file->getFileUri()) : '';
+      $src = $file ? $this->fileUrlGenerator->generateString($file->getFileUri()) : '';
       $edit = $media->toUrl('edit-form', ['query' => ['panel' => 1, 'use_admin_theme' => 1]])->toString();
       $rows .= '<tr class="draggable" data-row="' . $media->id() . '"><td>' . self::handle((string) $media->label())
         . ($src ? '<img class="icon-panel__logo" src="' . $src . '" alt="">' : '')
@@ -77,7 +113,11 @@ final class ClientsMarqueeBlock extends BlockBase {
         . '<td class="icon-panel__cell--action"><a class="icon-panel__action use-ajax" href="' . $edit . '"' . $dialog . '>' . $this->t('Edit') . '</a></td></tr>';
     }
     $count = substr_count($rows, '<tr ');
-    $form['panel'] = ['#type' => 'container', '#weight' => 0, '#attributes' => ['class' => ['icon-panel', 'icon-panel--clients']]];
+    $form['panel'] = [
+      '#type' => 'container',
+      '#weight' => 0,
+      '#attributes' => ['class' => ['icon-panel', 'icon-panel--clients']],
+    ];
     $form['panel']['bar'] = [
       '#markup' => '<div class="icon-panel__bar"><p class="icon-panel__title">' . $this->t('Logos · @n', ['@n' => $count]) . '</p><a class="icon-panel__button icon-panel__button--primary use-ajax" href="' . $add . '"' . $dialog . '>' . $this->t('+ Add logo') . '</a></div>',
     ];
@@ -105,7 +145,7 @@ final class ClientsMarqueeBlock extends BlockBase {
    * {@inheritdoc}
    */
   public function build(): array {
-    $storage = \Drupal::entityTypeManager()->getStorage('media');
+    $storage = $this->entityTypeManager->getStorage('media');
     $ids = $storage->getQuery()
       ->accessCheck(TRUE)
       ->condition('bundle', 'logo')
@@ -114,8 +154,8 @@ final class ClientsMarqueeBlock extends BlockBase {
       ->sort('name', 'ASC')
       ->execute();
     $logos = [];
-    // the list tag (the first logo invalidates an empty result), the
-    // access-checked query's context, and every logo's own dependencies
+    // The list tag (the first logo invalidates an empty result), the
+    // access-checked query's context, and every logo's own dependencies.
     $cache = (new CacheableMetadata())->addCacheTags(['media_list:logo'])->addCacheContexts(['user.permissions']);
     foreach ($storage->loadMultiple($ids) as $media) {
       $access = $media->access('view', NULL, TRUE);
@@ -126,7 +166,7 @@ final class ClientsMarqueeBlock extends BlockBase {
       }
       $cache->addCacheableDependency($file);
       $logos[] = [
-        'src' => \Drupal::service('file_url_generator')->generateString($file->getFileUri()),
+        'src' => $this->fileUrlGenerator->generateString($file->getFileUri()),
         'alt' => $media->label(),
       ];
     }

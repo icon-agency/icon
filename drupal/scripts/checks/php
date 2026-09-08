@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# PHPCS (Drupal, DrupalPractice, PHP 8.4 compatibility) over the custom code.
+# `--fix` runs phpcbf first. Run from drupal/ — inside DDEV: ddev exec scripts/checks/php
+set -euo pipefail
+cd "$(dirname "$0")/../.."
+fix=0
+if [ "${1:-}" = "--fix" ]; then fix=1; shift; fi
+if [ "$fix" -eq 1 ]; then vendor/bin/phpcbf --standard=.phpcs.xml.dist "$@" || true; fi
+vendor/bin/phpcs --standard=.phpcs.xml.dist "$@"

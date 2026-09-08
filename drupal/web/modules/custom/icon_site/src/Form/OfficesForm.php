@@ -8,26 +8,34 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Render\Markup;
+use Drupal\Core\StreamWrapper\StreamWrapperManagerInterface;
 use Drupal\Core\Url;
 use Drupal\icon_site\Twig\IconSiteExtension;
 use Drupal\node\NodeInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * The global footer's offices as one list (Content → Offices): drag to
- * reorder (field_office_weight), Edit opens the office, Delete removes it,
- * Add office is the local action at the top. An unpublished office stays
- * in the list, marked, and off the footer.
+ * The global footer's offices as one list (Content → Offices).
+ *
+ * Drag to reorder (field_office_weight), Edit opens the office, Delete
+ * removes it, Add office is the local action at the top. An unpublished
+ * office stays in the list, marked, and off the footer.
  */
 final class OfficesForm extends FormBase {
 
-  public function __construct(protected readonly EntityTypeManagerInterface $entityTypeManager) {}
+  public function __construct(
+    protected readonly EntityTypeManagerInterface $entityTypeManager,
+    protected readonly StreamWrapperManagerInterface $streamWrapperManager,
+  ) {}
 
   /**
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container): static {
-    return new static($container->get('entity_type.manager'));
+    return new static(
+      $container->get('entity_type.manager'),
+      $container->get('stream_wrapper_manager'),
+    );
   }
 
   /**
@@ -51,14 +59,24 @@ final class OfficesForm extends FormBase {
     /** @var \Drupal\node\NodeInterface[] $offices */
     $offices = $storage->loadMultiple($ids);
     $here = Url::fromRoute('icon_site.offices')->toString();
-    $svg = new IconSiteExtension($this->entityTypeManager);
+    $svg = new IconSiteExtension($this->entityTypeManager, $this->streamWrapperManager);
 
     $form['help'] = [
-      '#markup' => '<p>' . $this->t('The offices in the global footer, top to bottom. Drag to reorder and save; <em>Edit</em> changes the city, place name, address, phone, email or icon; <em>Delete</em> closes one. The icons are the site\'s <a href=":icons">Icons</a> — pick one on the office, or add a new SVG there. The footer\'s words and social links are on <a href=":footer">Footer</a>.', [':icons' => Url::fromRoute('icon_site.fact_icons')->toString(), ':footer' => Url::fromRoute('icon_site.footer')->toString()]) . '</p>',
+      '#markup' => '<p>' . $this->t('The offices in the global footer, top to bottom. Drag to reorder and save; <em>Edit</em> changes the city, place name, address, phone, email or icon; <em>Delete</em> closes one. The icons are the site\'s <a href=":icons">Icons</a> — pick one on the office, or add a new SVG there. The footer\'s words and social links are on <a href=":footer">Footer</a>.', [
+        ':icons' => Url::fromRoute('icon_site.fact_icons')->toString(),
+        ':footer' => Url::fromRoute('icon_site.footer')->toString(),
+      ]) . '</p>',
     ];
     $form['items'] = [
       '#type' => 'table',
-      '#header' => [$this->t('Icon'), $this->t('City'), $this->t('Place'), $this->t('Contact'), $this->t('Operations'), $this->t('Weight')],
+      '#header' => [
+        $this->t('Icon'),
+        $this->t('City'),
+        $this->t('Place'),
+        $this->t('Contact'),
+        $this->t('Operations'),
+        $this->t('Weight'),
+      ],
       '#empty' => $this->t('No offices yet — add one with the button above.'),
       '#tabledrag' => [['action' => 'order', 'relationship' => 'sibling', 'group' => 'item-weight']],
     ];
@@ -77,8 +95,14 @@ final class OfficesForm extends FormBase {
         'operations' => [
           '#type' => 'operations',
           '#links' => [
-            'edit' => ['title' => $this->t('Edit'), 'url' => $office->toUrl('edit-form', ['query' => ['destination' => $here]])],
-            'delete' => ['title' => $this->t('Delete'), 'url' => $office->toUrl('delete-form', ['query' => ['destination' => $here]])],
+            'edit' => [
+              'title' => $this->t('Edit'),
+              'url' => $office->toUrl('edit-form', ['query' => ['destination' => $here]]),
+            ],
+            'delete' => [
+              'title' => $this->t('Delete'),
+              'url' => $office->toUrl('delete-form', ['query' => ['destination' => $here]]),
+            ],
           ],
         ],
         'weight' => [

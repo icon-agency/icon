@@ -531,3 +531,7 @@ Drupal Canvas 1.10 keeps two preview iframes and renders each edit as a whole ne
 
 `$variables['#cache']` (and `#attached`) set in a `hook_preprocess_*` are merged by the theme manager like a render array's — so a preprocess that reads entities and access results can carry their contexts and tags: collect into a `CacheableMetadata`, then `createFromRenderArray($variables)->merge($cache)->applyTo($variables)`.
 
+## The quality gate, and what it taught
+
+`npm run check` runs PHPCS (Drupal, DrupalPractice, PHP 8.4), PHPStan level 1 with the Drupal extension, Drupal Rector, ESLint, Stylelint and the design system's verifier; CI runs the same on every push. Three things from getting it green: (1) PHPStan's Drupal rules reject `private` injected properties on any class carrying `DependencySerializationTrait` (block plugins, config forms) — use `protected readonly`; (2) Drupal's docblock rule wants the first line to be ONE short sentence, then a blank line — the explanation stays, restructured; (3) on a machine without PHP the PHP checks run inside DDEV — the root scripts fall back to `ddev exec` — so the gate is the same command everywhere.
+

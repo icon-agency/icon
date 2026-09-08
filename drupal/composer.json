@@ -103,5 +103,13 @@
                 "      composer remove drupal/core-project-message"
             ]
         }
+    },
+    "require-dev": {
+        "dealerdirect/phpcodesniffer-composer-installer": "^1.2",
+        "drupal/coder": "^8.3",
+        "mglaman/phpstan-drupal": "^2.1",
+        "palantirnet/drupal-rector": "^1.1",
+        "phpcompatibility/php-compatibility": "^9.3",
+        "phpstan/phpstan-deprecation-rules": "^2.0"
     }
 }

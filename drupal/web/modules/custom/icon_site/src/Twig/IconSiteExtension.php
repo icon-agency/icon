@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Drupal\icon_site\Twig;
 
 use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\StreamWrapper\StreamWrapperManagerInterface;
 use enshrined\svgSanitize\Sanitizer;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
@@ -16,6 +17,7 @@ final class IconSiteExtension extends AbstractExtension {
 
   public function __construct(
     private readonly EntityTypeManagerInterface $entityTypeManager,
+    private readonly StreamWrapperManagerInterface $streamWrapperManager,
   ) {}
 
   /**
@@ -28,8 +30,10 @@ final class IconSiteExtension extends AbstractExtension {
   }
 
   /**
-   * An SVG file (an Icon media ID, a stream-wrapper URI such as
-   * public://icons/trophy.svg, or its URL) inlined, so `fill="currentColor"` takes the surrounding ink.
+   * An SVG file inlined, so `fill="currentColor"` takes the surrounding ink.
+   *
+   * The file is an Icon media ID, a stream-wrapper URI such as
+   * public://icons/trophy.svg, or its URL.
    *
    * Only files under the site's files directory are read; anything that is
    * not an <svg> document renders nothing. Scripts and event handlers are
@@ -45,7 +49,7 @@ final class IconSiteExtension extends AbstractExtension {
     if (ctype_digit($uri)) {
       // A media ID (the fact card's icon prop) — its file.
       $media = $this->entityTypeManager->getStorage('media')->load((int) $uri);
-      // the media's own view access decides, not the file's public URL
+      // The media's own view access decides, not the file's public URL.
       if (!$media || !$media->access('view')) {
         return '';
       }
@@ -57,7 +61,7 @@ final class IconSiteExtension extends AbstractExtension {
     }
     if (!str_contains($uri, '://')) {
       // A URL — map the public files path back to the stream wrapper.
-      $base = \Drupal::service('stream_wrapper_manager')->getViaScheme('public')->getDirectoryPath();
+      $base = $this->streamWrapperManager->getViaScheme('public')->getDirectoryPath();
       $path = parse_url($uri, PHP_URL_PATH) ?: '';
       $prefix = '/' . trim($base, '/') . '/';
       if (!str_starts_with($path, $prefix)) {
