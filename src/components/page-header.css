@@ -226,7 +226,9 @@
 /* The masthead's Subscribe bar is the shared components/subscribe-bar.css
    (promoted when the footer became its third consumer, Sep 2026); the
    masthead only places it. */
-.page-header__subscribe-bar {
+.page-header__subscribe-bar.subscribe-bar {
+  /* the double class outranks the component's own margin reset, which is
+     imported after this file (an order slip that left the bar flush left) */
   margin: var(--space-sm) auto 0;
 }
 
