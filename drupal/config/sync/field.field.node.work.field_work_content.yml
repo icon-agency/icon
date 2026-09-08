@@ -19,7 +19,7 @@ field_name: field_work_content
 entity_type: node
 bundle: work
 label: Body
-description: 'The case study: Content, Gallery row, Pull quote, Film, Video, Scroller and Results blocks in any order. Consecutive text blocks share one Share rail; gallery rows next to each other form one gallery.'
+description: 'The case study: Content, Gallery row, Pull quote, Film, Video, Gallery scroller and Results blocks in any order. Consecutive text blocks share one Share rail; gallery rows next to each other form one gallery.'
 required: false
 translatable: false
 default_value: {  }
