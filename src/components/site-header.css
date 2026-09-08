@@ -110,25 +110,55 @@
   }
 }
 
-/* ---- Desktop pill nav --------------------------------------------------- */
+/* ---- The pill nav ------------------------------------------------------- */
 
+/* ONE PILL AT EVERY WIDTH (user call, Sep 2026). Below md the same pill is
+   anchored at the BOTTOM of the viewport — a thumb-reach bar in place of the
+   hamburger and full-screen menu, which are parked (see "Parked mobile
+   chrome" below). Its type shrinks with the viewport so the whole row always
+   fits between the gutters (down to the smallest phones), and the EXPERTISE
+   drawer opens UPWARD. From md it moves to the top: right-aligned so it
+   clears the fixed wordmark, then centred once there's room.
+
+   Everything inside the pill that has to scale is sized in em off the pill's
+   font-size (--nav-voice), so the fit is one number: the row's width in em.
+   From md the sizes go back to the rem values the desktop was tuned at. */
 .site-nav {
-  display: none;
+  position: fixed;
+  inset-inline: 0;
+  bottom: calc(0.75rem + env(safe-area-inset-bottom, 0px));
+  z-index: 10000;
+  display: flex;
+  justify-content: center;
+  padding-inline: 0.75rem;
+  transition: opacity var(--duration-normal) var(--ease-standard);
+  /* The pill is --nav-row-em wide at rest WITH the home glyph showing
+     (measured in the browser; re-measure if the links change). The voice is
+     whatever makes that fit the width between the gutters, capped at the
+     label voice so it never grows past the desktop size. */
+  --nav-row-em: 33.25; /* 33.02em measured at 375px with the glyph showing, plus a hair */
+  --nav-voice: min(var(--voice-label), calc((100vw - 1.5rem) / var(--nav-row-em)));
 }
 
-/* The full pill fits from md up — RIGHT-aligned so it clears the fixed
-   wordmark, then centred once there's room. Below md the mobile controls take
-   over. */
 @media (min-width: 768px) {
   .site-nav {
-    position: fixed;
     top: 1rem;
-    inset-inline: 0;
-    z-index: 10000;
-    display: flex;
+    bottom: auto;
     justify-content: flex-end;
-    padding-inline-end: 1rem;
-    transition: opacity var(--duration-normal) var(--ease-standard);
+    padding-inline: 0 1rem;
+    --nav-voice: var(--voice-label);
+  }
+}
+
+/* Clearance for the bottom pill: the footer pads its last edge by this much
+   below md (site-footer.css reads it), so the pill never sits on the logo. */
+:root {
+  --nav-clearance: calc(4rem + env(safe-area-inset-bottom, 0px));
+}
+
+@media (min-width: 768px) {
+  :root {
+    --nav-clearance: 0px;
   }
 }
 
@@ -173,20 +203,43 @@
 
 .site-nav__pill {
   display: flex;
-  flex-direction: column;
+  flex-direction: column-reverse; /* below md the drawer sits ABOVE the row: it drops up */
   align-items: stretch;
-  padding: 0.75rem 1rem;
+  padding: 0.75em 1em;
   border-radius: var(--radius-md);
-  background: transparent;
+  font-size: var(--nav-voice);
+  /* Below md the pill sits over page content at the bottom of the viewport,
+     so it is always frosted; from md it starts bare and frosts on scroll,
+     hover, the drawer or the search (the rule after this). */
+  background: var(--nav-bg-scrolled);
+  -webkit-backdrop-filter: blur(24px);
+  backdrop-filter: blur(24px);
   transition: background var(--duration-normal) var(--ease-standard);
+}
+
+@media (min-width: 768px) {
+  .site-nav__pill {
+    flex-direction: column;
+    padding: 0.75rem 1rem;
+    background: transparent;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
 }
 
 /* The top row: logo glyph + links. */
 .site-nav__row {
   display: flex;
   align-items: center;
-  gap: 0.375rem;
-  min-height: 2rem;
+  gap: 0.375em;
+  min-height: 2em;
+}
+
+@media (min-width: 768px) {
+  .site-nav__row {
+    gap: 0.375rem;
+    min-height: 2rem;
+  }
 }
 
 /* Frosted when scrolled, when the pill is HOVERED anywhere (user call, Sep
@@ -198,13 +251,23 @@
    (LESSONS). */
 .site-nav.is-scrolled .site-nav__pill,
 .site-nav.is-search-open .site-nav__pill,
-.site-nav.is-submenu-open .site-nav__pill,
-.site-nav__pill:hover,
-.site-nav__pill:has(.site-nav__item--has-submenu:hover),
-.site-nav__pill:has(.site-nav__drawer:hover) {
+.site-nav.is-submenu-open .site-nav__pill {
   background: var(--nav-bg-scrolled);
   -webkit-backdrop-filter: blur(24px);
   backdrop-filter: blur(24px);
+}
+
+/* The hover states only on devices that can hover: a touch screen keeps a
+   sticky :hover on whatever was last tapped, which held the drawer open
+   after Esc and would frost the pill for no reason (LESSONS). */
+@media (hover: hover) {
+  .site-nav__pill:hover,
+  .site-nav__pill:has(.site-nav__item--has-submenu:hover),
+  .site-nav__pill:has(.site-nav__drawer:hover) {
+    background: var(--nav-bg-scrolled);
+    -webkit-backdrop-filter: blur(24px);
+    backdrop-filter: blur(24px);
+  }
 }
 
 .site-nav__list {
@@ -223,8 +286,8 @@
 .site-nav__link {
   display: flex;
   align-items: center;
-  padding: var(--spacing-xs);
-  font-size: var(--voice-label); /* the label voice — page-independent, scales to the horizon */
+  padding: 0.55em;
+  font-size: var(--nav-voice); /* the label voice from md; below it, whatever fits the width */
   font-weight: var(--font-weight-bold);
   line-height: 1;
   color: var(--color-foreground);
@@ -238,6 +301,12 @@
 .site-nav__link:hover {
   background: color-mix(in srgb, var(--color-background) 20%, transparent);
   color: var(--color-icon-blue);
+}
+
+@media (min-width: 768px) {
+  .site-nav__link {
+    padding: var(--spacing-xs);
+  }
 }
 
 /* Home glyph — collapsed until scrolled past the hero. */
@@ -258,10 +327,18 @@
 }
 
 .site-nav.show-home .site-nav__home {
-  max-width: 2.5rem;
-  padding-left: 0.25rem;
-  padding-right: 0.5rem;
+  max-width: 2.2em;
+  padding-left: 0.2em;
+  padding-right: 0.4em;
   opacity: 1;
+}
+
+@media (min-width: 768px) {
+  .site-nav.show-home .site-nav__home {
+    max-width: 2.5rem;
+    padding-left: 0.25rem;
+    padding-right: 0.5rem;
+  }
 }
 
 .site-nav__home:hover {
@@ -269,8 +346,14 @@
 }
 
 .site-nav__home-glyph {
-  height: 1.25rem;
+  height: 1.1em;
   width: auto;
+}
+
+@media (min-width: 768px) {
+  .site-nav__home-glyph {
+    height: 1.25rem;
+  }
 }
 
 /* SERVICES drawer — expands the pill downward instead of floating over the
@@ -283,10 +366,15 @@
   transition: grid-template-rows var(--duration-normal) var(--ease-standard);
 }
 
-.site-nav.is-submenu-open .site-nav__drawer,
-.site-nav__pill:has(.site-nav__item--has-submenu:hover) .site-nav__drawer,
-.site-nav__pill:has(.site-nav__drawer:hover) .site-nav__drawer {
+.site-nav.is-submenu-open .site-nav__drawer {
   grid-template-rows: 1fr;
+}
+
+@media (hover: hover) {
+  .site-nav__pill:has(.site-nav__item--has-submenu:hover) .site-nav__drawer,
+  .site-nav__pill:has(.site-nav__drawer:hover) .site-nav__drawer {
+    grid-template-rows: 1fr;
+  }
 }
 
 .site-nav__drawer-inner {
@@ -302,18 +390,26 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 0.75rem;
+  gap: 0.75em;
   margin: 0;
-  /* top gap from the row; extra bottom room before the pill's rounded corner;
-     left pad aligns items under SERVICES (JS-set) */
-  padding: 1rem 0 1rem var(--submenu-offset, 0.5rem);
+  /* top gap from the row; extra bottom room before the pill's rounded corner
+     (the same pair, mirrored, when the drawer drops up); left pad aligns
+     items under SERVICES (JS-set) */
+  padding: 1em 0 1em var(--submenu-offset, 0.5em);
   list-style: none;
+}
+
+@media (min-width: 768px) {
+  .site-nav__submenu-list {
+    gap: 0.75rem;
+    padding: 1rem 0 1rem var(--submenu-offset, 0.5rem);
+  }
 }
 
 .site-nav__submenu-link {
   display: block;
   padding: var(--spacing-2xs) 0;
-  font-size: var(--voice-label);
+  font-size: var(--nav-voice);
   font-weight: var(--font-weight-bold);
   text-transform: uppercase; /* labels are authored natural-case */
   color: var(--color-foreground);
@@ -364,6 +460,7 @@
 
 .site-nav__cube {
   position: relative;
+  flex: none; /* the pill is never squeezed to the viewport — its type shrinks instead (--nav-voice) */
   transform-style: preserve-3d;
   transform: translateZ(calc(-1 * var(--nav-depth, 1.75rem)));
   transition: transform var(--nav-flip) var(--ease-standard);
@@ -382,7 +479,7 @@
   inset: 0;
   flex-direction: row;
   align-items: center;
-  gap: 0.375rem;
+  gap: 0.375em;
   margin: 0;
   transform: rotateX(90deg) translateZ(var(--nav-depth, 1.75rem));
 }
@@ -414,11 +511,11 @@
   /* The glyph is 1.5em (below) inside a box the same height as a link's
      (1em of text + the padding): the extra half-em comes out of the vertical
      padding, so a bigger glyph never grows the pill. */
-  padding: calc(var(--spacing-xs) - 0.25em) var(--spacing-xs);
+  padding: 0.3em 0.55em;
   border: 0;
   border-radius: var(--radius-sm);
   background: none;
-  font-size: var(--voice-label);
+  font-size: var(--nav-voice);
   line-height: 1;
   color: var(--color-foreground);
   cursor: pointer;
@@ -434,10 +531,19 @@
   color: var(--color-icon-blue);
 }
 
+@media (min-width: 768px) {
+  .site-nav__search-trigger,
+  .site-nav__search-submit,
+  .site-nav__search-close {
+    padding: calc(var(--spacing-xs) - 0.25em) var(--spacing-xs);
+  }
+}
+
 /* 1.5em, and the magnifier's circle fills its 24-unit box (r 8.5 of 24), so
    the circle reads at about 1.06em — twice the 0.54em it was at 1em with the
    r 6.5 drawing (user call, Sep 2026). The X shares the box and the stroke. */
 .site-nav__glyph {
+  flex: none;
   width: 1.5em;
   height: 1.5em;
 }
@@ -445,17 +551,23 @@
 .site-nav__search-input {
   flex: 1;
   min-width: 0;
-  padding: var(--spacing-xs) var(--spacing-2xs);
+  padding: 0.55em 0.25em;
   border: 0;
   border-radius: var(--radius-sm);
   background: none;
   font: inherit;
-  font-size: var(--voice-label);
+  font-size: var(--nav-voice);
   font-weight: var(--font-weight-bold);
   line-height: 1;
   color: var(--color-foreground);
   appearance: none;
   outline: none;
+}
+
+@media (min-width: 768px) {
+  .site-nav__search-input {
+    padding: var(--spacing-xs) var(--spacing-2xs);
+  }
 }
 
 .site-nav__search-input::placeholder {
@@ -502,14 +614,29 @@
 }
 
 /* Keep the frosted pill dark-tinted when it appears over the hero, so the white
-   links read against it (the light-theme pill would wash them out). */
+   links read against it (the light-theme pill would wash them out). Below md
+   the pill is always frosted, so the tint applies whenever it is over the
+   hero; from md only in the frosted states (the transparent reset in the md
+   block below keeps the desktop's bare pill at the top of the page). */
+.site-header.is-over-hero .site-nav__pill,
 .site-header.is-over-hero .site-nav.is-scrolled .site-nav__pill,
 .site-header.is-over-hero .site-nav.is-search-open .site-nav__pill,
-.site-header.is-over-hero .site-nav.is-submenu-open .site-nav__pill,
-.site-header.is-over-hero .site-nav__pill:hover,
-.site-header.is-over-hero .site-nav__pill:has(.site-nav__item--has-submenu:hover),
-.site-header.is-over-hero .site-nav__pill:has(.site-nav__drawer:hover) {
+.site-header.is-over-hero .site-nav.is-submenu-open .site-nav__pill {
   background: var(--nav-bg-over-hero);
+}
+
+@media (hover: hover) {
+  .site-header.is-over-hero .site-nav__pill:hover,
+  .site-header.is-over-hero .site-nav__pill:has(.site-nav__item--has-submenu:hover),
+  .site-header.is-over-hero .site-nav__pill:has(.site-nav__drawer:hover) {
+    background: var(--nav-bg-over-hero);
+  }
+}
+
+@media (min-width: 768px) {
+  .site-header.is-over-hero .site-nav__pill {
+    background: transparent;
+  }
 }
 
 /* ---- Mobile controls ---------------------------------------------------- */
@@ -538,12 +665,15 @@
   gap: 0.5rem;
 }
 
-/* Mobile controls hand over to the pill nav at the same md cutoff. */
-@media (min-width: 768px) {
-  .site-header__mobile-home,
-  .site-header__mobile-actions {
-    display: none;
-  }
+/* PARKED MOBILE CHROME (user call, Sep 2026): the pill nav now serves every
+   width from the bottom of the viewport, so the mobile home button, the
+   contact + hamburger pair and the full-screen menu are switched off here.
+   Their markup, rules and behaviour stay so the trial can be reversed with
+   this one rule; if the pill sticks, they come out. */
+.site-header__mobile-home,
+.site-header__mobile-actions,
+.mobile-menu {
+  display: none;
 }
 
 .icon-button {

@@ -57,7 +57,9 @@
   color: var(--footer-ink);
   /* THE PAGE'S gutter, not the container pad (audit, Aug 2026): one page
      edge site-wide, and the footer sits on it like everything else. */
-  padding: var(--space-2xl) var(--gutter-page) var(--space-lg);
+  /* The bottom pill nav's clearance (site-header.css --nav-clearance, 0 from
+     md) is added so the pill never sits on the logo. */
+  padding: var(--space-2xl) var(--gutter-page) calc(var(--space-lg) + var(--nav-clearance, 0px));
 }
 
 /* Scroll-driven grow — the inverse of the hero's recede, and built the same

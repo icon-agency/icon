@@ -543,3 +543,7 @@ Enabling `search` and creating a `node_search` page by hand gave a 403 for every
 
 Core invokes `hook_page_top` and `hook_page_bottom` and renders the result — no alter pass. To undo what another module put in `page_top`, implement `hook_page_top` yourself and order it after theirs with `hook_module_implements_alter`. The first attempt here was an `_alter` that was registered, ran in a manual dry-run, and never ran in a request.
 
+## Touch screens keep a sticky `:hover`
+
+A tap leaves `:hover` on the tapped element until the next tap elsewhere, so a CSS hover-open (`.pill:has(.item:hover) .drawer`) held the EXPERTISE drawer open after Esc had closed it, and the search flip then rolled a drawer-tall face. Any `:hover` that opens or restyles something goes inside `@media (hover: hover)`; touch keeps the JS tap-to-open and tap-outside-to-close.
+
