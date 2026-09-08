@@ -1,0 +1,20 @@
+uuid: 03de1ee6-ffe5-4c6a-8d38-bb3e0f4e6633
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.work_gallery_figure.field_work_figure_ground
+    - field.field.paragraph.work_gallery_figure.field_work_figure_inset
+    - field.field.paragraph.work_gallery_figure.field_work_figure_media
+    - field.field.paragraph.work_gallery_figure.field_work_figure_style
+    - paragraphs.paragraphs_type.work_gallery_figure
+id: paragraph.work_gallery_figure.default
+targetEntityType: paragraph
+bundle: work_gallery_figure
+mode: default
+content: {  }
+hidden:
+  field_work_figure_ground: true
+  field_work_figure_inset: true
+  field_work_figure_media: true
+  field_work_figure_style: true

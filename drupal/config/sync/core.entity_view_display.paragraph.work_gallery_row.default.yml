@@ -3,10 +3,7 @@ langcode: en
 status: true
 dependencies:
   config:
-    - field.field.paragraph.work_gallery_row.field_work_gallery_media
-    - field.field.paragraph.work_gallery_row.field_work_gallery_style
-    - field.field.paragraph.work_gallery_row.field_work_gallery_ground
-    - field.field.paragraph.work_gallery_row.field_work_gallery_pad
+    - field.field.paragraph.work_gallery_row.field_work_gallery_figures
     - paragraphs.paragraphs_type.work_gallery_row
 id: paragraph.work_gallery_row.default
 targetEntityType: paragraph
@@ -14,7 +11,4 @@ bundle: work_gallery_row
 mode: default
 content: {  }
 hidden:
-  field_work_gallery_ground: true
-  field_work_gallery_media: true
-  field_work_gallery_pad: true
-  field_work_gallery_style: true
+  field_work_gallery_figures: true

@@ -1,0 +1,19 @@
+uuid: 0e7ceafe-2c25-43b2-84c3-3415273329af
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_work_figure_ground
+    - paragraphs.paragraphs_type.work_gallery_figure
+id: paragraph.work_gallery_figure.field_work_figure_ground
+field_name: field_work_figure_ground
+entity_type: paragraph
+bundle: work_gallery_figure
+label: 'Ground colour'
+description: 'Layered figures only: a flat hex colour (#2e2e2e) behind a single floating item, or showing around a transparent ground.'
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

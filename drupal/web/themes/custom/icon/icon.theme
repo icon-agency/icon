@@ -524,16 +524,24 @@ function _icon_apply_cache(array &$variables, CacheableMetadata $cache): void {
 function _icon_work_paragraph_props(ParagraphInterface $p, ?CacheableMetadata $cache = NULL): array {
   switch ($p->bundle()) {
     case 'work_gallery_row':
-      $media = array_values(array_filter(array_map(fn($m) => _icon_media_source($m, 'work_media', $cache), $p->get('field_work_gallery_media')->referencedEntities())));
-      return $media ? [
-        'rows' => [[
-          'style' => $p->get('field_work_gallery_style')->value ?: 'default',
-          'ground' => $p->get('field_work_gallery_ground')->value ?? '',
-          'pad' => $p->get('field_work_gallery_pad')->value ?? '',
-          'media' => $media,
-        ],
-        ],
-      ] : [];
+      // A row is one or two Figures (Sep 2026); each carries its own style,
+      // ground and inset, so a pair of layered square tiles is one row.
+      $figures = [];
+      foreach ($p->get('field_work_gallery_figures')->referencedEntities() as $figure) {
+        if ($cache) {
+          $cache->addCacheableDependency($figure);
+        }
+        $media = array_values(array_filter(array_map(fn($m) => _icon_media_source($m, 'work_media', $cache), $figure->get('field_work_figure_media')->referencedEntities())));
+        if ($media) {
+          $figures[] = [
+            'style' => $figure->get('field_work_figure_style')->value ?: 'plain',
+            'ground' => $figure->get('field_work_figure_ground')->value ?? '',
+            'pad' => $figure->get('field_work_figure_inset')->value ?? '',
+            'media' => $media,
+          ];
+        }
+      }
+      return $figures ? ['rows' => [['figures' => $figures]]] : [];
 
     case 'work_stats':
       $items = [];

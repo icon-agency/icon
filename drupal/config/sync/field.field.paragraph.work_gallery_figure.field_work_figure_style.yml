@@ -1,0 +1,21 @@
+uuid: f98d5b1d-f66f-40d0-98bc-8fce97f6eeae
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_work_figure_style
+    - paragraphs.paragraphs_type.work_gallery_figure
+  module:
+    - options
+id: paragraph.work_gallery_figure.field_work_figure_style
+field_name: field_work_figure_style
+entity_type: paragraph
+bundle: work_gallery_figure
+label: Style
+description: 'Plain or portrait for a picture on its own; layered for a float over a ground — wide, or square as the old folio tiles were.'
+required: true
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: list_string

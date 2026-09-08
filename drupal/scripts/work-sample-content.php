@@ -43,11 +43,21 @@ $media = function (string $file, string $alt = '') use ($source_dir, $dest, $fs)
 $block = fn(string $type, array $fields) => Paragraph::create(['type' => $type] + $fields);
 $prose = fn(string $html) => $block('prose', ['field_prose_text' => ['value' => $html, 'format' => 'basic_html']]);
 $quote = fn(string $text, string $cite = '') => $block('pull_quote', ['field_pull_quote_text' => $text, 'field_pull_quote_variant' => 'upright', 'field_pull_quote_cite' => $cite]);
-$row = fn(array $medias, string $style = 'default', string $ground = '', string $pad = '') => $block('work_gallery_row', [
-  'field_work_gallery_media' => array_map(fn(Media $m) => ['target_id' => $m->id()], $medias),
-  'field_work_gallery_style' => $style,
-  'field_work_gallery_ground' => $ground,
-  'field_work_gallery_pad' => $pad,
+// A gallery row is one or two FIGURES (Sep 2026): each a picture of its own,
+// or a float (its last media) over a ground (its first, or a colour).
+$figure = function (array $medias, string $style = 'plain', string $ground = '', string $inset = '') use ($block): Paragraph {
+  // saved here: the row references it by revision
+  $p = $block('work_gallery_figure', [
+    'field_work_figure_media' => array_map(fn(Media $m) => ['target_id' => $m->id()], $medias),
+    'field_work_figure_style' => $style,
+    'field_work_figure_ground' => $ground,
+    'field_work_figure_inset' => $inset,
+  ]);
+  $p->save();
+  return $p;
+};
+$row = fn(array $figures) => $block('work_gallery_row', [
+  'field_work_gallery_figures' => array_map(fn(Paragraph $f) => ['target_id' => $f->id(), 'target_revision_id' => $f->getRevisionId()], $figures),
 ]);
 $film = fn(Media $video, Media $cover, string $title) => $block('work_video', ['field_work_video_media' => ['target_id' => $video->id()], 'field_work_video_cover' => ['target_id' => $cover->id()], 'field_work_video_title' => $title]);
 $embed = fn(string $url, string $title) => $block('news_article_video', ['field_news_article_video_url' => ['uri' => $url], 'field_news_article_video_title' => $title]);
@@ -110,7 +120,7 @@ $project = function (array $d) use ($project_names) {
   foreach ($old_body as $old) {
     $old->delete();
   }
-  echo ($nid ? 'updated ' : 'created ') . "node/{$node->id()}  {$d['alias']}\n";
+  echo ($found ? 'updated ' : 'created ') . "node/{$node->id()}  {$node->label()}\n";
 };
 
 $filler = fn(string $title, string $client) => [$prose("<h2>Overview</h2><p>$title — a case study for $client. This is placeholder body copy from the sample-content script; replace it with the project's blocks.</p>")];
@@ -126,13 +136,13 @@ $icq = [
   'deliverables' => ['Behavioural research & strategy', 'Information architecture', 'Content design & writing', 'UX/UI design', 'Clickable prototypes', 'User interviews & usability testing', 'Custom illustrations', 'Video production'],
   'body' => [
     $prose('<h2>Overview</h2><p>ICON partnered with Cancer Institute NSW to design and validate the next evolution of the iCanQuit digital service, supporting people across NSW to quit smoking and vaping.</p><p>The project focused on establishing a robust, evidence-based UX foundation that could scale across platforms, support diverse user needs, and integrate with the wider quit ecosystem.</p><p>Our role was to lead the end-to-end UX design and testing program, working closely with the Cancer Institute team to test early, test often, and reduce delivery risk.</p>'),
-    $row([$media('icq-dashboard.png', 'The iCanQuit dashboard'), $media('icq-congratulations-forum.png', 'Congratulations screen and the community forum')]),
+    $row([$figure([$media('icq-dashboard.png', 'The iCanQuit dashboard')], 'plain'), $figure([$media('icq-congratulations-forum.png', 'Congratulations screen and the community forum')], 'plain')]),
     $prose('<h2>Background</h2><p>Smoking remains one of the leading preventable causes of illness and death in NSW. While many people want to quit, the journey is rarely linear.</p><p>iCanQuit is a long-standing digital service designed to support people through that journey. As user expectations, devices and digital behaviours evolved, the service needed to evolve with them.</p><p>The challenge was not simply to redesign an interface. The service needed to support people at moments of vulnerability, encourage sustained behaviour change and remain accessible to everyone.</p>'),
-    $row([$media('icq-app-screens.png', 'iCanQuit app screens')]),
-    $row([$media('icq-mood.png', 'The mood check-in'), $media('icq-sign-up.png', 'Sign up')], 'portrait'),
-    $row([$media('icq-homepage.png', 'The iCanQuit homepage on desktop and mobile')], 'layered', '#2e2e2e'),
+    $row([$figure([$media('icq-app-screens.png', 'iCanQuit app screens')], 'plain')]),
+    $row([$figure([$media('icq-mood.png', 'The mood check-in')], 'portrait'), $figure([$media('icq-sign-up.png', 'Sign up')], 'portrait')]),
+    $row([$figure([$media('icq-homepage.png', 'The iCanQuit homepage on desktop and mobile')], 'layered', '#2e2e2e', '')]),
     $prose('<h2>What we made</h2><p>We delivered a comprehensive UX design and validation program across three stages:</p><ul><li>Project kickoff and discovery workshops to align on goals, review existing research and information architecture, and confirm functional and behavioural requirements.</li><li>Low-fidelity wireframes for the full iCanQuit ecosystem: onboarding, dashboards, behaviour tracking, quit activities, forums and notifications.</li><li>High-fidelity UI prototypes for both website and app, refined through structured usability testing.</li></ul><p>User testing was central to the approach. ICON recruited and managed 48 participants across multiple rounds of testing.</p>'),
-    $row([$media('icq-savings-timeline.png', 'Savings and withdrawal timeline'), $media('icq-website-screens.png', 'Website screens: topics, forum, decision tree')]),
+    $row([$figure([$media('icq-savings-timeline.png', 'Savings and withdrawal timeline')], 'plain'), $figure([$media('icq-website-screens.png', 'Website screens: topics, forum, decision tree')], 'plain')]),
     $prose('<h2>Why it mattered</h2><p>Quitting smoking is a complex, emotional and highly personal journey. Getting the experience right was critical to trust, engagement and long-term impact.</p>'),
     $stats([['48', 'participants', 'Recruited and tested across multiple rounds'], ['3', 'stages', 'Discovery, wireframes, high-fidelity prototypes'], ['2', 'platforms', 'Website and app, one design system'], ['0', 'rework', 'Validated before build']]),
     $prose('<p>By validating the service design before build, the project reduced delivery risk, avoided costly rework and gave Cancer Institute NSW confidence that the next iCanQuit would meet real needs.</p>'),
@@ -150,8 +160,8 @@ $taf = [
     $scroller([$media('taf-poster-1.png', 'Poster one'), $media('taf-poster-2.png', 'Poster two'), $media('taf-poster-3.png', 'Poster three'), $media('taf-poster-4.png', 'Poster four')]),
     $prose('<h2>The film</h2><p>The hero film, cut for sound.</p>'),
     $film($media('taf-hero-film.mp4'), $media('taf-film-cover.png', 'Fit for every run — the film'), 'Fit for every run — the film'),
-    $row([$media('taf-billboard.png', 'The campaign on a billboard')]),
-    $row([$media('taf-montage.png', 'Campaign montage')]),
+    $row([$figure([$media('taf-billboard.png', 'The campaign on a billboard')], 'plain')]),
+    $row([$figure([$media('taf-montage.png', 'Campaign montage')], 'plain')]),
     $quote('Every runner, every run — the platform gave the whole network one story to tell.', 'The Athlete’s Foot'),
   ],
 ];
@@ -163,8 +173,12 @@ $nike = [
   'deliverables' => ['Campaign creative', 'Film', 'Social', 'Press and partnerships'],
   'body' => [
     $prose('<h2>Race day</h2><p>The reel over the start-line crowd — the layered figure, film floating on a photograph.</p>'),
-    $row([$media('nike-bg.jpg', 'The start line'), $media('nike-race-day-reel.mp4')], 'layered'),
-    $row([$media('nike-female-runners.png', 'Runners on Swanston Street')]),
+    $row([$figure([$media('nike-bg.jpg', 'The start line'), $media('nike-race-day-reel.mp4')], 'layered', '', '')]),
+    // the old folio's pair of square layered tiles: the reel under the lockup, the runners on a flat ground
+    $row([
+      $figure([$media('nike-race-day-reel.mp4'), $media('nike-logo.png', 'Nike Melbourne Marathon Festival lockup')], 'layered_square', '', '22%'),
+      $figure([$media('nike-female-runners.png', 'Runners on Swanston Street')], 'layered_square', '#2e2e2e', '22%'),
+    ]),
     $prose('<p>Placeholder copy from the sample-content script; replace with the project story.</p>'),
   ],
 ];
@@ -176,8 +190,8 @@ $moad = [
   'deliverables' => ['Campaign strategy', 'Creative', 'Print', 'Film', 'Social'],
   'body' => [
     $prose('<h2>The deck</h2><p>Placeholder copy from the sample-content script; replace with the project story.</p>'),
-    $row([$media('moad-hand-cards.jpg', 'A hand holding the cards'), $media('moad-men-cards.jpg', 'Posing with the cards')]),
-    $row([$media('moad-creative-collection.jpg', 'The campaign creative collection')]),
+    $row([$figure([$media('moad-hand-cards.jpg', 'A hand holding the cards')], 'plain'), $figure([$media('moad-men-cards.jpg', 'Posing with the cards')], 'plain')]),
+    $row([$figure([$media('moad-creative-collection.jpg', 'The campaign creative collection')], 'plain')]),
     $embed('https://www.youtube-nocookie.com/embed/c1DjQLPgLbE', 'Question of the Day — Democracy Cards'),
   ],
 ];
@@ -195,7 +209,7 @@ $projects = [
 ];
 foreach ($projects as $d) {
   if (empty($d['body'])) {
-    $d['body'] = $filler($d['title'], $d['client']);
+    $d['body'] = $filler($d['headline'], $d['client']);
   }
   $project($d);
 }

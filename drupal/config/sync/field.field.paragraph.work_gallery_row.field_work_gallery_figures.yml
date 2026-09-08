@@ -1,0 +1,31 @@
+uuid: c4e56df5-734e-42a3-9c75-a1ca1357877e
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_work_gallery_figures
+    - paragraphs.paragraphs_type.work_gallery_figure
+    - paragraphs.paragraphs_type.work_gallery_row
+  module:
+    - entity_reference_revisions
+id: paragraph.work_gallery_row.field_work_gallery_figures
+field_name: field_work_gallery_figures
+entity_type: paragraph
+bundle: work_gallery_row
+label: Figures
+description: 'One figure for a wide row, two for a pair.'
+required: true
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:paragraph'
+  handler_settings:
+    target_bundles:
+      work_gallery_figure: work_gallery_figure
+    negate: 0
+    target_bundles_drag_drop:
+      work_gallery_figure:
+        weight: 0
+        enabled: true
+field_type: entity_reference_revisions

@@ -1,25 +1,28 @@
-uuid: e6f1c03c-c3bd-4558-aaf8-b3b811a0859c
+uuid: a7ef9baf-0a28-40c1-b3c6-526889439eb3
 langcode: en
 status: true
 dependencies:
   module:
     - options
     - paragraphs
-id: paragraph.field_work_gallery_style
-field_name: field_work_gallery_style
+id: paragraph.field_work_figure_style
+field_name: field_work_figure_style
 entity_type: paragraph
 type: list_string
 settings:
   allowed_values:
     -
-      value: default
-      label: Default
+      value: plain
+      label: Plain
     -
       value: portrait
-      label: 'Portrait pair (7:10)'
+      label: 'Portrait (7:10)'
     -
       value: layered
-      label: 'Layered (float over a ground)'
+      label: 'Layered: a float over a ground (16:9)'
+    -
+      value: layered_square
+      label: 'Layered square: a float over a ground (1:1)'
   allowed_values_function: ''
 module: options
 locked: false

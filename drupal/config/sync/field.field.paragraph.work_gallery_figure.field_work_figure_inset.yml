@@ -1,0 +1,19 @@
+uuid: 9cf3c8bc-3ac2-456c-afac-349a13f332ee
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_work_figure_inset
+    - paragraphs.paragraphs_type.work_gallery_figure
+id: paragraph.work_gallery_figure.field_work_figure_inset
+field_name: field_work_figure_inset
+entity_type: paragraph
+bundle: work_gallery_figure
+label: 'Float inset'
+description: 'Layered figures only: how far the float sits in from the frame, e.g. 22%. Leave empty for the default.'
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

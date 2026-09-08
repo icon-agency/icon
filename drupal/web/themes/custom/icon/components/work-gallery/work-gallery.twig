@@ -2,8 +2,9 @@
 /**
  * @file
  * work-gallery — thin copy of the gallery blocks in templates/work-article-master.html.
- * A row with two media is --cols-2; the portrait style crops both to 7:10;
- * a layered row is ONE figure: ground (first media or --overlay-ground) + float (last).
+ * A row is one or two FIGURES (--cols-2 for a pair). A plain figure is one
+ * picture; portrait crops it to 7:10; a layered figure is a float (its last
+ * media) over a ground (its first, or --overlay-ground), wide or square.
  */
 #}
 {% macro medium(m, extra) %}
@@ -16,21 +17,24 @@
 {% import _self as gallery %}
 <div class="work-gallery">
   {% for row in rows %}
-    {% if row.style == 'layered' %}
-      {% set styles = [row.ground ? '--overlay-ground: ' ~ row.ground, row.pad ? '--overlay-pad: ' ~ row.pad]|filter(v => v) %}
-      <div class="work-gallery__row">
-        <figure class="work-gallery__figure--layered media-reveal" data-reveal-img{% if styles %} style="{{ styles|join('; ') }}"{% endif %}>
-          {% for m in row.media %}{{ gallery.medium(m) }}{% endfor %}
+    <div class="work-gallery__row{{ row.figures|length > 1 ? ' work-gallery__row--cols-2' }}">
+      {% for f in row.figures %}
+        {% set layered = f.style starts with 'layered' %}
+        {% set classes = [
+          layered ? 'work-gallery__figure--layered',
+          f.style == 'layered_square' ? 'work-gallery__figure--square',
+          f.style == 'portrait' ? 'work-gallery__figure--portrait',
+          'media-reveal',
+        ]|filter(v => v) %}
+        {% set styles = [
+          layered and f.ground ? '--overlay-ground: ' ~ f.ground,
+          layered and f.pad ? '--overlay-pad: ' ~ f.pad,
+          not loop.first ? '--animate-delay: 60ms',
+        ]|filter(v => v) %}
+        <figure class="{{ classes|join(' ') }}" data-reveal-img{% if styles %} style="{{ styles|join('; ') }}"{% endif %}>
+          {% for m in (layered ? f.media : f.media|slice(0, 1)) %}{{ gallery.medium(m) }}{% endfor %}
         </figure>
-      </div>
-    {% else %}
-      <div class="work-gallery__row{{ row.media|length > 1 ? ' work-gallery__row--cols-2' }}">
-        {% for m in row.media %}
-          <figure class="{{ row.style == 'portrait' ? 'work-gallery__figure--portrait ' }}media-reveal" data-reveal-img{% if not loop.first %} style="--animate-delay: 60ms"{% endif %}>
-            {{ gallery.medium(m) }}
-          </figure>
-        {% endfor %}
-      </div>
-    {% endif %}
+      {% endfor %}
+    </div>
   {% endfor %}
 </div>

@@ -1,15 +1,15 @@
-uuid: e8c6b699-2923-4c9d-b568-bdfa79350dc9
+uuid: 6e6085c1-8516-4c89-a066-75fa47c98bde
 langcode: en
 status: true
 dependencies:
   module:
     - paragraphs
-id: paragraph.field_work_gallery_ground
-field_name: field_work_gallery_ground
+id: paragraph.field_work_figure_ground
+field_name: field_work_figure_ground
 entity_type: paragraph
 type: string
 settings:
-  max_length: 255
+  max_length: 32
   case_sensitive: false
   is_ascii: false
 module: core

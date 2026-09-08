@@ -1,0 +1,10 @@
+uuid: 9770423f-9f54-40d3-8f3b-7648e5b32134
+langcode: en
+status: true
+dependencies: {  }
+id: work_gallery_figure
+label: Figure
+icon_uuid: null
+icon_default: null
+description: 'One picture in a gallery row: an image, a looping film, or a float over a ground.'
+behavior_plugins: {  }
