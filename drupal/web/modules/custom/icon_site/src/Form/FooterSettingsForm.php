@@ -76,6 +76,21 @@ final class FooterSettingsForm extends ConfigFormBase {
       '#default_value' => $footer['acknowledgement'],
       '#rows' => 4,
     ];
+    // The login page's reel: the hero block of a Canvas page.
+    $pages = ['' => $this->t('The front page (default)')];
+    foreach (\Drupal::entityTypeManager()->getStorage('canvas_page')->loadMultiple() as $page) {
+      if (icon_site_hero_order_of($page) || $page->access('view')) {
+        $pages[$page->id()] = $page->label() . (icon_site_hero_order_of($page) ? '' : ' — ' . $this->t('no hero block'));
+      }
+    }
+    $form['login'] = ['#type' => 'details', '#title' => $this->t('Login page'), '#open' => TRUE];
+    $form['login']['login_hero'] = [
+      '#type' => 'select',
+      '#title' => $this->t('Hero reel to play'),
+      '#description' => $this->t('The account pages play the slides of this page’s hero, in its order — so reordering that hero reorders the login page too.'),
+      '#options' => $pages,
+      '#default_value' => (string) ($this->config('icon_site.footer')->get('login_hero') ?: ''),
+    ];
     return parent::buildForm($form, $form_state);
   }
 
@@ -89,6 +104,7 @@ final class FooterSettingsForm extends ConfigFormBase {
       ->set('touch_url', trim((string) $form_state->getValue('touch_url')))
       ->set('newsletter', trim((string) $form_state->getValue('newsletter')))
       ->set('acknowledgement', trim((string) $form_state->getValue('acknowledgement')))
+      ->set('login_hero', (int) $form_state->getValue('login_hero'))
       ->save();
     parent::submitForm($form, $form_state);
   }

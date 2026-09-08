@@ -22,6 +22,7 @@ Detail and verification are in DRUPAL-11-REMEDIATION.md.
 - The page template has the hook that custom 403 and 404 pages need.
 - The panels work from the keyboard: arrow keys reorder rows, the project picker works with arrows and Enter, and screen readers hear each change.
 - A "Skip to content" link now shows when a keyboard user tabs to it.
+- The homepage hero now shows only the slides chosen for it. Slides can be taken off and kept under "Available" for later, and a new slide goes straight onto the reel. The login page's reel is a named setting instead of a lookup.
 
 ## Already resolved before the review was read
 
@@ -34,6 +35,5 @@ Detail and verification are in DRUPAL-11-REMEDIATION.md.
 
 ## Still open
 
-- Hero slides as separate content items: a design trade-off. Proposed fix is an explicit slide selection on the hero block and a named setting for the login page, keeping the current editing experience.
 - Deeper cache metadata for media helpers: a hardening item, not a correctness bug today.
 - Front-end behaviours in the Canvas live preview: components added inside the editor preview do not get their scripts until the page reloads. Planned as its own piece of work.

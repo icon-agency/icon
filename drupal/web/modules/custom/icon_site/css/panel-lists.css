@@ -381,3 +381,22 @@ select.icon-panel__count { padding: 4px 24px 4px 8px; border: 1px solid #d9d9e0;
 .form-item:has(> .icon-panel__field), .js-form-item:has(.icon-panel__field) { margin-top: 14px; font-size: 13px; }
 .icon-panel-dialog .icon-panel__remove { margin-left: auto; }
 .icon-panel-dialog .form-actions { display: flex; align-items: center; gap: 12px; }
+
+/* The hero's reel and its spares (HeroBlock): one row markup, two tables —
+   the reel's rows drag and can be taken off; the available rows only add. */
+.icon-panel__group { margin-top: 14px; }
+.icon-panel__group-title {
+  margin: 0 0 6px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #8b8d98;
+}
+.icon-panel__list--reel .icon-panel__reel-add { display: none; }
+.icon-panel__list--available .icon-panel__handle,
+.icon-panel__list--available .icon-panel__reel-remove { display: none; }
+.icon-panel__list--available .icon-panel__name { color: #60646c; }
+.icon-panel__reel-add { color: #0b64ee; font-weight: 600; }
+.icon-panel__card--spare { opacity: 0.92; }
+

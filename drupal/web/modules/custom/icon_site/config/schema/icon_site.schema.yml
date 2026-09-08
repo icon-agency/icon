@@ -78,3 +78,6 @@ icon_site.footer:
     acknowledgement:
       type: text
       label: 'Acknowledgement of Country'
+    login_hero:
+      type: integer
+      label: 'The Canvas page whose hero the login page plays (0 = the front page)'

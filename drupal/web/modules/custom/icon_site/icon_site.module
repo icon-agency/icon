@@ -106,64 +106,94 @@ function icon_site_media_source(?MediaInterface $media, string $style_id): array
 }
 
 /**
- * The homepage hero's slide order, read from the front page's hero block.
- *
- * The Homepage hero block (icon_hero) keeps its one setting — the order of
- * the Hero slide nodes — in the Canvas page tree of the front page. Anything
- * else that shows the same reel (the login page's banner) reads it from
- * here, so a drag in the panel reorders both.
+ * The hero reel the LOGIN page plays: the hero block on the page named in
+ * icon_site.footer `login_hero` (Content → Footer → Login page), else the
+ * front page. Its `order` is that block's explicit slide selection.
  *
  * @return array{order: int[], tags: string[]}
- *   The slide node IDs in order (empty when the block is not on the front
+ *   The chosen slide node IDs in order (empty when no hero block is on the
  *   page) and the cache tags of where it was read from.
  */
 function icon_site_hero_order(): array {
-  $front = (string) \Drupal::config('system.site')->get('page.front');
-  $tags = ['config:system.site', 'canvas_page_list'];
-  $url = $front ? \Drupal::service('path.validator')->getUrlIfValid($front) : NULL;
+  $tags = ['config:icon_site.footer', 'config:system.site', 'canvas_page_list'];
+  $storage = \Drupal::entityTypeManager()->getStorage('canvas_page');
   $page = NULL;
-  if ($url && $url->isRouted()) {
-    $params = $url->getRouteParameters();
-    if (!empty($params['canvas_page'])) {
-      $page = \Drupal::entityTypeManager()->getStorage('canvas_page')->load($params['canvas_page']);
+  if ($id = (int) \Drupal::config('icon_site.footer')->get('login_hero')) {
+    $page = $storage->load($id);
+  }
+  if (!$page) {
+    $front = (string) \Drupal::config('system.site')->get('page.front');
+    $url = $front ? \Drupal::service('path.validator')->getUrlIfValid($front) : NULL;
+    if ($url && $url->isRouted() && !empty($url->getRouteParameters()['canvas_page'])) {
+      $page = $storage->load($url->getRouteParameters()['canvas_page']);
     }
   }
   if (!$page) {
     return ['order' => [], 'tags' => $tags];
   }
   $tags = Cache::mergeTags($tags, $page->getCacheTags());
+  return ['order' => icon_site_hero_order_of($page), 'tags' => $tags];
+}
+
+/**
+ * A Canvas page's hero block selection: the `order` input of the first
+ * block.icon_hero component in its (published) tree, else nothing.
+ *
+ * @return int[]
+ */
+function icon_site_hero_order_of(\Drupal\Core\Entity\EntityInterface $page): array {
+  if (!$page->hasField('components')) {
+    return [];
+  }
   foreach ($page->get('components') as $item) {
     $value = $item->getValue();
     if (($value['component_id'] ?? '') === 'block.icon_hero') {
       $inputs = $value['inputs'] ?? [];
       $inputs = is_string($inputs) ? (json_decode($inputs, TRUE) ?: []) : $inputs;
-      $order = array_values(array_filter(array_map('intval', (array) ($inputs['order'] ?? []))));
-      return ['order' => $order, 'tags' => $tags];
+      return array_values(array_filter(array_map('intval', (array) ($inputs['order'] ?? []))));
     }
   }
-  return ['order' => [], 'tags' => $tags];
+  return [];
 }
 
 /**
- * Every published Hero slide, in the given order (unknown ones last, oldest
- * first). The Homepage hero block passes its own order; pass NULL to use the
- * front page's (icon_site_hero_order()).
+ * The hero's slides: the CHOSEN ones, in order (a hero shows only the slides
+ * its block selected — Content → the panel's reel; a published slide not in
+ * the selection is "available", not shown). Pass NULL for the login page's
+ * hero (icon_site_hero_order()). Unpublished or inaccessible slides drop out.
  *
  * @return \Drupal\node\NodeInterface[]
- *   Keyed by node ID.
+ *   Keyed by node ID, in the given order.
  */
 function icon_site_hero_slides(?array $order = NULL): array {
+  $order = array_values(array_filter(array_map('intval', $order ?? icon_site_hero_order()['order'])));
+  if (!$order) {
+    return [];
+  }
   $storage = \Drupal::entityTypeManager()->getStorage('node');
-  $ids = $storage->getQuery()
-    ->accessCheck(TRUE)
-    ->condition('type', 'hero_slide')
-    ->condition('status', 1)
-    ->sort('created', 'ASC')
-    ->execute();
-  $slides = $storage->loadMultiple($ids);
-  $rank = array_flip(array_map('intval', $order ?? icon_site_hero_order()['order']));
-  uasort($slides, fn(NodeInterface $a, NodeInterface $b) => ($rank[(int) $a->id()] ?? PHP_INT_MAX) <=> ($rank[(int) $b->id()] ?? PHP_INT_MAX));
-  return $slides;
+  $slides = [];
+  foreach ($storage->loadMultiple($order) as $id => $slide) {
+    if ($slide->bundle() === 'hero_slide' && $slide->isPublished() && $slide->access('view')) {
+      $slides[(int) $id] = $slide;
+    }
+  }
+  // loadMultiple keys by id but not in the asked order
+  return array_replace(array_flip(array_filter($order, fn($id) => isset($slides[$id]))), $slides);
+}
+
+/**
+ * Every published Hero slide NOT in the given selection, oldest first: what
+ * the hero panel offers to add to its reel.
+ *
+ * @return \Drupal\node\NodeInterface[]
+ */
+function icon_site_hero_available(array $order): array {
+  $storage = \Drupal::entityTypeManager()->getStorage('node');
+  $query = $storage->getQuery()->accessCheck(TRUE)->condition('type', 'hero_slide')->condition('status', 1)->sort('created', 'ASC');
+  if ($order = array_values(array_filter(array_map('intval', $order)))) {
+    $query->condition('nid', $order, 'NOT IN');
+  }
+  return $storage->loadMultiple($query->execute());
 }
 
 /**
@@ -360,6 +390,8 @@ function _icon_site_panel_node_form_alter(array &$form, FormStateInterface $form
   }
   $form['#prefix'] = '<div id="icon-panel-form">';
   $form['#suffix'] = '</div>';
+  // remember whether this save CREATES the item (read after the save)
+  array_unshift($form['actions']['submit']['#submit'], '_icon_site_panel_note_new');
   $form['actions']['submit']['#ajax'] = [
     'callback' => '_icon_site_panel_form_ajax',
     'wrapper' => 'icon-panel-form',
@@ -391,6 +423,10 @@ function _icon_site_panel_node_form_after_build(array $form, FormStateInterface 
 /**
  * Save from the dialog: close it, or show the form again with its errors.
  */
+function _icon_site_panel_note_new(array &$form, FormStateInterface $form_state): void {
+  $form_state->set('icon_panel_was_new', $form_state->getFormObject()->getEntity()->isNew());
+}
+
 function _icon_site_panel_form_ajax(array $form, FormStateInterface $form_state): AjaxResponse {
   $response = new AjaxResponse();
   if ($form_state->hasAnyErrors()) {
@@ -401,9 +437,12 @@ function _icon_site_panel_form_ajax(array $form, FormStateInterface $form_state)
     return $response;
   }
   $response->addCommand(new CloseDialogCommand('#icon-panel-dialog'));
-  // Tell the panel's sortable script a slide changed so it can nudge Canvas
-  // into re-fetching the block form.
-  $response->addCommand(new InvokeCommand('body', 'trigger', ['icon-panel:saved']));
+  // Tell the panel's sortable script what was saved — the entity's id and
+  // whether it was created just now (a new Hero slide goes straight into
+  // the reel) — so it can write the change and nudge Canvas to re-fetch
+  // the block form.
+  $entity = $form_state->getFormObject()->getEntity();
+  $response->addCommand(new InvokeCommand('body', 'trigger', ['icon-panel:saved', [[(int) $entity->id(), (bool) $form_state->get('icon_panel_was_new')]]]));
   return $response;
 }
 
@@ -421,6 +460,8 @@ function icon_site_form_media_form_alter(array &$form, FormStateInterface $form_
   }
   $form['#prefix'] = '<div id="icon-panel-form">';
   $form['#suffix'] = '</div>';
+  // remember whether this save CREATES the item (read after the save)
+  array_unshift($form['actions']['submit']['#submit'], '_icon_site_panel_note_new');
   $form['actions']['submit']['#ajax'] = [
     'callback' => '_icon_site_panel_form_ajax',
     'wrapper' => 'icon-panel-form',

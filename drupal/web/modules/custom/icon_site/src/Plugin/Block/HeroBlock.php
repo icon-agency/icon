@@ -55,6 +55,15 @@ final class HeroBlock extends BlockBase {
   }
 
   /**
+   * Published slides this hero has not chosen — offered by the panel.
+   *
+   * @return \Drupal\node\NodeInterface[]
+   */
+  private function available(): array {
+    return icon_site_hero_available($this->configuration['order'] ?? []);
+  }
+
+  /**
    * {@inheritdoc}
    *
    * Canvas round-trips the settings through this form's VALUES (it builds
@@ -84,25 +93,35 @@ final class HeroBlock extends BlockBase {
     $form['panel']['bar'] = [
       '#markup' => '<div class="icon-panel__bar"><p class="icon-panel__title">' . $this->t('Slides · @count of @max', ['@count' => count($slides), '@max' => self::MAX]) . '</p><a class="icon-panel__button icon-panel__button--primary use-ajax" href="' . $add . '"' . $dialog . '>' . $this->t('+ Add slide') . '</a></div>',
     ];
-    $rows = '';
-    foreach ($slides as $slide) {
+    $row = function (\Drupal\node\NodeInterface $slide) use ($dialog): string {
       $media = $slide->get('field_slide_media')->entity;
       $kind = $media ? ($media->bundle() === 'video' ? $this->t('Film') : $this->t('Image')) : $this->t('No media');
       $link = $slide->get('field_slide_link')->first();
       $meta = $kind . ($link ? ' · ' . preg_replace('#^https?://[^/]+#', '', $link->getUrl()->toString()) : '');
       $edit = $slide->toUrl('edit-form', ['query' => ['panel' => 1, 'use_admin_theme' => 1]])->toString();
-      $rows .= '<tr class="draggable" data-row="' . $slide->id() . '"><td>' . self::handle((string) $slide->label())
-        . '<div class="icon-panel__text"><p class="icon-panel__name">' . htmlspecialchars($slide->label(), ENT_QUOTES) . '</p><p class="icon-panel__meta">' . htmlspecialchars((string) $meta, ENT_QUOTES) . '</p></div></td>'
-        . '<td class="icon-panel__cell--action"><a class="icon-panel__action use-ajax" href="' . $edit . '"' . $dialog . '>' . $this->t('Edit') . '</a></td></tr>';
-    }
+      $name = htmlspecialchars((string) $slide->label(), ENT_QUOTES);
+      return '<tr class="draggable" data-row="' . $slide->id() . '"><td>' . self::handle((string) $slide->label())
+        . '<div class="icon-panel__text"><p class="icon-panel__name">' . $name . '</p><p class="icon-panel__meta">' . htmlspecialchars((string) $meta, ENT_QUOTES) . '</p></div></td>'
+        . '<td class="icon-panel__cell--action">'
+        . '<a href="#" role="button" class="icon-panel__action icon-panel__reel-add" aria-label="' . htmlspecialchars((string) $this->t('Add @name to the reel', ['@name' => $slide->label()]), ENT_QUOTES) . '">' . $this->t('Add to reel') . '</a>'
+        . '<a class="icon-panel__action use-ajax" href="' . $edit . '"' . $dialog . '>' . $this->t('Edit') . '</a>'
+        . '<a href="#" role="button" class="icon-panel__action icon-panel__action--quiet icon-panel__reel-remove" aria-label="' . htmlspecialchars((string) $this->t('Take @name off the reel', ['@name' => $slide->label()]), ENT_QUOTES) . '" title="' . $this->t('Off the reel — the slide stays, ready to add back') . '">' . $this->t('Take off') . '</a>'
+        . '</td></tr>';
+    };
+    $reel = implode('', array_map($row, array_values($slides)));
+    $available = $this->available();
+    $spare = implode('', array_map($row, array_values($available)));
     $form['panel']['card'] = ['#type' => 'container', '#attributes' => ['class' => ['icon-panel__card']]];
     $form['panel']['card']['list'] = [
-      '#markup' => $rows
-        ? '<table class="icon-panel__list"><tbody>' . $rows . '</tbody></table>'
-        : '<p class="icon-panel__note">' . $this->t('No slides yet — add one.') . '</p>',
+      '#markup' => '<table class="icon-panel__list icon-panel__list--reel"><tbody>' . $reel . '</tbody></table>'
+        . '<p class="icon-panel__note icon-panel__empty-note"' . ($reel ? ' hidden' : '') . '>' . $this->t('Nothing on the reel yet — add a slide below, or make a new one.') . '</p>',
     ];
+    $form['panel']['spare'] = ['#type' => 'container', '#attributes' => ['class' => ['icon-panel__group'], 'data-group' => 'available'] + ($spare ? [] : ['hidden' => 'hidden'])];
+    $form['panel']['spare']['title'] = ['#markup' => '<p class="icon-panel__group-title">' . $this->t('Available — not on this reel') . '</p>'];
+    $form['panel']['spare']['card'] = ['#type' => 'container', '#attributes' => ['class' => ['icon-panel__card', 'icon-panel__card--spare']]];
+    $form['panel']['spare']['card']['list'] = ['#markup' => '<table class="icon-panel__list icon-panel__list--available"><tbody>' . $spare . '</tbody></table>'];
     $form['panel']['note'] = [
-      '#markup' => '<p class="icon-panel__note">' . $this->t('Drag to reorder — the reel plays top to bottom. Edit opens the slide (film or image, client name, link) over the page; the list refreshes when you save. Films must be 6 seconds long, muted.') . '</p>',
+      '#markup' => '<p class="icon-panel__note">' . $this->t('The reel plays top to bottom — drag to reorder. Edit opens the slide (film or image, client name, link) over the page. Take off keeps the slide for later, under Available; a new slide goes straight onto the reel. Films must be 6 seconds long, muted.') . '</p>',
     ];
     return $form;
   }

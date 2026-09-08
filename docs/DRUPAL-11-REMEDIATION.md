@@ -35,11 +35,17 @@ marquee: its logo tags; news feed: the View's config tag) instead of a bare `[]`
 | --- | --- | --- | --- |
 | 14 | Pointer-only reorder, a picker with no keyboard, no visible skip link | Each row's handle is a focusable `role=button` named for its row ("Reorder Nike Melbourne Marathon Festival — arrow keys move it up or down"): ArrowUp / ArrowDown move the row a place, Home / End to the ends, focus travels with it, and a live region announces the new position; the order is written the same way a drop writes it. The picker's search box is a `combobox` over a `listbox`: the arrow keys, Home and End move the highlighted option (`aria-activedescendant`), Enter picks it, Escape closes and returns focus to the control that opened it, which carries `aria-expanded`. Focus rings on the handle and the pickable. The skip link is `.skip-link`, shown on `:focus` as a pill at the top-left (design system `src/base/reset.css`, outside the base layer so the sr-only utility cannot beat it) on every shell. | In the Canvas editor: ArrowDown on the first hero handle rewrote the order field (26,27,… → 27,26,…), focus stayed on the handle, the announcement read "PHN North Western Melbourne moved to position 2 of 5"; the picker's arrows moved the highlight with `aria-activedescendant` following and Escape returned focus; the skip link renders as a 160×45 pill when focused. |
 
+## P2 — the hero model, 2026-09-08
+
+| # | Finding | Fix | Verified by |
+| --- | --- | --- | --- |
+| 7 | Every published slide appeared in every hero; the login page found its hero by walking the front page's Canvas tree | Slides stay nodes (the dialogs, revisions and content list are theirs), but the hero block's `order` is now an explicit SELECTION: only chosen slides show. The panel gains an "Available — not on this reel" group with Add to reel, and Take off on reel rows; a slide created from the panel goes straight onto the reel. The login page names its hero: Content → Footer → Login page → "Hero reel to play" (a Canvas page, the front page by default), with a fallback to the front page when the named page is gone. The front page's selection was migrated to what it already showed. | In the editor: Take off wrote the order without the slide and showed it under Available (handle hidden, Add shown, "Cancer Council Victoria taken off the reel" announced); Add to reel restored the order; the save event for a new slide appended its id. The login page plays five slides with the setting on the front page, on page 1, and on a missing page. |
+
 ## P2 — open
 
-Findings 6 (the rest of the cacheability work), 7 (hero slides as nodes — a
-deliberate trade-off, to discuss), 8 (two logo media types — an integration
-concern) and 11 (behaviours gated on `<html>`) are as the review states.
+Findings 6 (the rest of the cacheability work), 8 (two logo media types — an
+integration concern) and 11 (behaviours gated on `<html>`) are as the review
+states.
 Finding 9 (listing filters over one page) was overtaken on 2026-09-07: the chips
 navigate to the server-side filter and both listings lazy-load from the View's
 pager.

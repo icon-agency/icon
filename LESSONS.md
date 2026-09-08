@@ -519,3 +519,7 @@ Stripping `<script>` and `on*=` attributes with patterns left `javascript:` link
 
 They match by alias or title and delete the paragraphs a body had — fine on a fresh site, destructive on one with editorial content. Gate them (`scripts/_guard.php`: refuse on production, and unless `ICON_SEED=1`), and delete the old paragraphs only after the new node revision has validated and saved, so a failed run leaves the old body in place.
 
+## Drupal's admin markup filter reads "Name:" as a URL scheme
+
+An `aria-label="Reorder Nike Melbourne: arrow keys…"` inside `#markup` came out as `" arrow keys…"`: the admin XSS filter runs bad-protocol filtering on every attribute value, and anything before a colon looks like a scheme. No colons in attribute values that pass through `#markup` — use a dash.
+
