@@ -114,7 +114,8 @@ final class HeroBlock extends BlockBase {
     $form['panel']['card'] = ['#type' => 'container', '#attributes' => ['class' => ['icon-panel__card']]];
     $form['panel']['card']['list'] = [
       '#markup' => '<table class="icon-panel__list icon-panel__list--reel"><tbody>' . $reel . '</tbody></table>'
-        . '<p class="icon-panel__note icon-panel__empty-note"' . ($reel ? ' hidden' : '') . '>' . $this->t('Nothing on the reel yet — add a slide below, or make a new one.') . '</p>',
+        // a class, not the hidden attribute — the admin markup filter drops it
+        . '<p class="icon-panel__note icon-panel__empty-note' . ($reel ? ' is-hidden' : '') . '">' . $this->t('Nothing on the reel yet — add a slide below, or make a new one.') . '</p>',
     ];
     $form['panel']['spare'] = ['#type' => 'container', '#attributes' => ['class' => ['icon-panel__group'], 'data-group' => 'available'] + ($spare ? [] : ['hidden' => 'hidden'])];
     $form['panel']['spare']['title'] = ['#markup' => '<p class="icon-panel__group-title">' . $this->t('Available — not on this reel') . '</p>'];

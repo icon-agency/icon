@@ -230,7 +230,7 @@
       var count = table.closest(".icon-panel--hero").querySelector(".icon-panel__title");
       if (count) count.textContent = count.textContent.replace(/\d+(?= of)/, String(rowsOf(reel).length));
       var note = table.closest(".icon-panel--hero").querySelector(".icon-panel__empty-note");
-      if (note) note.hidden = rowsOf(reel).length > 0;
+      if (note) note.classList.toggle("is-hidden", rowsOf(reel).length > 0);
       var group = table.closest(".icon-panel--hero").querySelector("[data-group=available]");
       if (group) group.hidden = rowsOf(group.querySelector("table")).length === 0;
     }

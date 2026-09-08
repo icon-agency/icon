@@ -393,10 +393,26 @@ select.icon-panel__count { padding: 4px 24px 4px 8px; border: 1px solid #d9d9e0;
   text-transform: uppercase;
   color: #8b8d98;
 }
-.icon-panel__list--reel .icon-panel__reel-add { display: none; }
-.icon-panel__list--available .icon-panel__handle,
-.icon-panel__list--available .icon-panel__reel-remove { display: none; }
+/* specific enough to beat the stacked-action rule below */
+.icon-panel--hero .icon-panel__list--reel .icon-panel__cell--action .icon-panel__reel-add { display: none; }
+.icon-panel--hero .icon-panel__list--available .icon-panel__handle,
+.icon-panel--hero .icon-panel__list--available .icon-panel__cell--action .icon-panel__reel-remove { display: none; }
 .icon-panel__list--available .icon-panel__name { color: #60646c; }
 .icon-panel__reel-add { color: #0b64ee; font-weight: 600; }
 .icon-panel__card--spare { opacity: 0.92; }
+
+/* the hero row's two actions (Edit, Take off) stack, right-aligned, so
+   neither runs off the card; the cell is as wide as its longer word */
+.icon-panel--hero .icon-panel__list td.icon-panel__cell--action {
+  width: auto;
+  vertical-align: top;
+}
+.icon-panel--hero .icon-panel__cell--action .icon-panel__action {
+  display: block;
+  margin: 0 0 4px;
+  text-align: right;
+  line-height: 1.3;
+}
+.icon-panel--hero .icon-panel__cell--action .icon-panel__action + .icon-panel__action { margin-left: 0; }
+.icon-panel__empty-note.is-hidden { display: none; }
 
