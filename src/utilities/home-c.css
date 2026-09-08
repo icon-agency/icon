@@ -611,12 +611,17 @@
    in) — quieter than a masked rise at this size and position. */
 .hero__client {
   position: absolute;
-  left: var(--gutter-page); /* lines up with the fixed wordmark above it (the logo reads the same token) */
-  bottom: var(--space-sm);
+  /* Below md (user call, Sep 2026): centred, smaller, and lifted clear of the
+     bottom pill nav — --nav-clearance is the pill's room (site-header.css;
+     0 from md, where the name goes back to the bottom-left at the wordmark's
+     gutter in the intro statement's voice). */
+  left: var(--gutter-page);
+  right: var(--gutter-page);
+  bottom: calc(var(--space-sm) + var(--nav-clearance, 0px));
   z-index: 4;
   margin: 0;
-  /* Same voice as the intro statement + "Our expertise" label. */
-  font-size: var(--voice-mid);
+  text-align: center;
+  font-size: var(--voice-label);
   font-weight: var(--font-weight-medium);
   letter-spacing: -0.01em;
   line-height: 1.2;
@@ -626,6 +631,15 @@
   transition: opacity 0.4s var(--ease-standard) 0.2s;
 }
 [data-hero].is-live .hero__client { opacity: 1; }
+
+@media (min-width: 768px) {
+  .hero__client {
+    right: auto;
+    text-align: left;
+    /* Same voice as the intro statement + "Our expertise" label. */
+    font-size: var(--voice-mid);
+  }
+}
 
 .hero__client-text {
   transition: opacity 0.15s var(--ease-standard);

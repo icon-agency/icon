@@ -388,6 +388,14 @@
   border-bottom: 0;
 }
 
+/* …and the header's own air below the band goes with it (user annotation,
+   Sep 2026: "make the space below the same as above"): the first story's
+   hairline follows the band's own padding, so the chips sit the same
+   distance from the line above and the line below. */
+.page-header--stack:has(.page-header__filter-band--open) {
+  padding-bottom: 0;
+}
+
 .page-header--stack .page-header__filters {
   margin-bottom: 0;
 }

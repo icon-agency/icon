@@ -40,8 +40,13 @@
 }
 
 .site-logo {
-  position: fixed;
-  top: 1rem; /* aligns with the mobile controls (also top: 1rem) */
+  /* Below md the wordmark is part of the page's top rather than fixed chrome
+     (user report, Sep 2026: the logo could not be seen on a phone). It scrolls
+     away with the page — the bottom pill carries the home glyph from 100px —
+     so it can never sit on content or be left stranded behind its mask; the
+     masked slide-out below is desktop-only. From md it is fixed, as designed. */
+  position: absolute;
+  top: 1rem;
   left: var(--gutter-page);
   z-index: 10001;
   color: var(--color-foreground);
@@ -83,6 +88,7 @@
    which stays a safe over-estimate. */
 @media (min-width: 768px) {
   .site-logo {
+    position: fixed;
     top: calc(1.75rem + var(--voice-label) * 0.13 - var(--logo-h) * 0.184);
   }
   .site-logo__mark { height: var(--logo-h); }
@@ -95,12 +101,14 @@
    point the glyph appears), so it runs to completion instead of scrubbing with
    scroll position and never leaves the wordmark stranded half-way. (Pages
    without header.js keep the wordmark always visible.) */
-.site-logo.is-faded {
-  pointer-events: none;
-}
+@media (min-width: 768px) {
+  .site-logo.is-faded {
+    pointer-events: none;
+  }
 
-.site-logo.is-faded .site-logo__mark {
-  translate: 0 -115%; /* clears the mask, including the bubble's overshoot */
+  .site-logo.is-faded .site-logo__mark {
+    translate: 0 -115%; /* clears the mask, including the bubble's overshoot */
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
