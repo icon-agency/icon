@@ -18,7 +18,13 @@
   display: flex;
   align-items: center;
   gap: 0.375rem;
-  width: min(100%, 26rem);
+  /* COMPACT AT REST (user call, Sep 2026): just wide enough for the glyph,
+     the word and the arrow; a click into it (or a typed value) grows it to
+     its open width — the search face's 26rem, or whatever a consumer sets
+     in --subscribe-bar-open — and it shrinks back when left empty.
+     js/subscribe-reveal.js sets .is-open; a click anywhere on the pill
+     focuses the field. */
+  width: min(100%, 13rem);
   margin: 0;
   /* a tighter side inset than the search face's 1rem: the glyphs sit near
      the pill's edges (user call, Sep 2026), their own 0.5rem boxes making
@@ -35,7 +41,19 @@
      2026: at rest the glyphs are the Subscribe text's colour): all three
      read this, and it steps up together on hover / focus. */
   --hint-opacity: 0.55;
-  transition: background var(--duration-normal) var(--ease-standard);
+  transition:
+    width 0.45s var(--ease-decelerate),
+    background var(--duration-normal) var(--ease-standard);
+}
+
+.subscribe-bar.is-open {
+  width: var(--subscribe-bar-open, min(100%, 26rem));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .subscribe-bar {
+    transition: background var(--duration-normal) var(--ease-standard);
+  }
 }
 
 /* hover / focus: the ground lifts a tad (mixed toward white, so it is
@@ -180,9 +198,9 @@
    The footer's ground is a fixed near-black in every theme, so the pill
    reads the footer's own tokens rather than the flipping nav ground: a
    wash of the footer ink over the footer ground, lifting on hover. The
-   footer's column measure is the width. */
+   footer's column measure is the open width. */
 .subscribe-bar--footer {
-  width: 100%;
+  --subscribe-bar-open: 100%;
   color: var(--footer-ink);
   background: color-mix(in srgb, var(--footer-ink) 10%, var(--footer-bg));
   -webkit-backdrop-filter: none;

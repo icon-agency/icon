@@ -208,6 +208,10 @@
      gaps (user call: "more space" here) so the invitation reads separately
      from the control it introduces, rather than crowding it. */
   margin: 0 0 var(--space-sm);
+  /* the blurb keeps its original three-line measure (user call, Sep 2026)
+     inside the wider column, which is there for the Subscribe pill to open
+     into */
+  max-width: 20ch;
   font-size: var(--footer-voice-mid);
   font-weight: var(--font-weight-medium);
   letter-spacing: -0.01em;
