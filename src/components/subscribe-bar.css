@@ -156,7 +156,16 @@
    and it clears entirely once there is a typed value. */
 .subscribe-bar__hint {
   position: absolute;
-  inset: 0;
+  top: 0;
+  bottom: 0;
+  /* CENTRED at rest between the glyphs (user call, Sep 2026): the box is as
+     wide as its word and sits on the field's midline; as the pill opens it
+     slides to the field's left edge, where the typed address will start, on
+     the width's own easing. */
+  left: 50%;
+  translate: -50% 0;
+  width: max-content;
+  max-width: 100%;
   display: grid;
   align-items: center;
   padding: 0 var(--spacing-2xs);
@@ -167,7 +176,15 @@
   color: currentColor;
   opacity: var(--hint-opacity);
   overflow: hidden;
-  transition: opacity var(--duration-fast) var(--ease-standard);
+  transition:
+    opacity var(--duration-fast) var(--ease-standard),
+    left 0.45s var(--ease-decelerate),
+    translate 0.45s var(--ease-decelerate);
+}
+
+.subscribe-bar.is-open .subscribe-bar__hint {
+  left: 0;
+  translate: 0 0;
 }
 
 .subscribe-bar__hint-rest,
@@ -201,6 +218,10 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .subscribe-bar__hint {
+    transition: opacity var(--duration-fast) var(--ease-standard);
+  }
+
   .subscribe-bar__hint-rest,
   .subscribe-bar__hint-hover {
     transition: opacity 0.3s var(--ease-standard);
