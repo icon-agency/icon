@@ -456,8 +456,11 @@ function _icon_preprocess_node_work(array &$variables, NodeInterface $node): voi
   $allowed = $node->get('field_work_category')->getFieldDefinition()->getSetting('allowed_values');
   $cache = new CacheableMetadata();
   if ($variables['view_mode'] === 'teaser') {
+    // The card's headline is the Feature statement — the outcome in one line
+    // (user call, Sep 2026) — and the project name when none is written.
+    $statement = trim((string) ($node->get('field_work_statement')->value ?? ''));
     $variables['card'] = [
-      'title' => $node->label(),
+      'title' => $statement !== '' ? $statement : $node->label(),
       'url' => $node->toUrl()->toString(),
       'client' => $node->get('field_work_client')->value ?? '',
       'media' => _icon_media_source($node->get('field_work_tile')->entity, 'work_media', $cache),

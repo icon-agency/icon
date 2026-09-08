@@ -1,7 +1,13 @@
 uuid: e2a16d46-bc79-4f49-a299-547da0a45ebe
 langcode: en
 status: true
-dependencies: {  }
+dependencies:
+  module:
+    - menu_ui
+third_party_settings:
+  menu_ui:
+    available_menus: {  }
+    parent: ''
 name: Work
 type: work
 description: 'A folio case study. The tile, client and category feed the /work landing and the homepage; the page wears the client colour pair; the body is composed from blocks.'

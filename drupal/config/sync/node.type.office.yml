@@ -1,7 +1,13 @@
 uuid: f1132c94-b16d-4f47-bec9-bc9d34fc67ee
 langcode: en
 status: true
-dependencies: {  }
+dependencies:
+  module:
+    - menu_ui
+third_party_settings:
+  menu_ui:
+    available_menus: {  }
+    parent: ''
 name: Office
 type: office
 description: 'An office in the global footer: city, traditional place name, address, phone, email, icon. Ordered on Content → Offices.'

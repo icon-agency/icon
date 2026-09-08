@@ -9,7 +9,7 @@ field_name: title
 entity_type: node
 bundle: work
 label: 'Project name'
-description: 'The short name of the project (e.g. Raise It). It is the headline on the card and the case-study page, the start of the URL, and, with the client, the page title search engines show.'
+description: 'The short name of the project (e.g. Raise It). It is the heading on the case-study page, the start of the URL and, with the client, the page title search engines show; the card leads with the Feature statement.'
 required: true
 translatable: true
 default_value: {  }
