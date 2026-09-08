@@ -36,6 +36,7 @@ use Drupal\media_library\MediaLibraryState;
  * promote and sorts sticky first, then date) — they just need to say so.
  */
 function icon_site_form_node_form_alter(array &$form, FormStateInterface $form_state): void {
+  _icon_site_work_tile_group($form, $form_state);
   _icon_site_work_legacy_group($form, $form_state);
   _icon_site_panel_node_form_alter($form, $form_state);
   $node = $form_state->getFormObject()->getEntity();
@@ -378,6 +379,35 @@ function icon_site_preprocess_media(array &$variables): void {
 }
 
 /**
+ * The Work form's tile, as one block.
+ *
+ * The four tile fields — the square tile, the wide one, the foreground that
+ * floats over either and its inset — are one OPEN details, two up (the
+ * grid is css/work-tiles.css), so the card's whole picture is read in one
+ * place; the legacy folio card follows it, closed. Called from
+ * icon_site_form_node_form_alter().
+ */
+function _icon_site_work_tile_group(array &$form, FormStateInterface $form_state): void {
+  $node = $form_state->getFormObject()->getEntity();
+  $fields = ['field_work_tile', 'field_work_tile_wide', 'field_work_tile_fg', 'field_work_tile_inset'];
+  if ($node->bundle() !== 'work' || array_diff($fields, array_keys($form))) {
+    return;
+  }
+  $form['tile'] = [
+    '#type' => 'details',
+    '#title' => t('Tile'),
+    '#description' => t('The card on /work and the homepage. The square tile is the one every card has; the wide one is for the landscape frames; the foreground is optional — a logo or a cut-out that floats over either.'),
+    '#open' => TRUE,
+    '#weight' => $form['field_work_tile']['#weight'] ?? 0,
+    '#attributes' => ['class' => ['icon-work-tiles']],
+    '#attached' => ['library' => ['icon_site/work_tiles']],
+  ];
+  foreach ($fields as $name) {
+    $form[$name]['#group'] = 'tile';
+  }
+}
+
+/**
  * The Work form's legacy folio card.
  *
  * The Layers field sits closed in its own details, out of the way of the new
@@ -394,7 +424,7 @@ function _icon_site_work_legacy_group(array &$form, FormStateInterface $form_sta
     '#title' => t('Legacy folio card (old site)'),
     '#description' => t('For a project brought over from iconagency.com.au: its tile there was a stack of square cut-out images that tilts to the cursor, each layer lifting a step further on hover. Add the layers here, back to front (one to six square PNGs), and the card uses that instead of the Tile above. Leave empty for the new tile.'),
     '#open' => !$node->get('field_work_legacy_layers')->isEmpty(),
-    '#weight' => $form['field_work_tile']['#weight'] ?? 0,
+    '#weight' => ($form['field_work_tile']['#weight'] ?? 0) + 0.5,
   ];
   $form['field_work_legacy_layers']['#group'] = 'legacy';
 }

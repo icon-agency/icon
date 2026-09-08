@@ -11,8 +11,8 @@ id: node.work.field_work_tile_wide
 field_name: field_work_tile_wide
 entity_type: node
 bundle: work
-label: 'Tile (wide)'
-description: 'Optional: the tile for the LANDSCAPE frames — the wide feature and the 3:2 pairs on /work and the homepage. An image or a looping film, 16:9, at least 1920px wide. The square Tile is used where this is empty.'
+label: Wide
+description: 'Optional: the tile for the LANDSCAPE frames — the wide feature and the 3:2 pairs on /work and the homepage. An image or a looping film, 16:9, at least 1920px wide. The square tile is used where this is empty.'
 required: false
 translatable: true
 default_value: {  }

@@ -11,8 +11,8 @@ id: node.work.field_work_tile
 field_name: field_work_tile
 entity_type: node
 bundle: work
-label: Tile
-description: 'The card on /work and the homepage: an image or a looping film. SQUARE, at least 1600px — the square frames use it as is; the landscape frames use the wide Tile when one is set, and crop this one otherwise.'
+label: Square
+description: 'SQUARE, at least 1600px — an image or a looping film. The square frames use it as is; the landscape frames use the wide tile when one is set, and crop this one otherwise.'
 required: true
 translatable: false
 default_value: {  }

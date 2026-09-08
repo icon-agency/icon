@@ -1,0 +1,37 @@
+/**
+ * @file
+ * The Work form's Tile details: its four fields two up.
+ *
+ * Square | Wide on the first row, Foreground | Foreground inset on the
+ * second; the details' own description spans the row. Two up only once the
+ * details itself is wide enough for two media widgets (a container query,
+ * so a narrow pane or the sidebar's push falls to one column). Attached by
+ * _icon_site_work_tile_group().
+ */
+
+.icon-work-tiles {
+  container-type: inline-size;
+}
+
+.icon-work-tiles > .claro-details__wrapper {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0 1.5rem;
+}
+
+.icon-work-tiles > .claro-details__wrapper > .claro-details__description {
+  grid-column: 1 / -1;
+}
+
+/* A chosen item is a quarter of the widget in Claro — in a half-width
+   column that shrinks to a thumbnail's sliver. A stated width instead. */
+.icon-work-tiles .media-library-selection .media-library-item--grid {
+  width: 12rem;
+  max-width: 100%;
+}
+
+@container (min-width: 44rem) {
+  .icon-work-tiles > .claro-details__wrapper {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+}

@@ -24,3 +24,10 @@ block_picker:
   css:
     component:
       css/block-picker.css: {}
+
+# The Work form's Tile details, two up (work-tiles.css); attached by
+# _icon_site_work_tile_group().
+work_tiles:
+  css:
+    component:
+      css/work-tiles.css: {}
