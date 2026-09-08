@@ -87,17 +87,32 @@
        mark is a mask over a fill layer, so its contents are swappable).
        One clean string for assistive tech; the mark itself is decorative.
 
-       preload="none" is deliberate: these are the hero's files, so on the
-       homepage they are already cached, but on every other template they
-       would be a multi-megabyte download for a footer decoration. Nothing
-       is fetched until js/site-footer.js starts playback, which it only
-       does once the panel is on screen. -->
+       The films and stills are THE HOMEPAGE HERO'S OWN SLIDES (footer_slides
+       from icon_preprocess_page(): the Hero slide content, in the hero's
+       order), at the very same URLs the hero renders — the same image style
+       for a still, the raw film for a video — so once the hero, or any
+       earlier footer, has played one, the browser serves it from cache
+       here rather than fetching it again. preload="none" (and loading=lazy
+       on a still) is deliberate: nothing is fetched until js/site-footer.js
+       starts the reel, which it only does once the panel is on screen, so
+       a page that never scrolls to the footer costs nothing. The theme's
+       two banner films are the fallback for a site with no slides yet. -->
   <p class="site-footer__lockup">
     <span class="sr-only">ICON</span>
     <span class="site-footer__lockup-line" aria-hidden="true">
       <span class="site-footer__logo">
-        <video class="site-footer__slide is-current" src="{{ theme_path }}/assets/banner/NWMPHN.mp4" muted playsinline loop preload="none"></video>
-        <video class="site-footer__slide" src="{{ theme_path }}/assets/banner/banner-vid-nike-mara.mp4" muted playsinline loop preload="none"></video>
+        {% if footer_slides is not empty %}
+          {% for slide in footer_slides %}
+            {% if slide.source.type == 'video' %}
+              <video class="site-footer__slide{{ loop.first ? ' is-current' }}" src="{{ slide.source.src }}" muted playsinline loop preload="none"></video>
+            {% else %}
+              <img class="site-footer__slide{{ loop.first ? ' is-current' }}" src="{{ slide.source.src }}" alt="" loading="lazy" decoding="async"{% if slide.source.width %} width="{{ slide.source.width }}"{% endif %}{% if slide.source.height %} height="{{ slide.source.height }}"{% endif %}>
+            {% endif %}
+          {% endfor %}
+        {% else %}
+          <video class="site-footer__slide is-current" src="{{ theme_path }}/assets/banner/NWMPHN.mp4" muted playsinline loop preload="none"></video>
+          <video class="site-footer__slide" src="{{ theme_path }}/assets/banner/banner-vid-nike-mara.mp4" muted playsinline loop preload="none"></video>
+        {% endif %}
       </span>
     </span>
   </p>

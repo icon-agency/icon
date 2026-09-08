@@ -86,8 +86,13 @@
     var HOLD = 6000;
     var i = 0, timer = 0, live = false;
 
+    // A slide is a <video> or, since the reel is the hero's own (Drupal:
+    // footer_slides), an <img> still — which simply holds for its turn.
+    function isFilm(el) { return typeof el.play === "function"; }
+
     function show(el) {
       el.classList.add("is-current");
+      if (!isFilm(el)) return;
       try { el.currentTime = 0; } catch (e) {} // start clean, not mid-loop
       if (reduce) return; // reduced motion holds a first frame
       var p = el.play();
@@ -98,7 +103,7 @@
       var prev = slides[i];
       i = (i + 1) % slides.length;
       prev.classList.remove("is-current");
-      prev.pause();
+      if (isFilm(prev)) prev.pause();
       show(slides[i]);
       timer = setTimeout(step, HOLD);
     }
@@ -114,7 +119,7 @@
       live = false;
       clearTimeout(timer);
       timer = 0;
-      slides.forEach(function (v) { v.pause(); });
+      slides.forEach(function (v) { if (isFilm(v)) v.pause(); });
     }
 
     if ("IntersectionObserver" in window) {
