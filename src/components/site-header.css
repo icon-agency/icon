@@ -136,7 +136,7 @@
      (measured in the browser; re-measure if the links change). The voice is
      whatever makes that fit the width between the gutters, capped at the
      label voice so it never grows past the desktop size. */
-  --nav-row-em: 33.25; /* 33.02em measured at 375px with the glyph showing, plus a hair */
+  --nav-row-em: 31; /* 30.75em measured at 375px with the glyph showing (WORK EXPERTISE ABOUT NEWS CONTACT + search, 0.4em item padding, 1.5em glyph), plus a hair */
   --nav-voice: min(var(--voice-label), calc((100vw - 1.5rem) / var(--nav-row-em)));
 }
 
@@ -286,7 +286,7 @@
 .site-nav__link {
   display: flex;
   align-items: center;
-  padding: 0.55em;
+  padding: 0.55em 0.4em; /* below md the items sit a little closer, which buys the type some size */
   font-size: var(--nav-voice); /* the label voice from md; below it, whatever fits the width */
   font-weight: var(--font-weight-bold);
   line-height: 1;
@@ -346,14 +346,9 @@
 }
 
 .site-nav__home-glyph {
-  height: 1.1em;
-  width: auto;
-}
-
-@media (min-width: 768px) {
-  .site-nav__home-glyph {
-    height: 1.25rem;
-  }
+  flex: none; /* a flex child with only a height can be squeezed to nothing; the width is stated */
+  height: 1.5em; /* the search glyph's size, at every width (user call, Sep 2026: bigger) */
+  width: 1.2em; /* the mark's 64:80 box */
 }
 
 /* SERVICES drawer — expands the pill downward instead of floating over the
@@ -511,7 +506,7 @@
   /* The glyph is 1.5em (below) inside a box the same height as a link's
      (1em of text + the padding): the extra half-em comes out of the vertical
      padding, so a bigger glyph never grows the pill. */
-  padding: 0.3em 0.55em;
+  padding: 0.3em 0.4em;
   border: 0;
   border-radius: var(--radius-sm);
   background: none;
