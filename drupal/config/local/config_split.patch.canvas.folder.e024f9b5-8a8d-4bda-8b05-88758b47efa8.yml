@@ -1,0 +1,7 @@
+adding:
+  dependencies:
+    config:
+      - canvas.component.block.system_menu_block.devel
+  items:
+    - block.system_menu_block.devel
+removing: {  }

@@ -10,12 +10,14 @@ module:
   canvas: 0
   ckeditor5: 0
   config: 0
+  config_split: 0
   contextual: 0
   datetime: 0
   dblog: 0
   dynamic_page_cache: 0
   editor: 0
   entity_reference_revisions: 0
+  environment_indicator: 0
   field: 0
   field_ui: 0
   file: 0

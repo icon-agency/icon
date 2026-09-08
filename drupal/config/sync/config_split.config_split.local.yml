@@ -1,0 +1,18 @@
+uuid: 0de2a9c5-f1c6-4ab2-b6bc-0691c2eb724b
+langcode: en
+status: false
+dependencies: {  }
+id: local
+label: Local
+description: 'Development-only modules and their config: devel, stage_file_proxy. On under DDEV (settings.php), off everywhere else.'
+weight: 0
+stackable: false
+no_patching: false
+storage: folder
+folder: ../config/local
+module:
+  devel: 0
+  stage_file_proxy: 0
+theme: {  }
+complete_list: {  }
+partial_list: {  }
