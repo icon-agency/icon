@@ -20,6 +20,7 @@ settings:
       - '|'
       - bulletedList
       - numberedList
+      - style
       - '|'
       - blockQuote
       - drupalInsertImage
@@ -57,6 +58,11 @@ settings:
         - '<h4 id>'
         - '<h5 id>'
         - '<h6 id>'
+    ckeditor5_style:
+      styles:
+        -
+          label: 'Slash list'
+          element: '<ul class="list-slash">'
 image_upload:
   status: true
   scheme: public
