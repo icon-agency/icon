@@ -96,7 +96,12 @@ html:active-view-transition-type(back)::view-transition-new(root) {
   view-transition-name: site-logo;
 }
 
-.site-nav {
+/* The name goes on the PILL, not its .site-nav wrapper: a named element is
+   rendered in isolation, so a descendant's backdrop-filter sees only the
+   named element's own (transparent) contents — the frost went flat when the
+   wrapper wore the name (Sep 2026). On the frosted element itself the blur
+   still reads the page behind. */
+.site-nav__pill {
   view-transition-name: site-nav;
 }
 
