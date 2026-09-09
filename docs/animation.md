@@ -142,10 +142,16 @@ The move from one page to the next, as **cross-document View Transitions**
 nothing becomes a single-page app: the browser snapshots the old page, the new
 one loads, and CSS animates between them. Three layers:
 
-- **The page.** A **crossfade by default** (user call, Sep 2026): the old
-  page fades out in 300ms on the standard ease, the new fades in over 450ms
-  on the decelerate ease, and the new page's own reveals — the word cascade,
-  the media reveals — do the arriving. The pages whose ground is the event
+- **The page.** A **crossfade when the grounds are alike** (user call, Sep
+  2026): the old page fades out in 300ms on the standard ease, the new fades
+  in over 450ms on the decelerate ease, and the new page's own reveals — the
+  word cascade, the media reveals — do the arriving. A **ground that changes
+  fades through** (`fade-through`): the old page fades out to the new page's
+  ground first and the new content fades in after it (a 300ms delay), so the
+  two are never mixed into a third colour. The outgoing page notes its
+  painted background as it left — live, so a dark-opening page that has
+  handed over to light on scroll reports light — and the incoming page reads
+  its own at first render. The pages whose ground is the event
   get the **corner wipe** instead: a Work case study (its client colour) and
   the homepage (its blue loading screen). There the new page is clipped to
   nothing in the viewport's bottom-left corner and grows up and right in

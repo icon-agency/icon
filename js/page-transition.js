@@ -1,11 +1,14 @@
 /* page-transition.js — the cross-document View Transition's two scripted
  * parts (the fade itself is CSS: src/utilities/page-transition.css).
  *
- *   1. THE MOVE — a crossfade by default; the `enter-corner` type when the
- *      new page is a Work case study or the homepage (their ground is the
- *      event, and the wipe brings it from the corner), `leave-corner` when
- *      the old page was a case study (its colour shrinks back into the
- *      corner — the note carries this).
+ *   1. THE MOVE — a crossfade when the two grounds are alike (the note
+ *      carries the old page's painted background as it left; the new page
+ *      reads its own at first render), `fade-through` when they differ (the
+ *      old fades out to the new ground, then the new content fades in), the
+ *      `enter-corner` type when the new page is a Work case study or the
+ *      homepage (their ground is the event, and the wipe brings it from the
+ *      corner), `leave-corner` when the old page was a case study (its
+ *      colour shrinks back into the corner — the note carries this).
  *   2. THE MORPH — leaving a listing for an article, the card whose link is
  *      the destination has its media named `feature-media` for the outgoing
  *      snapshot, and the article names its banner the same for the incoming
@@ -95,12 +98,34 @@
     return !!document.querySelector(".work-article, [data-text-box]");
   }
 
+  /** The page's ground as [r, g, b]: the first painted background down
+   *  from <html>, read live — a dark-opening page that has handed over to
+   *  light on scroll reports light. */
+  function ground() {
+    var els = [document.body, document.documentElement];
+    for (var i = 0; i < els.length; i++) {
+      var m = /rgba?\(\s*(\d+)[\s,]+(\d+)[\s,]+(\d+)(?:[\s,/]+([\d.]+))?/.exec(getComputedStyle(els[i]).backgroundColor);
+      if (!m || (m[4] !== undefined && parseFloat(m[4]) === 0)) continue;
+      return [+m[1], +m[2], +m[3]];
+    }
+    return [255, 255, 255];
+  }
+
+  /** Two grounds close enough to read as one. */
+  function alike(a, b) {
+    return Math.max(Math.abs(a[0] - b[0]), Math.abs(a[1] - b[1]), Math.abs(a[2] - b[2])) < 64;
+  }
+
   /** The note the outgoing page leaves the incoming one: its morph partner,
-   *  if any, and whether it was a case study (whose colour then shrinks
-   *  back into the corner). */
+   *  if any, whether it was a case study (whose colour then shrinks back
+   *  into the corner), and its ground as it left. */
   function note(morph) {
     try {
-      sessionStorage.setItem(KEY, JSON.stringify({ morph: morph || null, corner: !!document.querySelector(".work-article") }));
+      sessionStorage.setItem(KEY, JSON.stringify({
+        morph: morph || null,
+        corner: !!document.querySelector(".work-article"),
+        ground: ground(),
+      }));
     } catch (e) {}
   }
 
@@ -155,6 +180,11 @@
     if (vt.types) {
       if (from.corner) vt.types.add("leave-corner");
       else if (cornerPage()) vt.types.add("enter-corner");
+      // Alike grounds CROSSFADE — the content changes over one ground. A
+      // ground that changes fades THROUGH: the old page fades out to the new
+      // page's ground first, and the new page's content fades in after it,
+      // so the two never mix mid-way (user call, Sep 2026).
+      else if (from.ground && !alike(from.ground, ground())) vt.types.add("fade-through");
     }
 
     var html = document.documentElement;

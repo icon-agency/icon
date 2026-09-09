@@ -7,9 +7,10 @@
  * (Claro, no main.css) never transitions.
  *
  * Three layers:
- *   1. the page — a CROSSFADE by default: the old page fades out on the
- *      standard ease, the new fades in on the decelerate ease and its own
- *      reveals do the arriving. The pages whose ground is the event — a
+ *   1. the page — a CROSSFADE when the grounds are alike: the old page fades
+ *      out on the standard ease, the new fades in on the decelerate ease and
+ *      its own reveals do the arriving; a ground that changes fades THROUGH
+ *      — old out to the new ground, then the new content in. The pages whose ground is the event — a
  *      Work case study, the homepage — get the corner WIPE instead: the new
  *      page grows from the viewport's bottom-left corner (the media reveal's
  *      gesture, page-sized), and leaving a case study its colour shrinks
@@ -54,6 +55,16 @@
 
 ::view-transition-new(root) {
   animation: 450ms var(--ease-decelerate) both page-fade-in;
+}
+
+/* A GROUND THAT CHANGES fades THROUGH instead (`fade-through`, set when the
+   old page's ground as it left and the new page's differ): the old page
+   fades out to the new page's ground — the canvas, which is that ground —
+   and only then does the new page's content fade in, so the two are never
+   mixed mid-way into a third colour. Alike grounds keep the crossfade above:
+   the content changes over one ground (user call, Sep 2026). */
+html:active-view-transition-type(fade-through)::view-transition-new(root) {
+  animation-delay: 300ms;
 }
 
 /* THE CORNER WIPE, for the pages whose GROUND is the event: a Work case
