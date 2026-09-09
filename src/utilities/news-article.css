@@ -186,7 +186,7 @@
   /* the head's caps voice (.news-article__meta--caps): the label reads as
      one of the article's meta, not a different species */
   font-size: var(--voice-label);
-  font-weight: var(--font-weight-bold);
+  font-weight: var(--font-weight-medium);
   text-transform: uppercase;
   color: var(--color-icon-grey);
 }
@@ -544,13 +544,15 @@
   display: block;
 }
 
-/* the caps register the mock sets the eyebrow and date in — IDENTICAL to
-   the main nav items (user call): the label voice at bold, uppercase, no
-   tracking, exactly as .site-nav__link wears it. Only the quiet meta
-   colour differs. */
+/* the caps register the mock sets the eyebrow and date in — the main nav
+   items' register (user call): the label voice, uppercase, no tracking, as
+   .site-nav__link wears it, but at MEDIUM rather than the nav's bold and in
+   the quiet meta colour (user call, Sep 2026). The whole caps-meta family
+   — the news card's meta, the Share label, the work article's eyebrow and
+   facts — wears this weight. */
 .news-article__meta--caps {
   font-size: var(--voice-label);
-  font-weight: var(--font-weight-bold);
+  font-weight: var(--font-weight-medium);
   text-transform: uppercase;
 }
 

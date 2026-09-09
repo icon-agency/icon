@@ -144,7 +144,7 @@
 .work-article__eyebrow {
   margin: calc(var(--space-sm) * 2) 0 var(--space-sm);
   font-size: var(--voice-label);
-  font-weight: var(--font-weight-bold);
+  font-weight: var(--font-weight-medium);
   text-transform: uppercase;
   color: var(--color-icon-grey);
 }
@@ -303,14 +303,14 @@
 
 .work-article__facts li {
   font-size: var(--voice-label);
-  font-weight: var(--font-weight-bold);
+  font-weight: var(--font-weight-medium);
   letter-spacing: 0.05em;
   text-transform: uppercase;
   line-height: 1.7;
 }
 
 /* Each column opens with a TITLE — CATEGORY / DELIVERABLES — in the same
-   caps voice at REGULAR weight (user call, Sep 2026), so the bold items
+   caps voice at REGULAR weight (user call, Sep 2026), so the medium items
    read as the content and the title as the label of the label. It replaced
    the left column's "Work" link, which only duplicated the ← Work eyebrow. */
 .work-article__facts li.work-article__facts-title {
