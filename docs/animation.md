@@ -170,8 +170,10 @@ one loads, and CSS animates between them. Three layers:
   frosted element itself the blur still reads the page) carry their own
   transition names, so they hold their place across pages, one fixed anchor
   outside the wipe.
-- **The morph.** Leaving a listing for an article, the clicked card's media
-  and the article's banner share the name `feature-media` for that one
+- **The morph** (Work only — a news story's image morphing read as the
+  picture flying about, user call Sep 2026; news just fades and its own
+  reveals run). Leaving the listing for a case study, the clicked card's
+  media and the banner share the name `feature-media` for that one
   navigation, so the tile grows into the banner (600ms, decelerate; the two
   images `object-fit: cover` the group, so a square tile and a 16:9 banner
   never stretch). Coming back, the banner shrinks into its card. Only a pair

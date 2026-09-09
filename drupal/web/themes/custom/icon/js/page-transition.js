@@ -13,10 +13,10 @@
  *      homepage (their ground is the event, and the wipe brings it from the
  *      corner), `leave-corner` when the old page was a case study (its
  *      colour shrinks back into the corner — the note carries this).
- *   2. THE MORPH — leaving a listing for an article, the card whose link is
- *      the destination has its media named `feature-media` for the outgoing
- *      snapshot, and the article names its banner the same for the incoming
- *      one, so the tile grows into the banner. Coming back, the article names
+ *   2. THE MORPH (Work only) — leaving a listing for a case study, the card
+ *      whose link is the destination has its media named `feature-media`
+ *      for the outgoing snapshot, and the case study names its banner the
+ *      same for the incoming one, so the tile grows into the banner. Coming back, the article names
  *      its banner on the way out and the listing names the matching card on
  *      the way in, so it shrinks back. Only a pair that is on screen at both
  *      ends is named — an off-screen partner would fly in from nowhere. The
@@ -51,8 +51,11 @@
 
   var KEY = "icon:page-transition";
   var NAME = "feature-media";
-  var BANNER = ".work-article__banner, .news-article__hero, .news-article__media";
-  var CARD = ".work__item, .news-card";
+  // Work only: a news story's image morphing to its new place read as the
+  // picture flying about (user call, Sep 2026) — news just fades and its
+  // own reveals run.
+  var BANNER = ".work-article__banner";
+  var CARD = ".work__item";
 
   function path(url) {
     try { return new URL(url, location.href).pathname.replace(/\/$/, "") || "/"; } catch (e) { return null; }
