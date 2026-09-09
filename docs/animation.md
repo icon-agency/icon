@@ -152,9 +152,9 @@ one loads, and CSS animates between them. Three layers:
   earlier history entry, the `back` type) reverses it: the old page, lifted
   on top, shrinks back into the corner in 500ms accelerating. Two alike
   grounds — the script carries the old page's painted background in its note
-  and compares the new page's at reveal — fade through the OPPOSITE tone
-  instead (a `ground-light` / `ground-dark` type paints the transition's
-  backdrop), so a move is never black on black or white on white; grounds
+  and compares the new page's at reveal — fade through a grey a step off
+  their tone instead (a `ground-light` / `ground-dark` type paints the
+  transition's backdrop; full white behind two dark pages read as a flash), so a move is never black on black or white on white; grounds
   that differ, black to a client's red, fade through the new page's own
   colour.
 - **The chrome.** The wordmark (`.site-logo`) and the pill's nav face

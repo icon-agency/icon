@@ -105,16 +105,19 @@ html:active-view-transition-type(back)::view-transition-new(root) {
 }
 
 /* Two alike grounds (js/page-transition.js §3): the old page fades to
-   the opposite tone instead of the new page's own ground, so the leaving is
-   visible on black-to-black and white-to-white moves. Only the part of the
+   a grey a step off their tone instead of the new page's own ground, so the
+   leaving is visible on black-to-black and white-to-white moves. Only the part of the
    screen the wipe has not reached shows it, and only as far as the old page
    has faded — a soft lift behind the sweep, not a flash. */
+/* A STEP off the pages' tone, not the far end of the scale: full white
+   behind two dark pages read as a flash (user call, Sep 2026). Enough grey
+   to see the old page leave, no more. */
 html:active-view-transition-type(ground-light)::view-transition {
-  background: var(--color-white);
+  background: color-mix(in srgb, var(--color-white) 22%, var(--color-icon-black));
 }
 
 html:active-view-transition-type(ground-dark)::view-transition {
-  background: var(--color-icon-black);
+  background: color-mix(in srgb, var(--color-icon-black) 14%, var(--color-white));
 }
 
 /* ---- 2. The chrome ------------------------------------------------------- */
