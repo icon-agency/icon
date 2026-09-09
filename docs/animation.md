@@ -145,9 +145,10 @@ one loads, and CSS animates between them. Three layers:
 - **The page.** The media reveal's gesture, page-sized: the new page is
   clipped to nothing in the viewport's bottom-left corner and grows up and
   right from there in 650ms on the decelerate ease, with a zoom-settle toward
-  the same corner, over the old page holding still beneath it — a clean wipe
-  (the UA's crossfade and plus-lighter blend are switched off), the leading
-  corner keeping the site's radius on the way. A Back (a traverse to an
+  the same corner, over the old page fading out beneath it (the UA's
+  plus-lighter blend is switched off, so the pair never flash; the fade is
+  what makes a dark-to-dark move — /work to /news — visible at all), the
+  leading corner keeping the site's radius on the way. A Back (a traverse to an
   earlier history entry, the `back` type) reverses it: the old page, lifted
   on top, shrinks back into the corner in 500ms accelerating.
 - **The chrome.** The wordmark (`.site-logo`) and the pill's nav face

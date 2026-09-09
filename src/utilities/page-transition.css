@@ -9,8 +9,8 @@
  * Three layers:
  *   1. the page — the new page wipes in from the viewport's bottom-left
  *      corner on the decelerate ease, with a zoom-settle, over the old page
- *      holding still: the media reveal's gesture, page-sized; a Back sends
- *      the old page back into that corner instead;
+ *      fading beneath it: the media reveal's gesture, page-sized; a Back
+ *      sends the old page back into that corner instead, fading as it goes;
  *   2. the chrome — the wordmark and the pill carry their own names, so they
  *      hold their place across pages, one fixed anchor, outside the fade;
  *   3. the morph — the clicked card's media and the article's banner share
@@ -38,8 +38,8 @@
 /* The media reveal's gesture, page-sized (home-c.css .media-reveal): the new
    page is clipped to nothing in the viewport's bottom-left corner and grows
    up and right from there, with a zoom-settle toward the same corner, over
-   the old page — which holds still beneath it (no fade: the UA's crossfade
-   and its plus-lighter blend are switched off, so this is a clean wipe).
+   the old page fading beneath it (the UA's plus-lighter blend is switched
+   off, so the two never add up to a flash).
    The leading corner keeps the site's radius on the way. A Back reverses
    it: the old page, lifted on top, shrinks back into the corner. */
 ::view-transition-old(root),
@@ -47,8 +47,13 @@
   mix-blend-mode: normal;
 }
 
+/* The old page FADES under the wipe (user call, Sep 2026): two dark pages
+   — /work to /news — showed nothing of the move while the old held at full
+   strength beneath the new, black sweeping over black. Fading it makes the
+   leaving visible on any pair of grounds: what shows through is the canvas,
+   which is the new page's own ground, so the fade never adds a colour. */
 ::view-transition-old(root) {
-  animation: none;
+  animation: 650ms var(--ease-standard) both page-leave;
 }
 
 ::view-transition-new(root) {
@@ -64,6 +69,12 @@ html:active-view-transition-type(back)::view-transition-old(root) {
 
 html:active-view-transition-type(back)::view-transition-new(root) {
   animation: none;
+}
+
+@keyframes page-leave {
+  to {
+    opacity: 0;
+  }
 }
 
 @keyframes page-enter {
@@ -87,6 +98,7 @@ html:active-view-transition-type(back)::view-transition-new(root) {
   to {
     clip-path: inset(100% 100% 0 0 round var(--radius-icon));
     scale: 1.06;
+    opacity: 0;
   }
 }
 
