@@ -1944,7 +1944,7 @@ html:not(.js-animations) .intro__expertise-list li:first-child a {
   align-items: center;
   gap: 0.5rem;
   font-size: var(--voice-label); /* the shared label voice (typography.css) — was --text-xs, which this page re-scopes */
-  font-weight: var(--font-weight-bold);
+  font-weight: var(--font-weight-medium); /* with the caps-meta family (news-article.css), a step under the nav's bold — user call, Sep 2026 */
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--color-icon-black);

@@ -549,7 +549,7 @@
    .site-nav__link wears it, but at MEDIUM rather than the nav's bold and in
    the quiet meta colour (user call, Sep 2026). The whole caps-meta family
    — the news card's meta, the Share label, the work article's eyebrow and
-   facts — wears this weight. */
+   facts, the arrow links (home-c.css .arrow-link) — wears this weight. */
 .news-article__meta--caps {
   font-size: var(--voice-label);
   font-weight: var(--font-weight-medium);
