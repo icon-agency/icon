@@ -7,11 +7,13 @@
  * (Claro, no main.css) never transitions.
  *
  * Three layers:
- *   1. the page — the new page wipes in from the viewport's bottom-left
- *      corner on the decelerate ease, with a zoom-settle and a touch of
- *      lift that settles as it lands, over the old page holding still: the
- *      media reveal's gesture, page-sized; a Back sends the old page back
- *      into that corner instead, lifting as it goes;
+ *   1. the page — a CROSSFADE by default: the old page fades out on the
+ *      standard ease, the new fades in on the decelerate ease and its own
+ *      reveals do the arriving. The pages whose ground is the event — a
+ *      Work case study, the homepage — get the corner WIPE instead: the new
+ *      page grows from the viewport's bottom-left corner (the media reveal's
+ *      gesture, page-sized), and leaving a case study its colour shrinks
+ *      back into that corner;
  *   2. the chrome — the wordmark and the pill carry their own names, so they
  *      hold their place across pages, one fixed anchor, outside the fade;
  *   3. the morph — the clicked card's media and the article's banner share
@@ -36,54 +38,66 @@
 
 /* ---- 1. The page --------------------------------------------------------- */
 
-/* The media reveal's gesture, page-sized (home-c.css .media-reveal): the new
-   page is clipped to nothing in the viewport's bottom-left corner and grows
-   up and right from there, with a zoom-settle toward the same corner, over
-   the old page holding still (the UA's crossfade and plus-lighter blend are
-   switched off, so this is a clean wipe).
-   The leading corner keeps the site's radius on the way. A Back reverses
-   it: the old page, lifted on top, shrinks back into the corner. */
+/* THE DEFAULT IS A CROSSFADE (user call, Sep 2026): the old page fades out
+   on the standard ease, the new fades in on the decelerate ease, and the
+   new page's own reveals — the word cascade, the media reveals — do the
+   arriving. The UA's plus-lighter blend is switched off so the pair never
+   add up to a flash. */
 ::view-transition-old(root),
 ::view-transition-new(root) {
   mix-blend-mode: normal;
 }
 
-/* The old page holds still beneath the wipe; it is the NEW page that
-   announces itself — it arrives a touch lighter (contrast(0.8) lifts pure
-   black to a tenth of white and takes a tenth off pure white) and settles to
-   its true colour as it lands, so a black page sweeping over a black page,
-   or white over white, still reads (user call, Sep 2026 — an old-page fade
-   to a grey backdrop was tried first and read as a flash). */
 ::view-transition-old(root) {
+  animation: 300ms var(--ease-standard) both page-fade-out;
+}
+
+::view-transition-new(root) {
+  animation: 450ms var(--ease-decelerate) both page-fade-in;
+}
+
+/* THE CORNER WIPE, for the pages whose GROUND is the event: a Work case
+   study (its client colour) and the homepage (its blue loading screen,
+   which the wipe carries in — js/hero-loader.js). js/page-transition.js
+   sets `enter-corner` when the new page is one of those. The media reveal's
+   gesture, page-sized: the new page is clipped to nothing in the viewport's
+   bottom-left corner and grows up and right from there, with a zoom-settle
+   toward the same corner and a touch of lift (contrast(0.8)) that settles
+   as it lands, over the old page holding still; the leading corner keeps
+   the site's radius on the way. */
+html:active-view-transition-type(enter-corner)::view-transition-old(root) {
   animation: none;
 }
 
-::view-transition-new(root) {
-  mix-blend-mode: normal;
-}
-
-/* The old page FADES under the wipe (user call, Sep 2026): two dark pages
-   — /work to /news — showed nothing of the move while the old held at full
-   strength beneath the new, black sweeping over black. Fading it makes the
-   leaving visible on any pair of grounds: what shows through is the canvas,
-   which is the new page's own ground, so the fade never adds a colour. */
-::view-transition-old(root) {
-  animation: 650ms var(--ease-standard) both page-leave;
-}
-
-::view-transition-new(root) {
+html:active-view-transition-type(enter-corner)::view-transition-new(root) {
   transform-origin: left bottom;
   animation: 650ms var(--ease-decelerate) both page-enter;
 }
 
-html:active-view-transition-type(back)::view-transition-old(root) {
+/* And LEAVING a case study, its colour goes back to the corner: the old
+   page, lifted on top, shrinks into it, lifting as it goes, over the new
+   page already in place (`leave-corner`, set when the outgoing page was a
+   case study — the note carries it). */
+html:active-view-transition-type(leave-corner)::view-transition-old(root) {
   z-index: 1;
   transform-origin: left bottom;
-  animation: 500ms var(--ease-accelerate) both page-leave-back;
+  animation: 500ms var(--ease-accelerate) both page-leave-corner;
 }
 
-html:active-view-transition-type(back)::view-transition-new(root) {
+html:active-view-transition-type(leave-corner)::view-transition-new(root) {
   animation: none;
+}
+
+@keyframes page-fade-out {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes page-fade-in {
+  from {
+    opacity: 0;
+  }
 }
 
 @keyframes page-enter {
@@ -100,8 +114,7 @@ html:active-view-transition-type(back)::view-transition-new(root) {
   }
 }
 
-/* Back mirrors it: the old page, on top, lifts as it shrinks away. */
-@keyframes page-leave-back {
+@keyframes page-leave-corner {
   from {
     clip-path: inset(0 0 0 0 round 0);
     scale: 1;

@@ -142,19 +142,21 @@ The move from one page to the next, as **cross-document View Transitions**
 nothing becomes a single-page app: the browser snapshots the old page, the new
 one loads, and CSS animates between them. Three layers:
 
-- **The page.** The media reveal's gesture, page-sized: the new page is
-  clipped to nothing in the viewport's bottom-left corner and grows up and
-  right from there in 650ms on the decelerate ease, with a zoom-settle toward
-  the same corner, over the old page holding still beneath it — a clean wipe
-  (the UA's crossfade and plus-lighter blend are switched off), the leading
-  corner keeping the site's radius on the way. The new page arrives a touch
-  lighter — `contrast(0.8)`, a tenth of white on black and a tenth off
-  white — and settles to its true colour as it lands, which is what makes a
-  black-to-black move (/work to /news) read; an old-page fade to a grey
-  backdrop was tried first and read as a flash (user call, Sep 2026). A Back
-  (a traverse to an earlier history entry, the `back` type) reverses it: the
-  old page, lifted on top, shrinks back into the corner in 500ms
-  accelerating, lifting as it goes.
+- **The page.** A **crossfade by default** (user call, Sep 2026): the old
+  page fades out in 300ms on the standard ease, the new fades in over 450ms
+  on the decelerate ease, and the new page's own reveals — the word cascade,
+  the media reveals — do the arriving. The pages whose ground is the event
+  get the **corner wipe** instead: a Work case study (its client colour) and
+  the homepage (its blue loading screen). There the new page is clipped to
+  nothing in the viewport's bottom-left corner and grows up and right in
+  650ms on the decelerate ease, with a zoom-settle toward the same corner
+  and a touch of lift (`contrast(0.8)`) that settles as it lands, over the
+  old page holding still — the media reveal's gesture, page-sized, the
+  leading corner keeping the site's radius. Leaving a case study its colour
+  goes back: the old page, lifted on top, shrinks into the corner in 500ms
+  accelerating over the new page already in place. The script sets the
+  `enter-corner` / `leave-corner` types; the outgoing page's note carries
+  whether it was a case study.
 - **The chrome.** The wordmark (`.site-logo`) and the pill's nav face
   (`.site-nav__pill--nav` — not the search face, its twin in the flip cube: a
   name worn twice voids the whole transition; and not the wrapper — a named element renders in isolation, and a descendant's

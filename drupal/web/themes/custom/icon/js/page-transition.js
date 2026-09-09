@@ -5,8 +5,11 @@
 /* page-transition.js — the cross-document View Transition's two scripted
  * parts (the fade itself is CSS: src/utilities/page-transition.css).
  *
- *   1. DIRECTION — a Back (a traverse to an earlier history entry) adds the
- *      `back` type, so the new page comes down from above instead of rising.
+ *   1. THE MOVE — a crossfade by default; the `enter-corner` type when the
+ *      new page is a Work case study or the homepage (their ground is the
+ *      event, and the wipe brings it from the corner), `leave-corner` when
+ *      the old page was a case study (its colour shrinks back into the
+ *      corner — the note carries this).
  *   2. THE MORPH — leaving a listing for an article, the card whose link is
  *      the destination has its media named `feature-media` for the outgoing
  *      snapshot, and the article names its banner the same for the incoming
@@ -89,12 +92,19 @@
     el.classList.add("is-revealed");
   }
 
+  /** A page whose ground is the event and arrives by the corner wipe: a
+   *  Work case study (its client colour) or the homepage (its blue loading
+   *  screen, which the wipe carries in). */
+  function cornerPage() {
+    return !!document.querySelector(".work-article, [data-text-box]");
+  }
+
   /** The note the outgoing page leaves the incoming one: its morph partner,
-   *  if any. */
+   *  if any, and whether it was a case study (whose colour then shrinks
+   *  back into the corner). */
   function note(morph) {
     try {
-      if (morph) sessionStorage.setItem(KEY, morph);
-      else sessionStorage.removeItem(KEY);
+      sessionStorage.setItem(KEY, JSON.stringify({ morph: morph || null, corner: !!document.querySelector(".work-article") }));
     } catch (e) {}
   }
 
@@ -102,13 +112,8 @@
     try {
       var v = sessionStorage.getItem(KEY);
       sessionStorage.removeItem(KEY);
-      return v;
-    } catch (e) { return null; }
-  }
-
-  function isBack(activation) {
-    return activation.navigationType === "traverse" &&
-      activation.from && activation.entry && activation.entry.index < activation.from.index;
+      return v ? JSON.parse(v) : {};
+    } catch (e) { return {}; }
   }
 
   function quiet(vt) {
@@ -144,11 +149,17 @@
     // Navigation API's.
     var activation = window.navigation && window.navigation.activation;
     var partner = null;
-    if (from === "card") partner = banner();
-    else if (from === "banner" && activation && activation.from) partner = cardMedia(activation.from.url);
+    if (from.morph === "card") partner = banner();
+    else if (from.morph === "banner" && activation && activation.from) partner = cardMedia(activation.from.url);
     if (partner) name(partner);
 
-    if (vt.types && activation && isBack(activation)) vt.types.add("back");
+    // The crossfade is the default; the corner wipe is for the pages whose
+    // ground is the event (page-transition.css). Leaving a case study wins:
+    // its colour goes back to the corner over whatever comes next.
+    if (vt.types) {
+      if (from.corner) vt.types.add("leave-corner");
+      else if (cornerPage()) vt.types.add("enter-corner");
+    }
 
     var html = document.documentElement;
     html.classList.add("is-page-entering");
