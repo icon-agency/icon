@@ -1160,7 +1160,7 @@ html:not(.js-animations) .intro__expertise-list li:first-child a {
      (It used to be half the display masthead: much louder, and it read as a
      second heading rather than a link.) */
   font-size: var(--voice-mid);
-  font-weight: var(--font-weight-semibold);
+  font-weight: var(--font-weight-medium); /* as the footer's Get in touch — user call, Sep 2026 */
   line-height: 1.2;
   letter-spacing: -0.01em;
   color: var(--color-icon-black);
@@ -1892,7 +1892,7 @@ html:not(.js-animations) .intro__expertise-list li:first-child a {
      (It used to be half the display masthead: much louder, and it read as a
      second heading rather than a link.) */
   font-size: var(--voice-mid);
-  font-weight: var(--font-weight-semibold);
+  font-weight: var(--font-weight-medium); /* as the footer's Get in touch — user call, Sep 2026 */
   line-height: 1.2;
   letter-spacing: -0.01em;
   color: var(--color-icon-black);
