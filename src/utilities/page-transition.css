@@ -7,16 +7,17 @@
  * (Claro, no main.css) never transitions.
  *
  * Three layers:
- *   1. the page — old fades out fast on the standard ease, new fades in and
- *      rises 20px on the decelerate ease: the scroll reveal's gesture,
- *      page-sized; a Back comes down from above instead;
+ *   1. the page — the new page wipes in from the viewport's bottom-left
+ *      corner on the decelerate ease, with a zoom-settle, over the old page
+ *      holding still: the media reveal's gesture, page-sized; a Back sends
+ *      the old page back into that corner instead;
  *   2. the chrome — the wordmark and the pill carry their own names, so they
  *      hold their place across pages, one fixed anchor, outside the fade;
  *   3. the morph — the clicked card's media and the article's banner share
  *      the name `feature-media` for that one navigation (set by the JS), so
  *      the tile grows into the banner, and shrinks back on Back.
  *
- * The scroll reveals on the new page are held for the fade
+ * The scroll reveals on the new page are held for the wipe
  * (--animate-hold, set on html.is-page-entering by the JS and read by
  * animations.css and the media reveal in home-c.css), so the page settles
  * once instead of rising twice. Reduced motion switches the whole thing off.
@@ -34,35 +35,58 @@
 
 /* ---- 1. The page --------------------------------------------------------- */
 
+/* The media reveal's gesture, page-sized (home-c.css .media-reveal): the new
+   page is clipped to nothing in the viewport's bottom-left corner and grows
+   up and right from there, with a zoom-settle toward the same corner, over
+   the old page — which holds still beneath it (no fade: the UA's crossfade
+   and its plus-lighter blend are switched off, so this is a clean wipe).
+   The leading corner keeps the site's radius on the way. A Back reverses
+   it: the old page, lifted on top, shrinks back into the corner. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  mix-blend-mode: normal;
+}
+
 ::view-transition-old(root) {
-  animation: 250ms var(--ease-standard) both page-leave;
+  animation: none;
 }
 
 ::view-transition-new(root) {
-  animation: 450ms var(--ease-decelerate) both page-enter;
+  transform-origin: left bottom;
+  animation: 650ms var(--ease-decelerate) both page-enter;
+}
+
+html:active-view-transition-type(back)::view-transition-old(root) {
+  z-index: 1;
+  transform-origin: left bottom;
+  animation: 500ms var(--ease-accelerate) both page-leave-back;
 }
 
 html:active-view-transition-type(back)::view-transition-new(root) {
-  animation-name: page-enter-back;
-}
-
-@keyframes page-leave {
-  to {
-    opacity: 0;
-  }
+  animation: none;
 }
 
 @keyframes page-enter {
   from {
-    opacity: 0;
-    transform: translateY(20px);
+    clip-path: inset(100% 100% 0 0 round var(--radius-icon));
+    scale: 1.06;
+  }
+
+  to {
+    clip-path: inset(0 0 0 0 round 0);
+    scale: 1;
   }
 }
 
-@keyframes page-enter-back {
+@keyframes page-leave-back {
   from {
-    opacity: 0;
-    transform: translateY(-20px);
+    clip-path: inset(0 0 0 0 round 0);
+    scale: 1;
+  }
+
+  to {
+    clip-path: inset(100% 100% 0 0 round var(--radius-icon));
+    scale: 1.06;
   }
 }
 
@@ -99,5 +123,5 @@ html:active-view-transition-type(back)::view-transition-new(root) {
 /* ---- The reveal hold ----------------------------------------------------- */
 
 html.is-page-entering {
-  --animate-hold: 350ms;
+  --animate-hold: 400ms;
 }

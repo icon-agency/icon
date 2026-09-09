@@ -42,24 +42,31 @@
 
   // Fluid filter swap: with unique view-transition-names the browser tracks
   // each card across the DOM change — survivors morph to their new slot,
-  // leavers/arrivals crossfade. Names are assigned up front (harmless no-op
-  // where unsupported); chips get names too so the active state hands over
-  // softly instead of snapping while the page is frozen mid-transition.
+  // leavers/arrivals crossfade. Chips get names too so the active state
+  // hands over softly instead of snapping while the page is frozen
+  // mid-transition.
   var fluid =
     typeof document.startViewTransition === "function" &&
     !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  items.forEach(function (li, i) {
-    li.style.viewTransitionName = "nl-card-" + (i + 1);
-  });
-  chips.forEach(function (chip, i) {
-    chip.style.viewTransitionName = "nl-chip-" + (i + 1);
-  });
+  // The names are worn only for the filter's own transition: left on, every
+  // card and chip would be its own snapshot in the cross-document page
+  // transition (utilities/page-transition.css) and sit out the wipe.
+  function nameAll(on) {
+    items.forEach(function (li, i) {
+      li.style.viewTransitionName = on ? "nl-card-" + (i + 1) : "";
+    });
+    chips.forEach(function (chip, i) {
+      chip.style.viewTransitionName = on ? "nl-chip-" + (i + 1) : "";
+    });
+  }
 
   // Route every user-triggered filter change through here; the load-time
   // deep-link apply stays instant (nothing to animate FROM yet).
   function transitionTo(slug) {
     if (!fluid) { apply(slug); return; }
-    document.startViewTransition(function () { apply(slug); });
+    nameAll(true);
+    var vt = document.startViewTransition(function () { apply(slug); });
+    vt.finished.finally(function () { nameAll(false); });
   }
 
   function apply(slug) {

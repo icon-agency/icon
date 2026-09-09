@@ -14,7 +14,10 @@
  *      knows whether it has a partner; otherwise it names nothing and joins
  *      the plain fade.
  *
- * The homepage is skipped: its hero loader is an entrance of its own.
+ * The homepage is skipped: its hero loader is an entrance of its own. The
+ * name is stripped again once the transition has run (and before any new
+ * naming), so a page restored from the back-forward cache never carries a
+ * second bearer — a duplicate name voids the whole transition.
  *
  * The scroll reveals are held while the page fades in (html.is-page-entering
  * → --animate-hold), so the page settles once. A named banner is revealed
@@ -64,7 +67,16 @@
     return el && onScreen(el) ? el : null;
   }
 
+  /** Nothing else may wear the name — a second bearer voids the transition. */
+  function unname() {
+    var worn = document.querySelectorAll('[style*="view-transition-name"]');
+    for (var i = 0; i < worn.length; i++) {
+      if (worn[i].style.viewTransitionName === NAME) worn[i].style.viewTransitionName = "";
+    }
+  }
+
   function name(el) {
+    unname();
     el.style.viewTransitionName = NAME;
     el.classList.add("is-revealed");
   }
@@ -89,8 +101,16 @@
       activation.from && activation.entry && activation.entry.index < activation.from.index;
   }
 
+  function quiet(vt) {
+    // A skipped or voided transition rejects these; nothing waits on them.
+    if (vt.ready) vt.ready.catch(function () {});
+    if (vt.finished) vt.finished.catch(function () {});
+  }
+
   window.addEventListener("pageswap", function (e) {
     if (!e.viewTransition || !e.activation || !e.activation.entry) return;
+    quiet(e.viewTransition);
+    unname();
     var to = e.activation.entry.url;
     var media = cardMedia(to);
     if (media) {
@@ -110,6 +130,7 @@
   window.addEventListener("pagereveal", function (e) {
     var vt = e.viewTransition;
     if (!vt) return;
+    quiet(vt);
 
     // The homepage has its own entrance.
     if (document.querySelector("[data-text-box]")) {
@@ -131,6 +152,11 @@
 
     var html = document.documentElement;
     html.classList.add("is-page-entering");
-    vt.finished.finally(function () { html.classList.remove("is-page-entering"); });
+    // The name is for this one transition; a page kept alive in the
+    // back-forward cache would otherwise still wear it next time.
+    vt.finished.then(function () {
+      html.classList.remove("is-page-entering");
+      unname();
+    });
   });
 })();

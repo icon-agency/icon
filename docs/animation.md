@@ -128,10 +128,14 @@ The move from one page to the next, as **cross-document View Transitions**
 nothing becomes a single-page app: the browser snapshots the old page, the new
 one loads, and CSS animates between them. Three layers:
 
-- **The page.** The old page fades out in 250ms on the standard ease; the new
-  one fades in and rises 20px in 450ms on the decelerate ease — the scroll
-  reveal's gesture, page-sized. A Back (a traverse to an earlier history
-  entry, the `back` type) comes down from above instead.
+- **The page.** The media reveal's gesture, page-sized: the new page is
+  clipped to nothing in the viewport's bottom-left corner and grows up and
+  right from there in 650ms on the decelerate ease, with a zoom-settle toward
+  the same corner, over the old page holding still beneath it — a clean wipe
+  (the UA's crossfade and plus-lighter blend are switched off), the leading
+  corner keeping the site's radius on the way. A Back (a traverse to an
+  earlier history entry, the `back` type) reverses it: the old page, lifted
+  on top, shrinks back into the corner in 500ms accelerating.
 - **The chrome.** The wordmark (`.site-logo`) and the pill (`.site-nav`) carry
   their own transition names, so they hold their place across pages, one
   fixed anchor outside the fade.
@@ -151,8 +155,8 @@ complete by then because the shell render-blocks on the footer
 (`<link rel="expect" href="#site-footer" blocking="render">`). On reveal the
 activation is `navigation.activation` — only the swap event carries its own.
 
-While the new page fades in, `html.is-page-entering` sets `--animate-hold`
-(350ms), which the `[data-animate]` host and the media reveal add to their
+While the new page wipes in, `html.is-page-entering` sets `--animate-hold`
+(400ms), which the `[data-animate]` host and the media reveal add to their
 delay, so the page settles once instead of rising twice. A named banner is
 revealed outright (`.is-revealed` before first paint) — the morph would
 otherwise land on a clipped, invisible image. The homepage is skipped: its
@@ -207,7 +211,7 @@ so an admin page (no main.css) never transitions. Drupal: `icon/page-transition`
 | Homepage system | `js/home-c.js` | gsap, SplitText, lenis | `iconHomeC` → `icon/home-c` |
 | Hero loading screen | `js/hero-loader.js` | — (deliberately) | part of the hero SDC; its 16 rows become a Twig loop |
 | Global footer | `js/site-footer.js` | — | `iconFooter` → `icon/site-footer` |
-| Page transitions (direction + the card→page morph; the fade is CSS) | `js/page-transition.js` | — | plain IIFE in `<head>` → `icon/page-transition` (`header: true`) |
+| Page transitions (direction + the card→page morph; the wipe is CSS) | `js/page-transition.js` | — | plain IIFE in `<head>` → `icon/page-transition` (`header: true`) |
 | News listing (filter + card motion) | `js/news.js` | — | `iconNews` → `icon/news` |
 | Dark-opening theme handover (every dark-opening page: news listing, both articles, work landing) | `js/theme-handover.js` | — | `iconThemeHandover` → `icon/theme-handover` |
 | Article Share rail (copy link + email) | `js/share.js` | — | `iconShare` → `icon/share` |

@@ -43,16 +43,23 @@
         var fluid =
           typeof document.startViewTransition === "function" &&
           !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-        items.forEach(function (li, i) {
-          li.style.viewTransitionName = "wl-card-" + (i + 1);
-        });
-        chips.forEach(function (chip, i) {
-          chip.style.viewTransitionName = "wl-chip-" + (i + 1);
-        });
+        // The names are worn only for the filter's own transition: left on, every
+        // card and chip would be its own snapshot in the cross-document page
+        // transition (utilities/page-transition.css) and sit out the wipe.
+        function nameAll(on) {
+          items.forEach(function (li, i) {
+            li.style.viewTransitionName = on ? "wl-card-" + (i + 1) : "";
+          });
+          chips.forEach(function (chip, i) {
+            chip.style.viewTransitionName = on ? "wl-chip-" + (i + 1) : "";
+          });
+        }
 
         function transitionTo(slug) {
           if (!fluid) { apply(slug); return; }
-          document.startViewTransition(function () { apply(slug); });
+          nameAll(true);
+          var vt = document.startViewTransition(function () { apply(slug); });
+          vt.finished.finally(function () { nameAll(false); });
         }
 
         function apply(slug) {
