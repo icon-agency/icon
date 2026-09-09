@@ -136,8 +136,9 @@ one loads, and CSS animates between them. Three layers:
   corner keeping the site's radius on the way. A Back (a traverse to an
   earlier history entry, the `back` type) reverses it: the old page, lifted
   on top, shrinks back into the corner in 500ms accelerating.
-- **The chrome.** The wordmark (`.site-logo`) and the pill (`.site-nav__pill`,
-  not its wrapper — a named element renders in isolation, and a descendant's
+- **The chrome.** The wordmark (`.site-logo`) and the pill's nav face
+  (`.site-nav__pill--nav` — not the search face, its twin in the flip cube: a
+  name worn twice voids the whole transition; and not the wrapper — a named element renders in isolation, and a descendant's
   backdrop blur would see only the wrapper's transparent contents; on the
   frosted element itself the blur still reads the page) carry their own
   transition names, so they hold their place across pages, one fixed anchor

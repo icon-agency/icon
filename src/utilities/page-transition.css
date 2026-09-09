@@ -101,7 +101,10 @@ html:active-view-transition-type(back)::view-transition-new(root) {
    named element's own (transparent) contents — the frost went flat when the
    wrapper wore the name (Sep 2026). On the frosted element itself the blur
    still reads the page behind. */
-.site-nav__pill {
+/* And on the NAV face only: the pill is a flip cube whose search form is a
+   second .site-nav__pill, and a name worn twice voids the whole transition
+   (the wipe silently stopped for a commit, Sep 2026). */
+.site-nav__pill--nav {
   view-transition-name: site-nav;
 }
 
