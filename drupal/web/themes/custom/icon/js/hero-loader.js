@@ -74,7 +74,7 @@
   // Measured here rather than expressed in CSS because it needs the viewport's
   // two axes divided by each other, which calc() cannot do with lengths. Read
   // once: a resize mid-pop would leave these stale, but the whole animation is
-  // 560ms and the values stop mattering the moment it lands.
+  // 650ms and the values stop mattering the moment it lands.
   var SIDE = 0.14; // the opening square, as a fraction of the short axis
   var side = Math.min(window.innerWidth, window.innerHeight) * SIDE;
   box.style.setProperty("--pop-sx", (side / window.innerWidth).toFixed(4));
@@ -100,7 +100,7 @@
   // behaviour — dark ink until .is-live — rather than to white-on-white.
   //
   // NAMED, and deliberately not { once: true }. The box runs TWO animations —
-  // the 0.56s scale and a 0.1s opacity fade split out from it — so animationend
+  // the 0.65s opening and a 0.1s opacity fade split out from it — so animationend
   // fires twice, and a once-listener takes the FIRST: the fade, at 100ms, with
   // the square still small over a white page. That flips the header to white
   // ink on white ground for the next 460ms. Match the scale by name instead.

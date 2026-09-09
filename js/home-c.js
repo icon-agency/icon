@@ -279,9 +279,9 @@
       // -> 0 when the loading screen became something that played under the
       // pops rather than before them; the screen is now a square that pops to
       // full screen FIRST, so the beat is back and this is its length.
-      // Matches the 0.56s animation on .text-box--pop (text-box.css) — the two
+      // Matches the 0.65s animation on .text-box--pop (text-box.css) — the two
       // are one number in two files, so move them together.
-      var MIN_TEXT = 560;
+      var MIN_TEXT = 650;
       // ...and nobody waits forever. This cap carries the whole "no skip
       // button" decision: past it the cards pop regardless of what has loaded,
       // so the worst case is ~5.5s on the page ground before the show

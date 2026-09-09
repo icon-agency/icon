@@ -334,7 +334,7 @@
  * aperture. The room is gone, and on a landscape screen that square stands 154%
  * of the viewport's height: growing it to scale 1 meant it covered the screen
  * at scale 0.648 and spent the REST of the animation growing off-screen. In
- * numbers, on a 1657x1074 viewport: covered at 171ms of 560ms, with 389ms of
+ * numbers, on a 1657x1074 viewport: covered at 171ms of the then-560ms, with 389ms of
  * invisible growth after it, and only two frames in the whole run that were
  * both visible and smaller than the screen. It read as starting full-height
  * because it very nearly did.
@@ -382,7 +382,7 @@
 }
 
 /* The fade is its OWN animation, and a tenth of the length. Sharing the
-   opening's 560ms was the other half of the bug: the square was transparent
+   opening's full length was the other half of the bug: the square was transparent
    for exactly the stretch it was small, so the small phase was never seen —
    opacity only passed 0.5 at 138ms, by which point it stood at 93% of the
    viewport's height. Resolve it early and the size, not the fade, is the
@@ -394,16 +394,18 @@
 
 /* .is-lit is js/hero-loader.js's signal, published on the first frame — which
    is the whole reason that file loads ahead of the CDN scripts. */
-/* THE CURVE IS THE HERO'S OWN TAKEOVER CURVE (see .hero__stage in
-   home-c.css), so the loading screen and the takeover it hands off to move in
-   the same language. It is also the one that reads most like a pop: measured
-   against the alternatives on this viewport, it holds the square at 21% of the
-   screen's height at 200ms where --ease-standard was already at 45%, then
-   takes the screen between 200ms and 350ms and settles. Steady curves make it
-   grow; this one makes it arrive. */
+/* THE CURVE IS THE PAGE WIPE'S (utilities/page-transition.css): 650ms on
+   --ease-decelerate, so the blue's arrival from the corner and every page's
+   arrival from the same corner are one move. It replaced the hero's takeover
+   curve (cubic-bezier(0.87, 0, 0.13, 1), 560ms) when the opening moved to
+   the corner (Sep 2026): that curve holds the square almost still for 200ms
+   and then takes the screen in 150ms — a pop from the centre, but from a
+   corner it read as a stuck square and a flash. The decelerate leaves the
+   corner at once and lands softly. js/home-c.js's MIN_TEXT is this number
+   too — move them together. */
 .text-box--pop.is-lit {
   animation:
-    text-box-pop 0.56s cubic-bezier(0.87, 0, 0.13, 1) both,
+    text-box-pop 0.65s var(--ease-decelerate) both,
     text-box-pop-in 0.1s linear both;
 }
 
