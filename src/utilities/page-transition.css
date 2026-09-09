@@ -11,6 +11,8 @@
  *      corner on the decelerate ease, with a zoom-settle, over the old page
  *      fading beneath it: the media reveal's gesture, page-sized; a Back
  *      sends the old page back into that corner instead, fading as it goes;
+ *      two alike grounds fade through the opposite tone (the JS compares
+ *      both and sets a type), so no move is ever black on black;
  *   2. the chrome — the wordmark and the pill carry their own names, so they
  *      hold their place across pages, one fixed anchor, outside the fade;
  *   3. the morph — the clicked card's media and the article's banner share
@@ -100,6 +102,19 @@ html:active-view-transition-type(back)::view-transition-new(root) {
     scale: 1.06;
     opacity: 0;
   }
+}
+
+/* Two alike grounds (js/page-transition.js §3): the old page fades to
+   the opposite tone instead of the new page's own ground, so the leaving is
+   visible on black-to-black and white-to-white moves. Only the part of the
+   screen the wipe has not reached shows it, and only as far as the old page
+   has faded — a soft lift behind the sweep, not a flash. */
+html:active-view-transition-type(ground-light)::view-transition {
+  background: var(--color-white);
+}
+
+html:active-view-transition-type(ground-dark)::view-transition {
+  background: var(--color-icon-black);
 }
 
 /* ---- 2. The chrome ------------------------------------------------------- */

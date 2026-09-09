@@ -150,7 +150,13 @@ one loads, and CSS animates between them. Three layers:
   what makes a dark-to-dark move — /work to /news — visible at all), the
   leading corner keeping the site's radius on the way. A Back (a traverse to an
   earlier history entry, the `back` type) reverses it: the old page, lifted
-  on top, shrinks back into the corner in 500ms accelerating.
+  on top, shrinks back into the corner in 500ms accelerating. Two alike
+  grounds — the script carries the old page's painted background in its note
+  and compares the new page's at reveal — fade through the OPPOSITE tone
+  instead (a `ground-light` / `ground-dark` type paints the transition's
+  backdrop), so a move is never black on black or white on white; grounds
+  that differ, black to a client's red, fade through the new page's own
+  colour.
 - **The chrome.** The wordmark (`.site-logo`) and the pill's nav face
   (`.site-nav__pill--nav` — not the search face, its twin in the flip cube: a
   name worn twice voids the whole transition; and not the wrapper — a named element renders in isolation, and a descendant's
