@@ -2,46 +2,28 @@
  * Do not edit here: edit the source and run `npm run build:theme`.
  * Plain IIFE (no behaviour wrapper) — see the generator for why. */
 
-/* page-transition.js — the cross-document View Transition's two scripted
- * parts (the fade itself is CSS: src/utilities/page-transition.css).
+/* page-transition.js — the cross-document View Transition's scripted parts
+ * (the fade itself is CSS: src/utilities/page-transition.css).
  *
- *   1. THE MOVE — a crossfade when the two grounds are alike (the note
- *      carries the old page's painted background as it left; the new page
- *      reads its own at first render), `fade-through` when they differ (the
- *      old fades out to the new ground, then the new content fades in), the
- *      `enter-corner` type when the new page is a Work case study or the
- *      homepage (their ground is the event, and the wipe brings it from the
- *      corner), `leave-corner` when the old page was a case study (its
- *      colour shrinks back into the corner — the note carries this).
- *   2. THE MORPH (Work only) — leaving a listing for a case study, the card
- *      whose link is the destination has its media named `feature-media`
- *      for the outgoing snapshot, and the case study names its banner the
- *      same for the incoming one, so the tile grows into the banner. Coming back, the article names
- *      its banner on the way out and the listing names the matching card on
- *      the way in, so it shrinks back. Only a pair that is on screen at both
- *      ends is named — an off-screen partner would fly in from nowhere. The
- *      outgoing page leaves a note in sessionStorage so the incoming page
- *      knows whether it has a partner; otherwise it names nothing and joins
- *      the plain fade.
- *
- * The homepage is not skipped: its blue loading screen is full-size and
- * unlit on the first frame, so the wipe carries the blue in from the corner
- * — the loader's own corner pop, played by the transition — and
- * js/hero-loader.js, reading window.ICON.pageEntering, marks the screen
- * landed when the wipe finishes instead of popping it again. The name is
- * stripped again once the transition has run (and before any new
- * naming), so a page restored from the back-forward cache never carries a
- * second bearer — a duplicate name voids the whole transition.
- *
- * The scroll reveals are held while the page fades in (html.is-page-entering
- * → --animate-hold), so the page settles once. A named banner is revealed
- * outright (.is-revealed before first paint), or the morph would land on a
- * clipped, invisible image.
+ *   1. THE GROUND — the outgoing page notes its painted background as it
+ *      leaves (read live, so a dark-opening page that has handed over to
+ *      light on scroll reports light); the incoming page reads its own at
+ *      first render. Alike, the CSS crossfades. Different, it adds the
+ *      `fade-through` type: the old fades out to the new ground first, and
+ *      the new content fades in after it.
+ *   2. THE HOLD — the scroll reveals wait while the page fades in
+ *      (html.is-page-entering → --animate-hold), so the page settles once.
+ *   3. THE HOMEPAGE — its blue loading screen is full-size and unlit on the
+ *      first frame (text-box.css shows it while html.is-page-entering), so
+ *      the fade brings the blue in whole; js/hero-loader.js, reading
+ *      window.ICON.pageEntering, lights it as already landed and fires the
+ *      cover moment when the fade finishes, instead of popping it again.
  *
  * A plain IIFE in <head>, not a behaviour: pagereveal fires at the new page's
  * FIRST render, before DOMContentLoaded, so an attach() would miss it. The
  * DOM is complete by then because html.html.twig render-blocks on the footer
- * (<link rel="expect" href="#site-footer" blocking="render">).
+ * (<link rel="expect" href="#site-footer" blocking="render">). On reveal the
+ * activation is the Navigation API's; only the swap event carries its own.
  * Reduced motion: the CSS turns the transition off, so neither event carries
  * a viewTransition and both handlers return. */
 (function () {
@@ -50,64 +32,9 @@
   if (!("onpagereveal" in window)) return;
 
   var KEY = "icon:page-transition";
-  var NAME = "feature-media";
-  // Work only: a news story's image morphing to its new place read as the
-  // picture flying about (user call, Sep 2026) — news just fades and its
-  // own reveals run.
-  var BANNER = ".work-article__banner";
-  var CARD = ".work__item";
-
-  function path(url) {
-    try { return new URL(url, location.href).pathname.replace(/\/$/, "") || "/"; } catch (e) { return null; }
-  }
-
-  function onScreen(el) {
-    var r = el.getBoundingClientRect();
-    return r.bottom > 0 && r.top < window.innerHeight && r.right > 0 && r.left < window.innerWidth;
-  }
-
-  /** The media of the card whose link goes to `url`, if it is on screen. */
-  function cardMedia(url) {
-    var to = path(url);
-    if (!to) return null;
-    var links = document.querySelectorAll(CARD);
-    for (var i = 0; i < links.length; i++) {
-      if (path(links[i].getAttribute("href")) !== to) continue;
-      var media = links[i].querySelector(".media-reveal");
-      return media && onScreen(media) ? media : null;
-    }
-    return null;
-  }
-
-  function banner() {
-    var el = document.querySelector(BANNER);
-    return el && onScreen(el) ? el : null;
-  }
-
-  /** Nothing else may wear the name — a second bearer voids the transition. */
-  function unname() {
-    var worn = document.querySelectorAll('[style*="view-transition-name"]');
-    for (var i = 0; i < worn.length; i++) {
-      if (worn[i].style.viewTransitionName === NAME) worn[i].style.viewTransitionName = "";
-    }
-  }
-
-  function name(el) {
-    unname();
-    el.style.viewTransitionName = NAME;
-    el.classList.add("is-revealed");
-  }
-
-  /** A page whose ground is the event and arrives by the corner wipe: a
-   *  Work case study (its client colour) or the homepage (its blue loading
-   *  screen, which the wipe carries in). */
-  function cornerPage() {
-    return !!document.querySelector(".work-article, [data-text-box]");
-  }
 
   /** The page's ground as [r, g, b]: the first painted background down
-   *  from <html>, read live — a dark-opening page that has handed over to
-   *  light on scroll reports light. */
+   *  from <html>. */
   function ground() {
     var els = [document.body, document.documentElement];
     for (var i = 0; i < els.length; i++) {
@@ -123,17 +50,8 @@
     return Math.max(Math.abs(a[0] - b[0]), Math.abs(a[1] - b[1]), Math.abs(a[2] - b[2])) < 64;
   }
 
-  /** The note the outgoing page leaves the incoming one: its morph partner,
-   *  if any, whether it was a case study (whose colour then shrinks back
-   *  into the corner), and its ground as it left. */
-  function note(morph) {
-    try {
-      sessionStorage.setItem(KEY, JSON.stringify({
-        morph: morph || null,
-        corner: !!document.querySelector(".work-article"),
-        ground: ground(),
-      }));
-    } catch (e) {}
+  function note() {
+    try { sessionStorage.setItem(KEY, JSON.stringify({ ground: ground() })); } catch (e) {}
   }
 
   function readNote() {
@@ -151,15 +69,9 @@
   }
 
   window.addEventListener("pageswap", function (e) {
-    if (!e.viewTransition || !e.activation || !e.activation.entry) return;
+    if (!e.viewTransition) return;
     quiet(e.viewTransition);
-    unname();
-    var to = e.activation.entry.url;
-    var media = cardMedia(to);
-    var art = media ? null : banner();
-    if (media) name(media);
-    else if (art) name(art);
-    note(media ? "card" : art ? "banner" : null);
+    note();
   });
 
   window.addEventListener("pagereveal", function (e) {
@@ -167,40 +79,14 @@
     if (!vt) return;
     quiet(vt);
 
-    // The homepage's loading screen rides this wipe: js/hero-loader.js reads
-    // the promise and treats its blue as already landed when the wipe is.
     window.ICON = window.ICON || {};
     window.ICON.pageEntering = vt.finished.catch(function () {});
 
     var from = readNote();
-    // Only the swap event carries its activation; on reveal it is the
-    // Navigation API's.
-    var activation = window.navigation && window.navigation.activation;
-    var partner = null;
-    if (from.morph === "card") partner = banner();
-    else if (from.morph === "banner" && activation && activation.from) partner = cardMedia(activation.from.url);
-    if (partner) name(partner);
-
-    // The crossfade is the default; the corner wipe is for the pages whose
-    // ground is the event (page-transition.css). Leaving a case study wins:
-    // its colour goes back to the corner over whatever comes next.
-    if (vt.types) {
-      if (from.corner) vt.types.add("leave-corner");
-      else if (cornerPage()) vt.types.add("enter-corner");
-      // Alike grounds CROSSFADE — the content changes over one ground. A
-      // ground that changes fades THROUGH: the old page fades out to the new
-      // page's ground first, and the new page's content fades in after it,
-      // so the two never mix mid-way (user call, Sep 2026).
-      else if (from.ground && !alike(from.ground, ground())) vt.types.add("fade-through");
-    }
+    if (vt.types && from.ground && !alike(from.ground, ground())) vt.types.add("fade-through");
 
     var html = document.documentElement;
     html.classList.add("is-page-entering");
-    // The name is for this one transition; a page kept alive in the
-    // back-forward cache would otherwise still wear it next time.
-    vt.finished.then(function () {
-      html.classList.remove("is-page-entering");
-      unname();
-    });
+    vt.finished.then(function () { html.classList.remove("is-page-entering"); });
   });
 })();

@@ -140,66 +140,45 @@ missing.
 The move from one page to the next, as **cross-document View Transitions**
 (`@view-transition { navigation: auto }`). Drupal serves whole pages, so
 nothing becomes a single-page app: the browser snapshots the old page, the new
-one loads, and CSS animates between them. Three layers:
+one loads, and CSS animates between them.
 
-- **The page.** A **crossfade when the grounds are alike** (user call, Sep
-  2026): the old page fades out in 300ms on the standard ease, the new fades
-  in over 450ms on the decelerate ease, and the new page's own reveals — the
-  word cascade, the media reveals — do the arriving. A **ground that changes
-  fades through** (`fade-through`): the old page fades out to the new page's
-  ground first and the new content fades in after it (a 300ms delay), so the
-  two are never mixed into a third colour. The outgoing page notes its
-  painted background as it left — live, so a dark-opening page that has
-  handed over to light on scroll reports light — and the incoming page reads
-  its own at first render. The pages whose ground is the event
-  get the **corner wipe** instead: a Work case study (its client colour) and
-  the homepage (its blue loading screen). There the new page is clipped to
-  nothing in the viewport's bottom-left corner and grows up and right in
-  650ms on the decelerate ease, with a zoom-settle toward the same corner
-  and a touch of lift (`contrast(0.8)`) that settles as it lands, over the
-  old page holding still — the media reveal's gesture, page-sized, the
-  leading corner keeping the site's radius. Leaving a case study its colour
-  goes back: the old page, lifted on top, shrinks into the corner in 500ms
-  accelerating over the new page already in place. The script sets the
-  `enter-corner` / `leave-corner` types; the outgoing page's note carries
-  whether it was a case study.
-- **The chrome.** The wordmark (`.site-logo`) and the pill's nav face
+**The move is a fade, in every case** (user call, Sep 2026 — a bottom-left
+corner wipe and a card-to-banner morph were built, tried and taken out
+again; the new page's own reveals, the word cascade and the media reveals,
+do the arriving):
+
+- **Grounds alike — a crossfade.** The old page fades out in 300ms on the
+  standard ease, the new fades in over 450ms on the decelerate ease.
+- **A ground that changes — a fade through.** The old page fades out to the
+  new page's ground first (the canvas, which is that ground) and the new
+  content fades in after it (a 300ms delay), so the two are never mixed into
+  a third colour. The outgoing page notes its painted background as it
+  leaves — live, so a dark-opening page that has handed over to light on
+  scroll reports light — and the incoming page reads its own at first render
+  and sets the `fade-through` type when they differ (`js/page-transition.js`).
+- **The chrome holds.** The wordmark (`.site-logo`) and the pill's nav face
   (`.site-nav__pill--nav` — not the search face, its twin in the flip cube: a
-  name worn twice voids the whole transition; and not the wrapper — a named element renders in isolation, and a descendant's
-  backdrop blur would see only the wrapper's transparent contents; on the
-  frosted element itself the blur still reads the page) carry their own
-  transition names, so they hold their place across pages, one fixed anchor
-  outside the wipe.
-- **The morph** (Work only — a news story's image morphing read as the
-  picture flying about, user call Sep 2026; news just fades and its own
-  reveals run). Leaving the listing for a case study, the clicked card's
-  media and the banner share the name `feature-media` for that one
-  navigation, so the tile grows into the banner (600ms, decelerate; the two
-  images `object-fit: cover` the group, so a square tile and a 16:9 banner
-  never stretch). Coming back, the banner shrinks into its card. Only a pair
-  on screen at both ends is named — an off-screen partner would fly in from
-  nowhere; the outgoing page leaves a note in `sessionStorage` so the incoming
-  page knows whether it has a partner.
+  name worn twice voids the whole transition; and not the wrapper: a named
+  element renders in isolation, and a descendant's backdrop blur would see
+  only the wrapper's transparent contents) carry their own transition names,
+  so they sit outside the fade, one fixed anchor across pages.
 
-The JS does only the direction and the morph. It is a **plain IIFE in
-`<head>`**, not a behaviour: `pagereveal` fires at the new page's first
-render, before `DOMContentLoaded`, so an `attach()` would miss it. The DOM is
-complete by then because the shell render-blocks on the footer
-(`<link rel="expect" href="#site-footer" blocking="render">`). On reveal the
-activation is `navigation.activation` — only the swap event carries its own.
+The JS is a **plain IIFE in `<head>`**, not a behaviour: `pagereveal` fires
+at the new page's first render, before `DOMContentLoaded`, so an `attach()`
+would miss it. The DOM is complete by then because the shell render-blocks
+on the footer (`<link rel="expect" href="#site-footer" blocking="render">`).
+On reveal the activation is `navigation.activation` — only the swap event
+carries its own.
 
-While the new page wipes in, `html.is-page-entering` sets `--animate-hold`
-(400ms), which the `[data-animate]` host and the media reveal add to their
-delay, so the page settles once instead of rising twice. A named banner is
-revealed outright (`.is-revealed` before first paint) — the morph would
-otherwise land on a clipped, invisible image. The homepage is NOT skipped:
-its blue loading screen is full-size and unlit on the first frame (visible
-only while `html.is-page-entering`; otherwise invisible until lit, so a
-direct load never flashes it), so the wipe carries the blue in from the
-corner — the loader's own pop, played by the transition — and
-`js/hero-loader.js`, reading `window.ICON.pageEntering`, lights it as
+While the new page fades in, `html.is-page-entering` sets `--animate-hold`
+(350ms), which the `[data-animate]` host, the word cascade and the media
+reveal add to their delay, so the page settles once. The homepage is not
+skipped: its blue loading screen is full-size and unlit on the first frame
+(visible only while `html.is-page-entering`; otherwise invisible until lit,
+so a direct load never flashes it), so the fade brings the blue in whole,
+and `js/hero-loader.js`, reading `window.ICON.pageEntering`, lights it as
 already landed (`.is-landed`, no animation) and fires the cover moment when
-the wipe finishes.
+the fade finishes.
 
 Reduced motion sets `navigation: none` — an instant swap. Firefox has no
 cross-document transitions yet and simply navigates. Both pages must opt in,
@@ -250,7 +229,7 @@ so an admin page (no main.css) never transitions. Drupal: `icon/page-transition`
 | Homepage system | `js/home-c.js` | gsap, SplitText, lenis | `iconHomeC` → `icon/home-c` |
 | Hero loading screen | `js/hero-loader.js` | — (deliberately) | part of the hero SDC; its 16 rows become a Twig loop |
 | Global footer | `js/site-footer.js` | — | `iconFooter` → `icon/site-footer` |
-| Page transitions (direction + the card→page morph; the wipe is CSS) | `js/page-transition.js` | — | plain IIFE in `<head>` → `icon/page-transition` (`header: true`) |
+| Page transitions (the ground comparison + the reveal hold; the fade is CSS) | `js/page-transition.js` | — | plain IIFE in `<head>` → `icon/page-transition` (`header: true`) |
 | News listing (filter + card motion) | `js/news.js` | — | `iconNews` → `icon/news` |
 | Dark-opening theme handover (every dark-opening page: news listing, both articles, work landing) | `js/theme-handover.js` | — | `iconThemeHandover` → `icon/theme-handover` |
 | Article Share rail (copy link + email) | `js/share.js` | — | `iconShare` → `icon/share` |

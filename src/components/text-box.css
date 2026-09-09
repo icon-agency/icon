@@ -386,9 +386,9 @@
 }
 
 /* ARRIVING BY PAGE TRANSITION (utilities/page-transition.css) the unlit box
-   is the point: the page's first frame is full blue, and the wipe sweeps it
-   in from the corner — the pop, played by the transition. js/hero-loader.js
-   then lights it as already landed: no animation, just the end state. */
+   is the point: the page's first frame is full blue, and the fade brings it
+   in whole. js/hero-loader.js then lights it as already landed: no
+   animation, just the end state. */
 html.is-page-entering .text-box--pop,
 .text-box--pop.is-landed {
   opacity: 1;

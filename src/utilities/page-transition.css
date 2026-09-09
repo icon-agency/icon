@@ -1,30 +1,26 @@
 /* page-transition.css — the move from one page to the next, as cross-document
  * View Transitions. CSS-first, like every reveal on the site: the browser
  * snapshots the old page, the new one loads, and these rules animate between
- * them. No JS is needed for the fade; js/page-transition.js (in <head>) adds
- * the direction and the card→page morph. Firefox, which has no cross-document
- * transitions yet, simply navigates. Both pages must opt in, so an admin page
- * (Claro, no main.css) never transitions.
+ * them. Firefox, which has no cross-document transitions yet, simply
+ * navigates. Both pages must opt in, so an admin page (Claro, no main.css)
+ * never transitions.
  *
- * Three layers:
- *   1. the page — a CROSSFADE when the grounds are alike: the old page fades
- *      out on the standard ease, the new fades in on the decelerate ease and
- *      its own reveals do the arriving; a ground that changes fades THROUGH
- *      — old out to the new ground, then the new content in. The pages whose ground is the event — a
- *      Work case study, the homepage — get the corner WIPE instead: the new
- *      page grows from the viewport's bottom-left corner (the media reveal's
- *      gesture, page-sized), and leaving a case study its colour shrinks
- *      back into that corner;
- *   2. the chrome — the wordmark and the pill carry their own names, so they
- *      hold their place across pages, one fixed anchor, outside the fade;
- *   3. the morph — the clicked card's media and the article's banner share
- *      the name `feature-media` for that one navigation (set by the JS), so
- *      the tile grows into the banner, and shrinks back on Back.
+ * THE MOVE IS A FADE, in every case (user call, Sep 2026 — a corner wipe
+ * and a card-to-banner morph were built and taken out again; the new page's
+ * own reveals do the arriving):
+ *   - grounds alike → a CROSSFADE: the old page fades out on the standard
+ *     ease, the new fades in on the decelerate ease;
+ *   - a ground that changes → a FADE THROUGH: the old page fades out to the
+ *     new page's ground first, and the new content fades in after it, so
+ *     the two never mix into a third colour. js/page-transition.js compares
+ *     the two grounds and sets the `fade-through` type.
+ * The chrome — the wordmark and the pill — carries its own transition names,
+ * so it holds its place across pages, one fixed anchor outside the fade.
  *
- * The scroll reveals on the new page are held for the wipe
- * (--animate-hold, set on html.is-page-entering by the JS and read by
- * animations.css and the media reveal in home-c.css), so the page settles
- * once instead of rising twice. Reduced motion switches the whole thing off.
+ * The scroll reveals on the new page are held for the fade (--animate-hold,
+ * set on html.is-page-entering by the JS and read by animations.css and the
+ * media reveal in home-c.css), so the page settles once. Reduced motion
+ * switches the whole thing off.
  */
 
 @view-transition {
@@ -37,13 +33,10 @@
   }
 }
 
-/* ---- 1. The page --------------------------------------------------------- */
+/* ---- The page ------------------------------------------------------------ */
 
-/* THE DEFAULT IS A CROSSFADE (user call, Sep 2026): the old page fades out
-   on the standard ease, the new fades in on the decelerate ease, and the
-   new page's own reveals — the word cascade, the media reveals — do the
-   arriving. The UA's plus-lighter blend is switched off so the pair never
-   add up to a flash. */
+/* The UA's plus-lighter blend is switched off so the pair never add up to a
+   flash. */
 ::view-transition-old(root),
 ::view-transition-new(root) {
   mix-blend-mode: normal;
@@ -57,46 +50,10 @@
   animation: 450ms var(--ease-decelerate) both page-fade-in;
 }
 
-/* A GROUND THAT CHANGES fades THROUGH instead (`fade-through`, set when the
-   old page's ground as it left and the new page's differ): the old page
-   fades out to the new page's ground — the canvas, which is that ground —
-   and only then does the new page's content fade in, so the two are never
-   mixed mid-way into a third colour. Alike grounds keep the crossfade above:
-   the content changes over one ground (user call, Sep 2026). */
+/* A ground that changes: the new content waits for the old page to fade to
+   the new ground — the canvas, which is that ground. */
 html:active-view-transition-type(fade-through)::view-transition-new(root) {
   animation-delay: 300ms;
-}
-
-/* THE CORNER WIPE, for the pages whose GROUND is the event: a Work case
-   study (its client colour) and the homepage (its blue loading screen,
-   which the wipe carries in — js/hero-loader.js). js/page-transition.js
-   sets `enter-corner` when the new page is one of those. The media reveal's
-   gesture, page-sized: the new page is clipped to nothing in the viewport's
-   bottom-left corner and grows up and right from there, with a zoom-settle
-   toward the same corner and a touch of lift (contrast(0.8)) that settles
-   as it lands, over the old page holding still; the leading corner keeps
-   the site's radius on the way. */
-html:active-view-transition-type(enter-corner)::view-transition-old(root) {
-  animation: none;
-}
-
-html:active-view-transition-type(enter-corner)::view-transition-new(root) {
-  transform-origin: left bottom;
-  animation: 650ms var(--ease-decelerate) both page-enter;
-}
-
-/* And LEAVING a case study, its colour goes back to the corner: the old
-   page, lifted on top, shrinks into it, lifting as it goes, over the new
-   page already in place (`leave-corner`, set when the outgoing page was a
-   case study — the note carries it). */
-html:active-view-transition-type(leave-corner)::view-transition-old(root) {
-  z-index: 1;
-  transform-origin: left bottom;
-  animation: 500ms var(--ease-accelerate) both page-leave-corner;
-}
-
-html:active-view-transition-type(leave-corner)::view-transition-new(root) {
-  animation: none;
 }
 
 @keyframes page-fade-out {
@@ -111,74 +68,24 @@ html:active-view-transition-type(leave-corner)::view-transition-new(root) {
   }
 }
 
-@keyframes page-enter {
-  from {
-    clip-path: inset(100% 100% 0 0 round var(--radius-icon));
-    scale: 1.06;
-    filter: contrast(0.8);
-  }
-
-  to {
-    clip-path: inset(0 0 0 0 round 0);
-    scale: 1;
-    filter: contrast(1);
-  }
-}
-
-@keyframes page-leave-corner {
-  from {
-    clip-path: inset(0 0 0 0 round 0);
-    scale: 1;
-    filter: contrast(1);
-  }
-
-  to {
-    clip-path: inset(100% 100% 0 0 round var(--radius-icon));
-    scale: 1.06;
-    filter: contrast(0.8);
-  }
-}
-
-/* ---- 2. The chrome ------------------------------------------------------- */
+/* ---- The chrome ---------------------------------------------------------- */
 
 .site-logo {
   view-transition-name: site-logo;
 }
 
-/* The name goes on the PILL, not its .site-nav wrapper: a named element is
-   rendered in isolation, so a descendant's backdrop-filter sees only the
+/* On the pill's NAV FACE only. Not its .site-nav wrapper: a named element
+   renders in isolation, so a descendant's backdrop-filter sees only the
    named element's own (transparent) contents — the frost went flat when the
-   wrapper wore the name (Sep 2026). On the frosted element itself the blur
-   still reads the page behind. */
-/* And on the NAV face only: the pill is a flip cube whose search form is a
-   second .site-nav__pill, and a name worn twice voids the whole transition
-   (the wipe silently stopped for a commit, Sep 2026). */
+   wrapper wore the name (Sep 2026); on the frosted element itself the blur
+   still reads the page behind. And not the search face, its twin in the
+   flip cube: a name worn twice voids the whole transition. */
 .site-nav__pill--nav {
   view-transition-name: site-nav;
-}
-
-/* ---- 3. The morph -------------------------------------------------------- */
-
-/* The group carries the geometry (position and size, tile → banner) on the
-   decelerate ease; the two images cover it, so a square tile and a 16:9
-   banner never stretch, and the frame keeps the site's corner. */
-::view-transition-group(feature-media) {
-  animation-duration: 600ms;
-  animation-timing-function: var(--ease-decelerate);
-  overflow: clip;
-  border-radius: var(--radius-icon);
-}
-
-::view-transition-old(feature-media),
-::view-transition-new(feature-media) {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  animation-duration: 600ms;
 }
 
 /* ---- The reveal hold ----------------------------------------------------- */
 
 html.is-page-entering {
-  --animate-hold: 400ms;
+  --animate-hold: 350ms;
 }

@@ -79,11 +79,11 @@
   var heroEl = box.closest("[data-hero]");
   if (heroEl) heroEl.classList.add("is-booting");
 
-  // ARRIVING BY PAGE TRANSITION, the wipe IS the pop: the box is full-size
-  // and unlit on the page's first frame (text-box.css shows it while
-  // html.is-page-entering), and the transition sweeps that blue in from the
-  // corner. Popping it again on top would be the blue twice, so it is lit
-  // as already LANDED, and the cover moment waits for the wipe's end.
+  // ARRIVING BY PAGE TRANSITION, the fade brings the blue in whole: the box
+  // is full-size and unlit on the page's first frame (text-box.css shows it
+  // while html.is-page-entering), and the transition fades that in. Popping
+  // it on top would be the blue twice, so it is lit as already LANDED, and
+  // the cover moment waits for the fade's end.
   var entering = window.ICON && window.ICON.pageEntering;
   box.classList.add("is-lit");
   if (entering) box.classList.add("is-landed");
