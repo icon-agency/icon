@@ -345,17 +345,18 @@
  * theme flip — fires on this animation's animationend, so before this the
  * header sat in dark ink over a fully blue screen for 389ms.
  *
- * It still OPENS as a square. The start is a two-axis scale, --pop-sx/--pop-sy,
- * which js/hero-loader.js sizes so the first frame is a square of equal sides;
- * it grows into the viewport's shape on the way out. Falls back to a landscape
- * guess if the script never ran.
- *
- * Animates the `scale` PROPERTY, not transform: scale(). --cover already owns
- * `translate` for its centring, and scale/rotate/translate are independent
- * properties that compose — one `transform` here would overwrite that centring,
- * and pairing translate with transform in a single rule is the combination
- * Lightning CSS is known to drop half of (LESSONS.md). Origin is the default
- * centre, so it opens out of the middle of the stage.
+ * It still OPENS as a square — but FROM THE BOTTOM-LEFT CORNER, not the
+ * centre (user call, Sep 2026): the page transition's wipe
+ * (utilities/page-transition.css) and the media reveals grow from that
+ * corner, so the blue arrives the way every other ground on the site does.
+ * A clip-path inset rather than a scale: the box stays viewport-sized and
+ * still, and a window in it opens up and right from the corner, its leading
+ * corner rounded on the way like the page wipe's. The first frame is a
+ * square of equal sides — the top and right insets are sized from
+ * --pop-sx/--pop-sy, which js/hero-loader.js measures as the square's share
+ * of each viewport axis; it grows into the viewport's shape on the way out.
+ * Falls back to a landscape guess if the script never ran. (--cover's
+ * `translate` centring is untouched — nothing here transforms.)
  */
 .text-box--pop {
   background: var(--color-shader-blue);
@@ -366,13 +367,23 @@
 }
 
 @keyframes text-box-pop {
-  from { scale: var(--pop-sx, 0.12) var(--pop-sy, 0.18); }
-  to { scale: 1 1; }
+  from {
+    clip-path: inset(
+      calc(100% - var(--pop-sy, 0.18) * 100%)
+      calc(100% - var(--pop-sx, 0.12) * 100%)
+      0 0
+      round var(--radius-icon)
+    );
+  }
+
+  to {
+    clip-path: inset(0 0 0 0 round 0);
+  }
 }
 
-/* The fade is its OWN animation, and a tenth of the length. Sharing the scale's
-   560ms was the other half of the bug: the square was transparent for exactly
-   the stretch it was small, so the small phase was never actually seen —
+/* The fade is its OWN animation, and a tenth of the length. Sharing the
+   opening's 560ms was the other half of the bug: the square was transparent
+   for exactly the stretch it was small, so the small phase was never seen —
    opacity only passed 0.5 at 138ms, by which point it stood at 93% of the
    viewport's height. Resolve it early and the size, not the fade, is the
    event. */

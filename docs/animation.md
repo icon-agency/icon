@@ -39,8 +39,11 @@ Drupal: `Drupal.behaviors.iconReveal`.
 
 The homepage's choreography lives in **three** files:
 
-- **`js/hero-loader.js`** — builds and lights the hero's kinetic-text loading
-  screen (the `.text-box` "room" of 16 marquee rows). Deliberately its own
+- **`js/hero-loader.js`** — builds and lights the hero's loading screen: the
+  blue that opens as a square from the viewport's bottom-left corner (a
+  clip-path window, the page transition's and the media reveals' corner —
+  user call, Sep 2026) and covers the screen in 560ms on the takeover curve;
+  the `.text-box` "room" of 16 marquee rows it once held is gone. Deliberately its own
   file, loaded *before* the CDN scripts, so the loading screen exists on the
   first frame even when GSAP/Lenis round-trips are slow. Hands `js/home-c.js`
   a start time. A perspective tunnel is a vestibular trigger, so reduced
