@@ -145,18 +145,16 @@ one loads, and CSS animates between them. Three layers:
 - **The page.** The media reveal's gesture, page-sized: the new page is
   clipped to nothing in the viewport's bottom-left corner and grows up and
   right from there in 650ms on the decelerate ease, with a zoom-settle toward
-  the same corner, over the old page fading out beneath it (the UA's
-  plus-lighter blend is switched off, so the pair never flash; the fade is
-  what makes a dark-to-dark move — /work to /news — visible at all), the
-  leading corner keeping the site's radius on the way. A Back (a traverse to an
-  earlier history entry, the `back` type) reverses it: the old page, lifted
-  on top, shrinks back into the corner in 500ms accelerating. Two alike
-  grounds — the script carries the old page's painted background in its note
-  and compares the new page's at reveal — fade through a grey a step off
-  their tone instead (a `ground-light` / `ground-dark` type paints the
-  transition's backdrop; full white behind two dark pages read as a flash), so a move is never black on black or white on white; grounds
-  that differ, black to a client's red, fade through the new page's own
-  colour.
+  the same corner, over the old page holding still beneath it — a clean wipe
+  (the UA's crossfade and plus-lighter blend are switched off), the leading
+  corner keeping the site's radius on the way. The new page arrives a touch
+  lighter — `contrast(0.8)`, a tenth of white on black and a tenth off
+  white — and settles to its true colour as it lands, which is what makes a
+  black-to-black move (/work to /news) read; an old-page fade to a grey
+  backdrop was tried first and read as a flash (user call, Sep 2026). A Back
+  (a traverse to an earlier history entry, the `back` type) reverses it: the
+  old page, lifted on top, shrinks back into the corner in 500ms
+  accelerating, lifting as it goes.
 - **The chrome.** The wordmark (`.site-logo`) and the pill's nav face
   (`.site-nav__pill--nav` — not the search face, its twin in the flip cube: a
   name worn twice voids the whole transition; and not the wrapper — a named element renders in isolation, and a descendant's

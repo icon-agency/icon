@@ -8,11 +8,10 @@
  *
  * Three layers:
  *   1. the page — the new page wipes in from the viewport's bottom-left
- *      corner on the decelerate ease, with a zoom-settle, over the old page
- *      fading beneath it: the media reveal's gesture, page-sized; a Back
- *      sends the old page back into that corner instead, fading as it goes;
- *      two alike grounds fade through the opposite tone (the JS compares
- *      both and sets a type), so no move is ever black on black;
+ *      corner on the decelerate ease, with a zoom-settle and a touch of
+ *      lift that settles as it lands, over the old page holding still: the
+ *      media reveal's gesture, page-sized; a Back sends the old page back
+ *      into that corner instead, lifting as it goes;
  *   2. the chrome — the wordmark and the pill carry their own names, so they
  *      hold their place across pages, one fixed anchor, outside the fade;
  *   3. the morph — the clicked card's media and the article's banner share
@@ -40,11 +39,25 @@
 /* The media reveal's gesture, page-sized (home-c.css .media-reveal): the new
    page is clipped to nothing in the viewport's bottom-left corner and grows
    up and right from there, with a zoom-settle toward the same corner, over
-   the old page fading beneath it (the UA's plus-lighter blend is switched
-   off, so the two never add up to a flash).
+   the old page holding still (the UA's crossfade and plus-lighter blend are
+   switched off, so this is a clean wipe).
    The leading corner keeps the site's radius on the way. A Back reverses
    it: the old page, lifted on top, shrinks back into the corner. */
 ::view-transition-old(root),
+::view-transition-new(root) {
+  mix-blend-mode: normal;
+}
+
+/* The old page holds still beneath the wipe; it is the NEW page that
+   announces itself — it arrives a touch lighter (contrast(0.8) lifts pure
+   black to a tenth of white and takes a tenth off pure white) and settles to
+   its true colour as it lands, so a black page sweeping over a black page,
+   or white over white, still reads (user call, Sep 2026 — an old-page fade
+   to a grey backdrop was tried first and read as a flash). */
+::view-transition-old(root) {
+  animation: none;
+}
+
 ::view-transition-new(root) {
   mix-blend-mode: normal;
 }
@@ -73,51 +86,33 @@ html:active-view-transition-type(back)::view-transition-new(root) {
   animation: none;
 }
 
-@keyframes page-leave {
-  to {
-    opacity: 0;
-  }
-}
-
 @keyframes page-enter {
   from {
     clip-path: inset(100% 100% 0 0 round var(--radius-icon));
     scale: 1.06;
+    filter: contrast(0.8);
   }
 
   to {
     clip-path: inset(0 0 0 0 round 0);
     scale: 1;
+    filter: contrast(1);
   }
 }
 
+/* Back mirrors it: the old page, on top, lifts as it shrinks away. */
 @keyframes page-leave-back {
   from {
     clip-path: inset(0 0 0 0 round 0);
     scale: 1;
+    filter: contrast(1);
   }
 
   to {
     clip-path: inset(100% 100% 0 0 round var(--radius-icon));
     scale: 1.06;
-    opacity: 0;
+    filter: contrast(0.8);
   }
-}
-
-/* Two alike grounds (js/page-transition.js §3): the old page fades to
-   a grey a step off their tone instead of the new page's own ground, so the
-   leaving is visible on black-to-black and white-to-white moves. Only the part of the
-   screen the wipe has not reached shows it, and only as far as the old page
-   has faded — a soft lift behind the sweep, not a flash. */
-/* A STEP off the pages' tone, not the far end of the scale: full white
-   behind two dark pages read as a flash (user call, Sep 2026). Enough grey
-   to see the old page leave, no more. */
-html:active-view-transition-type(ground-light)::view-transition {
-  background: color-mix(in srgb, var(--color-white) 22%, var(--color-icon-black));
-}
-
-html:active-view-transition-type(ground-dark)::view-transition {
-  background: color-mix(in srgb, var(--color-icon-black) 14%, var(--color-white));
 }
 
 /* ---- 2. The chrome ------------------------------------------------------- */

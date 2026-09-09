@@ -13,14 +13,6 @@
  *      outgoing page leaves a note in sessionStorage so the incoming page
  *      knows whether it has a partner; otherwise it names nothing and joins
  *      the plain fade.
- *   3. THE GROUND — the note also carries the outgoing page's painted
- *      background. When the incoming page's is much the same colour, the
- *      move would be invisible — black fading under a black wipe — so the
- *      incoming page adds a `ground-light` or `ground-dark` type (the
- *      opposite of its own tone) and the CSS paints the transition's
- *      backdrop that way; the old page fades to it under the sweep. Grounds
- *      that differ — black to a client's red — need nothing: the old fades
- *      through the new one's own colour.
  *
  * The homepage is skipped: its hero loader is an entrance of its own. The
  * name is stripped again once the transition has run (and before any new
@@ -89,34 +81,12 @@
     el.classList.add("is-revealed");
   }
 
-  /** The page's ground as [r, g, b]: the first painted background down
-   *  from <html>. */
-  function ground() {
-    var els = [document.body, document.documentElement];
-    for (var i = 0; i < els.length; i++) {
-      var m = /rgba?\(\s*(\d+)[\s,]+(\d+)[\s,]+(\d+)(?:[\s,/]+([\d.]+))?/.exec(getComputedStyle(els[i]).backgroundColor);
-      if (!m || (m[4] !== undefined && parseFloat(m[4]) === 0)) continue;
-      return [+m[1], +m[2], +m[3]];
-    }
-    return [255, 255, 255];
-  }
-
-  /** Two grounds close enough that one fading under the other would not be
-   *  seen — black under black, white under white; black under red is a move
-   *  on its own and needs no help. */
-  function alike(a, b) {
-    return Math.max(Math.abs(a[0] - b[0]), Math.abs(a[1] - b[1]), Math.abs(a[2] - b[2])) < 64;
-  }
-
-  function isDark(rgb) {
-    return (0.2126 * rgb[0] + 0.7152 * rgb[1] + 0.0722 * rgb[2]) / 255 < 0.5;
-  }
-
-  /** The note the outgoing page leaves the incoming one: its morph partner
-   *  (if any) and its ground. */
+  /** The note the outgoing page leaves the incoming one: its morph partner,
+   *  if any. */
   function note(morph) {
     try {
-      sessionStorage.setItem(KEY, JSON.stringify({ morph: morph || null, ground: ground() }));
+      if (morph) sessionStorage.setItem(KEY, morph);
+      else sessionStorage.removeItem(KEY);
     } catch (e) {}
   }
 
@@ -124,7 +94,7 @@
     try {
       var v = sessionStorage.getItem(KEY);
       sessionStorage.removeItem(KEY);
-      return v ? JSON.parse(v) : null;
+      return v;
     } catch (e) { return null; }
   }
 
@@ -163,23 +133,16 @@
       return;
     }
 
-    var from = readNote() || {};
+    var from = readNote();
     // Only the swap event carries its activation; on reveal it is the
     // Navigation API's.
     var activation = window.navigation && window.navigation.activation;
     var partner = null;
-    if (from.morph === "card") partner = banner();
-    else if (from.morph === "banner" && activation && activation.from) partner = cardMedia(activation.from.url);
+    if (from === "card") partner = banner();
+    else if (from === "banner" && activation && activation.from) partner = cardMedia(activation.from.url);
     if (partner) name(partner);
 
-    if (vt.types) {
-      if (activation && isBack(activation)) vt.types.add("back");
-      // Two alike grounds would hide the move — black fading under a black
-      // wipe. Then, and only then, the old page fades to the OPPOSITE tone
-      // (page-transition.css paints the transition's backdrop).
-      var here = ground();
-      if (from.ground && alike(from.ground, here)) vt.types.add(isDark(here) ? "ground-light" : "ground-dark");
-    }
+    if (vt.types && activation && isBack(activation)) vt.types.add("back");
 
     var html = document.documentElement;
     html.classList.add("is-page-entering");
