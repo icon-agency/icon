@@ -12,6 +12,15 @@ global:
       css/main.css: { minified: true }
 
 # ── Chrome (every page) ─────────────────────────────────────────────────────
+# Cross-document View Transitions (docs/animation.md §8): the direction and
+# the card→page morph; the fade itself is CSS. A plain IIFE in <head>
+# (`header: true`): pagereveal fires at the new page's FIRST render, before
+# DOMContentLoaded, so a behaviour's attach() would miss it. The DOM is
+# complete by then because html.html.twig render-blocks on the footer.
+page-transition:
+  header: true
+  js:
+    js/page-transition.js: {}
 header:
   js:
     js/header.js: {}

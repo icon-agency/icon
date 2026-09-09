@@ -17,7 +17,9 @@
   transition:
     opacity var(--duration-slow) var(--ease-standard),
     transform var(--duration-slow) var(--ease-standard);
-  transition-delay: var(--animate-delay, 0ms);
+  /* --animate-hold: the page transition's beat, while the new page fades in
+     (utilities/page-transition.css) — 0 the rest of the time. */
+  transition-delay: calc(var(--animate-delay, 0ms) + var(--animate-hold, 0ms));
 }
 
 .js-animations [data-animate].is-visible {

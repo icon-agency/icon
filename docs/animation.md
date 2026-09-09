@@ -121,6 +121,48 @@ missing.
 
 ---
 
+## 7. Page transitions — `src/utilities/page-transition.css` + `js/page-transition.js` (every page)
+
+The move from one page to the next, as **cross-document View Transitions**
+(`@view-transition { navigation: auto }`). Drupal serves whole pages, so
+nothing becomes a single-page app: the browser snapshots the old page, the new
+one loads, and CSS animates between them. Three layers:
+
+- **The page.** The old page fades out in 250ms on the standard ease; the new
+  one fades in and rises 20px in 450ms on the decelerate ease — the scroll
+  reveal's gesture, page-sized. A Back (a traverse to an earlier history
+  entry, the `back` type) comes down from above instead.
+- **The chrome.** The wordmark (`.site-logo`) and the pill (`.site-nav`) carry
+  their own transition names, so they hold their place across pages, one
+  fixed anchor outside the fade.
+- **The morph.** Leaving a listing for an article, the clicked card's media
+  and the article's banner share the name `feature-media` for that one
+  navigation, so the tile grows into the banner (600ms, decelerate; the two
+  images `object-fit: cover` the group, so a square tile and a 16:9 banner
+  never stretch). Coming back, the banner shrinks into its card. Only a pair
+  on screen at both ends is named — an off-screen partner would fly in from
+  nowhere; the outgoing page leaves a note in `sessionStorage` so the incoming
+  page knows whether it has a partner.
+
+The JS does only the direction and the morph. It is a **plain IIFE in
+`<head>`**, not a behaviour: `pagereveal` fires at the new page's first
+render, before `DOMContentLoaded`, so an `attach()` would miss it. The DOM is
+complete by then because the shell render-blocks on the footer
+(`<link rel="expect" href="#site-footer" blocking="render">`). On reveal the
+activation is `navigation.activation` — only the swap event carries its own.
+
+While the new page fades in, `html.is-page-entering` sets `--animate-hold`
+(350ms), which the `[data-animate]` host and the media reveal add to their
+delay, so the page settles once instead of rising twice. A named banner is
+revealed outright (`.is-revealed` before first paint) — the morph would
+otherwise land on a clipped, invisible image. The homepage is skipped: its
+hero loader is an entrance of its own.
+
+Reduced motion sets `navigation: none` — an instant swap. Firefox has no
+cross-document transitions yet and simply navigates. Both pages must opt in,
+so an admin page (no main.css) never transitions. Drupal: `icon/page-transition`
+(`header: true`).
+
 ## Rules
 
 1. **Always pair motion with a `prefers-reduced-motion` reset.** Every system
@@ -165,6 +207,7 @@ missing.
 | Homepage system | `js/home-c.js` | gsap, SplitText, lenis | `iconHomeC` → `icon/home-c` |
 | Hero loading screen | `js/hero-loader.js` | — (deliberately) | part of the hero SDC; its 16 rows become a Twig loop |
 | Global footer | `js/site-footer.js` | — | `iconFooter` → `icon/site-footer` |
+| Page transitions (direction + the card→page morph; the fade is CSS) | `js/page-transition.js` | — | plain IIFE in `<head>` → `icon/page-transition` (`header: true`) |
 | News listing (filter + card motion) | `js/news.js` | — | `iconNews` → `icon/news` |
 | Dark-opening theme handover (every dark-opening page: news listing, both articles, work landing) | `js/theme-handover.js` | — | `iconThemeHandover` → `icon/theme-handover` |
 | Article Share rail (copy link + email) | `js/share.js` | — | `iconShare` → `icon/share` |

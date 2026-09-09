@@ -167,7 +167,7 @@
      the growing field and send the hint right before left — the jump the
      footer showed, Sep 2026.) Without JS the hint simply sits left. */
   left: 0;
-  translate: var(--hint-rest-x, 0px) 0;
+  translate: var(--hint-rest-x, 0) 0;
   width: max-content;
   max-width: 100%;
   display: grid;

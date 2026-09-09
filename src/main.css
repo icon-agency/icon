@@ -73,5 +73,6 @@
 @import "./utilities/news-article.css";
 @import "./utilities/work-landing.css";
 @import "./utilities/rules.css";
+@import "./utilities/page-transition.css";
 @import "./utilities/home-c.css";
 @import "./utilities/design-system.css";

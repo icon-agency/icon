@@ -9,6 +9,7 @@ core_version_requirement: ^11.3
 # share) ride on every page too — everything else attaches per page/component.
 libraries:
   - icon/global
+  - icon/page-transition
   - icon/header
   - icon/reveal
   - icon/velocity-lean

@@ -27,6 +27,8 @@
     <script>
       document.documentElement.classList.add("js-animations");
     </script>
+    <link rel="expect" href="#site-footer" blocking="render">
+    <script src="../js/page-transition.js"></script>
 
   </head>
   <body>
@@ -456,7 +458,7 @@
     </main>
 
     <!-- ================= FOOTER (site theme, untouched by the chameleon) ==== -->
-    <footer class="site-footer">
+    <footer class="site-footer" id="site-footer">
       <h2 class="site-footer__cta">
         <a class="site-footer__cta-link" href="/contact">
           <!-- Split per word only so each can rise out of its own mask; the

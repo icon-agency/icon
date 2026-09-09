@@ -12,6 +12,9 @@
  * window.ICON.velocityLean, and consumers declare the library dependency) and
  * hero-loader (it runs after the hero's markup and before the CDN scripts, as
  * in the template — its library is footer-scoped with a negative weight).
+ * A third, page-transition, is a plain IIFE in <head>: it listens for
+ * pageswap/pagereveal, and pagereveal fires at first render, before a
+ * behaviour would attach.
  *
  * Prototype-only behaviours (hero, tagline, hero-sphere) are not ported: the
  * pages that use them are outside the system (AGENTS.md).
@@ -42,6 +45,7 @@ export const BEHAVIOURS = {
   "work-scroller": "iconWorkScroller",
   "work-video": "iconWorkVideo",
   "hero-loader": null,
+  "page-transition": null,
   "home-c": "iconHomeC",
 };
 

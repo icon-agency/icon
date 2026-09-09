@@ -1,0 +1,103 @@
+/* page-transition.css — the move from one page to the next, as cross-document
+ * View Transitions. CSS-first, like every reveal on the site: the browser
+ * snapshots the old page, the new one loads, and these rules animate between
+ * them. No JS is needed for the fade; js/page-transition.js (in <head>) adds
+ * the direction and the card→page morph. Firefox, which has no cross-document
+ * transitions yet, simply navigates. Both pages must opt in, so an admin page
+ * (Claro, no main.css) never transitions.
+ *
+ * Three layers:
+ *   1. the page — old fades out fast on the standard ease, new fades in and
+ *      rises 20px on the decelerate ease: the scroll reveal's gesture,
+ *      page-sized; a Back comes down from above instead;
+ *   2. the chrome — the wordmark and the pill carry their own names, so they
+ *      hold their place across pages, one fixed anchor, outside the fade;
+ *   3. the morph — the clicked card's media and the article's banner share
+ *      the name `feature-media` for that one navigation (set by the JS), so
+ *      the tile grows into the banner, and shrinks back on Back.
+ *
+ * The scroll reveals on the new page are held for the fade
+ * (--animate-hold, set on html.is-page-entering by the JS and read by
+ * animations.css and the media reveal in home-c.css), so the page settles
+ * once instead of rising twice. Reduced motion switches the whole thing off.
+ */
+
+@view-transition {
+  navigation: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  @view-transition {
+    navigation: none;
+  }
+}
+
+/* ---- 1. The page --------------------------------------------------------- */
+
+::view-transition-old(root) {
+  animation: 250ms var(--ease-standard) both page-leave;
+}
+
+::view-transition-new(root) {
+  animation: 450ms var(--ease-decelerate) both page-enter;
+}
+
+html:active-view-transition-type(back)::view-transition-new(root) {
+  animation-name: page-enter-back;
+}
+
+@keyframes page-leave {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes page-enter {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+}
+
+@keyframes page-enter-back {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+}
+
+/* ---- 2. The chrome ------------------------------------------------------- */
+
+.site-logo {
+  view-transition-name: site-logo;
+}
+
+.site-nav {
+  view-transition-name: site-nav;
+}
+
+/* ---- 3. The morph -------------------------------------------------------- */
+
+/* The group carries the geometry (position and size, tile → banner) on the
+   decelerate ease; the two images cover it, so a square tile and a 16:9
+   banner never stretch, and the frame keeps the site's corner. */
+::view-transition-group(feature-media) {
+  animation-duration: 600ms;
+  animation-timing-function: var(--ease-decelerate);
+  overflow: clip;
+  border-radius: var(--radius-icon);
+}
+
+::view-transition-old(feature-media),
+::view-transition-new(feature-media) {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  animation-duration: 600ms;
+}
+
+/* ---- The reveal hold ----------------------------------------------------- */
+
+html.is-page-entering {
+  --animate-hold: 350ms;
+}

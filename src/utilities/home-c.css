@@ -49,6 +49,8 @@
     /* the hover brighten on work + news media — declared here because this
        rule out-specifies the per-block ones and would otherwise drop it */
     filter 0.35s var(--ease-standard);
+  /* held for the page transition's fade-in (utilities/page-transition.css) */
+  transition-delay: var(--animate-hold, 0ms);
   will-change: clip-path, scale, opacity;
 }
 

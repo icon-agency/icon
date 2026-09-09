@@ -27,6 +27,11 @@
     <link rel="manifest" href="{{ file_url(directory ~ '/assets/brand/favicon/manifest.json') }}">
     <meta name="theme-color" content="#0000ff">
     <script>document.documentElement.classList.add("js-animations");</script>
+    {# The page transition's first render waits for the whole page to parse
+       (up to the footer), so the incoming snapshot is the finished page and
+       js/page-transition.js can find the banner it names. Released at the
+       end of parsing on any page without a footer. #}
+    <link rel="expect" href="#site-footer" blocking="render">
     <css-placeholder token="{{ placeholder_token }}">
     <js-placeholder token="{{ placeholder_token }}">
   </head>

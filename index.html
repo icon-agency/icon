@@ -407,6 +407,27 @@
                   </tbody>
                 </table>
               </div>
+
+              <div class="ds-group">
+                <h4 class="ds-group__title">Page transitions</h4>
+                <p class="ds-group__note">
+                  The move between pages is a cross-document View Transition
+                  (<code class="ds-code">src/utilities/page-transition.css</code>, <code class="ds-code">@view-transition { navigation: auto }</code>) &mdash;
+                  the browser snapshots the old page, the new one loads, CSS animates between. Three
+                  layers: the <strong>page</strong> (old fades out in 250ms on the standard ease; new fades in
+                  and rises 20px in 450ms decelerating &mdash; the scroll reveal&rsquo;s gesture, page-sized;
+                  a Back comes down from above), the <strong>chrome</strong> (the wordmark and the pill carry
+                  their own names and hold their place, one fixed anchor outside the fade), and the
+                  <strong>morph</strong> (the clicked card&rsquo;s media and the article&rsquo;s banner share the
+                  name <code class="ds-code">feature-media</code> for that navigation, so the tile grows into the
+                  banner in 600ms and shrinks back on Back &mdash; only when both are on screen). The fade is
+                  pure CSS; <code class="ds-code">js/page-transition.js</code>, a plain IIFE in
+                  <code class="ds-code">&lt;head&gt;</code>, adds the direction and the morph, and holds the scroll
+                  reveals for the fade (<code class="ds-code">--animate-hold</code>) so the page settles once.
+                  Reduced motion switches it off; Firefox simply navigates. This index carries the CSS
+                  too, so a click through to a template fades.
+                </p>
+              </div>
             </section>
 
             <section class="ds-section" id="breakpoints">
