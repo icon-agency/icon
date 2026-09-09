@@ -182,8 +182,14 @@ While the new page wipes in, `html.is-page-entering` sets `--animate-hold`
 (400ms), which the `[data-animate]` host and the media reveal add to their
 delay, so the page settles once instead of rising twice. A named banner is
 revealed outright (`.is-revealed` before first paint) — the morph would
-otherwise land on a clipped, invisible image. The homepage is skipped: its
-hero loader is an entrance of its own.
+otherwise land on a clipped, invisible image. The homepage is NOT skipped:
+its blue loading screen is full-size and unlit on the first frame (visible
+only while `html.is-page-entering`; otherwise invisible until lit, so a
+direct load never flashes it), so the wipe carries the blue in from the
+corner — the loader's own pop, played by the transition — and
+`js/hero-loader.js`, reading `window.ICON.pageEntering`, lights it as
+already landed (`.is-landed`, no animation) and fires the cover moment when
+the wipe finishes.
 
 Reduced motion sets `navigation: none` — an instant swap. Firefox has no
 cross-document transitions yet and simply navigates. Both pages must opt in,

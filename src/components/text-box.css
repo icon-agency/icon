@@ -377,6 +377,21 @@
   width: 100svw;
   height: 100svh;
   transform-origin: 0 100%;
+  /* INVISIBLE UNTIL LIT. The box is in the hero's markup and the script that
+     lights it runs in the footer; the page shell render-blocks only until
+     the footer is PARSED, so the first frame comes before that script — and
+     an unlit box painted as one full-bleed blue frame, then vanished to the
+     small square (Sep 2026). The pop-in animation takes it to 1 and holds. */
+  opacity: 0;
+}
+
+/* ARRIVING BY PAGE TRANSITION (utilities/page-transition.css) the unlit box
+   is the point: the page's first frame is full blue, and the wipe sweeps it
+   in from the corner — the pop, played by the transition. js/hero-loader.js
+   then lights it as already landed: no animation, just the end state. */
+html.is-page-entering .text-box--pop,
+.text-box--pop.is-landed {
+  opacity: 1;
 }
 
 @keyframes text-box-pop {
@@ -410,6 +425,10 @@
   animation:
     text-box-pop 0.65s var(--ease-decelerate) both,
     text-box-pop-in 0.1s linear both;
+}
+
+.text-box--pop.is-landed {
+  animation: none;
 }
 
 @media (prefers-reduced-motion: reduce) {

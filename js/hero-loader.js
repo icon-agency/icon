@@ -75,11 +75,18 @@
   box.style.setProperty("--pop-sx", (side / window.innerWidth).toFixed(4));
   box.style.setProperty("--pop-sy", (side / window.innerHeight).toFixed(4));
 
-  box.classList.add("is-lit");
-
   // Mark the boot so home-c.js can clean up whichever way it ends.
   var heroEl = box.closest("[data-hero]");
   if (heroEl) heroEl.classList.add("is-booting");
+
+  // ARRIVING BY PAGE TRANSITION, the wipe IS the pop: the box is full-size
+  // and unlit on the page's first frame (text-box.css shows it while
+  // html.is-page-entering), and the transition sweeps that blue in from the
+  // corner. Popping it again on top would be the blue twice, so it is lit
+  // as already LANDED, and the cover moment waits for the wipe's end.
+  var entering = window.ICON && window.ICON.pageEntering;
+  box.classList.add("is-lit");
+  if (entering) box.classList.add("is-landed");
 
   // THE THEME EVENT. The loading screen is a blue square that grows to cover
   // the viewport, so for its first half-second the page ground is still
@@ -99,7 +106,9 @@
   // fires twice, and a once-listener takes the FIRST: the fade, at 100ms, with
   // the square still small over a white page. That flips the header to white
   // ink on white ground for the next 460ms. Match the scale by name instead.
-  if (heroEl) {
+  if (heroEl && entering) {
+    entering.then(function () { heroEl.classList.add("is-covered"); });
+  } else if (heroEl) {
     box.addEventListener("animationend", function (e) {
       if (e.animationName !== "text-box-pop") return;
       heroEl.classList.add("is-covered");

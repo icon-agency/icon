@@ -14,8 +14,12 @@
  *      knows whether it has a partner; otherwise it names nothing and joins
  *      the plain fade.
  *
- * The homepage is skipped: its hero loader is an entrance of its own. The
- * name is stripped again once the transition has run (and before any new
+ * The homepage is not skipped: its blue loading screen is full-size and
+ * unlit on the first frame, so the wipe carries the blue in from the corner
+ * — the loader's own corner pop, played by the transition — and
+ * js/hero-loader.js, reading window.ICON.pageEntering, marks the screen
+ * landed when the wipe finishes instead of popping it again. The name is
+ * stripped again once the transition has run (and before any new
  * naming), so a page restored from the back-forward cache never carries a
  * second bearer — a duplicate name voids the whole transition.
  *
@@ -126,12 +130,10 @@
     if (!vt) return;
     quiet(vt);
 
-    // The homepage has its own entrance.
-    if (document.querySelector("[data-text-box]")) {
-      readNote();
-      vt.skipTransition();
-      return;
-    }
+    // The homepage's loading screen rides this wipe: js/hero-loader.js reads
+    // the promise and treats its blue as already landed when the wipe is.
+    window.ICON = window.ICON || {};
+    window.ICON.pageEntering = vt.finished.catch(function () {});
 
     var from = readNote();
     // Only the swap event carries its activation; on reveal it is the
