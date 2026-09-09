@@ -37,7 +37,7 @@
       <p class="news-article__meta news-article__meta--eyebrow news-article__meta--caps" data-rule="bottom" data-animate>
         <a class="invite-arrow invite-arrow--back" href="{{ path('view.news.page_1') }}">{{ 'News'|t }}</a>
       </p>
-      <h1 class="news-article__title" id="article-title" data-animate style="--animate-delay: 60ms">{{ label }}</h1>
+      <h1 class="news-article__title" id="article-title" data-reveal-words>{{ label }}</h1>
       <p class="news-article__meta news-article__meta--date news-article__meta--caps" data-rule="top" data-animate style="--animate-delay: 120ms">
         <a href="{{ category_url }}">{{ category_label }}</a> / <time datetime="{{ date_iso }}">{{ date }}</time>
       </p>

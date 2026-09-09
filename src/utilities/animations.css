@@ -27,6 +27,43 @@
   transform: none;
 }
 
+/* ---- Word-cascade reveal ([data-reveal-words]) ---------------------------
+   THE headline entrance: the homepage intro's gesture, worn by every page H1
+   (the /work and /news mastheads, the article titles) since Sep 2026 (user
+   call), and by the intro statement, the featured-work heading and the More
+   links. js/reveal.js wraps each word in a mask (.sw > .sw__i), indexes it
+   with --w, and adds .is-revealed on scroll-in; the words rise through their
+   masks with a per-word stagger. Hidden states are scoped under
+   .js-animations, so no-JS (and the DS demo, which doesn't load page JS)
+   renders the text plainly. --animate-hold: the page transition's beat
+   (utilities/page-transition.css). */
+.js-animations [data-reveal-words] .sw {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+  /* Enough headroom that descenders (g, y) and ascenders survive the clip at
+     the headline's tight line-height; the equal negative margin keeps line
+     spacing unchanged. */
+  padding-block: 0.22em;
+  margin-block: -0.22em;
+}
+.js-animations [data-reveal-words] .sw__i {
+  display: inline-block;
+  translate: 0 118%;
+  transition: translate 0.7s var(--ease-decelerate);
+  transition-delay: calc(var(--w, 0) * 55ms + var(--animate-hold, 0ms));
+}
+.js-animations [data-reveal-words].is-revealed .sw__i {
+  translate: 0 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .js-animations [data-reveal-words] .sw__i {
+    translate: 0 0;
+    transition: none;
+  }
+}
+
 /* ---- Masked line rise ---------------------------------------------------- */
 
 /* The hero lockup's gesture, packaged: each line waits below its own mask and

@@ -21,7 +21,7 @@
     <p class="work-article__eyebrow" data-animate>
       <a class="invite-arrow invite-arrow--back" href="{{ path('view.work.page_1') }}">{{ 'Work'|t }}</a>
     </p>
-    <h1 class="work-article__project" id="project-title" data-animate style="--animate-delay: 60ms">{{ label }}</h1>
+    <h1 class="work-article__project" id="project-title" data-reveal-words>{{ label }}</h1>
     {% if client %}
       <p class="work-article__client masthead-accent" data-animate style="--animate-delay: 120ms">{{ client }}</p>
     {% endif %}

@@ -1086,37 +1086,8 @@ html:not(.js-animations) .intro__expertise-list li:first-child a {
   color: var(--color-icon-black);
 }
 
-/* ---- Word-cascade reveal primitive ([data-reveal-words]) ----------------
-   js/home-c.js wraps each word in a mask (.sw > .sw__i), indexes it with --w,
-   and adds .is-revealed on scroll-in; the words rise through their masks with
-   a per-word stagger. Hidden states are scoped under .js-animations, so no-JS
-   (and the DS demo, which doesn't load page JS) renders the text plainly. */
-.js-animations [data-reveal-words] .sw {
-  display: inline-block;
-  overflow: hidden;
-  vertical-align: bottom;
-  /* Enough headroom that descenders (g, y) and ascenders survive the clip at
-     the headline's tight line-height; the equal negative margin keeps line
-     spacing unchanged. */
-  padding-block: 0.22em;
-  margin-block: -0.22em;
-}
-.js-animations [data-reveal-words] .sw__i {
-  display: inline-block;
-  translate: 0 118%;
-  transition: translate 0.7s var(--ease-decelerate);
-  transition-delay: calc(var(--w, 0) * 55ms);
-}
-.js-animations [data-reveal-words].is-revealed .sw__i {
-  translate: 0 0;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .js-animations [data-reveal-words] .sw__i {
-    translate: 0 0;
-    transition: none;
-  }
-}
+/* The word-cascade reveal primitive ([data-reveal-words]) lives in
+   utilities/animations.css since the page H1s took it (Sep 2026). */
 
 /* ======================================================================
  * Work — asymmetric editorial grid

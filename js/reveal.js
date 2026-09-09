@@ -10,6 +10,8 @@
  * This is the missing companion to js/work.js — work.js only drives [data-reveal]
  * swipes, .section-title underlines, and .project-card hover-video; nothing else
  * revealed [data-animate]. Used by the /work and /work/article page chrome.
+ * Also home here: the word cascade ([data-reveal-words]), the media reveals
+ * ([data-reveal-img]) and the hairline draws ([data-rule]).
  * Drupal: Drupal.behaviors.iconReveal. */
 (function () {
   "use strict";
@@ -32,6 +34,68 @@
       }, { threshold: 0.1, rootMargin: "0px 0px -50px 0px" });
 
       nodes.forEach(function (el) { io.observe(el); });
+    }
+  }
+
+  /* ---- Word-cascade text reveals ([data-reveal-words]) ---------------------
+   * Each word is wrapped in a mask (.sw > .sw__i) indexed with --w; the CSS
+   * (utilities/animations.css) staggers the rise on .is-revealed. The
+   * splitter walks TEXT NODES only, so inline elements (links) survive intact
+   * — their words are masked inside them. Plain-text elements get the
+   * SplitText-style aria shim (aria-label + hidden words); elements
+   * containing links must NOT (it would hide the links from AT), so there the
+   * split spans simply read in document order. Skipped under reduced motion
+   * (text is left exactly as authored). Lifted here from js/home-c.js (3c)
+   * when the page H1s took the cascade — the intro's gesture, on every
+   * masthead and article title (Sep 2026). */
+  var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var wordEls = Array.prototype.slice.call(document.querySelectorAll("[data-reveal-words]"));
+  if (wordEls.length && !reduce) {
+    wordEls.forEach(function (el) {
+      var hasLinks = !!el.querySelector("a");
+      if (!hasLinks) {
+        // Respect an authored aria-label (e.g. "More work" on a link whose
+        // visible text is just "More") — only shim one from the text when
+        // the markup didn't provide its own.
+        if (!el.hasAttribute("aria-label")) {
+          el.setAttribute("aria-label", el.textContent.replace(/\s+/g, " ").trim());
+        }
+      }
+      var idx = 0;
+      var walk = function (node) {
+        if (node.nodeType === 3) {
+          var frag = document.createDocumentFragment();
+          node.textContent.split(/(\s+)/).forEach(function (part) {
+            if (!part) return;
+            if (!part.trim()) { frag.appendChild(document.createTextNode(" ")); return; }
+            var w = document.createElement("span");
+            w.className = "sw";
+            if (!hasLinks) w.setAttribute("aria-hidden", "true");
+            var wi = document.createElement("span");
+            wi.className = "sw__i";
+            wi.textContent = part;
+            wi.style.setProperty("--w", idx++);
+            w.appendChild(wi);
+            frag.appendChild(w);
+          });
+          node.parentNode.replaceChild(frag, node);
+        } else if (node.nodeType === 1) {
+          Array.prototype.slice.call(node.childNodes).forEach(walk);
+        }
+      };
+      Array.prototype.slice.call(el.childNodes).forEach(walk);
+    });
+    if (!("IntersectionObserver" in window)) {
+      wordEls.forEach(function (el) { el.classList.add("is-revealed"); });
+    } else {
+      var wIO = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (!e.isIntersecting) return;
+          e.target.classList.add("is-revealed");
+          wIO.unobserve(e.target);
+        });
+      }, { threshold: 0.2, rootMargin: "0px 0px -8% 0px" });
+      wordEls.forEach(function (el) { wIO.observe(el); });
     }
   }
 

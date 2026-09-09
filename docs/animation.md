@@ -22,6 +22,14 @@ file drives the **hairline draw** (`.is-drawn` on `[data-rule]` /
 (`.is-revealed` on `[data-reveal-img]` frames wearing `.media-reveal`) —
 both lifted here from per-page copies once a third page needed them.
 
+The same file owns the **word cascade** (`[data-reveal-words]`, CSS in
+`animations.css`): each word is wrapped in a mask and rises through it on a
+per-word stagger. It began as the homepage intro's gesture (home-c.js, 3c) and
+was lifted here when every page H1 took it — the /work and /news mastheads
+and both article titles (user call, Sep 2026) — so a headline enters the same
+way wherever it is. Plain-text hosts get an aria-label shim; hosts with links
+are split in place so the links stay reachable.
+
 Used on every template. (The design-system index
 deliberately loads no page JS — its inline demos show the genuine no-JS state.)
 Under `prefers-reduced-motion: reduce` the CSS resets everything to visible.
@@ -40,8 +48,8 @@ The homepage's choreography lives in **three** files:
 - **`js/home-c.js`** — one IIFE, sections numbered in the file:
   Lenis smooth scroll (1) · hero stack-takeover: preload → card pile → viewport
   takeover → reel with cross-fades and Ken Burns stills (2) · header inversion
-  over the hero (2b) · triggered headline exit (2c) · word-cascade text reveals
-  (`[data-reveal-words]`, 3c) · the intro filmstrip — GSAP-ticker marquee,
+  over the hero (2b) · triggered headline exit (2c) · (the word cascade of 3c
+  now lives in `js/reveal.js`, §1) · the intro filmstrip — GSAP-ticker marquee,
   drag with momentum, hover-stall, DRAG badge (3d) · scroll-velocity card lean
   (3e) · cursor tilt on work/news cards (3f) · the clients logo marquee —
   two counter-drifting rows on ONE shared phase (row 2 reads it negated), so
