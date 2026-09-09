@@ -547,3 +547,14 @@ Core invokes `hook_page_top` and `hook_page_bottom` and renders the result — n
 
 A tap leaves `:hover` on the tapped element until the next tap elsewhere, so a CSS hover-open (`.pill:has(.item:hover) .drawer`) held the EXPERTISE drawer open after Esc had closed it, and the search flip then rolled a drawer-tall face. Any `:hover` that opens or restyles something goes inside `@media (hover: hover)`; touch keeps the JS tap-to-open and tap-outside-to-close.
 
+## A load-time animation must live on the compositor
+
+The hero's blue cover was moved from a centred `scale` to a `clip-path`
+inset from the corner (Sep 2026). It sampled perfectly when replayed on an
+idle page and was broken on every real load: first frame, a stall of most
+of a second, last frame. A clip-path animation is a main-thread animation,
+and at that moment the main thread is building the hero, decoding media and
+booting GSAP. `scale` and `opacity` run on the compositor and play through
+the load. Anything that animates while the page is still booting — the
+loading screen, the first reveals — must animate only transform-family
+properties and opacity; test it on a cold load, not by toggling a class.

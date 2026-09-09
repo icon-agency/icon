@@ -349,14 +349,26 @@
  * centre (user call, Sep 2026): the page transition's wipe
  * (utilities/page-transition.css) and the media reveals grow from that
  * corner, so the blue arrives the way every other ground on the site does.
- * A clip-path inset rather than a scale: the box stays viewport-sized and
- * still, and a window in it opens up and right from the corner, its leading
- * corner rounded on the way like the page wipe's. The first frame is a
- * square of equal sides — the top and right insets are sized from
- * --pop-sx/--pop-sy, which js/hero-loader.js measures as the square's share
- * of each viewport axis; it grows into the viewport's shape on the way out.
- * Falls back to a landscape guess if the script never ran. (--cover's
- * `translate` centring is untouched — nothing here transforms.)
+ * The start is a two-axis scale, --pop-sx/--pop-sy, which js/hero-loader.js
+ * sizes so the first frame is a square of equal sides; it grows into the
+ * viewport's shape on the way out. Falls back to a landscape guess if the
+ * script never ran. transform-origin is the box's bottom-left, which is the
+ * viewport's — the box is viewport-sized.
+ *
+ * A SCALE, NOT A CLIP-PATH — and this is load-bearing. A clip-path inset
+ * from the corner looked the same and was tried first (Sep 2026): a
+ * clip-path animation runs on the main thread, and at this moment the main
+ * thread is building the hero, decoding its media and booting GSAP, so the
+ * animation showed its first frame, stalled for the best part of a second
+ * and jumped to its last. Scale (and opacity) run on the compositor and
+ * play through the load regardless. The page wipe's rounded leading corner
+ * is not echoed here for the same reason.
+ *
+ * Animates the `scale` PROPERTY, not transform: scale(). --cover already owns
+ * `translate` for its centring, and scale/rotate/translate are independent
+ * properties that compose — one `transform` here would overwrite that
+ * centring, and pairing translate with transform in a single rule is the
+ * combination Lightning CSS is known to drop half of (LESSONS.md).
  */
 .text-box--pop {
   background: var(--color-shader-blue);
@@ -364,21 +376,12 @@
   aspect-ratio: auto;
   width: 100svw;
   height: 100svh;
+  transform-origin: 0 100%;
 }
 
 @keyframes text-box-pop {
-  from {
-    clip-path: inset(
-      calc(100% - var(--pop-sy, 0.18) * 100%)
-      calc(100% - var(--pop-sx, 0.12) * 100%)
-      0 0
-      round var(--radius-icon)
-    );
-  }
-
-  to {
-    clip-path: inset(0 0 0 0 round 0);
-  }
+  from { scale: var(--pop-sx, 0.12) var(--pop-sy, 0.18); }
+  to { scale: 1 1; }
 }
 
 /* The fade is its OWN animation, and a tenth of the length. Sharing the

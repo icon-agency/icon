@@ -41,8 +41,9 @@ The homepage's choreography lives in **three** files:
 
 - **`js/hero-loader.js`** — builds and lights the hero's loading screen: the
   blue that opens as a square from the viewport's bottom-left corner (a
-  clip-path window, the page transition's and the media reveals' corner —
-  user call, Sep 2026) and covers the screen in 650ms on the page wipe's
+  two-axis scale anchored there — NOT a clip-path, which runs on the main
+  thread and stalled behind the hero's boot; the page transition's and the
+  media reveals' corner — user call, Sep 2026) and covers the screen in 650ms on the page wipe's
   decelerate — the takeover curve's 200ms hold read as a stuck square from a
   corner;
   the `.text-box` "room" of 16 marquee rows it once held is gone. Deliberately its own

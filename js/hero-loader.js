@@ -62,10 +62,9 @@
   // THE POP OPENS AS A SQUARE, from the bottom-left corner. The box itself is
   // viewport-SHAPED (text-box.css explains why: a square one covered the
   // screen a third of the way through the animation and grew off-screen for
-  // the rest), so one inset for both axes would start it as a small wide
-  // rectangle. Two — the square's share of each axis, --pop-sx/--pop-sy —
-  // make the first frame's width and height equal, and the window grows into
-  // the viewport's shape on the way out.
+  // the rest), so a single scale would start it as a small wide rectangle. A
+  // two-axis scale fixes that — sized so the first frame's rendered width and
+  // height are equal — and it grows into the viewport's shape on the way out.
   //
   // Measured here rather than expressed in CSS because it needs the viewport's
   // two axes divided by each other, which calc() cannot do with lengths. Read
