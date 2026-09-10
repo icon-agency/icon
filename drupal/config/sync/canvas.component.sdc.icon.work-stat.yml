@@ -47,7 +47,7 @@ versioned_properties:
             string_shape: {  }
     fallback_metadata:
       slot_definitions: {  }
-label: Result
+label: 'Result (results)'
 id: sdc.icon.work-stat
 provider: icon
 source: sdc

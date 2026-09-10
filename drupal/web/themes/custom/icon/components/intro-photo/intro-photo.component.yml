@@ -1,6 +1,6 @@
 $schema: https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json
 name: Photo (filmstrip)
-group: Homepage
+group: Parts (go inside a block above)
 status: stable
 description: One photo card in a filmstrip. Alt text comes from the media item.
 props:

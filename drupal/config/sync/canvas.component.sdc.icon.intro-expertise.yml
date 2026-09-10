@@ -41,7 +41,7 @@ versioned_properties:
               format: uri-reference
     fallback_metadata:
       slot_definitions: {  }
-label: 'Expertise link'
+label: 'Expertise link (intro)'
 id: sdc.icon.intro-expertise
 provider: icon
 source: sdc

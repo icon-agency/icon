@@ -1,6 +1,6 @@
 $schema: https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json
 name: Content
-group: Article
+group: Page
 status: stable
 description: >
   A run of rich text inside the .content-page wrapper (src/base/prose.css) —

@@ -41,7 +41,7 @@ versioned_properties:
             string_shape: {  }
     fallback_metadata:
       slot_definitions: {  }
-label: Video
+label: 'Video embed'
 id: sdc.icon.news-article-video
 provider: icon
 source: sdc

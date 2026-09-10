@@ -4,9 +4,19 @@ status: true
 dependencies:
   module:
     - icon_site
-active_version: 607a2b1534a31c96
+active_version: 2611de2450fe3805
 versioned_properties:
   active:
+    settings:
+      default_settings:
+        id: icon_news_latest
+        label: 'News feed'
+        label_display: '0'
+        provider: icon_site
+        count: 3
+    fallback_metadata:
+      slot_definitions: null
+  607a2b1534a31c96:
     settings:
       default_settings:
         id: icon_news_latest
@@ -16,7 +26,7 @@ versioned_properties:
         count: 3
     fallback_metadata:
       slot_definitions: null
-label: 'News feed (homepage)'
+label: 'News feed'
 id: block.icon_news_latest
 provider: icon_site
 source: block

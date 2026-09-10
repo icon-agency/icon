@@ -1,0 +1,19 @@
+uuid: 83989a6c-ae21-470f-a2d5-b14e7c204516
+langcode: en
+status: true
+dependencies:
+  config:
+    - canvas.component.sdc.icon.intro-expertise
+    - canvas.component.sdc.icon.intro-fact
+    - canvas.component.sdc.icon.intro-photo
+    - canvas.component.sdc.icon.work-gallery-figure
+    - canvas.component.sdc.icon.work-stat
+name: 'Parts (go inside a block above)'
+configEntityTypeId: component
+weight: 3
+items:
+  - sdc.icon.intro-expertise
+  - sdc.icon.intro-fact
+  - sdc.icon.intro-photo
+  - sdc.icon.work-gallery-figure
+  - sdc.icon.work-stat

@@ -359,7 +359,7 @@ display:
         arguments: false
       display_description: 'Three latest stories excluding the one being read; embedded by icon_preprocess_node() with the node ID.'
       display_extenders: {  }
-      block_description: 'News: Next up'
+      block_description: 'Next up: news'
       block_category: ICON
     cache_metadata:
       max-age: -1

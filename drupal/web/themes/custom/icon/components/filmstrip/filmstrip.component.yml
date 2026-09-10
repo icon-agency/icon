@@ -1,6 +1,6 @@
 $schema: https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json
 name: Filmstrip
-group: ICON
+group: Page
 status: stable
 description: >
   A draggable strip of tilted cards drifting past on an endless marquee —

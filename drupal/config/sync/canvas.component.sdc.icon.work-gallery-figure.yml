@@ -71,7 +71,7 @@ versioned_properties:
             string_shape: {  }
     fallback_metadata:
       slot_definitions: {  }
-label: Figure
+label: 'Figure (gallery)'
 id: sdc.icon.work-gallery-figure
 provider: icon
 source: sdc

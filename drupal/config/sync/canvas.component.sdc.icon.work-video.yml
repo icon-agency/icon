@@ -62,7 +62,7 @@ versioned_properties:
             string_shape: {  }
     fallback_metadata:
       slot_definitions: {  }
-label: Film
+label: 'Video hosted'
 id: sdc.icon.work-video
 provider: icon
 source: sdc

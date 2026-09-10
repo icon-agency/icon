@@ -1,6 +1,6 @@
 uuid: 6a4e54cb-e5bc-4d73-8385-cd7cc6d07892
 langcode: en
-status: true
+status: false
 dependencies:
   theme:
     - olivero

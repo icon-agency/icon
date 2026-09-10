@@ -1,6 +1,6 @@
 $schema: https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json
-name: Film
-group: Work
+name: Video hosted
+group: Work article
 status: stable
 description: The click-to-play film with an art-directed cover — the sound-on cut (src/components/work-video.css, js/work-video.js).
 props:

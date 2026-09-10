@@ -570,3 +570,12 @@ cache had the 301 stored for the anonymous URL as well (per host, so one
 host answered 200 while another still answered 301). After changing
 anything that decides a redirect: `drush cr`, then test with a query string
 the browser has never seen (`?fresh=1`) or a fresh profile.
+
+## A Canvas component's label is its source's, not the config's
+
+Renaming components by setting `label` on the `component` config entity
+looked to work — the library showed the new names — and the next cache
+rebuild put every old name back: `generateComponents()` re-derives the label
+from the source each time (an SDC's `name:`, a block plugin's admin label, a
+View's block description). Rename at the source, then `drush cr`. Folders
+and status survive a rebuild; labels do not.

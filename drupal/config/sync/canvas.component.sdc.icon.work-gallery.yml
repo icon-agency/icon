@@ -14,7 +14,7 @@ versioned_properties:
         figures:
           title: Figures
           description: 'One or two. Two sit side by side from 768; on a phone they stack.'
-label: 'Gallery row'
+label: Gallery
 id: sdc.icon.work-gallery
 provider: icon
 source: sdc

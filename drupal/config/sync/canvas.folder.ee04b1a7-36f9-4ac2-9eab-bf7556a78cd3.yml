@@ -3,23 +3,15 @@ langcode: en
 status: true
 dependencies:
   config:
-    - canvas.component.sdc.icon.clients
-    - canvas.component.sdc.icon.featured-work
-    - canvas.component.sdc.icon.hero
-    - canvas.component.sdc.icon.hero-slide
+    - canvas.component.block.icon_featured_work
+    - canvas.component.block.icon_hero
+    - canvas.component.block.icon_news_latest
     - canvas.component.sdc.icon.intro
-    - canvas.component.sdc.icon.intro-expertise
-    - canvas.component.sdc.icon.intro-fact
-    - canvas.component.sdc.icon.intro-photo
 name: Homepage
 configEntityTypeId: component
-weight: 0
+weight: 2
 items:
-  - sdc.icon.clients
-  - sdc.icon.featured-work
-  - sdc.icon.hero
-  - sdc.icon.hero-slide
+  - block.icon_featured_work
+  - block.icon_hero
+  - block.icon_news_latest
   - sdc.icon.intro
-  - sdc.icon.intro-expertise
-  - sdc.icon.intro-fact
-  - sdc.icon.intro-photo

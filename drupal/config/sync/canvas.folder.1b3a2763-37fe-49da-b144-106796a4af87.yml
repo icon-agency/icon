@@ -1,23 +1,17 @@
-uuid: 30658d8e-f55e-451c-b876-c69ca733bd18
+uuid: 1b3a2763-37fe-49da-b144-106796a4af87
 langcode: en
 status: true
 dependencies:
   config:
-    - canvas.component.sdc.icon.pull-quote
     - canvas.component.sdc.icon.work-gallery
-    - canvas.component.sdc.icon.work-gallery-figure
     - canvas.component.sdc.icon.work-scroller
-    - canvas.component.sdc.icon.work-stat
     - canvas.component.sdc.icon.work-stats
     - canvas.component.sdc.icon.work-video
-name: Work
+name: 'Work article'
 configEntityTypeId: component
-weight: 0
+weight: 1
 items:
-  - sdc.icon.pull-quote
   - sdc.icon.work-gallery
-  - sdc.icon.work-gallery-figure
   - sdc.icon.work-scroller
-  - sdc.icon.work-stat
   - sdc.icon.work-stats
   - sdc.icon.work-video

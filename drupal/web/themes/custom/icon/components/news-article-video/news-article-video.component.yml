@@ -1,6 +1,6 @@
 $schema: https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json
-name: Video
-group: Article
+name: Video embed
+group: Page
 status: stable
 description: >
   An embedded film in the article flow — the wide figure band at the
