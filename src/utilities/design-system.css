@@ -320,6 +320,21 @@
   position: static;
 }
 
+/* The team panel, shown at rest out of its dialog: in the page it is
+   absolute in the dialog's viewport and slides in from off the left edge;
+   in the stage it is a block, in place, at the stage's width. */
+.ds-demo--team-panel {
+  padding: 0;
+}
+
+.ds-demo .team-overlay__panel {
+  position: relative;
+  inset: auto;
+  width: 100%;
+  translate: none;
+  transition: none;
+}
+
 /* Link-out card for components that can't be honestly demoed at reduced scale. */
 .ds-thumb-link {
   display: block;

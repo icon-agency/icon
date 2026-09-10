@@ -94,9 +94,12 @@
                 <li><a class="ds-nav__link" href="#site-header">Site header</a></li>
                 <li><a class="ds-nav__link" href="#work">Work grid</a></li>
                 <li><a class="ds-nav__link" href="#work-gallery">Work gallery</a></li>
+                <li><a class="ds-nav__link" href="#work-blocks">Work article blocks</a></li>
                 <li><a class="ds-nav__link" href="#clients">Clients marquee</a></li>
                 <li><a class="ds-nav__link" href="#news-stack">News — cards &amp; stack</a></li>
+                <li><a class="ds-nav__link" href="#team">Team profiles</a></li>
                 <li><a class="ds-nav__link" href="#invitations">Invitations &amp; links</a></li>
+                <li><a class="ds-nav__link" href="#subscribe">Subscribe bar</a></li>
                 <li><a class="ds-nav__link" href="#primitives">Reveal primitives</a></li>
                 <li><a class="ds-nav__link" href="#site-footer">Global footer</a></li>
               </ul>
@@ -795,15 +798,15 @@
                 a centred More link on the shared <code class="ds-code">.invite-arrow</code> at
                 <code class="ds-code">--voice-mid</code> &mdash; the size the footer&rsquo;s Subscribe
                 wears, because the site&rsquo;s standing invitations speak at one size (at half the
-                masthead it read as a second heading). At &ge;900px a split row pairs a 3/2
-                landscape with a taller 1/1 square, top-aligned
-                (<code class="ds-code">--tall-left</code> mirrors the pair);
+                masthead it read as a second heading). A split row is TWO SQUARES, at every grid
+                width (user call, Sep 2026 &mdash; the pair was a 3/2 landscape beside a 1/1 square
+                from 900px, and read as a mismatch; <code class="ds-code">--tile-square</code> puts the
+                square tile on both halves, on the homepage and the /work landing alike);
                 <code class="ds-code">__item--wide</code> runs one 16/9 feature across all twelve
                 &mdash; 16/9 because it is the campaign film&rsquo;s own frame (measured: 1920&times;1080);
                 the old 21/9 cropped 24% off the top and bottom of every frame. Tablet
-                (768&ndash;899px) keeps split rows two-up but uniforms them to 4/3; mobile stacks a
-                single column of squares &mdash; the mixed ratios are a desktop composition device,
-                and stacked single-file they just read as an inconsistent list. Each tile is one
+                (768&ndash;899px) keeps split rows two-up; mobile stacks a single column of squares.
+                Each tile is one
                 link: a <code class="ds-code">.work__figure</code> media frame
                 (<code class="ds-code">--radius-icon</code>, media oversized to 110% so the parallax
                 never exposes an edge) over a caption &mdash; the title in the mid voice, semibold,
@@ -1052,6 +1055,125 @@
                   feeding <code class="ds-code">--overlay-pad</code>, and an optional ratio feeding
                   the inline <code class="ds-code">aspect-ratio</code>. All figures reveal via the
                   shared <code class="ds-code">iconReveal</code> behaviour.
+                </p>
+              </div>
+            </section>
+
+            <section class="ds-section" id="work-blocks">
+              <h3 class="ds-section__title">Work article blocks</h3>
+              <p class="ds-section__intro">
+                The Work article&rsquo;s body is a SEQUENCE OF BLOCKS an editor orders &mdash; Content,
+                Pull quote, Gallery, Gallery scroller, Video embed, Video hosted, Results and stats &mdash;
+                and the layout falls out of the order: consecutive Content / Film / Video / Results
+                blocks become one <code class="ds-code">.work-article__chunk</code> with one Share
+                rail, consecutive Gallery rows one <code class="ds-code">.work-gallery</code>, and a
+                Scroller or a Pull quote stands alone in the flow
+                (<code class="ds-code">src/utilities/work-article.css</code> composes;
+                <code class="ds-code">templates/work-article-master.html</code> runs every block in
+                order). The four components below were promoted OUT of the page layer into
+                <code class="ds-code">src/components/</code> in Sep 2026 at their fifth consumer, each an
+                SDC of the same name in Drupal. Every one reads the chameleon ink, so a band re-pitches
+                with the client pair.
+              </p>
+
+              <div class="ds-group">
+                <h4 class="ds-group__title">Pull quote &mdash; <code class="ds-code">.pull-quote</code></h4>
+                <p class="ds-group__note">
+                  The big serif pull-quote (<code class="ds-code">src/components/pull-quote.css</code>):
+                  centred, fluid, Miller italic at MEDIUM weight (not the
+                  <code class="ds-code">.miller-text</code> utility, which is wired to 700), fading up on
+                  the <code class="ds-code">[data-animate]</code> host. <code class="ds-code">--upright</code>
+                  is the feature statement &mdash; the case study&rsquo;s opening line under the banner
+                  &mdash; and an optional <code class="ds-code">__cite</code> attributes a client quote.
+                  It lives OUTSIDE <code class="ds-code">.content-page</code> so the prose blockquote rules
+                  never cap it. Drupal: the <code class="ds-code">pull_quote</code> paragraph
+                  (<code class="ds-code">variant</code> italic / upright, optional cite) &rarr; the
+                  <code class="ds-code">pull-quote</code> SDC.
+                </p>
+                <div class="ds-demo">
+                  <blockquote class="pull-quote pull-quote--upright">
+                    <p class="pull-quote__text">A quote from the client or a highlight statement, ruled above and below.</p>
+                    <cite class="pull-quote__cite">Attribution</cite>
+                  </blockquote>
+                  <p class="ds-demo__label">blockquote.pull-quote.pull-quote--upright &gt; p.pull-quote__text + cite.pull-quote__cite</p>
+                </div>
+              </div>
+
+              <div class="ds-group">
+                <h4 class="ds-group__title">Results and stats &mdash; <code class="ds-code">.work-stats</code></h4>
+                <p class="ds-group__note">
+                  The results band (<code class="ds-code">src/components/work-stats.css</code>): two
+                  columns of stacked, ruled cells, each a value in the display face, a caps unit word
+                  beside it and a label above, as a definition list. The band tucks under a preceding
+                  prose heading by a page-layer margin (composition, not the component&rsquo;s). Drupal:
+                  a <code class="ds-code">work_stats</code> paragraph of nested
+                  <code class="ds-code">work_stat</code> Results (value / unit / label) &rarr; the
+                  <code class="ds-code">work-stats</code> + <code class="ds-code">work-stat</code> SDCs.
+                </p>
+                <div class="ds-demo">
+                  <section class="work-stats" aria-label="Results at a glance">
+                    <dl class="work-stats__grid">
+                      <div class="work-stats__stat">
+                        <dt class="work-stats__label">Stat label</dt>
+                        <dd class="work-stats__value">00 <span class="work-stats__unit">unit word</span></dd>
+                      </div>
+                      <div class="work-stats__stat">
+                        <dt class="work-stats__label">Stat label</dt>
+                        <dd class="work-stats__value">0,000 <span class="work-stats__unit">unit word</span></dd>
+                      </div>
+                      <div class="work-stats__stat">
+                        <dt class="work-stats__label">Stat label</dt>
+                        <dd class="work-stats__value">$0.00 <span class="work-stats__unit">unit word</span></dd>
+                      </div>
+                      <div class="work-stats__stat">
+                        <dt class="work-stats__label">Stat label</dt>
+                        <dd class="work-stats__value">Sold out <span class="work-stats__unit">unit word</span></dd>
+                      </div>
+                    </dl>
+                  </section>
+                  <p class="ds-demo__label">section.work-stats &gt; dl.work-stats__grid &gt; div.work-stats__stat (dt.__label + dd.__value &gt; span.__unit)</p>
+                </div>
+              </div>
+
+              <div class="ds-group">
+                <h4 class="ds-group__title">Video hosted and Gallery scroller &mdash; <code class="ds-code">.work-video</code>, <code class="ds-code">.work-scroller</code></h4>
+                <p class="ds-group__note">
+                  Both are JS-driven, so they link out rather than demo here. The
+                  <strong>click-to-play film</strong> (<code class="ds-code">work-video.css</code> +
+                  <code class="ds-code">js/work-video.js</code>) is an art-directed cover wearing the
+                  site&rsquo;s play control; the gesture reveals the native player, sound on &mdash;
+                  never autoplayed, this is the cut with the audio. The <strong>gallery scroller</strong>
+                  (<code class="ds-code">work-scroller.css</code> + <code class="ds-code">js/work-scroller.js</code>)
+                  is a drifting strip for a series (posters, clippings), carded at the gallery width,
+                  with drag, fling and click-to-focus; without JS a plain hand-scrollable strip. It shares
+                  the layered figure&rsquo;s <code class="ds-code">--overlay-ground</code> /
+                  <code class="ds-code">--overlay-pad</code> tokens for its optional colour ground. Drupal:
+                  the <code class="ds-code">work_video</code> (film file + cover + title) and
+                  <code class="ds-code">work_scroller</code> (images + ground colour) paragraphs.
+                </p>
+                <a class="ds-thumb-link" href="templates/work-article-master.html">
+                  <figure>
+                    <figcaption>Open the Work article (MASTER) &mdash; every block in order</figcaption>
+                  </figure>
+                </a>
+                <a class="ds-thumb-link" href="templates/work-athletes-foot.html">
+                  <figure>
+                    <figcaption>Open The Athlete&rsquo;s Foot article &mdash; the film in use</figcaption>
+                  </figure>
+                </a>
+              </div>
+
+              <div class="ds-group">
+                <h4 class="ds-group__title">Drupal (Canvas / SDC)</h4>
+                <p class="ds-group__note">
+                  Seven paragraph types on the Work item&rsquo;s body, grouped in the Add Block dialog
+                  as Content, Pull quote / Gallery, Gallery scroller / Video embed, Video hosted /
+                  Results and stats; <code class="ds-code">icon_preprocess_field()</code> reads the
+                  sequence into runs and galleries, and the Share rail per run comes with it. The
+                  page-level Work template (title, client, feature statement, banner) is the
+                  <code class="ds-code">page-header</code> + banner pair; pages built in Canvas get the
+                  same blocks through the <code class="ds-code">Masthead</code> component and the
+                  article block palette.
                 </p>
               </div>
             </section>
@@ -1514,6 +1636,171 @@
               </div>
             </section>
 
+            <section class="ds-section" id="team">
+              <h3 class="ds-section__title">Team profiles</h3>
+              <p class="ds-section__intro">
+                <code class="ds-code">.team</code> (<code class="ds-code">src/components/team-profiles.css</code>,
+                <code class="ds-code">js/team-profiles.js</code>) &mdash; the leadership grid on the About
+                page and the profile PANEL a card opens, modelled on basicagency.com/about (user call,
+                Sep 2026). Born in Drupal, not the static templates: the
+                <code class="ds-code">Team profiles</code> block renders every published
+                <strong>Team member</strong> (name, role, bio, LinkedIn, a square portrait, an order)
+                through the <code class="ds-code">team-profiles</code> SDC, and the About page is a
+                Canvas page. The grid is one, two, three columns (768 / 1024) and STAYS three on a wide
+                monitor &mdash; two rows of three read better than one of six (tried, Sep 2026) &mdash;
+                with the work gallery&rsquo;s 16px gap between the portraits. A card fills its row with the
+                role&rsquo;s track the one that grows, so the plus sits on one line across a row whatever
+                the role&rsquo;s length.
+              </p>
+
+              <div class="ds-group">
+                <h4 class="ds-group__title">The card &mdash; the news card under the cursor</h4>
+                <p class="ds-group__note">
+                  A square portrait wearing <code class="ds-code">--radius-icon</code>, the name at
+                  <code class="ds-code">--voice-mid</code> semibold, the role in grey at
+                  <code class="ds-code">--voice-meta</code> (line-height 1.25 when it wraps), and a thin
+                  plus close under it. Hover is the news card&rsquo;s: the mask insets 1.6%, the frame leans
+                  toward the pointer (<code class="ds-code">--mx</code>/<code class="ds-code">--my</code> from
+                  the shared <code class="ds-code">js/cursor-tilt.js</code>), the photo brightens and eases up
+                  a hair, and the plus grows to 1.35&times; in brand blue &mdash; pointer devices only. The
+                  tilt and the hover clip sit on the FIGURE; the shared
+                  <code class="ds-code">.media-reveal</code> mask is a frame inside it, its own box (never
+                  transform the observed element, LESSONS.md). The cards rise in on
+                  <code class="ds-code">[data-animate]</code> with a 70ms stagger and lean with the scroll
+                  through <code class="ds-code">js/velocity-lean.js</code> (<code class="ds-code">--team-skew</code>,
+                  3deg).
+                </p>
+                <div class="ds-demo">
+                  <ul class="team__grid">
+                    <li class="team__member">
+                      <a class="team__link" href="#team">
+                        <figure class="team__figure">
+                          <div class="team__frame media-reveal">
+                            <img class="team__photo" src="assets/profile/joanne-painter.png" alt="" width="1000" height="1000" loading="lazy" />
+                          </div>
+                        </figure>
+                        <span class="team__name">Joanne Painter</span>
+                        <span class="team__role">Group Managing Director</span>
+                        <span class="team__plus" aria-hidden="true">+</span>
+                      </a>
+                    </li>
+                    <li class="team__member">
+                      <a class="team__link" href="#team">
+                        <figure class="team__figure">
+                          <div class="team__frame media-reveal">
+                            <img class="team__photo" src="assets/profile/chris-dodds.png" alt="" width="1000" height="1000" loading="lazy" />
+                          </div>
+                        </figure>
+                        <span class="team__name">Chris Dodds</span>
+                        <span class="team__role">Managing Director, Digital</span>
+                        <span class="team__plus" aria-hidden="true">+</span>
+                      </a>
+                    </li>
+                    <li class="team__member">
+                      <a class="team__link" href="#team">
+                        <figure class="team__figure">
+                          <div class="team__frame media-reveal">
+                            <img class="team__photo" src="assets/profile/georgina-rees.png" alt="" width="1000" height="1000" loading="lazy" />
+                          </div>
+                        </figure>
+                        <span class="team__name">Georgina Rees</span>
+                        <span class="team__role">Executive Director, Brand, Creative and Communications</span>
+                        <span class="team__plus" aria-hidden="true">+</span>
+                      </a>
+                    </li>
+                  </ul>
+                  <p class="ds-demo__label">ul.team__grid &gt; li.team__member &gt; a.team__link[data-team-open] &gt; figure.team__figure &gt; div.team__frame.media-reveal &gt; img.team__photo · span.team__name + span.team__role + span.team__plus</p>
+                </div>
+              </div>
+
+              <div class="ds-group">
+                <h4 class="ds-group__title">The panel &mdash; an address of its own</h4>
+                <p class="ds-group__note">
+                  One native <code class="ds-code">&lt;dialog&gt;</code> holds every profile and is the
+                  viewport (transparent, so the click beside the panel lands on it and closes); the visible
+                  surface is <code class="ds-code">.team-overlay__panel</code>, on the footer&rsquo;s fixed
+                  ground and ink, anchored to the LEFT edge and sliding in from it
+                  (<code class="ds-code">translate: -100% 0 &rarr; 0 0</code>, <code class="ds-code">@starting-style</code>,
+                  <code class="ds-code">--duration-slow</code>) &mdash; and back out on close, the dialog
+                  transitioning <code class="ds-code">display</code> and <code class="ds-code">overlay</code>
+                  with <code class="ds-code">allow-discrete</code> so it stays painted until the panel has gone.
+                  The page behind loses its scroll but keeps its scrollbar gutter
+                  (<code class="ds-code">scrollbar-gutter: stable</code> on <code class="ds-code">html.is-team-open</code>),
+                  so nothing jumps. The bar carries previous / next, the counter (tabular, the total dimmed)
+                  and the X; from 1024 the panel is a 5/7 grid, portrait beside text
+                  (<code class="ds-code">clamp(48rem, 66vw, 84rem)</code> wide). The name and role share one
+                  size and weight, the name in the ink and the role at 72% of it (~9:1 on the ground).
+                </p>
+                <p class="ds-group__note">
+                  <strong>The address follows.</strong> A card is a real link to
+                  <code class="ds-code">/about/&lt;slug&gt;</code> (the name through pathauto&rsquo;s alias
+                  cleaner); opening, stepping and closing are <code class="ds-code">pushState</code>s, so
+                  Back and Forward walk the panels, the title follows the person, and a deep link loads
+                  because an inbound path processor serves the About page for a published slug (and opts
+                  the request out of the Redirect module&rsquo;s route normaliser, which would 301 the slug
+                  away); an unknown slug is a 404. <strong>A profile arrives the way a page does</strong>:
+                  the name on the word cascade, the bio and link on the rise, the portrait through the
+                  media mask &mdash; the shared entrances, re-armed by the script on every open (held 250ms
+                  for the slide) and step; stepping is the page move&rsquo;s fade, a same-document View
+                  Transition on the portrait and the text (<code class="ds-code">team-portrait</code>,
+                  <code class="ds-code">team-text</code>, written with the page&rsquo;s in
+                  <code class="ds-code">page-transition.css</code>). Escape, the X and a click beside all
+                  close; ArrowLeft / ArrowRight step. Reduced motion: no slide, no fade, no entrances, no
+                  tilt &mdash; an instant swap. Shown at rest below, out of its dialog.
+                </p>
+                <div class="ds-demo ds-demo--team-panel">
+                  <div class="team-overlay__panel">
+                    <div class="team-overlay__bar">
+                      <div class="team-overlay__steps">
+                        <button class="team-overlay__arrow" type="button" aria-label="Previous">
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12H4" /><path d="m10 6-6 6 6 6" /></svg>
+                        </button>
+                        <button class="team-overlay__arrow" type="button" aria-label="Next">
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12h16" /><path d="m14 6 6 6-6 6" /></svg>
+                        </button>
+                        <span class="team-overlay__counter"><span>02</span><span class="team-overlay__of">/06</span></span>
+                      </div>
+                      <button class="team-overlay__close" type="button" aria-label="Close">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>
+                      </button>
+                    </div>
+                    <article class="team-overlay__profile">
+                      <figure class="team-overlay__portrait">
+                        <div class="team-overlay__frame media-reveal">
+                          <img src="assets/profile/chris-dodds.png" alt="Portrait of Chris Dodds" width="1000" height="1000" loading="lazy" />
+                        </div>
+                      </figure>
+                      <div class="team-overlay__text">
+                        <h2 class="team-overlay__name"><span>Chris Dodds</span> <span class="team-overlay__role">Managing Director, Digital</span></h2>
+                        <div class="team-overlay__bio">
+                          <p>Chris manages ICON&rsquo;s digital division to help drive strategy, innovation, and client service.</p>
+                          <p>Based in Melbourne, Chris started his career in graphic design before completing a Masters Degree in Digital Media at RMIT University. Since founding ICON in 2002, he has helped build and guide the agency&rsquo;s integrated service model.</p>
+                        </div>
+                        <a class="team-overlay__linkedin" href="https://www.linkedin.com/in/chrisdoddsiconmd/" rel="noopener" target="_blank">Connect on LinkedIn</a>
+                      </div>
+                    </article>
+                  </div>
+                  <p class="ds-demo__label">dialog.team-overlay &gt; div.team-overlay__panel &gt; div.__bar (div.__steps: [data-team-prev] + [data-team-next] + span.__counter · [data-team-close]) + article.__profile[data-team-profile] (figure.__portrait &gt; div.__frame.media-reveal &gt; img · div.__text: h2.__name[data-reveal-words] &gt; [data-team-name] + span.__role · div.__bio[data-animate] · a.__linkedin[data-animate])</p>
+                </div>
+              </div>
+
+              <div class="ds-group">
+                <h4 class="ds-group__title">Drupal (Canvas / SDC)</h4>
+                <p class="ds-group__note">
+                  The <code class="ds-code">team_member</code> content type (Name as the title, Role, Bio in
+                  <code class="ds-code">basic_html</code>, LinkedIn, Portrait as Image media through the
+                  <code class="ds-code">team_portrait</code> style, an Order field; published or not &mdash; no
+                  moderation), the <code class="ds-code">Team profiles</code> block
+                  (<code class="ds-code">block.icon_team_profiles</code>, ICON folder; its one setting is the
+                  heading) and the <code class="ds-code">team-profiles</code> SDC (an array of objects, so
+                  block-only, not a library component). <code class="ds-code">icon/team-profiles</code> attaches
+                  the behaviour after <code class="ds-code">icon/reveal</code>, <code class="ds-code">icon/cursor-tilt</code>
+                  and <code class="ds-code">icon/velocity-lean</code>. <code class="ds-code">scripts/team-content.php</code>
+                  seeds the six leaders; <code class="ds-code">scripts/about-page.php</code> places the block.
+                </p>
+              </div>
+            </section>
+
             <section class="ds-section" id="invitations">
               <h3 class="ds-section__title">Invitations and links</h3>
               <p class="ds-section__intro">
@@ -1647,6 +1934,51 @@
                   to register; the Subscribe buttons&rsquo;
                   <code class="ds-code">data-subscribe</code> is a behaviour hook owned elsewhere, not by
                   these files.
+                </p>
+              </div>
+            </section>
+
+            <section class="ds-section" id="subscribe">
+              <h3 class="ds-section__title">Subscribe bar</h3>
+              <p class="ds-section__intro">
+                <code class="ds-code">.subscribe-bar</code> (<code class="ds-code">src/components/subscribe-bar.css</code>,
+                <code class="ds-code">js/subscribe-reveal.js</code>) &mdash; the newsletter Subscribe as a
+                PILL, the header search face&rsquo;s twin (user call, Sep 2026), on the news and work
+                mastheads and in the footer, where it wears the <code class="ds-code">--footer</code>
+                variant in the footer&rsquo;s fixed tokens. Promoted to a component when the footer became
+                its third consumer. An envelope glyph, a field hinting <strong>Subscribe</strong> at rest
+                and <strong>Your email</strong> on hover or focus &mdash; two overlaid spans that crossfade
+                and slide (0.3s; the native placeholder is a lone space so
+                <code class="ds-code">:placeholder-shown</code> still clears the hints once typed) &mdash;
+                and the arrow as the submit. COMPACT at rest (13rem: glyph, word, arrow) and growing on a
+                click into it, or while it holds a value (<code class="ds-code">.is-open</code>, 0.45s),
+                to its open width: the search face&rsquo;s 26rem on the mastheads, the column&rsquo;s full
+                width in the footer (<code class="ds-code">--subscribe-bar-open</code>). The script only
+                holds <code class="ds-code">.is-hinting</code> while the bar is under the pointer or the
+                field focused; a <code class="ds-code">&lt;div&gt;</code>, not a form, until the newsletter
+                slice gives it somewhere to submit.
+              </p>
+              <div class="ds-group">
+                <h4 class="ds-group__title">At rest &mdash; hover the pill for the hint swap</h4>
+                <div class="ds-demo">
+                  <div class="subscribe-bar" data-subscribe-bar>
+                    <span class="subscribe-bar__glyph" aria-hidden="true"><svg class="subscribe-bar__svg subscribe-bar__svg--mail" viewBox="2 4 20 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2" /><path d="m3 8 9 6 9-6" /></svg></span>
+                    <label class="sr-only" for="ds-subscribe-email">Email address</label>
+                    <span class="subscribe-bar__field">
+                      <input class="subscribe-bar__input" id="ds-subscribe-email" type="email" name="email" placeholder=" " autocomplete="email" data-subscribe-input>
+                      <span class="subscribe-bar__hint" aria-hidden="true"><span class="subscribe-bar__hint-rest">Subscribe</span><span class="subscribe-bar__hint-hover">Your email</span></span>
+                    </span>
+                    <button class="subscribe-bar__go" type="button" data-subscribe aria-label="Subscribe"><svg class="subscribe-bar__svg" viewBox="4 4 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 5v10h12" /><path d="m14 11 4 4-4 4" /></svg></button>
+                  </div>
+                  <p class="ds-demo__label">div.subscribe-bar[data-subscribe-bar] &gt; span.__glyph + label.sr-only + span.__field (input.__input + span.__hint &gt; span.__hint-rest + span.__hint-hover) + button.__go[data-subscribe] · .subscribe-bar--footer in the footer</p>
+                </div>
+              </div>
+              <div class="ds-group">
+                <h4 class="ds-group__title">Drupal</h4>
+                <p class="ds-group__note">
+                  <code class="ds-code">templates/includes/subscribe-bar.html.twig</code>, embedded by the
+                  news and work Views templates and the footer; <code class="ds-code">icon/subscribe-reveal</code>
+                  attaches globally (the footer is on every page). Inert until the newsletter slice.
                 </p>
               </div>
             </section>
