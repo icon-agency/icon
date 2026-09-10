@@ -40,7 +40,11 @@
   {% endmacro %}
   {% import _self as card %}
   {% set two = media_wide.src is defined and media_wide.src %}
-  <figure class="work__figure{{ foreground.src ? ' work__figure--layered' }} media-reveal" data-reveal-img data-tile-film{% if two %} data-tile-variants{% endif %}{% if foreground.src and inset %} style="--overlay-pad: {{ inset }}"{% endif %}>
+  {# data-tile-film only where there IS a film: those are the ones whose src
+     waits on js-theme/work-tile-variants.js. An image-only card needs no
+     script — it is lazy and the CSS picks the variant. #}
+  {% set film = media.type == 'video' or (two and media_wide.type == 'video') %}
+  <figure class="work__figure{{ foreground.src ? ' work__figure--layered' }} media-reveal" data-reveal-img{% if film %} data-tile-film{% endif %}{% if two %} data-tile-variants{% endif %}{% if foreground.src and inset %} style="--overlay-pad: {{ inset }}"{% endif %}>
     {% if two %}
       {{ card.tile(media, 'square', client) }}
       {{ card.tile(media_wide, 'wide', client) }}

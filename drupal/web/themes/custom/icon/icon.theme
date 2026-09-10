@@ -485,7 +485,13 @@ function _icon_preprocess_node_work(array &$variables, NodeInterface $node): voi
     $variables['card_heading_level'] = $variables['elements']['#work_heading_level'] ?? 'h2';
     $variables['card_delay'] = $variables['elements']['#work_delay'] ?? 0;
     $variables['card_wide'] = !empty($variables['elements']['#work_wide']);
-    if ($variables['card']['media_wide']) {
+    // Wherever the card carries a FILM, not only where it carries two tiles:
+    // since Sep 2026 every tile film waits in data-src and this behaviour
+    // hands it over, so a single-tile film on a rail that never attached the
+    // library (the work article's "Next up") rendered an empty frame.
+    $has_film = ($variables['card']['media']['type'] ?? '') === 'video'
+      || ($variables['card']['media_wide']['type'] ?? '') === 'video';
+    if ($has_film || $variables['card']['media_wide']) {
       $variables['#attached']['library'][] = 'icon/work-tile-variants';
     }
     _icon_apply_cache($variables, $cache);
