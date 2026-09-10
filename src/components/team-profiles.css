@@ -171,9 +171,20 @@
 
 /* ---- The panel ----------------------------------------------------------- */
 
-/* Page scroll is locked while it is open (js/team-profiles.js). */
+/* Page scroll is locked while it is open (js/team-profiles.js). The
+   scrollbar's gutter stays reserved, or the page behind widens by a
+   scrollbar and jumps as the panel opens (user call, Sep 2026); on a
+   browser without scrollbar-gutter the JS measures the bar into
+   --team-scrollbar and the page is padded by it instead. */
 html.is-team-open {
   overflow: hidden;
+  scrollbar-gutter: stable;
+}
+
+@supports not (scrollbar-gutter: stable) {
+  html.is-team-open {
+    padding-right: var(--team-scrollbar, 0);
+  }
 }
 
 /* The dialog IS the viewport: full inset, no chrome, transparent — the

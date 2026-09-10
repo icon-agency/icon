@@ -102,8 +102,13 @@
     if (i < 0) return false;
     show(i);
     if (!overlay.open) {
+      // the scrollbar's width, measured before the lock takes it away, for
+      // the CSS fallback that pads the page by it (scrollbar-gutter does
+      // the same on its own where it is supported)
+      var root = document.documentElement;
+      root.style.setProperty("--team-scrollbar", (window.innerWidth - root.clientWidth) + "px");
       overlay.showModal();
-      document.documentElement.classList.add("is-team-open");
+      root.classList.add("is-team-open");
     }
     if (push) history.pushState({ team: slug }, "", base + "/" + slug);
     if (closeBtn) closeBtn.focus();
