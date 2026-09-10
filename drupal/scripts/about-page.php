@@ -118,4 +118,10 @@ $page->setNewRevision(TRUE);
 $page->setRevisionLogMessage('About page rebuilt from iconagency.com.au/about.');
 $page->save();
 
-print "Saved canvas_page {$page->id()} with " . count($tree) . " components at " . $page->toUrl()->toString() . "\n";
+// The editor loads the AUTO-SAVE draft in preference to the saved entity, so
+// a draft left from before this script ran would shadow everything it just
+// wrote — open the page in Canvas and the content appears to vanish. Clear it
+// so the editor starts from what is saved.
+\Drupal::service(\Drupal\canvas\AutoSave\AutoSaveManager::class)->delete($page);
+
+print "Saved canvas_page {$page->id()} with " . count($tree) . " components at " . $page->toUrl()->toString() . ", auto-save draft cleared\n";
