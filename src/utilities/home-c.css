@@ -1168,6 +1168,17 @@ html:not(.js-animations) .intro__expertise-list li:first-child a {
     --tile-square: none;
     --tile-wide: block;
   }
+  /* A SPLIT PAIR IS TWO SQUARES (user call, Sep 2026). It was a landscape
+     beside a square from 900 — the taller tile on one side, a 3:2 on the
+     other — and the pair read as a mismatch rather than a composition, so
+     both halves now wear the square tile at every grid width — this sits in the
+     open-ended 768 block, not the 768–899 band, so it holds at desktop too. The wide tile
+     is for the feature row alone. */
+  .work__row--split .work__figure {
+    aspect-ratio: 1 / 1;
+    --tile-square: block;
+    --tile-wide: none;
+  }
   /* 16/9 is the campaign film's OWN frame (measured: 1920x1080). At the old
      21/9 the figure was 2.33 against the video's 1.78, so object-fit cropped
      24% off the top and bottom of every frame — heads and feet — and it read as
@@ -1200,12 +1211,10 @@ html:not(.js-animations) .intro__expertise-list li:first-child a {
   .work__row--split .work__item:last-child { grid-column: 7 / span 6; }
   .work__item--wide,
   .work__row--feature .work__item { grid-column: 1 / -1; }
-  .work__row--split .work__figure { aspect-ratio: 4 / 3; }
 }
 
 /* Snap the work rows to the same 12 columns as the intro. Split rows are two
-   6-column tiles (top-aligned: left landscape, right taller square); the feature
-   row spans all 12. */
+   6-column square tiles; the feature row spans all 12. */
 @media (min-width: 900px) {
   .work__row {
     grid-template-columns: repeat(12, minmax(0, 1fr));
@@ -1216,26 +1225,9 @@ html:not(.js-animations) .intro__expertise-list li:first-child a {
   .work__row--split .work__item:last-child { grid-column: 7 / span 6; }
   .work__item--wide,
   .work__row--feature .work__item { grid-column: 1 / -1; }
-  .work__row--split .work__item:first-child .work__figure {
-    aspect-ratio: 3 / 2;
-  }
-  .work__row--split .work__item:last-child .work__figure {
-    aspect-ratio: 1 / 1;
-    --tile-square: block;
-    --tile-wide: none;
-  }
-  /* Mirror the split for this row — the taller (square) figure on the LEFT,
-     the shorter (landscape) one on the right. Extra class → wins over the above. */
-  .work__row--split.work__row--tall-left .work__item:first-child .work__figure {
-    aspect-ratio: 1 / 1;
-    --tile-square: block;
-    --tile-wide: none;
-  }
-  .work__row--split.work__row--tall-left .work__item:last-child .work__figure {
-    aspect-ratio: 3 / 2;
-    --tile-square: none;
-    --tile-wide: block;
-  }
+  /* No landscape|square stagger any more (see the 768 rule): both halves of
+     a split are square, and --tall-left, which mirrored the stagger, now only
+     names the row. */
 }
 
 .work__item {
@@ -1366,7 +1358,7 @@ html:not(.js-animations) .intro__expertise-list li:first-child a {
 
 /* TWO TILES, ONE FRAME (Sep 2026): a card may carry a square tile and a wide
    one; the frame's shape picks — the landscape rules (the 4/3 base from 768,
-   the 16/9 feature, the 3/2 split) set --tile-wide: block, the square rules
+   the 16/9 feature) set --tile-wide: block, the square rules (the splits, the
    set --tile-square: block, and each variant reads its own switch. A hidden
    image is lazy and never fetched; a hidden film's src is withheld by
    js-theme/work-tile-variants.js. A card with one tile has no variant class

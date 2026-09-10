@@ -56,8 +56,7 @@ props:
       type: object
       title: Wide tile media
       description: >
-        Optional: the tile for the landscape frames (the 16:9 feature, the 3:2 pairs).
-        Same shape as `media`; `media` stays the square tile.
+        Optional: the tile for the wide feature frame, the full-width 16:9 slot. Every other frame, the split pairs included, is square and shows `media`.
       properties:
         type:
           type: string

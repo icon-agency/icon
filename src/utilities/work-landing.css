@@ -81,20 +81,13 @@
   .work-landing__item:nth-child(5n + 3 of .work-landing__item:not([hidden])) .work__figure {
     aspect-ratio: 16 / 9;
   }
-}
 
-/* the split pairs' landscape|square stagger arrives with the desktop grid,
-   as on the homepage (768-899 stays uniform 4/3) */
-@media (min-width: 900px) {
-  .work-landing__item:nth-child(5n + 1 of .work-landing__item:not([hidden])) .work__figure,
-  .work-landing__item:nth-child(5n of .work-landing__item:not([hidden])) .work__figure {
-    aspect-ratio: 3 / 2;
-  }
-
-  .work-landing__item:nth-child(5n + 2 of .work-landing__item:not([hidden])) .work__figure,
-  .work-landing__item:nth-child(5n + 4 of .work-landing__item:not([hidden])) .work__figure {
+  /* EVERY OTHER SLOT IS SQUARE (user call, Sep 2026): the split pairs were a
+     landscape beside a square from 900, as on the homepage, and read as a
+     mismatch. Both halves wear the square tile now, at every grid width; the
+     wide tile is the feature's alone (home-c.css: two tiles, one frame). */
+  .work-landing__item:not(:nth-child(5n + 3 of .work-landing__item:not([hidden]))) .work__figure {
     aspect-ratio: 1 / 1;
-    /* the square slots show the square tile (home-c.css: two tiles, one frame) */
     --tile-square: block;
     --tile-wide: none;
   }

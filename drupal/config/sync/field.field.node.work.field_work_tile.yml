@@ -12,7 +12,7 @@ field_name: field_work_tile
 entity_type: node
 bundle: work
 label: Square
-description: 'SQUARE, at least 1600px — an image or a looping film. The square frames use it as is; the landscape frames use the wide tile when one is set, and crop this one otherwise.'
+description: 'SQUARE, at least 1600px — an image or a looping film. Every frame but the wide feature shows it as is, the split pairs included; the feature uses the Wide tile when one is set, and crops this one otherwise.'
 required: true
 translatable: false
 default_value: {  }
