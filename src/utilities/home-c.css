@@ -1616,14 +1616,15 @@ html:not(.js-animations) .intro__expertise-list li:first-child a {
 /* The card: ~2:1, sized from one height so the row can never rag.
    NB the wrap constraint: a row's single track must stay WIDER than any
    viewport, or the two-track loop shows a gap. Nine cards at this sizing
-   clear 4xl (2560px) by ~4% — if the split ever goes below nine a side, or
-   cards shrink, re-check that margin. */
+   clear 4xl (2560px) comfortably — the card grew in Sep 2026, so the margin
+   grew with it — but if the split ever goes below nine a side, or cards
+   shrink, re-check it. */
 .client {
   flex: 0 0 auto;
   display: flex;
   align-items: center;
   justify-content: center;
-  --client-card-h: clamp(4.5rem, 7vw, 8.5rem);
+  --client-card-h: clamp(5rem, 7.7vw, 9.5rem);
   height: var(--client-card-h);
   width: calc(var(--client-card-h) * 2.05);
   border-radius: var(--radius-icon);
@@ -1644,11 +1645,13 @@ html:not(.js-animations) .intro__expertise-list li:first-child a {
    ratio. This is what makes the viewBox's SCALE genuinely irrelevant to
    the upload rule (assets/client-logos/README.md) — only its crop matters. */
 .client__logo {
-  /* 72%/52%, raised from 62%/46%: width for the Australian Government crest
-     lockups (DCCEEW, DSS run ~4:1 with fine text that needs the pixels to
-     read), height for the square/portrait marks small at equal bounds. */
+  /* 72%/58%: width for the Australian Government crest lockups (DCCEEW, DSS
+     run ~4:1 with fine text that needs the pixels to read), height for the
+     square and portrait marks, which are the ones left small at equal
+     bounds. Was 62%/46%, then 72%/52%; the height went up again with the
+     card in Sep 2026 (user call) so the square marks fill their stage. */
   width: 72%;
-  height: 52%;
+  height: 58%;
   object-fit: contain;
   filter: brightness(0); /* any brand colour -> ink (see the header note) */
   /* the strip is pointer-dragged; a native image ghost-drag would steal it */
