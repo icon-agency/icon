@@ -294,32 +294,57 @@ html.is-team-open {
   outline-offset: 2px;
 }
 
+/* The portrait: the figure leans toward the cursor (--mx/--my from
+   js/cursor-tilt.js, the news card's 2.2deg); the frame inside it is the
+   shared .media-reveal mask that draws the photo in (home-c.css) — its own
+   box, so the tilt never touches the masked element. */
 .team-overlay__portrait {
   margin: 0 0 var(--space-md);
+  transform: perspective(900px)
+    rotateX(calc(var(--my, 0) * -2.2deg))
+    rotateY(calc(var(--mx, 0) * 2.2deg));
+  transition: transform var(--duration-fast) var(--ease-decelerate);
+}
+
+.team-overlay__frame {
   aspect-ratio: 1 / 1;
   border-radius: var(--radius-icon);
   overflow: hidden;
 }
 
-.team-overlay__portrait img {
+.team-overlay__frame img {
   display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
+/* The step is a View Transition on these two (js/team-profiles.js); the
+   fade itself is written with the page's in utilities/page-transition.css.
+   Only the shown profile renders, so the names are worn once at a time. */
+.team-overlay__portrait {
+  view-transition-name: team-portrait;
+}
+
+.team-overlay__text {
+  view-transition-name: team-text;
+}
+
+/* one size and one weight for the pair; the name in the panel's ink, the
+   role a step back in grey (user call, Sep 2026) — 72% of the ink on the
+   footer ground is ~9:1, well past AA */
 .team-overlay__name {
   margin: 0 0 var(--space-sm);
-  font-size: var(--voice-headline);
-  font-weight: var(--font-weight-bold);
-  line-height: 1.1;
-  letter-spacing: -0.02em;
+  font-size: var(--voice-mid);
+  font-weight: var(--font-weight-semibold);
+  line-height: 1.15;
+  letter-spacing: -0.01em;
   text-wrap: balance;
 }
 
 .team-overlay__role {
   display: block;
-  font-weight: var(--font-weight-normal);
+  color: color-mix(in srgb, var(--footer-ink) 72%, transparent);
 }
 
 .team-overlay__bio {
@@ -350,7 +375,12 @@ html.is-team-open {
   .team-overlay,
   .team-overlay::backdrop,
   .team-overlay__panel,
+  .team-overlay__portrait,
   .team__photo {
     transition: none;
+  }
+
+  .team-overlay__portrait {
+    transform: none;
   }
 }

@@ -195,10 +195,29 @@ backdrop is a tint of the footer ground that fades in with it, and the page
 behind loses its scroll (`html.is-team-open`). Closing slides it back out
 the same way: the dialog transitions `display` and `overlay` with
 `allow-discrete`, so it stays painted in the top layer until the panel has
-gone (a browser without discrete transitions removes it at once). Stepping
-to the next member swaps the `[data-team-profile]` articles in place — no
-motion, the panel is already there; the arrows and the counter sit in the
-bar at the top. The grid's cards wear the shared `[data-animate]` rise with a stagger
+gone (a browser without discrete transitions removes it at once). The
+arrows and the counter sit in the bar at the top.
+
+**A profile arrives the way a page does** (user call, Sep 2026): the name
+on the word cascade (`[data-reveal-words]`), the bio and the LinkedIn link
+on the `[data-animate]` rise with a stagger, the portrait through the
+shared `.media-reveal` mask — the site's own entrances, none new. On an
+open they hold for the panel's slide (`--animate-hold`, 250ms, set on the
+panel by the script); on a step they play at once. **Stepping is the page
+move's fade**: `js/team-profiles.js` swaps the profile inside
+`document.startViewTransition()`, the portrait and the text wear a
+`view-transition-name` each (only the shown profile renders, so each name
+is worn once), and `page-transition.css` gives the pair the page's own
+crossfade — old out in 300ms on the standard ease, new in over 450ms on
+the decelerate — with the new profile's entrances playing once it lands.
+The script only RE-ARMS the entrances: the classes come off while the
+profile is hidden and go back on a frame after it shows, from a forced
+start state. The portrait leans toward the cursor (the news card's 2.2deg,
+through `js/cursor-tilt.js`) on the figure, with the mask on a frame inside
+it — the tilted box and the masked box are never the same element. No
+scroll-velocity skew: the page behind does not scroll while the panel is
+open, and the panel's own scroll is not the engine's. Reduced motion:
+no fade, no entrances, no tilt — an instant swap. The grid's cards wear the shared `[data-animate]` rise with a stagger
 (`--animate-delay` per card) and the `.media-reveal` mask on the portrait;
 hover scales the portrait inside its square (pointer devices only).
 Reduced motion drops the slide and the mask. The URL, title and counter
@@ -227,7 +246,9 @@ are the script's — see `docs/drupal-handoff.md` for the routing.
    sampler is the worked example: it lived in `site-footer.js` and `news.js`
    until the work landing became its third consumer, and is now
    `js/velocity-lean.js` (`window.ICON.velocityLean`), loaded before the
-   files that call it.
+   files that call it. The cursor tilt followed the same path: news.js and
+   work-landing.js each carried the loop until the team panel's portrait
+   made three, and it is now `js/cursor-tilt.js` (`window.ICON.cursorTilt`).
 5. **Don't use JS for what CSS handles** — hover, focus, and theme
    cross-fades stay in CSS; observer-triggered reveals (including the hairline
    draw) keep the *transition* in CSS and use JS only to flip a class. JS
@@ -255,10 +276,11 @@ are the script's — see `docs/drupal-handoff.md` for the routing.
 | Subscribe bar hint state (news-b and work-landing-b mastheads, the footer) | `js/subscribe-reveal.js` | — | `iconSubscribeReveal` → `icon/subscribe-reveal` |
 | Work landing (filter + card motion) | `js/work-landing.js` | — | `iconWorkLanding` → `icon/work-landing` |
 | Scroll-velocity engine (shared: footer skew, news + work listing lean, work article skew, gallery scroller) | `js/velocity-lean.js` | — | `iconVelocityLean` → `icon/velocity-lean` (a dependency of its consumers) |
+| Cursor-tilt engine (shared: news cards, work landing tiles, the team panel's portrait) | `js/cursor-tilt.js` | — | plain IIFE → `icon/cursor-tilt` (a dependency of its consumers) |
 | Work article (chameleon skew + the hero banner's breakout to the viewport edges, an IO flip at one 0.5 threshold with the travel in CSS; wide only while the header is in its scrolled state, so it opens inset and returns to inset at the top) | `js/work-article.js` | velocity-lean | `iconWorkArticle` → `icon/work-article` |
 | Work article gallery scroller | `js/work-scroller.js` | velocity-lean | `iconWorkScroller` → `icon/work-scroller` |
 | Work article click-to-play film | `js/work-video.js` | — | `iconWorkVideo` → `icon/work-video` |
-| Team profiles overlay (the About page: open / step / close, the address and title) | `js/team-profiles.js` | — | `iconTeamProfiles` → `icon/team-profiles` |
+| Team profiles overlay (the About page: open / step / close, the address and title; the step's View Transition and the re-armed entrances) | `js/team-profiles.js` | reveal, cursor-tilt | `iconTeamProfiles` → `icon/team-profiles` |
 | Work section + listing filter (prototype: templates/home.html, work.html) | `js/work.js`, `js/work-filter.js` | — | not ported |
 | Home-A hero (prototype) | `js/hero.js` | gsap, ScrambleText | `iconHero` → `icon/hero` |
 | Tagline (prototype) | `js/tagline.js` | gsap, Inertia | `iconTagline` → `icon/tagline` |

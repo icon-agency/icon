@@ -8,8 +8,9 @@
  * no-ops). The behaviour body stays byte-identical to the prototype's, so the
  * static templates remain the reference and the theme can never drift.
  *
- * Two files stay plain IIFEs: velocity-lean (it only defines the shared
- * window.ICON.velocityLean, and consumers declare the library dependency) and
+ * Three files stay plain IIFEs: velocity-lean and cursor-tilt (each only
+ * defines a shared window.ICON engine; consumers declare the library
+ * dependency) and
  * hero-loader (it runs after the hero's markup and before the CDN scripts, as
  * in the template — its library is footer-scoped with a negative weight).
  * A third, page-transition, is a plain IIFE in <head>: it listens for
@@ -36,6 +37,7 @@ export const BEHAVIOURS = {
   "header": "iconHeader",
   "reveal": "iconReveal",
   "velocity-lean": null,
+  "cursor-tilt": null,
   "site-footer": "iconFooter",
   "theme-handover": "iconThemeHandover",
   "news": "iconNews",

@@ -97,6 +97,31 @@ html.is-page-entering {
   --animate-hold: 350ms;
 }
 
+/* ---- The team panel's step (same-document) ------------------------------- */
+
+/* Previous / next in the About page's profile panel: js/team-profiles.js
+   swaps the profile inside document.startViewTransition(), and the
+   portrait and the text wear a name each (components/team-profiles.css).
+   Both have a counterpart on the other side, so this is the page move's
+   crossfade, in its two paces — old out on the standard ease, new in on
+   the decelerate — and not the listing glide below. */
+::view-transition-old(team-portrait),
+::view-transition-new(team-portrait),
+::view-transition-old(team-text),
+::view-transition-new(team-text) {
+  mix-blend-mode: normal;
+}
+
+::view-transition-old(team-portrait),
+::view-transition-old(team-text) {
+  animation: 300ms var(--ease-standard) both page-fade-out;
+}
+
+::view-transition-new(team-portrait),
+::view-transition-new(team-text) {
+  animation: 450ms var(--ease-decelerate) both page-fade-in;
+}
+
 /* ---- The listing filters (same-document) --------------------------------- */
 
 /* /news and /work filter in place: js/news.js and js/work-landing.js give

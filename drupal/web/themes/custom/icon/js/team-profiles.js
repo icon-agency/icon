@@ -21,9 +21,22 @@
        *
        * The panel is a native <dialog> shown modally: focus is held inside, Escape
        * fires `cancel` (intercepted, so the address is written too), and the click
-       * beside the panel is a click on the dialog's own transparent box. Reduced
-       * motion: the CSS drops the slide; nothing to do here.
-       * Drupal: Drupal.behaviors.iconTeamProfiles via `icon/team-profiles`. */
+       * beside the panel is a click on the dialog's own transparent box.
+       *
+       * THE ARRIVING is the site's own (user call, Sep 2026): a profile enters
+       * the way a page does — the name on the word cascade, the bio and the link
+       * on the rise, the portrait through the media mask — and stepping to the
+       * next person is the page move's fade, a same-document View Transition on
+       * the portrait and the text (utilities/page-transition.css names them),
+       * with the new profile's entrances playing once the fade has landed. The
+       * entrances are the shared ones (js/reveal.js, utilities/animations.css,
+       * home-c.css): this file only re-arms them — the classes come off while
+       * the profile is hidden and go back on a frame after it shows. The
+       * portrait tilts toward the cursor through the shared engine
+       * (js/cursor-tilt.js). Reduced motion: the CSS drops every one of them and
+       * the fade is skipped; the swap is instant.
+       * Drupal: Drupal.behaviors.iconTeamProfiles via `icon/team-profiles`
+       * (after `icon/reveal`, which splits the names, and `icon/cursor-tilt`). */
       (function () {
         "use strict";
 
@@ -41,19 +54,54 @@
         var pageTitle = document.title;
         var siteName = (pageTitle.split(" — ").pop() || "").trim();
         var current = -1;
+        var panel = overlay.firstElementChild;
+        var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        var fluid = typeof document.startViewTransition === "function" && !reduce;
         var deepLink = new RegExp("^" + base.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "/([a-z0-9-]+)/?$");
 
         function pad(n) { return (n < 10 ? "0" : "") + n; }
 
+        var REVEALS = "[data-animate], [data-reveal-words], [data-reveal-img]";
+        function revealClass(el) {
+          return el.hasAttribute("data-animate") ? "is-visible" : "is-revealed";
+        }
+        // back to the start of every entrance, while the profile is hidden
+        function arm(profile) {
+          Array.prototype.slice.call(profile.querySelectorAll(REVEALS)).forEach(function (el) {
+            el.classList.remove(revealClass(el));
+          });
+        }
+        // and off they go — a frame later, from a computed start state, or the
+        // browser sees only the end and nothing moves
+        function play(profile) {
+          requestAnimationFrame(function () {
+            void panel.offsetWidth;
+            Array.prototype.slice.call(profile.querySelectorAll(REVEALS)).forEach(function (el) {
+              el.classList.add(revealClass(el));
+            });
+          });
+        }
+
         function show(i) {
-          profiles.forEach(function (p, k) { p.hidden = k !== i; });
+          var next = profiles[i];
+          var change = function () {
+            profiles.forEach(function (p, k) { p.hidden = k !== i; });
+            if (indexEl) indexEl.textContent = pad(i + 1);
+            var name = next.querySelector("[data-team-name]");
+            document.title = name && siteName ? name.textContent.trim() + " — " + siteName : pageTitle;
+            // the panel scrolls; a new person starts at the top of it
+            panel.scrollTop = 0;
+          };
+          // the entrances wait for the panel's own slide on an open, not on a step
+          panel.style.setProperty("--animate-hold", overlay.open ? "0ms" : "250ms");
+          arm(next);
+          if (fluid && overlay.open && current >= 0 && current !== i) {
+            document.startViewTransition(change).finished.finally(function () { play(next); });
+          } else {
+            change();
+            play(next);
+          }
           current = i;
-          if (indexEl) indexEl.textContent = pad(i + 1);
-          var name = profiles[i].querySelector("[data-team-name]");
-          document.title = name && siteName ? name.textContent.trim() + " — " + siteName : pageTitle;
-          // the panel scrolls; a new person starts at the top of it
-          var panel = overlay.firstElementChild;
-          if (panel) panel.scrollTop = 0;
         }
 
         function open(slug, push) {
@@ -106,6 +154,10 @@
           if (e.key === "ArrowRight") step(1);
           else if (e.key === "ArrowLeft") step(-1);
         });
+
+        if (!reduce && window.matchMedia("(hover: hover)").matches && window.ICON && window.ICON.cursorTilt) {
+          window.ICON.cursorTilt(overlay.querySelectorAll(".team-overlay__portrait"));
+        }
 
         // Back / Forward: the address is the truth
         window.addEventListener("popstate", function () {

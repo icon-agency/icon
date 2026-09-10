@@ -1,0 +1,51 @@
+/* cursor-tilt.js — THE cursor-following tilt, shared. Feeds --mx/--my
+ * (-1..1 across the element, from the pointer) onto each element handed to
+ * it so its CSS can lean a frame a couple of degrees toward the cursor;
+ * reset to 0 on leave so the frame settles flat. rAF-coalesced: one write a
+ * frame however fast the pointer moves.
+ *
+ * Lifted at the THIRD consumer, as docs/animation.md rule 4 has it: the
+ * news cards (js/news.js) and the work landing's tiles (js/work-landing.js)
+ * carried the same loop, byte for byte, and the team panel's portrait made
+ * three (Sep 2026). The consumer's CSS owns what the two numbers do —
+ * news-card.css and home-c.css rotate a frame in perspective, the team
+ * panel its portrait.
+ *
+ * A tiny namespaced global rather than a module, like js/velocity-lean.js:
+ * consumers load AFTER this one and soft-guard on its presence. The
+ * reduced-motion and (hover: hover) gating stays with the CALLER — it owns
+ * the decision that the motion exists at all.
+ *
+ * Drupal: its own `icon/cursor-tilt` library; consumer behaviours
+ * (iconNews, iconWorkLanding, iconTeamProfiles) declare the dependency. */
+(function () {
+  "use strict";
+
+  window.ICON = window.ICON || {};
+
+  // els: the elements the pointer is read over and the properties written
+  // on (a NodeList or an array); descendants inherit them.
+  window.ICON.cursorTilt = function (els) {
+    Array.prototype.slice.call(els).forEach(function (el) {
+      var raf = 0, mx = 0, my = 0;
+      var write = function () {
+        raf = 0;
+        el.style.setProperty("--mx", mx.toFixed(3));
+        el.style.setProperty("--my", my.toFixed(3));
+      };
+      el.addEventListener("pointermove", function (e) {
+        var r = el.getBoundingClientRect();
+        if (!r.width || !r.height) return;
+        // -1 at the left/top edge, +1 at the right/bottom
+        mx = ((e.clientX - r.left) / r.width) * 2 - 1;
+        my = ((e.clientY - r.top) / r.height) * 2 - 1;
+        if (!raf) raf = requestAnimationFrame(write);
+      }, { passive: true });
+      el.addEventListener("pointerleave", function () {
+        if (raf) { cancelAnimationFrame(raf); raf = 0; }
+        mx = my = 0;
+        write();
+      });
+    });
+  };
+})();

@@ -5,7 +5,8 @@
  *
  * The CARDS are the homepage's .work tiles (home-c.css) — parallax and
  * reveal are self-contained there; this file supplies what GSAP drives on
- * the homepage: the cursor tilt (--mx/--my) and the scroll-velocity lean.
+ * the homepage: the cursor tilt (--mx/--my) and the scroll-velocity lean —
+ * both through the shared engines (js/cursor-tilt.js, js/velocity-lean.js).
  *
  * 1. CATEGORY FILTER — chips are real links (server-side fallback); JS
  *    intercepts, toggles `hidden` per data-category, syncs the URL
@@ -148,33 +149,15 @@
   })();
 
   /* ---- 2. card cursor tilt ------------------------------------------------
-     home-c.js 3f on the .work__item: feed --mx/--my (-1..1 across the card)
-     so home-c.css can lean the frame toward the cursor. rAF-coalesced;
-     pointer devices only; skipped under reduced motion. */
+     home-c.js 3f on the .work__item: --mx/--my (-1..1 across the card) so
+     home-c.css can lean the frame toward the cursor. The SHARED engine
+     (js/cursor-tilt.js); pointer devices only; skipped under reduced motion. */
   if (
     !window.matchMedia("(prefers-reduced-motion: reduce)").matches &&
-    window.matchMedia("(hover: hover)").matches
+    window.matchMedia("(hover: hover)").matches &&
+    window.ICON && window.ICON.cursorTilt
   ) {
-    Array.prototype.slice.call(document.querySelectorAll(".work__item")).forEach(function (card) {
-      var raf = 0, mx = 0, my = 0;
-      var write = function () {
-        raf = 0;
-        card.style.setProperty("--mx", mx.toFixed(3));
-        card.style.setProperty("--my", my.toFixed(3));
-      };
-      card.addEventListener("pointermove", function (e) {
-        var r = card.getBoundingClientRect();
-        if (!r.width || !r.height) return;
-        mx = ((e.clientX - r.left) / r.width) * 2 - 1;
-        my = ((e.clientY - r.top) / r.height) * 2 - 1;
-        if (!raf) raf = requestAnimationFrame(write);
-      }, { passive: true });
-      card.addEventListener("pointerleave", function () {
-        if (raf) { cancelAnimationFrame(raf); raf = 0; }
-        mx = my = 0;
-        write();
-      });
-    });
+    window.ICON.cursorTilt(document.querySelectorAll(".work__item"));
   }
 
   /* ---- 3. scroll-velocity lean -------------------------------------------

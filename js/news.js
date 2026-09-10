@@ -23,7 +23,8 @@
  *    while leavers/arrivals fade (choreography lives in news-list.css).
  *    Unsupported browsers and reduced-motion users get the instant toggle.
  *
- * Drupal: becomes Drupal.behaviors.iconNews attached via `icon/news`; the
+ * Drupal: becomes Drupal.behaviors.iconNews attached via `icon/news` (after
+ * `icon/cursor-tilt` and `icon/velocity-lean`, the shared engines); the
  * filter maps to a Views exposed filter on field_news_list_category, and the single
  * card appearance is the Views display. */
 (function () {
@@ -176,38 +177,19 @@
   })();
 
   /* ---- 2. card cursor tilt ------------------------------------------------
-     home-c.js 3f, verbatim behaviour on the shared .news-card: feed --mx/--my
-     (-1..1 across the card) from the pointer so the CSS can lean the frame a
-     couple of degrees toward the cursor while the mask draws in. Written on
-     the CARD and inherited; reset on leave so the frame settles flat.
-     rAF-coalesced; pointer devices only, and skipped under reduced motion. */
+     home-c.js 3f, on the shared .news-card: --mx/--my from the pointer so
+     the CSS can lean the frame a couple of degrees toward the cursor while
+     the mask draws in. The loop is the SHARED engine (js/cursor-tilt.js,
+     lifted at its third consumer, the team panel); written on the CARD and
+     inherited. Pointer devices only, and skipped under reduced motion. */
   if (
     !window.matchMedia("(prefers-reduced-motion: reduce)").matches &&
-    window.matchMedia("(hover: hover)").matches
+    window.matchMedia("(hover: hover)").matches &&
+    window.ICON && window.ICON.cursorTilt
   ) {
     // document-wide, not list-scoped: on the article pages the cards live in
     // the "Next up" rail and there is no [data-news-list] at all
-    Array.prototype.slice.call(document.querySelectorAll(".news-card")).forEach(function (card) {
-      var raf = 0, mx = 0, my = 0;
-      var write = function () {
-        raf = 0;
-        card.style.setProperty("--mx", mx.toFixed(3));
-        card.style.setProperty("--my", my.toFixed(3));
-      };
-      card.addEventListener("pointermove", function (e) {
-        var r = card.getBoundingClientRect();
-        if (!r.width || !r.height) return;
-        // -1 at the left/top edge, +1 at the right/bottom
-        mx = ((e.clientX - r.left) / r.width) * 2 - 1;
-        my = ((e.clientY - r.top) / r.height) * 2 - 1;
-        if (!raf) raf = requestAnimationFrame(write);
-      }, { passive: true });
-      card.addEventListener("pointerleave", function () {
-        if (raf) { cancelAnimationFrame(raf); raf = 0; }
-        mx = my = 0;
-        write();
-      });
-    });
+    window.ICON.cursorTilt(document.querySelectorAll(".news-card"));
   }
 
   /* ---- 3. media clip + scale reveals — MOVED to js/reveal.js ------------

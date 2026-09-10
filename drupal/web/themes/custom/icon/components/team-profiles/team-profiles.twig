@@ -49,20 +49,27 @@
       </div>
       {% for m in members %}
         <article class="team-overlay__profile" data-team-profile="{{ m.slug }}" hidden>
+          {# The portrait tilts toward the cursor (the figure); the media
+             mask draws the photo in (the frame, the shared .media-reveal —
+             its own box, never the tilted one, per LESSONS.md). #}
           <figure class="team-overlay__portrait">
-            {% if m.photo.src %}
-              <img src="{{ m.photo.src }}" alt="{{ m.photo.alt }}"{% if m.photo.width %} width="{{ m.photo.width }}"{% endif %}{% if m.photo.height %} height="{{ m.photo.height }}"{% endif %} loading="lazy" />
-            {% endif %}
+            <div class="team-overlay__frame media-reveal" data-reveal-img>
+              {% if m.photo.src %}
+                <img src="{{ m.photo.src }}" alt="{{ m.photo.alt }}"{% if m.photo.width %} width="{{ m.photo.width }}"{% endif %}{% if m.photo.height %} height="{{ m.photo.height }}"{% endif %} loading="lazy" />
+              {% endif %}
+            </div>
           </figure>
           <div class="team-overlay__text">
-            <h2 class="team-overlay__name"><span data-team-name>{{ m.name }}</span> <span class="team-overlay__role">{{ m.role }}</span></h2>
+            {# the site's entrances: the word cascade on the name, the rise
+               on the rest, re-armed by js/team-profiles.js on every step #}
+            <h2 class="team-overlay__name" data-reveal-words><span data-team-name>{{ m.name }}</span> <span class="team-overlay__role">{{ m.role }}</span></h2>
             {# raw: the block hands over the text format's processed output,
                already run through the format's filters (basic_html) — the
                same HTML the prose component prints, as a string because the
                prop sits inside a list. #}
-            <div class="team-overlay__bio">{{ m.bio|raw }}</div>
+            <div class="team-overlay__bio" data-animate style="--animate-delay: 250ms">{{ m.bio|raw }}</div>
             {% if m.linkedin %}
-              <a class="team-overlay__linkedin" href="{{ m.linkedin }}" rel="noopener" target="_blank">{{ 'Connect on LinkedIn'|t }}</a>
+              <a class="team-overlay__linkedin" href="{{ m.linkedin }}" rel="noopener" target="_blank" data-animate style="--animate-delay: 400ms">{{ 'Connect on LinkedIn'|t }}</a>
             {% endif %}
           </div>
         </article>
