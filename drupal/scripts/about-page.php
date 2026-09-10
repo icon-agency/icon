@@ -2,7 +2,10 @@
 
 /**
  * @file
- * Rebuilds the About page (canvas_page 2) from the live site's own words.
+ * Rebuilds the About page from the live site's own words.
+ *
+ * The page is found by its alias, /about, and created when there is none —
+ * so the same script builds it on a host that never had one.
  *
  * Run: ddev drush php:script scripts/about-page
  * Content source: https://iconagency.com.au/about (10 Sep 2026).
@@ -10,9 +13,14 @@
 
 $uuid = \Drupal::service('uuid');
 $storage = \Drupal::entityTypeManager()->getStorage('canvas_page');
-$page = $storage->load(2);
+$page = NULL;
+$path = \Drupal::service('path_alias.repository')->lookupByAlias('/about', 'en');
+if ($path && preg_match('#^/page/(\d+)$#', $path['path'], $m)) {
+  $page = $storage->load($m[1]);
+}
 if (!$page) {
-  throw new \RuntimeException('canvas_page 2 not found.');
+  $page = $storage->create(['title' => 'About', 'owner' => 1]);
+  print "No About page yet: creating one.\n";
 }
 
 $version = static function (string $id): string {
@@ -107,6 +115,9 @@ $page->set('description', 'ICON is an independent, founder-owned Australian agen
 $page->set('components', $tree);
 $page->set('path', ['alias' => '/about']);
 $page->setPublished(TRUE);
+if ($page->hasField('moderation_state')) {
+  $page->set('moderation_state', 'published');
+}
 $page->setNewRevision(TRUE);
 $page->setRevisionLogMessage('About page rebuilt from iconagency.com.au/about.');
 $page->save();
