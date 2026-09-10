@@ -74,14 +74,14 @@
     if (e.target.closest && e.target.closest(".icon-panel__handle")) e.preventDefault();
   });
 
-  /* ---- The hero's reel and its spares --------------------------------------
+  /* ---- A reel and its spares (.icon-panel--reel: the hero, the filmstrip)
    * "Add to reel" moves a row from the Available table to the end of the
    * reel; "Remove" moves it back (oldest first is not kept — it lands at
    * the end of Available, which is fine for a holding list). Both write
    * the order the way a drop does. */
   var onReel = function (row) { return !!row.closest(".icon-panel__list--reel"); };
   var moveRow = function (row, add) {
-    var panel = row.closest(".icon-panel--hero");
+    var panel = row.closest(".icon-panel--reel");
     var to = panel && panel.querySelector(add ? ".icon-panel__list--reel tbody" : ".icon-panel__list--available tbody");
     if (!to) return;
     to.appendChild(row);
@@ -101,7 +101,7 @@
   // as "Remove from reel" for a slide on the reel, "Add to reel" for one
   // under Available; the click moves the row and closes the dialog.
   var reelLink = function (link) {
-    var row = document.querySelector('.icon-panel--hero tr[data-row="' + link.getAttribute("data-nid") + '"]');
+    var row = document.querySelector('.icon-panel--reel tr[data-row="' + link.getAttribute("data-nid") + '"]');
     if (!row) { link.hidden = true; return null; }
     var on = onReel(row);
     link.textContent = on ? "Remove from reel" : "Add to reel";
@@ -244,24 +244,25 @@
   document.addEventListener("pointercancel", function () { settle(true); });
   document.addEventListener("keydown", function (e) { if (e.key === "Escape" && drag) settle(true); });
 
-  // Write the list back into the settings' inputs: the hero's one `order`
-  // field (row keys, comma-separated) or the featured grid's five project
-  // fields (the i-th row's project into projects[i]). One block form is open
-  // at a time, so the inputs are found from the document.
+  // Write the list back into the settings' inputs: a reel panel's one
+  // `order` field (row keys, comma-separated — the hero's slides, the
+  // filmstrip's photos) or the featured grid's five project fields (the
+  // i-th row's project into projects[i]). One block form is open at a time,
+  // so the inputs are found from the document.
   var sync = function (table) {
     var rows = rowsOf(table);
     var order = document.querySelector("input.icon-panel__order");
     var projects = document.querySelectorAll("input.icon-panel__project");
-    if (table.closest(".icon-panel--hero") && order) {
+    if (table.closest(".icon-panel--reel") && order) {
       // the reel is the selection: only its table is the order
-      var reel = table.closest(".icon-panel--hero").querySelector(".icon-panel__list--reel") || table;
+      var reel = table.closest(".icon-panel--reel").querySelector(".icon-panel__list--reel") || table;
       var value = rowsOf(reel).map(function (r) { return r.getAttribute("data-row"); }).join(",");
       if (value !== order.value) setValue(order, value);
-      var count = table.closest(".icon-panel--hero").querySelector(".icon-panel__title");
+      var count = table.closest(".icon-panel--reel").querySelector(".icon-panel__title");
       if (count) count.textContent = count.textContent.replace(/\d+(?= of)/, String(rowsOf(reel).length));
-      var note = table.closest(".icon-panel--hero").querySelector(".icon-panel__empty-note");
+      var note = table.closest(".icon-panel--reel").querySelector(".icon-panel__empty-note");
       if (note) note.classList.toggle("is-hidden", rowsOf(reel).length > 0);
-      var group = table.closest(".icon-panel--hero").querySelector("[data-group=available]");
+      var group = table.closest(".icon-panel--reel").querySelector("[data-group=available]");
       if (group) group.hidden = rowsOf(group.querySelector("table")).length === 0;
     }
     // The marquee's order is content: post it, then reload.
@@ -454,10 +455,11 @@
   // re-render a block form that nothing in the model has changed.
   if (window.jQuery) {
     window.jQuery(document.body).on("icon-panel:saved", function (e, saved) {
-      // a Hero slide created from the panel goes straight onto the reel:
-      // written into the order (Canvas autosaves it) before the reload
-      // the order field sits beside the panel container, not inside it
-      var order = document.querySelector(".icon-panel--hero") ? document.querySelector("input.icon-panel__order") : null;
+      // an item created from a reel panel (a Hero slide, a filmstrip photo)
+      // goes straight onto the reel: written into the order (Canvas
+      // autosaves it) before the reload — the order field sits beside the
+      // panel container, not inside it
+      var order = document.querySelector(".icon-panel--reel") ? document.querySelector("input.icon-panel__order") : null;
       var nid = saved && saved[0];
       var isNew = saved && saved[1];
       if (order && isNew && nid && order.value.split(",").indexOf(String(nid)) === -1) {

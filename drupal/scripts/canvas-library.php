@@ -27,7 +27,7 @@ $plan = [
     'sdc.icon.pull-quote',
     'sdc.icon.news-article-figure',
     'sdc.icon.news-article-video',
-    'sdc.icon.filmstrip',
+    'block.icon_filmstrip',
     'block.icon_team_profiles',
     'block.icon_clients_marquee',
     'block.views_block.news-next_up',
@@ -73,6 +73,9 @@ $hide = [
   'sdc.navigation.title',
   'sdc.olivero.teaser',
   'sdc.icon.news-card',
+  // the slot-based strip: the intro embeds it; editors place the Filmstrip
+  // BLOCK, whose panel is the photos and the fact cards
+  'sdc.icon.filmstrip',
 ];
 
 $storage = \Drupal::entityTypeManager()->getStorage('component');

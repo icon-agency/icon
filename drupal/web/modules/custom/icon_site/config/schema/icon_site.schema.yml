@@ -91,3 +91,45 @@ block.settings.icon_team_profiles:
     heading:
       type: label
       label: 'Heading'
+
+block.settings.icon_filmstrip:
+  type: block_settings
+  label: 'Filmstrip block settings'
+  constraints:
+    FullyValidatable: ~
+  mapping:
+    heading:
+      type: label
+      label: 'Accessible label'
+    photos:
+      type: sequence
+      label: 'Photos, in order'
+      sequence:
+        type: integer
+        label: 'Image media ID'
+        constraints:
+          Range:
+            min: 1
+    stats:
+      type: sequence
+      label: 'Fact cards'
+      sequence:
+        type: mapping
+        label: 'Fact card'
+        mapping:
+          icon:
+            type: integer
+            label: 'Icon media ID'
+          title:
+            type: label
+            label: 'Heading'
+          label:
+            type: label
+            label: 'Label'
+    every:
+      type: integer
+      label: 'A fact card after every N photos'
+      constraints:
+        Range:
+          min: 1
+          max: 8

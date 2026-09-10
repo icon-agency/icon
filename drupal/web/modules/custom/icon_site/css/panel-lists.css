@@ -396,17 +396,25 @@ select.icon-panel__count { padding: 4px 24px 4px 8px; border: 1px solid #d9d9e0;
   color: #8b8d98;
 }
 /* specific enough to beat the stacked-action rule below */
-.icon-panel--hero .icon-panel__list--reel .icon-panel__cell--action .icon-panel__reel-add { display: none; }
-.icon-panel--hero .icon-panel__list--available .icon-panel__handle,
-.icon-panel--hero .icon-panel__list--available .icon-panel__cell--action .icon-panel__reel-remove { display: none; }
+.icon-panel--reel .icon-panel__list--reel .icon-panel__cell--action .icon-panel__reel-add { display: none; }
+.icon-panel--reel .icon-panel__list--available .icon-panel__handle,
+.icon-panel--reel .icon-panel__list--available .icon-panel__cell--action .icon-panel__reel-remove { display: none; }
 .icon-panel__list--available .icon-panel__name { color: #60646c; }
 .icon-panel__reel-add { color: #0b64ee; font-weight: 600; }
 .icon-panel__card--spare { opacity: 0.92; }
 
 /* the hero row's action cell is the base 44px (Edit alone on the reel);
    the Available rows' "Add to reel" needs a little more */
-.icon-panel--hero .icon-panel__list--available td.icon-panel__cell--action {
+.icon-panel--reel .icon-panel__list--available td.icon-panel__cell--action {
   width: 84px;
 }
 .icon-panel__empty-note.is-hidden { display: none; }
 
+
+/* The filmstrip panel's photo thumbnails: a square crop beside the name. */
+.icon-panel__photo {
+  width: 2.5rem;
+  height: 2.5rem;
+  object-fit: cover;
+  border-radius: 4px;
+}

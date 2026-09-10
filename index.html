@@ -634,15 +634,18 @@
               <div class="ds-group">
                 <h4 class="ds-group__title">Drupal (Canvas / SDC)</h4>
                 <p class="ds-group__note">
-                  The <code class="ds-code">filmstrip</code> SDC (ICON folder): one optional prop, the
-                  accessible label, and a <strong>Cards</strong> slot that takes the
-                  <code class="ds-code">intro-photo</code> (a media-library image) and
-                  <code class="ds-code">intro-fact</code> (Fact icon, heading, label) child components
-                  in any order &mdash; each placement holds its own cards, so a strip on the About page
-                  and the homepage&rsquo;s show different things. A new kind of card is a new child
-                  component, not a change to the strip. The intro SDC embeds the filmstrip and hands
-                  its own strip slot through, so the homepage tree is untouched.
-                  <code class="ds-code">icon/filmstrip</code> attaches wherever the component renders.
+                  Editors place the <strong>Filmstrip block</strong> (Page folder), whose Canvas panel
+                  IS the strip: the photos as a reel &mdash; Intro-tagged images from the media library,
+                  dragged into order, the rest under Available with an Add, and &ldquo;+ Add photo&rdquo;
+                  uploading one over the editor straight into the strip &mdash; and up to six fact cards
+                  typed in place (icon from the Fact icons list, heading, label), with a fact card
+                  after every N photos. The block feeds the <code class="ds-code">filmstrip</code> SDC&rsquo;s
+                  <strong>Cards</strong> slot with a Photo or Fact card component per card &mdash; the
+                  same child components the homepage intro places by hand in its own strip slot (the
+                  slot-based Filmstrip is off the library; the intro embeds it). Each placement holds
+                  its own photos and facts, so a strip on the About page and the homepage&rsquo;s show
+                  different things; a new kind of card is a new child component, not a change to the
+                  strip. <code class="ds-code">icon/filmstrip</code> attaches wherever the component renders.
                 </p>
               </div>
             </section>

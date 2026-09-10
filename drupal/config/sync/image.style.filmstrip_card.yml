@@ -1,0 +1,15 @@
+uuid: 14160f39-694a-4aa7-9154-04948b0c3e66
+langcode: en
+status: true
+dependencies: {  }
+name: filmstrip_card
+label: 'Filmstrip card (900 wide)'
+effects:
+  7823db79-d6ec-41dd-8cc2-3ddf1312db0f:
+    uuid: 7823db79-d6ec-41dd-8cc2-3ddf1312db0f
+    id: image_scale
+    weight: 1
+    data:
+      width: 900
+      height: null
+      upscale: false

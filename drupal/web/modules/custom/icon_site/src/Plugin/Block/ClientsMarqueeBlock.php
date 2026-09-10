@@ -30,6 +30,8 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 )]
 final class ClientsMarqueeBlock extends BlockBase implements ContainerFactoryPluginInterface {
 
+  use PanelListTrait;
+
   public function __construct(
     array $configuration,
     $plugin_id,
@@ -51,19 +53,6 @@ final class ClientsMarqueeBlock extends BlockBase implements ContainerFactoryPlu
       $container->get('entity_type.manager'),
       $container->get('file_url_generator'),
     );
-  }
-
-  /**
-   * The row's reorder handle.
-   *
-   * Dragged by pointer, moved by keyboard (the arrow keys, Home and End —
-   * js/panel-sortable.js), so it is a real, focusable control named for its
-   * row. No colon in the label: the admin markup filter reads "Name:" as a
-   * URL scheme and strips it.
-   */
-  private static function handle(string $name): string {
-    $label = htmlspecialchars((string) t('Reorder @name — arrow keys move it up or down', ['@name' => $name]), ENT_QUOTES);
-    return '<a class="icon-panel__handle" role="button" href="#" aria-label="' . $label . '" title="' . htmlspecialchars((string) t('Drag, or use the arrow keys, to reorder'), ENT_QUOTES) . '"></a>';
   }
 
   /**

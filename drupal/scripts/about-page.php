@@ -97,6 +97,24 @@ $add('sdc.icon.prose', $prose(
 // The Team profiles block: the people are Team member content (Content →
 // Team members), each opening a panel at /about/<name>. It replaced a
 // Content block listing them (10 Sep 2026).
+// ---- The filmstrip: the homepage's photos and two of its facts -----------
+$mediaId = static function (string $bundle, string $name): int {
+  $found = \Drupal::entityTypeManager()->getStorage('media')->loadByProperties(['bundle' => $bundle, 'name' => $name]);
+  return $found ? (int) reset($found)->id() : 0;
+};
+$add('block.icon_filmstrip', [
+  'label' => 'Filmstrip',
+  'label_display' => '0',
+  'heading' => 'The ICON team',
+  'photos' => array_values(array_filter(array_map(fn(int $n) => $mediaId('image', "team-$n.jpg"), range(1, 6)))),
+  'stats' => [
+    ['icon' => $mediaId('icon', 'Trophy'), 'title' => '14 Agency of the Year awards', 'label' => 'Since 2021'],
+    ['icon' => $mediaId('icon', 'World'), 'title' => '83 global partners', 'label' => 'In 60 countries'],
+    ['icon' => $mediaId('icon', 'Peace sign'), 'title' => '24+ years of experience', 'label' => 'An independent Australian agency'],
+  ],
+  'every' => 2,
+]);
+
 $add('block.icon_team_profiles', ['label' => 'Team profiles', 'label_display' => '0', 'heading' => 'Leadership team']);
 
 // ---- Partners ---------------------------------------------------------------

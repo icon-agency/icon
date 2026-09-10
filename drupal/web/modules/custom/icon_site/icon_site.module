@@ -603,13 +603,15 @@ function _icon_site_panel_form_ajax(array $form, FormStateInterface $form_state)
 /**
  * Implements hook_form_BASE_FORM_ID_alter() for media_form.
  *
- * A Logo / Icon media form opened from a Canvas panel (?panel=1) gets the
- * same dialog treatment as a Hero slide: ajax Save that closes the dialog,
- * no Preview / Delete, and the housekeeping sections trimmed.
+ * A Logo / Icon / Image media form opened from a Canvas panel (?panel=1)
+ * gets the same dialog treatment as a Hero slide: ajax Save that closes the
+ * dialog, no Preview / Delete, and the housekeeping sections trimmed. An
+ * Image is the filmstrip panel's photo.
  */
 function icon_site_form_media_form_alter(array &$form, FormStateInterface $form_state): void {
   $media = $form_state->getFormObject()->getEntity();
-  if (!in_array($media->bundle(), ['logo', 'icon'], TRUE) || !\Drupal::request()->query->get('panel')) {
+  $request = \Drupal::request();
+  if (!in_array($media->bundle(), ['logo', 'icon', 'image'], TRUE) || !$request->query->get('panel')) {
     return;
   }
   $form['#prefix'] = '<div id="icon-panel-form">';
@@ -621,6 +623,16 @@ function icon_site_form_media_form_alter(array &$form, FormStateInterface $form_
     'wrapper' => 'icon-panel-form',
   ];
   $form['actions']['delete']['#access'] = FALSE;
+  // A photo added from the filmstrip panel: its Type is the panel's
+  // (?category=intro), and it has no marquee to be removed from.
+  if ($media->bundle() === 'image') {
+    $type = (string) $request->query->get('category', '');
+    if ($type !== '' && isset($form['field_media_category']['widget']) && $media->isNew()) {
+      $form['field_media_category']['widget']['#default_value'] = [$type];
+    }
+    $form['#after_build'][] = '_icon_site_panel_node_form_after_build';
+    return;
+  }
   // Removing from the marquee lives HERE, behind Edit, not as a one-click
   // link in the list: it unpublishes (the file stays in the library).
   if (isset($form['status']['widget']['value'])) {

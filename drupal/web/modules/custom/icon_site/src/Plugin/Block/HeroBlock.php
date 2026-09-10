@@ -28,18 +28,7 @@ use Drupal\Core\Url;
 )]
 final class HeroBlock extends BlockBase {
 
-  /**
-   * The row's reorder handle.
-   *
-   * Dragged by pointer, moved by keyboard (the arrow keys, Home and End —
-   * js/panel-sortable.js), so it is a real, focusable control named for its
-   * row. No colon in the label: the admin markup filter reads "Name:" as a
-   * URL scheme and strips it.
-   */
-  private static function handle(string $name): string {
-    $label = htmlspecialchars((string) t('Reorder @name — arrow keys move it up or down', ['@name' => $name]), ENT_QUOTES);
-    return '<a class="icon-panel__handle" role="button" href="#" aria-label="' . $label . '" title="' . htmlspecialchars((string) t('Drag, or use the arrow keys, to reorder'), ENT_QUOTES) . '"></a>';
-  }
+  use PanelListTrait;
 
   public const int MAX = 8;
 
@@ -96,7 +85,10 @@ final class HeroBlock extends BlockBase {
     // is Canvas's own switch: without it the editor's ajax requests render in
     // canvas_stark, whose form markup is for the React panel, not a dialog.
     $dialog = ' data-dialog-type="dialog" data-dialog-options=\'{"target":"icon-panel-dialog","modal":true,"width":"860","classes":{"ui-dialog":"icon-panel-dialog"}}\'';
-    $form['panel'] = ['#type' => 'container', '#attributes' => ['class' => ['icon-panel', 'icon-panel--hero']]];
+    $form['panel'] = [
+      '#type' => 'container',
+      '#attributes' => ['class' => ['icon-panel', 'icon-panel--hero', 'icon-panel--reel']],
+    ];
     $form['panel']['bar'] = [
       '#markup' => '<div class="icon-panel__bar"><p class="icon-panel__title">' . $this->t('Slides · @count of @max', [
         '@count' => count($slides),
