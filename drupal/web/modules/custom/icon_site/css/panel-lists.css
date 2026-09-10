@@ -408,14 +408,17 @@ select.icon-panel__count { padding: 4px 24px 4px 8px; border: 1px solid #d9d9e0;
    enough for them side by side — Edit fell off the card's edge (user call,
    Sep 2026). Stacked instead: Add on top, Edit under it, both on the right. */
 .icon-panel--reel .icon-panel__list--available td.icon-panel__cell--action {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 6px;
   width: 84px;
+  vertical-align: top;
+}
+/* the cell stays a table cell (a flex cell wrapped under the row): the
+   links stack as blocks inside it */
+.icon-panel--reel .icon-panel__list--available td.icon-panel__cell--action .icon-panel__action {
+  display: block;
+  margin-left: 0;
 }
 .icon-panel--reel .icon-panel__list--available td.icon-panel__cell--action .icon-panel__action + .icon-panel__action {
-  margin-left: 0;
+  margin-top: 6px;
 }
 .icon-panel__empty-note.is-hidden { display: none; }
 
