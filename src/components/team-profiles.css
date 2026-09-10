@@ -108,6 +108,7 @@
 
 .team__role {
   font-size: var(--voice-meta);
+  line-height: 1.25;
   color: var(--color-icon-grey);
 }
 
