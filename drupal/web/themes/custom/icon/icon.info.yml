@@ -7,6 +7,12 @@ core_version_requirement: ^11.3
 # One stylesheet, every page: the design-system build plus the two web fonts.
 # The chrome behaviours (header, reveal, footer + the velocity engine they
 # share) ride on every page too — everything else attaches per page/component.
+# The theme reads its footer, offices and hero reel from icon_site and calls
+# its helpers from icon.theme; that is a hard dependency, and pretending
+# otherwise with function_exists() guards only hid it (found in review,
+# Sep 2026).
+dependencies:
+  - icon_site:icon_site
 libraries:
   - icon/global
   - icon/page-transition

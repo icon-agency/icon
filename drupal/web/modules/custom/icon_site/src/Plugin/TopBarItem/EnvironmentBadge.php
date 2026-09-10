@@ -92,7 +92,13 @@ final class EnvironmentBadge extends TopBarItemBase implements ContainerFactoryP
       ],
       '#attached' => ['library' => ['icon_site/environment_badge']],
     ];
-    CacheableMetadata::createFromObject($config)->applyTo($build);
+    // MERGE — applyTo() replaces a render array's #cache outright, so
+    // createFromObject($config)->applyTo() dropped the user.permissions
+    // context set above and the badge could be cached across roles (found
+    // in review, Sep 2026).
+    CacheableMetadata::createFromRenderArray($build)
+      ->addCacheableDependency($config)
+      ->applyTo($build);
     return $build;
   }
 

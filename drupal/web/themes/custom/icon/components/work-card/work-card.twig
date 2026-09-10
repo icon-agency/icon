@@ -31,7 +31,9 @@
   {% macro tile(m, variant, client) %}
     {% set cls = 'work__img' ~ (variant ? ' work__img--' ~ variant) %}
     {% if m.type == 'video' %}
-      <video class="{{ cls }}" data-src="{{ m.src }}" preload="none"{% if m.poster %} poster="{{ m.poster }}"{% endif %} loop muted playsinline aria-label="{{ m.alt|default(client ~ ' — campaign film') }}"></video>
+      {# Decorative: the card is one link and its aria-label already names
+         the project and the client, so the loop inside it says nothing. #}
+      <video class="{{ cls }}" data-src="{{ m.src }}" preload="none"{% if m.poster %} poster="{{ m.poster }}"{% endif %} loop muted playsinline aria-hidden="true"></video>
     {% else %}
       <img class="{{ cls }}" loading="lazy" src="{{ m.src }}" alt="{{ m.alt }}"{% if m.width %} width="{{ m.width }}"{% endif %}{% if m.height %} height="{{ m.height }}"{% endif %} />
     {% endif %}

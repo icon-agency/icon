@@ -122,16 +122,25 @@
       slides.forEach(function (v) { if (isFilm(v)) v.pause(); });
     }
 
+    // The observer's last verdict, so coming back to the tab can resume a
+    // panel that is still on screen. Hiding the tab used to stop the films
+    // for good — showing it again never started them (found in review,
+    // Sep 2026).
+    var onScreen = false;
+
     if ("IntersectionObserver" in window) {
       new IntersectionObserver(function (entries) {
-        entries[0].isIntersecting ? start() : stop();
+        onScreen = entries[0].isIntersecting;
+        onScreen ? start() : stop();
       }, { rootMargin: "10% 0px" }).observe(stage);
     } else {
+      onScreen = true;
       start();
     }
 
     document.addEventListener("visibilitychange", function () {
       if (document.hidden) stop();
+      else if (onScreen) start();
     });
   })();
 

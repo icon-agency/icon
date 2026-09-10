@@ -121,13 +121,11 @@ function icon_preprocess_page(array &$variables): void {
   // tags, and editing an office or the social menu never refreshed a cached
   // page (found in review, Sep 2026). Collect, then apply once.
   $chrome = new CacheableMetadata();
-  if (function_exists('icon_site_footer')) {
-    $footer = icon_site_footer();
-    $offices = icon_site_offices();
-    $variables['footer'] = $footer;
-    $variables['offices'] = $offices['offices'];
-    $chrome->addCacheTags(array_merge($footer['tags'], $offices['tags']));
-  }
+  $footer = icon_site_footer();
+  $offices = icon_site_offices();
+  $variables['footer'] = $footer;
+  $variables['offices'] = $offices['offices'];
+  $chrome->addCacheTags(array_merge($footer['tags'], $offices['tags']));
   // The homepage hero's own reel — the same Hero slide content, in the order
   // the front page's hero block was given in the Canvas panel — plays in two
   // more places, so editing the slides in Drupal updates all three: the
@@ -138,14 +136,12 @@ function icon_preprocess_page(array &$variables): void {
   // from its cache once the hero — or any earlier footer — has played them.
   // icon_site_hero_reel() reads it; the cache tags of everything it read
   // ride along so the page refreshes with the slides.
-  if (function_exists('icon_site_hero_reel')) {
-    $reel = icon_site_hero_reel();
-    $variables['footer_slides'] = $reel['slides'];
-    $chrome = $chrome->merge($reel['cache']);
-    $route_name = (string) \Drupal::routeMatch()->getRouteName();
-    if (str_starts_with($route_name, 'user.') || str_starts_with($route_name, 'entity.user.')) {
-      $variables['hero_slides'] = $reel['slides'];
-    }
+  $reel = icon_site_hero_reel();
+  $variables['footer_slides'] = $reel['slides'];
+  $chrome = $chrome->merge($reel['cache']);
+  $route_name = (string) \Drupal::routeMatch()->getRouteName();
+  if (str_starts_with($route_name, 'user.') || str_starts_with($route_name, 'entity.user.')) {
+    $variables['hero_slides'] = $reel['slides'];
   }
   // Printed by the footer include, which is on EVERY page — so the chrome's
   // tags bubble whether or not the account banner has slides to show. (The

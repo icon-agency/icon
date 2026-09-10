@@ -125,7 +125,18 @@
             return;
           }
           loading = true;
-          button.hidden = true;
+          // BUSY, not hidden. Hiding the button while it holds focus drops
+          // the keyboard reader to <body> and loses their place (found in
+          // review, Sep 2026); a disabled button keeps focus, and the live
+          // region already announces the new count.
+          var hadFocus = document.activeElement === button;
+          if (asked) {
+            button.disabled = true;
+            button.setAttribute("aria-busy", "true");
+          }
+          else {
+            button.hidden = true;
+          }
           foot.classList.add("is-loading");
           fetch(nextHref, { credentials: "same-origin", headers: { "X-Requested-With": "listing-lazy" } })
             .then(function (r) { if (!r.ok) throw new Error(r.status); return r.text(); })
@@ -154,6 +165,16 @@
                 if (autoLoaded >= autoPages) button.hidden = false;
                 else near();
               }
+              else if (asked) {
+                // Nothing left to ask for: the button goes, so send the
+                // reader who pressed it to the first story that arrived
+                // rather than to the top of the document.
+                var first = list.children[base] && list.children[base].querySelector("a");
+                if (hadFocus && first) {
+                  first.setAttribute("tabindex", "-1");
+                  first.focus({ preventScroll: true });
+                }
+              }
             })
             .catch(function () {
               // leave the pager reachable: the reader can still click Next
@@ -162,7 +183,12 @@
               nextHref = null;
               io.disconnect();
             })
-            .then(function () { loading = false; foot.classList.remove("is-loading"); });
+            .then(function () {
+              loading = false;
+              button.disabled = false;
+              button.removeAttribute("aria-busy");
+              foot.classList.remove("is-loading");
+            });
         }
 
         // The observer fires on a crossing; a jump that lands PAST the foot

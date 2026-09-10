@@ -5,15 +5,20 @@
  * a stack of dark pills in the bottom-left corner, clear of the wordmark,
  * the nav and the admin sidebar, each with a close control. Statuses
  * dismiss themselves after a few seconds; warnings and errors stay until
- * closed. Core's contract is kept — data-drupal-messages, the
- * messages / messages--{type} classes and the roles — so Drupal.Message
- * (JS-added messages) and assistive tech behave as on any Drupal site.
+ * closed. Core's contract is kept where it is load-bearing —
+ * data-drupal-messages (the container Drupal.Message appends JS-added
+ * messages to) and the status/alert roles — so assistive tech behaves as
+ * on any Drupal site. The classes are this design system's own.
  * The account pages restyle the same markup inline (src/auth.css).
  */
 #}
-<div class="toast" data-drupal-messages>
+<div{{ attributes.addClass('toast').setAttribute('data-drupal-messages', '') }}>
   {% for type, messages in message_list %}
-    <div{{ attributes.addClass('toast__item', 'toast__item--' ~ type).setAttribute('role', type == 'error' ? 'alert' : 'status').setAttribute('data-toast', type) }}>
+    {# create_attribute, not the shared `attributes`: addClass() MUTATES the
+       one object, so with two kinds of message on the page the second toast
+       kept the first's modifier and was painted as the wrong kind (found in
+       review, Sep 2026). #}
+    <div{{ create_attribute({'class': ['toast__item', 'toast__item--' ~ type], 'role': type == 'error' ? 'alert' : 'status', 'data-toast': type}) }}>
       {% if status_headings[type] %}
         <h2 class="sr-only">{{ status_headings[type] }}</h2>
       {% endif %}

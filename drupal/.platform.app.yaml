@@ -47,7 +47,10 @@ build:
 hooks:
   build: |
     set -e
-    composer install --no-ansi --no-interaction --no-progress --prefer-dist --optimize-autoloader
+    # --no-dev: devel, stage_file_proxy, phpstan, rector and coder are
+    # require-dev and were being installed on the host (found in review,
+    # Sep 2026). The checks run locally and in CI, not here.
+    composer install --no-ansi --no-interaction --no-progress --prefer-dist --optimize-autoloader --no-dev
   deploy: |
     set -e
     php ./drush/platformsh_generate_drush_yml.php

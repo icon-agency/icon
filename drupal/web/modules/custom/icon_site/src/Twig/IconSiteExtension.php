@@ -89,11 +89,19 @@ final class IconSiteExtension extends AbstractExtension {
       return '';
     }
     $svg = substr($svg, $start);
-    // The root's own class / hidden / size attributes give way to the caller's
+    // The ROOT's own class / hidden / size attributes give way to the caller's
     // (the CSS sizes the icon); the sanitiser has already vetted the rest.
-    $svg = preg_replace('#\s+(class|aria-hidden|width|height)\s*=\s*("[^"]*"|\'[^\']*\')#i', '', $svg, 4) ?? '';
+    // Scoped to the root tag: a plain limit of four replacements walked the
+    // whole document and stripped whatever it met first, so an icon whose
+    // root carried fewer than four of them lost a child's class or size
+    // instead (found in review, Sep 2026).
     $attrs = ($class !== '' ? ' class="' . htmlspecialchars($class, ENT_QUOTES) . '"' : '') . ' aria-hidden="true"';
-    return preg_replace('#<svg\b#i', '<svg' . $attrs, $svg, 1) ?? '';
+    return preg_replace_callback(
+      '#^<svg\b[^>]*>#i',
+      static fn (array $m): string => '<svg' . $attrs . preg_replace('#\s+(class|aria-hidden|width|height)\s*=\s*("[^"]*"|\'[^\']*\')#i', '', substr($m[0], 4)),
+      $svg,
+      1
+    ) ?? '';
   }
 
 }

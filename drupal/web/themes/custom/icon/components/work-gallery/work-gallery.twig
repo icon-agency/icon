@@ -9,7 +9,10 @@
 #}
 {% macro medium(m, extra) %}
   {% if m.type == 'video' %}
-    <video autoplay muted loop playsinline preload="auto" src="{{ m.src }}"{% if m.poster %} poster="{{ m.poster }}"{% endif %}{% if m.alt %} aria-label="{{ m.alt }}"{% endif %}></video>
+    {# preload="metadata", not "auto": a gallery of films fetched every body
+       at once. Decorative — the figure's own caption and the article name
+       the work (found in review, Sep 2026). #}
+    <video autoplay muted loop playsinline preload="metadata" src="{{ m.src }}"{% if m.poster %} poster="{{ m.poster }}"{% endif %} aria-hidden="true"></video>
   {% else %}
     <img loading="lazy" src="{{ m.src }}" alt="{{ m.alt }}"{% if m.width %} width="{{ m.width }}"{% endif %}{% if m.height %} height="{{ m.height }}"{% endif %} />
   {% endif %}

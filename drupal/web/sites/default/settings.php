@@ -919,14 +919,18 @@ if (getenv('IS_DDEV_PROJECT') == 'true') {
  * Keep this code block at the end of this file to take full effect.
  */
 #
-if (file_exists($app_root . '/' . $site_path . '/settings.local.php')) {
-  include $app_root . '/' . $site_path . '/settings.local.php';
-}
-
 /* Config lives in git beside the site: drupal/config/sync (drush cex / cim). */
 $settings['config_sync_directory'] = '../config/sync';
 
 // Include settings required for Redis cache.
 if (getenv('IS_DDEV_PROJECT') == 'true' && file_exists(__DIR__ . '/settings.ddev.redis.php')) {
   include __DIR__ . '/settings.ddev.redis.php';
+}
+
+// LAST, as the block comment above says: everything this file sets can then
+// be overridden per developer. It was not last — the config sync directory
+// and the Redis wiring were applied after it, so neither could be changed
+// locally (found in review, Sep 2026).
+if (file_exists($app_root . '/' . $site_path . '/settings.local.php')) {
+  include $app_root . '/' . $site_path . '/settings.local.php';
 }
