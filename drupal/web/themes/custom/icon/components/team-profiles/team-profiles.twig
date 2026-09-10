@@ -18,10 +18,12 @@
     {% for m in members %}
       <li class="team__member" data-animate{% if not loop.first %} style="--animate-delay: {{ (loop.index0 % 3) * 70 }}ms"{% endif %}>
         <a class="team__link" href="{{ base }}/{{ m.slug }}" data-team-open="{{ m.slug }}">
-          <figure class="team__figure media-reveal" data-reveal-img>
-            {% if m.photo.src %}
-              <img class="team__photo" src="{{ m.photo.src }}" alt=""{% if m.photo.width %} width="{{ m.photo.width }}"{% endif %}{% if m.photo.height %} height="{{ m.photo.height }}"{% endif %} loading="lazy" />
-            {% endif %}
+          <figure class="team__figure">
+            <div class="team__frame media-reveal" data-reveal-img>
+              {% if m.photo.src %}
+                <img class="team__photo" src="{{ m.photo.src }}" alt=""{% if m.photo.width %} width="{{ m.photo.width }}"{% endif %}{% if m.photo.height %} height="{{ m.photo.height }}"{% endif %} loading="lazy" />
+              {% endif %}
+            </div>
           </figure>
           <span class="team__name">{{ m.name }}</span>
           <span class="team__role">{{ m.role }}</span>

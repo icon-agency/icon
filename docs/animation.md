@@ -220,8 +220,11 @@ GRID's cards lean with the scroll (`--team-skew` on the grid from
 does not — the page behind does not scroll while it is open, and the
 panel's own scroll is not the engine's. Reduced motion: no fade, no
 entrances, no tilt, no lean — an instant swap. The grid's cards wear the shared `[data-animate]` rise with a stagger
-(`--animate-delay` per card) and the `.media-reveal` mask on the portrait;
-hover scales the portrait inside its square (pointer devices only).
+(`--animate-delay` per card) and the `.media-reveal` mask on the portrait.
+Under the cursor a card is the news card: the mask insets a touch, the
+frame leans toward the pointer (`js/cursor-tilt.js`), the photo brightens
+and eases up a hair, and the plus grows and turns brand blue (pointer
+devices only).
 Reduced motion drops the slide and the mask. The URL, title and counter
 are the script's — see `docs/drupal-handoff.md` for the routing.
 

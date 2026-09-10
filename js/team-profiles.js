@@ -149,7 +149,9 @@
   });
 
   if (!reduce && window.matchMedia("(hover: hover)").matches && window.ICON && window.ICON.cursorTilt) {
+    // the panel's portrait, and the grid's cards (the news card's tilt)
     window.ICON.cursorTilt(overlay.querySelectorAll(".team-overlay__portrait"));
+    window.ICON.cursorTilt(document.querySelectorAll(".team__link"));
   }
 
   // The grid's cards lean with the scroll the way the news rows and the

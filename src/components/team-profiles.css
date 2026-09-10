@@ -83,9 +83,25 @@
   transform-origin: center center;
 }
 
+/* The tile is the news card's (news-card.css): under the cursor the mask
+   draws in a touch, the frame leans toward the pointer (--mx/--my written
+   on the CARD by js/cursor-tilt.js and inherited) and the photo brightens.
+   The tilt and the hover clip sit on the figure; the shared media reveal
+   is the frame inside it — its own box, the one the observer watches. */
 .team__figure {
   width: 100%;
   margin: 0 0 var(--space-xs);
+  --mask-inset: 0%;
+  clip-path: inset(var(--mask-inset) round var(--radius-icon));
+  transform: perspective(900px)
+    rotateX(calc(var(--my, 0) * -2.2deg))
+    rotateY(calc(var(--mx, 0) * 2.2deg));
+  transition:
+    clip-path 0.4s var(--ease-decelerate),
+    transform 0.25s var(--ease-decelerate);
+}
+
+.team__frame {
   aspect-ratio: 1 / 1;
   border-radius: var(--radius-icon);
   overflow: hidden;
@@ -99,10 +115,17 @@
   transition: scale var(--duration-slow) var(--ease-decelerate);
 }
 
+/* Pointer devices only — on touch, :hover sticks after a tap. */
 @media (hover: hover) {
+  .team__link:hover .team__figure,
+  .team__link:focus-visible .team__figure {
+    --mask-inset: 1.6%;
+  }
+
   .team__link:hover .team__photo,
   .team__link:focus-visible .team__photo {
     scale: 1.03;
+    filter: brightness(1.08);
   }
 }
 
@@ -119,20 +142,25 @@
   color: var(--color-icon-grey);
 }
 
-/* the "there is more" — a thin plus, brightening with the card */
+/* the "there is more" — a thin plus close under the role, growing and
+   turning brand blue with the card (user call, Sep 2026) */
 .team__plus {
-  margin-top: var(--space-2xs);
   font-size: 1.75rem;
   font-weight: var(--font-weight-normal);
   line-height: 1;
   color: var(--color-icon-black);
   opacity: 0.7;
-  transition: opacity var(--duration-fast) var(--ease-standard);
+  transition:
+    opacity var(--duration-fast) var(--ease-standard),
+    color var(--duration-fast) var(--ease-standard),
+    scale var(--duration-normal) var(--ease-decelerate);
 }
 
 .team__link:hover .team__plus,
 .team__link:focus-visible .team__plus {
   opacity: 1;
+  color: var(--color-icon-blue);
+  scale: 1.35;
 }
 
 .team__link:focus-visible {
@@ -383,11 +411,14 @@ html.is-team-open {
   .team-overlay::backdrop,
   .team-overlay__panel,
   .team-overlay__portrait,
-  .team__photo {
+  .team__figure,
+  .team__photo,
+  .team__plus {
     transition: none;
   }
 
-  .team-overlay__portrait {
+  .team-overlay__portrait,
+  .team__figure {
     transform: none;
   }
 }
