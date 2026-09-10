@@ -104,6 +104,13 @@ function icon_preprocess_page(array &$variables): void {
   if (\Drupal::service('path.matcher')->isFrontPage()) {
     $variables['main_attributes']->addClass('page-home');
   }
+  // A page built in Canvas is a flat stack of components with no frame
+  // composing it, so it gets one: src/utilities/canvas-page.css spaces the
+  // blocks. The homepage is a Canvas page too and keeps .page-home, which
+  // is its own system.
+  elseif (\Drupal::routeMatch()->getRouteName() === 'entity.canvas_page.canonical') {
+    $variables['main_attributes']->addClass('page-canvas');
+  }
   // The route title, for page templates that draw their own h1 (the auth
   // pages) — the page-title block is not placed in this theme.
   $request = \Drupal::request();

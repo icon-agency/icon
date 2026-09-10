@@ -99,6 +99,13 @@
   gap: var(--space-lg);
 }
 
+/* The frame self-pads on the page gutter, so the component's own floor
+   (components/pull-quote.css) would inset the statement a second time. */
+.work-article .pull-quote,
+.work-article .work-stats {
+  padding-inline: 0;
+}
+
 /* Centred head: the project name in the display voice at its BRAND casing
    (no uppercase — "iCanQuit" is the client's mark, not our shout), the
    client's name under it in the serif accent voice (.masthead-accent
@@ -459,7 +466,8 @@
 
 @media (min-width: 1024px) {
   .work-article__prose,
-  .work-article__chunk > .content-page {
+  .work-article__chunk > .content-page,
+  .work-article .work-stats {
     max-width: clamp(46rem, 40vw, 64rem);
   }
 }

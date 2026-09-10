@@ -75,4 +75,5 @@
 @import "./utilities/rules.css";
 @import "./utilities/page-transition.css";
 @import "./utilities/home-c.css";
+@import "./utilities/canvas-page.css";
 @import "./utilities/design-system.css";

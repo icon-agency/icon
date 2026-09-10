@@ -27,11 +27,16 @@
 .work-stats {
   width: 100%;
   margin-inline: auto;
+  /* A gutter of its own, like the prose and the statement: the article frame
+     self-pads, so a band inside one is inset by the page — a band standing
+     on its own ran its rules edge to edge (Sep 2026). The frame cancels it. */
+  padding-inline: var(--gutter-page);
 }
 
 @media (min-width: 1024px) {
   .work-stats {
-    max-width: clamp(46rem, 40vw, 64rem); /* the prose measure, verbatim */
+    /* the prose measure, verbatim, plus the gutter it now carries */
+    max-width: calc(clamp(46rem, 40vw, 64rem) + var(--gutter-page) * 2);
   }
 }
 

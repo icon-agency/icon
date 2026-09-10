@@ -1,0 +1,31 @@
+/* canvas-page.css — PAGE layer for a page built in Drupal Canvas
+ * (`.page-canvas` on <main>, added by icon_preprocess_page() on the
+ * canvas_page route; the homepage keeps its own `.page-home`).
+ *
+ * A Canvas page is a flat stack of components with nothing composing it. The
+ * article pages are a frame that self-pads and spaces its children, and the
+ * listings are their own layouts — but here the editor's blocks arrive as
+ * bare siblings, so this layer does the one job a frame does for them: the
+ * rhythm between blocks. Each block brings its own measure and gutter
+ * (base/prose.css, components/pull-quote.css, components/work-stats.css),
+ * which is what lets it be placed anywhere at all.
+ *
+ * No top padding: the masthead clears the fixed wordmark itself
+ * (page-header--stack), and a page opening on something else should not
+ * inherit clearance it may not want.
+ */
+
+.page-canvas {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+/* Drupal wraps the region and the block around the components. `contents`
+   lifts the blocks out of those wrappers so they are the flex items — the
+   alternative is keying on `#block-icon-content`, an id the block's machine
+   name happens to produce. */
+.page-canvas > div,
+.page-canvas > div > div {
+  display: contents;
+}
