@@ -1,0 +1,51 @@
+$schema: https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json
+name: Masthead
+status: stable
+description: |
+  The centred page masthead: a serif accent line over the big caps line, the
+  lockup the /work and /news listings open with. The words rise per word on
+  the shared cascade. Two slots carry what those listings add underneath —
+  the Subscribe bar inside the centred column, a full-width band below it.
+props:
+  type: object
+  required:
+    - accent
+    - caps
+  properties:
+    accent:
+      type: string
+      title: Accent line
+      description: The short serif line above, in sentence case. The section's name.
+      examples:
+        - Work
+    caps:
+      type: string
+      title: Headline
+      description: The large caps line. Type it in sentence case; the CSS sets the capitals.
+      examples:
+        - Selected work and case studies
+    heading_level:
+      type: string
+      title: Heading level
+      description: h1 for a page's own masthead, h2 where the page already has one.
+      enum:
+        - h1
+        - h2
+      examples:
+        - h1
+    handover:
+      type: boolean
+      title: Opens dark
+      description: >
+        The page opens on the dark theme and hands over to light as this
+        masthead scrolls away (js/theme-handover.js). The /work listing does
+        this; /news hands over from its lead band instead.
+      examples:
+        - false
+slots:
+  extras:
+    title: Under the heading
+    description: Inside the centred column, under the lockup — the listings put the Subscribe bar here.
+  band:
+    title: Full-width band
+    description: Below the centred column, still inside the masthead — the listings put the filter chips here.

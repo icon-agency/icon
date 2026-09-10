@@ -1,0 +1,26 @@
+{#
+/**
+ * @file
+ * page-header — the centred masthead lockup (src/components/page-header.css,
+ * `.page-header--stack`): the serif accent line over the caps line, both
+ * centred, entering on the shared word cascade ([data-reveal-words],
+ * js/reveal.js).
+ *
+ * ONE definition of this lockup. It was written out twice, in the /work and
+ * /news Views templates, so the two could drift and Canvas could place
+ * neither (found in review, Sep 2026). Those templates now embed this and
+ * fill the two slots with what is theirs; a Canvas page places it with the
+ * slots empty.
+ */
+#}
+{% set tag = heading_level|default('h1') %}
+<div class="page-header page-header--stack"{% if handover %} data-theme-handover{% endif %}>
+  <div class="page-header__inner">
+    <{{ tag }} class="page-header__heading page-header__heading--lockup" data-reveal-words>
+      <span class="page-header__lockup-accent masthead-accent">{{ accent }}</span>
+      <span class="page-header__lockup-caps">{{ caps }}</span>
+    </{{ tag }}>
+    {% block extras %}{{ extras }}{% endblock %}
+  </div>
+  {% block band %}{{ band }}{% endblock %}
+</div>
