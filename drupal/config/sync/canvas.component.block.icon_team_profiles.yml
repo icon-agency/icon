@@ -1,0 +1,23 @@
+uuid: b033883f-1f4d-4315-b41f-1503845275ab
+langcode: en
+status: true
+dependencies:
+  module:
+    - icon_site
+active_version: 0551154e433f7232
+versioned_properties:
+  active:
+    settings:
+      default_settings:
+        id: icon_team_profiles
+        label: 'Team profiles'
+        label_display: '0'
+        provider: icon_site
+        heading: 'Leadership team'
+    fallback_metadata:
+      slot_definitions: null
+label: 'Team profiles'
+id: block.icon_team_profiles
+provider: icon_site
+source: block
+source_local_id: icon_team_profiles

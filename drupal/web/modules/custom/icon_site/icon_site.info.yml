@@ -10,6 +10,7 @@ dependencies:
   - drupal:media_library
   - drupal:file
   - drupal:image
+  - pathauto:pathauto
   - drupal:options
   - drupal:path_alias
   - drupal:menu_link_content

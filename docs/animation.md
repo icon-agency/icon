@@ -186,6 +186,20 @@ cross-document transitions yet and simply navigates. Both pages must opt in,
 so an admin page (no main.css) never transitions. Drupal: `icon/page-transition`
 (`header: true`).
 
+## 8. Team profiles overlay — `src/components/team-profiles.css` + `js/team-profiles.js` (the About page)
+
+A member's profile is a native `<dialog>` that slides in from the right edge
+over the page: the panel moves `translate: 100% 0` → `0 0` with
+`@starting-style` on `[open]` (0.5s, `--ease-out-expo`), the backdrop is a
+tint of the footer ground that fades with it, and the page behind loses its
+scroll (`html.is-team-open`). Stepping to the next member swaps the
+`[data-team-profile]` articles in place — no motion, the panel is already
+there. The grid's cards wear the shared `[data-animate]` rise with a stagger
+(`--animate-delay` per card) and the `.media-reveal` mask on the portrait;
+hover scales the portrait inside its square (pointer devices only).
+Reduced motion drops the slide and the mask. The URL, title and counter
+are the script's — see `docs/drupal-handoff.md` for the routing.
+
 ## Rules
 
 1. **Always pair motion with a `prefers-reduced-motion` reset.** Every system
@@ -240,6 +254,7 @@ so an admin page (no main.css) never transitions. Drupal: `icon/page-transition`
 | Work article (chameleon skew + the hero banner's breakout to the viewport edges, an IO flip at one 0.5 threshold with the travel in CSS; wide only while the header is in its scrolled state, so it opens inset and returns to inset at the top) | `js/work-article.js` | velocity-lean | `iconWorkArticle` → `icon/work-article` |
 | Work article gallery scroller | `js/work-scroller.js` | velocity-lean | `iconWorkScroller` → `icon/work-scroller` |
 | Work article click-to-play film | `js/work-video.js` | — | `iconWorkVideo` → `icon/work-video` |
+| Team profiles overlay (the About page: open / step / close, the address and title) | `js/team-profiles.js` | — | `iconTeamProfiles` → `icon/team-profiles` |
 | Work section + listing filter (prototype: templates/home.html, work.html) | `js/work.js`, `js/work-filter.js` | — | not ported |
 | Home-A hero (prototype) | `js/hero.js` | gsap, ScrambleText | `iconHero` → `icon/hero` |
 | Tagline (prototype) | `js/tagline.js` | gsap, Inertia | `iconTagline` → `icon/tagline` |

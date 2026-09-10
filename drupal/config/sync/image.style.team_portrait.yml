@@ -1,0 +1,15 @@
+uuid: e53bed17-2df6-4c1f-a6e6-1a94ec8f9741
+langcode: en
+status: true
+dependencies: {  }
+name: team_portrait
+label: 'Team portrait (1000 square)'
+effects:
+  67a28ee3-e6a1-47e6-a505-87ae0725b9b6:
+    uuid: 67a28ee3-e6a1-47e6-a505-87ae0725b9b6
+    id: image_scale_and_crop
+    weight: 0
+    data:
+      width: 1000
+      height: 1000
+      anchor: center-center

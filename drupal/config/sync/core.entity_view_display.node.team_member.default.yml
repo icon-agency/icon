@@ -1,0 +1,25 @@
+uuid: 5fdac424-888e-4db2-9d74-5f4b8241f0fb
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.node.team_member.field_team_bio
+    - field.field.node.team_member.field_team_linkedin
+    - field.field.node.team_member.field_team_photo
+    - field.field.node.team_member.field_team_role
+    - field.field.node.team_member.field_team_weight
+    - node.type.team_member
+  module:
+    - user
+id: node.team_member.default
+targetEntityType: node
+bundle: team_member
+mode: default
+content: {  }
+hidden:
+  field_team_bio: true
+  field_team_linkedin: true
+  field_team_photo: true
+  field_team_role: true
+  field_team_weight: true
+  links: true

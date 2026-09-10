@@ -1,0 +1,25 @@
+uuid: 55206f35-61a7-47b0-a9d5-dbfb02f981e8
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_team_photo
+    - media.type.image
+    - node.type.team_member
+id: node.team_member.field_team_photo
+field_name: field_team_photo
+entity_type: node
+bundle: team_member
+label: Portrait
+description: 'SQUARE, at least 1000px. Shown on the grid and in the panel.'
+required: true
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:media'
+  handler_settings:
+    target_bundles:
+      image: image
+    auto_create: false
+field_type: entity_reference

@@ -803,3 +803,55 @@ function icon_site_field_widget_complete_form_alter(array &$field_widget_complet
   }
   $field_widget_complete_form['#attached']['library'][] = 'icon_site/block_picker';
 }
+
+/**
+ * A team member's slug — the panel's address under /about.
+ *
+ * Pathauto's cleaner, so "Joanne Painter" is joanne-painter the same way
+ * the site's aliases are made. Used by the Team profiles block (the links
+ * and the panel), and by TeamProfilePathProcessor to recognise
+ * /about/<slug> on the way in.
+ */
+function icon_site_team_slug(string $name): string {
+  return \Drupal::service('pathauto.alias_cleaner')->cleanString($name);
+}
+
+/**
+ * The published Team members, in order (Order field, then name).
+ *
+ * @return \Drupal\node\NodeInterface[]
+ *   The members the current user may view, in the block's order.
+ */
+function icon_site_team_members(?CacheableMetadata $cache = NULL): array {
+  $cache?->addCacheTags(['node_list:team_member']);
+  $storage = \Drupal::entityTypeManager()->getStorage('node');
+  $ids = $storage->getQuery()
+    ->accessCheck(TRUE)
+    ->condition('type', 'team_member')
+    ->condition('status', 1)
+    ->sort('field_team_weight', 'ASC')
+    ->sort('title', 'ASC')
+    ->execute();
+  $members = [];
+  foreach ($storage->loadMultiple($ids) as $node) {
+    $access = $node->access('view', NULL, TRUE);
+    $cache?->addCacheableDependency($node)->addCacheableDependency($access);
+    if ($access->isAllowed()) {
+      $members[] = $node;
+    }
+  }
+  return $members;
+}
+
+/**
+ * The published team members' slugs — what /about/<slug> may be.
+ */
+function icon_site_team_slugs(): array {
+  static $slugs = NULL;
+  if ($slugs === NULL) {
+    $storage = \Drupal::entityTypeManager()->getStorage('node');
+    $ids = $storage->getQuery()->accessCheck(FALSE)->condition('type', 'team_member')->condition('status', 1)->execute();
+    $slugs = array_map(static fn($n) => icon_site_team_slug($n->label()), $storage->loadMultiple($ids));
+  }
+  return array_values($slugs);
+}

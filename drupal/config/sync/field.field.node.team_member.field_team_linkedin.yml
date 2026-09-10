@@ -1,0 +1,23 @@
+uuid: 953a5fe3-1709-4eab-8005-3f752fc58857
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_team_linkedin
+    - node.type.team_member
+  module:
+    - link
+id: node.team_member.field_team_linkedin
+field_name: field_team_linkedin
+entity_type: node
+bundle: team_member
+label: LinkedIn
+description: 'Their profile address. Leave empty for no link.'
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  title: 0
+  link_type: 16
+field_type: link

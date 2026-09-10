@@ -1,0 +1,11 @@
+uuid: 01d7ad8f-17f0-481b-8e56-ff15e2b6fb06
+langcode: en
+status: true
+dependencies: {  }
+name: 'Team member'
+type: team_member
+description: 'A person on the Team profiles block: name, role, portrait, bio. Not a page of their own — the About page opens each one in a panel at /about/<name>.'
+help: null
+new_revision: true
+preview_mode: 0
+display_submitted: false

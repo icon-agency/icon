@@ -9,3 +9,8 @@ services:
     arguments: ['@request_stack', '@config.factory', '@current_user']
     tags:
       - { name: theme_negotiator, priority: 1002 }
+  # /about/<team member> reaches the About page; the panel opens from the URL.
+  icon_site.path_processor.team_profile:
+    class: Drupal\icon_site\PathProcessor\TeamProfilePathProcessor
+    tags:
+      - { name: path_processor_inbound, priority: 300 }

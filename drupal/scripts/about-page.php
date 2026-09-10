@@ -86,17 +86,10 @@ $add('sdc.icon.prose', $prose(
 ));
 
 // ---- Leadership -------------------------------------------------------------
-$add('sdc.icon.prose', $prose(
-  '<h2>Our leadership</h2>' .
-  '<ul class="list-slash">' .
-  '<li><strong>Joanne Painter</strong>, Group Managing Director. Twenty-five years in communications, leading ICON across four offices. A PRIA national board member.</li>' .
-  '<li><strong>Chris Dodds</strong>, Managing Director, Digital. Founded ICON in 2002. A graphic designer by training with a Masters in Digital Media from RMIT, where he sits on the Industry Advisory Committee. Board member of Express Media.</li>' .
-  '<li><strong>Georgina Rees</strong>, Executive Director, Brand, Creative and Communications. Leads the integrated offering, after Salesforce, Figma, Novartis, DFAT, the WHO and the UN.</li>' .
-  '<li><strong>Mark Forbes</strong>, Director of Reputation. A Walkley award-winning journalist and former Editor-in-Chief of The Age, with close to thirty years in communications. Reputation, crisis and interview coaching.</li>' .
-  '<li><strong>Alex Wadelton</strong>, Creative Director. Made the Nicky Winmar statue. Co-author of The Right-Brain Workout with Russel Howcroft, and winner of more than a hundred international advertising awards.</li>' .
-  '<li><strong>Matt White</strong>, UX Design Director. Two decades in UX, with work for the Department of Defence, the NDIS, Maurice Blackburn and the Royal Melbourne Hospital, recognised by AWWWARDS, CSS Design Awards, the AMIs and the Golden Targets.</li>' .
-  '</ul>'
-));
+// The Team profiles block: the people are Team member content (Content →
+// Team members), each opening a panel at /about/<name>. It replaced a
+// Content block listing them (10 Sep 2026).
+$add('block.icon_team_profiles', ['label' => 'Team profiles', 'label_display' => '0', 'heading' => 'Leadership team']);
 
 // ---- Partners ---------------------------------------------------------------
 $add('sdc.icon.prose', $prose(

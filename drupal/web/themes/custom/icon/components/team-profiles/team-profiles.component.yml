@@ -1,0 +1,58 @@
+$schema: https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json
+name: Team profiles
+group: ICON
+status: stable
+description: |
+  The team grid — portrait, name, role — and the panel that slides in over
+  the page when one is chosen, with the bio, LinkedIn and previous / next
+  (src/components/team-profiles.css, js/team-profiles.js). Rendered by the
+  Team profiles block (icon_site), which reads the Team members; the members
+  prop is the block's, not for Canvas to author — place the block.
+props:
+  type: object
+  required:
+    - heading
+    - base
+    - members
+  properties:
+    heading:
+      type: string
+      title: Heading
+      examples:
+        - Leadership team
+    base:
+      type: string
+      title: Base path
+      description: The page the panels live under; a panel's address is base/slug.
+      examples:
+        - /about
+    members:
+      type: array
+      title: Members
+      minItems: 1
+      items:
+        type: object
+        properties:
+          slug: { type: string }
+          name: { type: string }
+          role: { type: string }
+          bio: { type: string, contentMediaType: text/html }
+          linkedin: { type: string }
+          photo:
+            type: object
+            properties:
+              src: { type: string }
+              alt: { type: string }
+              width: { type: integer }
+              height: { type: integer }
+      examples:
+        - - slug: joanne-painter
+            name: Joanne Painter
+            role: Group Managing Director
+            bio: '<p>As Group Managing Director, Joanne leads the ICON team across four Australian offices.</p>'
+            linkedin: https://www.linkedin.com/in/joannepainter/
+            photo:
+              src: 'https://placehold.co/1000x1000'
+              alt: Portrait of Joanne Painter
+              width: 1000
+              height: 1000

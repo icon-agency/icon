@@ -81,3 +81,13 @@ icon_site.footer:
     login_hero:
       type: integer
       label: 'The Canvas page whose hero the login page plays (0 = the front page)'
+
+block.settings.icon_team_profiles:
+  type: block_settings
+  label: 'Team profiles block settings'
+  constraints:
+    FullyValidatable: ~
+  mapping:
+    heading:
+      type: label
+      label: 'Heading'

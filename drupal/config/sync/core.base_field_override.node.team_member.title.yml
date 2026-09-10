@@ -1,0 +1,18 @@
+uuid: 872dda09-afbd-46f6-ba61-0b3ee8166b29
+langcode: en
+status: true
+dependencies:
+  config:
+    - node.type.team_member
+id: node.team_member.title
+field_name: title
+entity_type: node
+bundle: team_member
+label: Name
+description: 'As it should read on the page, e.g. Joanne Painter. The panel’s address is made from it.'
+required: true
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

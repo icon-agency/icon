@@ -41,6 +41,7 @@ export const BEHAVIOURS = {
   "news": "iconNews",
   "share": "iconShare",
   "subscribe-reveal": "iconSubscribeReveal",
+  "team-profiles": "iconTeamProfiles",
   "work-landing": "iconWorkLanding",
   "work-article": "iconWorkArticle",
   "work-scroller": "iconWorkScroller",

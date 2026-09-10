@@ -1,0 +1,72 @@
+{#
+/**
+ * @file
+ * team-profiles — the grid and the panel (src/components/team-profiles.css,
+ * js/team-profiles.js).
+ *
+ * The grid: one link per member, to the panel's own address (base/slug), so
+ * without JS it is still a link to a page that shows the About page. The
+ * panel: ONE <dialog> holding every profile, one shown at a time — the
+ * behaviour swaps them, writes the address to the history, and reads a
+ * deep link back on load.
+ */
+#}
+{% set n = members|length %}
+<section class="team" aria-labelledby="team-heading">
+  <h2 class="team__heading" id="team-heading" data-animate>{{ heading }}</h2>
+  <ul class="team__grid">
+    {% for m in members %}
+      <li class="team__member" data-animate{% if not loop.first %} style="--animate-delay: {{ (loop.index0 % 3) * 70 }}ms"{% endif %}>
+        <a class="team__link" href="{{ base }}/{{ m.slug }}" data-team-open="{{ m.slug }}">
+          <figure class="team__figure media-reveal" data-reveal-img>
+            {% if m.photo.src %}
+              <img class="team__photo" src="{{ m.photo.src }}" alt=""{% if m.photo.width %} width="{{ m.photo.width }}"{% endif %}{% if m.photo.height %} height="{{ m.photo.height }}"{% endif %} loading="lazy" />
+            {% endif %}
+          </figure>
+          <span class="team__name">{{ m.name }}</span>
+          <span class="team__role">{{ m.role }}</span>
+          <span class="team__plus" aria-hidden="true">+</span>
+        </a>
+      </li>
+    {% endfor %}
+  </ul>
+
+  <dialog class="team-overlay" data-team-overlay data-team-base="{{ base }}" aria-label="{{ 'Team member'|t }}">
+    <div class="team-overlay__panel">
+      <div class="team-overlay__bar">
+        <span class="team-overlay__counter" aria-live="polite"><span data-team-index>01</span><span class="team-overlay__of">/{{ '%02d'|format(n) }}</span></span>
+        <button class="team-overlay__close" type="button" data-team-close aria-label="{{ 'Close'|t }}">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>
+        </button>
+      </div>
+      {% for m in members %}
+        <article class="team-overlay__profile" data-team-profile="{{ m.slug }}" hidden>
+          <figure class="team-overlay__portrait">
+            {% if m.photo.src %}
+              <img src="{{ m.photo.src }}" alt="{{ m.photo.alt }}"{% if m.photo.width %} width="{{ m.photo.width }}"{% endif %}{% if m.photo.height %} height="{{ m.photo.height }}"{% endif %} loading="lazy" />
+            {% endif %}
+          </figure>
+          <div class="team-overlay__text">
+            <h2 class="team-overlay__name"><span data-team-name>{{ m.name }}</span> <span class="team-overlay__role">{{ m.role }}</span></h2>
+            {# raw: the block hands over the text format's processed output,
+               already run through the format's filters (basic_html) — the
+               same HTML the prose component prints, as a string because the
+               prop sits inside a list. #}
+            <div class="team-overlay__bio">{{ m.bio|raw }}</div>
+            {% if m.linkedin %}
+              <a class="team-overlay__linkedin" href="{{ m.linkedin }}" rel="noopener" target="_blank">{{ 'Connect on LinkedIn'|t }}</a>
+            {% endif %}
+          </div>
+        </article>
+      {% endfor %}
+      <div class="team-overlay__nav">
+        <button class="team-overlay__arrow" type="button" data-team-prev aria-label="{{ 'Previous'|t }}">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12H4" /><path d="m10 6-6 6 6 6" /></svg>
+        </button>
+        <button class="team-overlay__arrow" type="button" data-team-next aria-label="{{ 'Next'|t }}">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12h16" /><path d="m14 6 6 6-6 6" /></svg>
+        </button>
+      </div>
+    </div>
+  </dialog>
+</section>

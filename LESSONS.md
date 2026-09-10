@@ -558,3 +558,15 @@ booting GSAP. `scale` and `opacity` run on the compositor and play through
 the load. Anything that animates while the page is still booting — the
 loading screen, the first reveals — must animate only transform-family
 properties and opacity; test it on a cold load, not by toggling a class.
+
+## A 301 is remembered by the browser, and by the page cache
+
+The team profile deep link (`/about/chris-dodds`) was 301'd to `/about` by
+the Redirect module's route normaliser until the path processor set
+`_disable_route_normalizer`. The fix was right at once by curl and still
+"broken" in the browser pane for an hour: a browser caches a permanent
+redirect and replays it without asking the server, and the internal page
+cache had the 301 stored for the anonymous URL as well (per host, so one
+host answered 200 while another still answered 301). After changing
+anything that decides a redirect: `drush cr`, then test with a query string
+the browser has never seen (`?fresh=1`) or a fresh profile.

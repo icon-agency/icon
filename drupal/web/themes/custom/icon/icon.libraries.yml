@@ -44,6 +44,13 @@ site-footer:
   dependencies:
     - core/drupal
     - core/once
+# The team panel (the Team profiles block attaches it).
+team-profiles:
+  js:
+    js/team-profiles.js: {}
+  dependencies:
+    - core/drupal
+    - core/once
     - icon/velocity-lean
 
 # ── Page bundles ────────────────────────────────────────────────────────────

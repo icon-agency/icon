@@ -1,0 +1,19 @@
+uuid: e2871891-b35d-4605-8767-05b86f8917db
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_team_role
+    - node.type.team_member
+id: node.team_member.field_team_role
+field_name: field_team_role
+entity_type: node
+bundle: team_member
+label: Role
+description: 'Their title, e.g. Group Managing Director.'
+required: true
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

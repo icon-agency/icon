@@ -1,0 +1,319 @@
+/* team-profiles.css — the team grid and the panel that opens from it.
+ *
+ * Reference: basicagency.com/about (user call, Sep 2026). Two parts:
+ *
+ *   THE GRID — three across from 1024, two from 768, one below: a square
+ *   portrait (the site's corner radius, the shared media reveal), the name
+ *   in weight, the role in the meta grey, and a + that says there is more.
+ *   The whole card is one link, to the panel's own address.
+ *
+ *   THE PANEL — a native <dialog>, modal, so focus and Escape are the
+ *   platform's. Full-viewport and transparent itself (so a click beside the
+ *   panel lands on the dialog and closes it), with the panel a column on the
+ *   RIGHT that slides in from that edge on the decelerate ease. Dark on
+ *   light: the footer's fixed tokens, which never flip with the theme, so
+ *   the panel is the same surface on every page. Portrait beside the text
+ *   from 1024; stacked below. Previous / next under a hairline, the way the
+ *   reference draws them.
+ *
+ * Gutter of its own, like every block a Canvas page places.
+ */
+
+.team {
+  padding-inline: var(--gutter-page);
+}
+
+.team__heading {
+  margin: 0 0 var(--space-md);
+  font-size: var(--voice-headline);
+  font-weight: var(--font-weight-bold);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.team__grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-lg) var(--grid-gutter);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 768px) {
+  .team__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .team__grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.team__link {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-2xs);
+  color: inherit;
+  text-decoration: none;
+  text-align: center;
+}
+
+.team__figure {
+  width: 100%;
+  margin: 0 0 var(--space-xs);
+  aspect-ratio: 1 / 1;
+  border-radius: var(--radius-icon);
+  overflow: hidden;
+}
+
+.team__photo {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: scale var(--duration-slow) var(--ease-decelerate);
+}
+
+@media (hover: hover) {
+  .team__link:hover .team__photo,
+  .team__link:focus-visible .team__photo {
+    scale: 1.03;
+  }
+}
+
+.team__name {
+  font-size: var(--voice-mid);
+  font-weight: var(--font-weight-semibold);
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+
+.team__role {
+  font-size: var(--voice-meta);
+  color: var(--color-icon-grey);
+}
+
+/* the "there is more" — a thin plus, brightening with the card */
+.team__plus {
+  margin-top: var(--space-2xs);
+  font-size: 1.75rem;
+  font-weight: var(--font-weight-normal);
+  line-height: 1;
+  color: var(--color-icon-black);
+  opacity: 0.7;
+  transition: opacity var(--duration-fast) var(--ease-standard);
+}
+
+.team__link:hover .team__plus,
+.team__link:focus-visible .team__plus {
+  opacity: 1;
+}
+
+.team__link:focus-visible {
+  outline: 2px solid var(--color-icon-blue);
+  outline-offset: 4px;
+  border-radius: var(--radius-icon);
+}
+
+/* ---- The panel ----------------------------------------------------------- */
+
+/* Page scroll is locked while it is open (js/team-profiles.js). */
+html.is-team-open {
+  overflow: hidden;
+}
+
+/* The dialog IS the viewport: full inset, no chrome, transparent — the
+   click-beside-to-close lands on it. The visible surface is the panel. */
+.team-overlay {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--footer-ink);
+  z-index: 10005; /* over the pill (10000–10002) and the toasts */
+}
+
+.team-overlay::backdrop {
+  background: color-mix(in srgb, var(--footer-bg) 55%, transparent);
+}
+
+.team-overlay__panel {
+  position: absolute;
+  inset-block: 0;
+  right: 0;
+  width: 100%;
+  overflow-y: auto;
+  padding: var(--space-md) var(--gutter-page) var(--space-lg);
+  background: var(--footer-bg);
+  color: var(--footer-ink);
+  translate: 100% 0;
+  transition: translate var(--duration-slow) var(--ease-decelerate);
+}
+
+.team-overlay[open] .team-overlay__panel {
+  translate: 0 0;
+}
+
+/* the first frame after opening is off the right edge, so the transition
+   above has somewhere to come from */
+@starting-style {
+  .team-overlay[open] .team-overlay__panel {
+    translate: 100% 0;
+  }
+}
+
+@media (min-width: 768px) {
+  .team-overlay__panel {
+    width: min(100%, 72vw);
+  }
+}
+
+@media (min-width: 1024px) {
+  .team-overlay__panel {
+    width: clamp(48rem, 66vw, 84rem);
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    grid-template-rows: auto 1fr auto;
+    column-gap: var(--space-lg);
+    align-content: start;
+  }
+
+  .team-overlay__bar,
+  .team-overlay__nav {
+    grid-column: 1 / -1;
+  }
+
+  .team-overlay__profile {
+    display: contents;
+  }
+}
+
+.team-overlay__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-sm);
+  padding-bottom: var(--space-sm);
+  margin-bottom: var(--space-md);
+  border-bottom: 1px solid var(--rule);
+}
+
+.team-overlay__counter {
+  font-size: var(--voice-label);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: 0.05em;
+  font-variant-numeric: tabular-nums;
+}
+
+.team-overlay__of {
+  opacity: 0.55;
+}
+
+.team-overlay__close,
+.team-overlay__arrow {
+  display: inline-grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-icon);
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  transition: background var(--duration-fast) var(--ease-standard);
+}
+
+.team-overlay__close svg,
+.team-overlay__arrow svg {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.team-overlay__close:hover,
+.team-overlay__arrow:hover {
+  background: color-mix(in srgb, var(--footer-ink) 12%, transparent);
+}
+
+.team-overlay__close:focus-visible,
+.team-overlay__arrow:focus-visible,
+.team-overlay__linkedin:focus-visible {
+  outline: 2px solid var(--footer-ink);
+  outline-offset: 2px;
+}
+
+.team-overlay__portrait {
+  margin: 0 0 var(--space-md);
+  aspect-ratio: 1 / 1;
+  border-radius: var(--radius-icon);
+  overflow: hidden;
+}
+
+.team-overlay__portrait img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.team-overlay__name {
+  margin: 0 0 var(--space-sm);
+  font-size: var(--voice-headline);
+  font-weight: var(--font-weight-bold);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+.team-overlay__role {
+  display: block;
+  font-weight: var(--font-weight-normal);
+}
+
+.team-overlay__bio {
+  max-width: 60ch;
+  font-size: 1.0625rem;
+  line-height: 1.6;
+}
+
+.team-overlay__bio p {
+  margin: 0 0 1em;
+}
+
+.team-overlay__linkedin {
+  display: inline-block;
+  margin-top: var(--space-xs);
+  color: color-mix(in srgb, var(--footer-ink) 60%, transparent);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+  text-decoration-thickness: 1px;
+  transition: color var(--duration-fast) var(--ease-standard);
+}
+
+.team-overlay__linkedin:hover {
+  color: var(--footer-ink);
+}
+
+.team-overlay__nav {
+  display: flex;
+  justify-content: space-between;
+  margin-top: var(--space-lg);
+  padding-top: var(--space-sm);
+  border-top: 1px solid var(--rule);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .team-overlay__panel,
+  .team__photo {
+    transition: none;
+  }
+}
