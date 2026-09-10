@@ -1,0 +1,21 @@
+uuid: 90113635-b3ba-4150-b699-8f3b21343380
+langcode: en
+status: true
+dependencies:
+  theme:
+    - icon
+active_version: 6cc3a72cc1075162
+versioned_properties:
+  active:
+    settings:
+      prop_field_definitions: {  }
+    fallback_metadata:
+      slot_definitions:
+        figures:
+          title: Figures
+          description: 'One or two. Two sit side by side from 768; on a phone they stack.'
+label: 'Gallery row'
+id: sdc.icon.work-gallery
+provider: icon
+source: sdc
+source_local_id: 'icon:work-gallery'

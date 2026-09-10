@@ -566,7 +566,7 @@
    These wrappers carry no transform of their own — the reveal is clip-path,
    the card tilt is a landing-only behaviour — so `transform` is free here. */
 .work-article__banner,
-.work-gallery figure,
+.work-gallery__figure,
 .work-article__chunk > .work-video,
 .work-article__chunk > .news-article__figure--video,
 .work-article__next .work__item {

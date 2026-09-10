@@ -1,43 +1,18 @@
 {#
 /**
  * @file
- * work-gallery — thin copy of the gallery blocks in templates/work-article-master.html.
- * A row is one or two FIGURES (--cols-2 for a pair). A plain figure is one
- * picture; portrait crops it to 7:10; a layered figure is a float (its last
- * media) over a ground (its first, or --overlay-ground), wide or square.
+ * work-gallery — one row of the article's media, one or two figures across.
+ *
+ * The figures are Figure components in the `figures` slot (Sep 2026). It
+ * took a `rows` prop of nested objects before — three levels of array, which
+ * Canvas cannot author and which meant one component held what the content
+ * model already had as two paragraphs.
+ *
+ * No column prop: the row is two-up when it HOLDS two figures, which the
+ * CSS asks with :has() — so a row is right however its figures arrive, and
+ * nothing has to be told how many it is holding.
  */
 #}
-{% macro medium(m, extra) %}
-  {% if m.type == 'video' %}
-    {# preload="metadata", not "auto": a gallery of films fetched every body
-       at once. Decorative — the figure's own caption and the article name
-       the work (found in review, Sep 2026). #}
-    <video autoplay muted loop playsinline preload="metadata" src="{{ m.src }}"{% if m.poster %} poster="{{ m.poster }}"{% endif %} aria-hidden="true"></video>
-  {% else %}
-    <img loading="lazy" src="{{ m.src }}" alt="{{ m.alt }}"{% if m.width %} width="{{ m.width }}"{% endif %}{% if m.height %} height="{{ m.height }}"{% endif %} />
-  {% endif %}
-{% endmacro %}
-{% import _self as gallery %}
-<div class="work-gallery">
-  {% for row in rows %}
-    <div class="work-gallery__row{{ row.figures|length > 1 ? ' work-gallery__row--cols-2' }}">
-      {% for f in row.figures %}
-        {% set layered = f.style starts with 'layered' %}
-        {% set classes = [
-          layered ? 'work-gallery__figure--layered',
-          f.style == 'layered_square' ? 'work-gallery__figure--square',
-          f.style == 'portrait' ? 'work-gallery__figure--portrait',
-          'media-reveal',
-        ]|filter(v => v) %}
-        {% set styles = [
-          layered and f.ground ? '--overlay-ground: ' ~ f.ground,
-          layered and f.pad ? '--overlay-pad: ' ~ f.pad,
-          not loop.first ? '--animate-delay: 60ms',
-        ]|filter(v => v) %}
-        <figure class="{{ classes|join(' ') }}" data-reveal-img{% if styles %} style="{{ styles|join('; ') }}"{% endif %}>
-          {% for m in (layered ? f.media : f.media|slice(0, 1)) %}{{ gallery.medium(m) }}{% endfor %}
-        </figure>
-      {% endfor %}
-    </div>
-  {% endfor %}
+<div class="work-gallery__row">
+  {% block figures %}{{ figures }}{% endblock %}
 </div>

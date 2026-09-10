@@ -4,6 +4,8 @@ status: true
 dependencies:
   config:
     - canvas.component.sdc.icon.pull-quote
+    - canvas.component.sdc.icon.work-gallery
+    - canvas.component.sdc.icon.work-gallery-figure
     - canvas.component.sdc.icon.work-scroller
     - canvas.component.sdc.icon.work-stat
     - canvas.component.sdc.icon.work-stats
@@ -13,6 +15,8 @@ configEntityTypeId: component
 weight: 0
 items:
   - sdc.icon.pull-quote
+  - sdc.icon.work-gallery
+  - sdc.icon.work-gallery-figure
   - sdc.icon.work-scroller
   - sdc.icon.work-stat
   - sdc.icon.work-stats

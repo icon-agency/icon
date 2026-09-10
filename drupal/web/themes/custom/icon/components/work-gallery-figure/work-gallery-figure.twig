@@ -1,0 +1,36 @@
+{#
+/**
+ * @file
+ * work-gallery-figure — one figure of a gallery row. A plain figure is one
+ * picture; portrait crops it to 7:10; a layered figure floats its LAST media
+ * over its first (or over --overlay-ground), wide or square.
+ *
+ * The classes are self-sufficient: the styles used to hang off a
+ * `.work-gallery` ancestor, which is why a figure could not be placed on its
+ * own (Sep 2026).
+ */
+#}
+{% set layered = style starts with 'layered' %}
+{% set classes = [
+  'work-gallery__figure',
+  layered ? 'work-gallery__figure--layered',
+  style == 'layered_square' ? 'work-gallery__figure--square',
+  style == 'portrait' ? 'work-gallery__figure--portrait',
+  'media-reveal',
+]|filter(v => v) %}
+{% set styles = [
+  layered and ground ? '--overlay-ground: ' ~ ground,
+  layered and pad ? '--overlay-pad: ' ~ pad,
+]|filter(v => v) %}
+<figure class="{{ classes|join(' ') }}" data-reveal-img{% if styles %} style="{{ styles|join('; ') }}"{% endif %}>
+  {% for m in (layered ? media : media|slice(0, 1)) %}
+    {% if m.type == 'video' %}
+      {# preload="metadata", not "auto": a gallery of films fetched every body
+         at once. Decorative — the figure's own caption and the article name
+         the work (found in review, Sep 2026). #}
+      <video autoplay muted loop playsinline preload="metadata" src="{{ m.src }}"{% if m.poster %} poster="{{ m.poster }}"{% endif %} aria-hidden="true"></video>
+    {% else %}
+      <img loading="lazy" src="{{ m.src }}" alt="{{ m.alt }}"{% if m.width %} width="{{ m.width }}"{% endif %}{% if m.height %} height="{{ m.height }}"{% endif %} />
+    {% endif %}
+  {% endfor %}
+</figure>

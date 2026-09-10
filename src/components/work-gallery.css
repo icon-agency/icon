@@ -28,20 +28,38 @@
   gap: var(--spacing-md);
 }
 
+/* Two up when the row HOLDS two, asked of the row itself rather than
+   written on it: the figures are placed one by one (a Canvas slot, or the
+   article's Figure paragraphs), so nothing upstream has to count them and
+   pass a modifier down. The explicit modifier still works for any markup
+   that sets it. */
 @media (min-width: 768px) {
-  .work-gallery__row--cols-2 {
+  .work-gallery__row--cols-2,
+  .work-gallery__row:has(> :nth-child(2)) {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
-.work-gallery figure {
+/* The pair arrives one after the other. A row rule, not a per-figure value:
+   the figures are placed one by one now (a Canvas slot, or the article's
+   Figure paragraphs), and none of them knows it is the second one. */
+.work-gallery__row > :nth-child(2) {
+  --animate-delay: 60ms;
+}
+
+/* Self-sufficient since Sep 2026: these hung off a `.work-gallery`
+   ANCESTOR, so a figure could only be styled inside the run's wrapper —
+   which is why Canvas could not place one. They key on the figure's own
+   class now, and `.work-gallery` is left doing the one job it has, the gap
+   between the rows of a run. */
+.work-gallery__figure {
   margin: 0;
   border-radius: var(--radius-icon);
   overflow: hidden;
 }
 
-.work-gallery img,
-.work-gallery video {
+.work-gallery__figure img,
+.work-gallery__figure video {
   display: block;
   width: 100%;
 }
@@ -50,11 +68,13 @@
    tall clipping sit as a matched pair instead of towering at their intrinsic
    heights (the Nike race-day reel is 720x1280; uncropped it ran half again
    the viewport). Apply to BOTH figures in the row so the pair lines up. */
-/* .work-gallery-qualified (0,2,0) on purpose: the layered-media anatomy this
-   composes with lives in the page layer (shared with the article banner),
-   which is imported AFTER this file — so the aspect must win by specificity,
-   not by source order as it did when both sat in one file. */
-.work-gallery .work-gallery__figure--portrait {
+/* Doubled class (0,2,0) on purpose: the layered-media anatomy this composes
+   with lives in the page layer (shared with the article banner), which is
+   imported AFTER this file — so the aspect must win by specificity, not by
+   source order as it did when both sat in one file. It used to take that
+   specificity from a `.work-gallery` ancestor; the base class does it now,
+   so a figure standing on its own keeps the crop. */
+.work-gallery__figure.work-gallery__figure--portrait {
   aspect-ratio: 7 / 10;
 }
 
@@ -66,8 +86,8 @@
 
 /* A SQUARE grounded tile — the Nike folio's four layered figures wore this
    as an inline aspect-ratio until the verify gate caught it (Sep 2026); a
-   literal inline is a modifier that hasn't been written. Same qualification
-   as --portrait, for the same reason. Compose with --layered. */
-.work-gallery .work-gallery__figure--square {
+   literal inline is a modifier that hasn't been written. Same doubling as
+   --portrait, for the same reason. Compose with --layered. */
+.work-gallery__figure.work-gallery__figure--square {
   aspect-ratio: 1 / 1;
 }

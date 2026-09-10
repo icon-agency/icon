@@ -1,51 +1,20 @@
 $schema: https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json
-name: Work gallery
+name: Gallery row
 group: Work
 status: stable
-description: >
-  The work article's media rows (src/components/work-gallery.css): one or two
-  figures per row, each an image, a looping film, or a layered figure — a
-  float over a media or colour ground, wide or square. Fed by consecutive
-  Gallery row blocks of Figures.
+description: |
+  A row of the work article's media (src/components/work-gallery.css): one
+  figure across, or two side by side from 768. The figures are Figure
+  components in the slot — the shape the article's Paragraphs already have
+  (work_gallery_row holds work_gallery_figure) and the only one Canvas can
+  author: it has no field type for a prop that is a list of objects.
 props:
+  # Declared and empty on purpose: a component with no `props` key at all
+  # reads as having no schema, and SDC rejects it. The column count is the
+  # number of figures in the slot, counted in the template.
   type: object
-  required:
-    - rows
-  properties:
-    rows:
-      type: array
-      title: Rows
-      items:
-        type: object
-        properties:
-          figures:
-            type: array
-            items:
-              type: object
-              properties:
-                style:
-                  type: string
-                  enum: [plain, portrait, layered, layered_square]
-                ground:
-                  type: string
-                pad:
-                  type: string
-                media:
-                  type: array
-                  items:
-                    type: object
-                    properties:
-                      type: { type: string, enum: [image, video] }
-                      src: { type: string }
-                      alt: { type: string }
-                      width: { type: integer }
-                      height: { type: integer }
-      examples:
-        - - figures:
-              - style: plain
-                media:
-                  - type: image
-                    src: https://placehold.co/1600x900
-                    alt: Campaign creative
-                    width: 1600
-                    height: 900
+  properties: {}
+slots:
+  figures:
+    title: Figures
+    description: One or two. Two sit side by side from 768; on a phone they stack.

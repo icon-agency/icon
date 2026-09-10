@@ -622,18 +622,38 @@ function icon_preprocess_field(array &$variables): void {
   $groups = [];
   $current = NULL;
   $gallery_rows = [];
+  // A run of consecutive Gallery row paragraphs becomes ONE .work-gallery —
+  // that wrapper's only job is the gap between the rows of a run, which is
+  // why the rows are grouped rather than each standing alone. Inside it,
+  // one Gallery row component per row, each holding its Figures in its slot:
+  // the shape the paragraphs already have, and the one Canvas can author
+  // (work-gallery.component.yml, Sep 2026 — it was a single component
+  // holding three levels of nested array before).
   $flush_gallery = function () use (&$groups, &$gallery_rows) {
-    if ($gallery_rows) {
-      $groups[] = [
-        'type' => 'block',
-        'item' => [
-          '#type' => 'component',
-          '#component' => 'icon:work-gallery',
-          '#props' => ['rows' => $gallery_rows],
-        ],
-      ];
-      $gallery_rows = [];
+    if (!$gallery_rows) {
+      return;
     }
+    $rows = array_map(static fn(array $row): array => [
+      '#type' => 'component',
+      '#component' => 'icon:work-gallery',
+      '#slots' => [
+        'figures' => array_map(static fn(array $figure): array => [
+          '#type' => 'component',
+          '#component' => 'icon:work-gallery-figure',
+          '#props' => $figure,
+        ], $row['figures']),
+      ],
+    ], $gallery_rows);
+    $groups[] = [
+      'type' => 'block',
+      'item' => [
+        '#type' => 'html_tag',
+        '#tag' => 'div',
+        '#attributes' => ['class' => ['work-gallery']],
+        'rows' => $rows,
+      ],
+    ];
+    $gallery_rows = [];
   };
   $cache = new CacheableMetadata();
   foreach ($variables['element']['#items']->referencedEntities() as $p) {
