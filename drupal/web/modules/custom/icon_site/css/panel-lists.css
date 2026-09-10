@@ -407,18 +407,29 @@ select.icon-panel__count { padding: 4px 24px 4px 8px; border: 1px solid #d9d9e0;
    row carries two links, "Add to …" and Edit, and the panel is not wide
    enough for them side by side — Edit fell off the card's edge (user call,
    Sep 2026). Stacked instead: Add on top, Edit under it, both on the right. */
-.icon-panel--reel .icon-panel__list--available td.icon-panel__cell--action {
-  width: 84px;
-  vertical-align: top;
+/* The row is a flex row, not a table row, so its two cells share one
+   height and the card's border runs level (a table row cannot stretch a
+   first cell that is itself a flex box); the action cell takes the width
+   of its longest link, so nothing runs into the card's edge. */
+.icon-panel--reel .icon-panel__list--available tr.draggable {
+  display: flex;
+  align-items: stretch;
 }
-/* the cell stays a table cell (a flex cell wrapped under the row): the
-   links stack as blocks inside it */
-.icon-panel--reel .icon-panel__list--available td.icon-panel__cell--action .icon-panel__action {
-  display: block;
-  margin-left: 0;
+.icon-panel--reel .icon-panel__list--available tr.draggable td:first-child {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.icon-panel--reel .icon-panel__list--available td.icon-panel__cell--action {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 6px;
+  width: auto;
 }
 .icon-panel--reel .icon-panel__list--available td.icon-panel__cell--action .icon-panel__action + .icon-panel__action {
-  margin-top: 6px;
+  margin-left: 0;
 }
 .icon-panel__empty-note.is-hidden { display: none; }
 
