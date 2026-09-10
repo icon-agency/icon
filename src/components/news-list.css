@@ -262,54 +262,9 @@
   transform-origin: center center;
 }
 
-/* ---- fluid filter swap (View Transitions) --------------------------------
-   js/news.js gives every card (and filter chip) a unique
-   view-transition-name and runs the filter's DOM change inside
-   document.startViewTransition(). The browser then animates BETWEEN the two
-   layouts: surviving cards glide to their new pair positions (the default
-   group animation morphs transform + size — exactly what the nth-child
-   gutter/hairline reflow needs), while cards with a snapshot on only one
-   side get the enter/exit keyframes below.
-
-   These ::view-transition-* pseudos live on the root element, but scoping
-   them here keeps the choreography beside the component that FIRST owned
-   it; the selectors are universal, and the /work landing's filter
-   (js/work-landing.js, wl-card-* names) deliberately rides the same rules.
-   Reduced motion needs no rules here: neither filter starts a transition
-   in that case. */
-
-/* the page itself must not crossfade — only the named participants move */
-::view-transition-old(root),
-::view-transition-new(root) {
-  animation: none;
-}
-
-/* the glide: give the position/size morph the site's pace and easing */
-::view-transition-group(*) {
-  animation-duration: var(--duration-slow);
-  animation-timing-function: var(--ease-standard);
-}
-
-@keyframes nl-vt-enter {
-  from {
-    opacity: 0;
-    transform: translateY(1.25rem) scale(0.98);
-  }
-}
-
-@keyframes nl-vt-exit {
-  to {
-    opacity: 0;
-    transform: translateY(0.75rem) scale(0.98);
-  }
-}
-
-/* :only-child = no counterpart on the other side, i.e. a pure entry or a
-   pure exit rather than a survivor morphing between positions */
-::view-transition-new(*):only-child {
-  animation: nl-vt-enter var(--duration-slow) var(--ease-decelerate) both;
-}
-
-::view-transition-old(*):only-child {
-  animation: nl-vt-exit var(--duration-normal) var(--ease-accelerate) both;
-}
+/* The in-page filter's View Transition choreography moved to
+   utilities/page-transition.css (Sep 2026): those ::view-transition-*
+   pseudos live on the root element, and with the page transition landing
+   there too, two files were writing the same universal selectors — source
+   order decided which won, and the page's fade started running on every
+   filter click. One file owns every view-transition pseudo now. */

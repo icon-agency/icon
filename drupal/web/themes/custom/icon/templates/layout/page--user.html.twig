@@ -10,7 +10,8 @@
  * icon_preprocess_page(): page_title, is_login, hero_slides (the homepage
  * hero's slides — client, url, source{type,src,alt,width,height} — in the
  * order the front page's hero block gives them; icon_site_hero_reel()),
- * hero_cache (their cache tags). With no slides (no Hero slide content yet,
+ * their cache tags ride the footer's `footer_cache`, which every page prints,
+ * so they bubble whether or not this banner has slides. With no slides (no Hero slide content yet,
  * or icon_site off) the banner falls back to the theme's own film.
  */
 #}
@@ -33,7 +34,6 @@
           </figure>
         {% endfor %}
       </div>
-      {{ hero_cache }}
       {{ attach_library('icon/auth-reel') }}
     {% else %}
       <video class="auth__film" src="{{ theme_path }}/assets/banner/NWMPHN.mp4" poster="{{ theme_path }}/assets/banner/moad-question-of-the-day.jpg" muted playsinline loop autoplay preload="metadata"></video>

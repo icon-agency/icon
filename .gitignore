@@ -22,6 +22,11 @@ drupal/.ddev/.*
 drupal/.ddev/db_snapshots/
 drupal/.ddev/*.yaml
 !drupal/.ddev/config.yaml
+# The Redis add-on's compose file, because settings.ddev.redis.php IS
+# committed and settings.php includes it: ignore the compose file and a
+# fresh clone wires Drupal to a cache backend whose container does not
+# exist, and every request fatals (found in review, Sep 2026).
+!drupal/.ddev/docker-compose.redis.yaml
 drupal/.ddev/traefik/
 drupal/.ddev/postgres/
 drupal/.ddev/mysql/

@@ -42,17 +42,24 @@
   mix-blend-mode: normal;
 }
 
-::view-transition-old(root) {
+/* SCOPED TO THE PAGE MOVE, on purpose. `.is-page-entering` is set by
+   js/page-transition.js for the length of the transition, and these
+   selectors out-specify the bare pseudos below — so the listing filters'
+   same-document transitions can never pick the page's fade up, whichever
+   file the cascade reaches first. (They did, for a while: two files wrote
+   the same universal pseudos and every filter click faded the whole page.
+   Found in review, Sep 2026.) */
+html.is-page-entering::view-transition-old(root) {
   animation: 300ms var(--ease-standard) both page-fade-out;
 }
 
-::view-transition-new(root) {
+html.is-page-entering::view-transition-new(root) {
   animation: 450ms var(--ease-decelerate) both page-fade-in;
 }
 
 /* A ground that changes: the new content waits for the old page to fade to
    the new ground — the canvas, which is that ground. */
-html:active-view-transition-type(fade-through)::view-transition-new(root) {
+html.is-page-entering:active-view-transition-type(fade-through)::view-transition-new(root) {
   animation-delay: 300ms;
 }
 
@@ -88,4 +95,54 @@ html:active-view-transition-type(fade-through)::view-transition-new(root) {
 
 html.is-page-entering {
   --animate-hold: 350ms;
+}
+
+/* ---- The listing filters (same-document) --------------------------------- */
+
+/* /news and /work filter in place: js/news.js and js/work-landing.js give
+   every card and chip a unique view-transition-name for the swap and run the
+   DOM change inside document.startViewTransition(). Survivors glide to their
+   new pair positions (the default group animation morphs transform and size,
+   which is what the nth-child gutter and hairline reflow needs); a card with
+   a snapshot on only one side enters or exits. Lived in components/
+   news-list.css until Sep 2026 — see the note there.
+   Reduced motion needs no rules: neither filter starts a transition then. */
+
+/* The page itself must not crossfade — only the named participants move.
+   Unscoped, so it is also the floor for any future same-document
+   transition; the page move's own rules above out-specify it. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+}
+
+/* The glide: the site's pace and easing. Not applied while the page is
+   moving, where the chrome's snapshots have their own job. */
+html:not(.is-page-entering)::view-transition-group(*) {
+  animation-duration: var(--duration-slow);
+  animation-timing-function: var(--ease-standard);
+}
+
+@keyframes nl-vt-enter {
+  from {
+    opacity: 0;
+    transform: translateY(1.25rem) scale(0.98);
+  }
+}
+
+@keyframes nl-vt-exit {
+  to {
+    opacity: 0;
+    transform: translateY(0.75rem) scale(0.98);
+  }
+}
+
+/* :only-child = no counterpart on the other side, i.e. a pure entry or a
+   pure exit rather than a survivor morphing between positions */
+html:not(.is-page-entering)::view-transition-new(*):only-child {
+  animation: nl-vt-enter var(--duration-slow) var(--ease-decelerate) both;
+}
+
+html:not(.is-page-entering)::view-transition-old(*):only-child {
+  animation: nl-vt-exit var(--duration-normal) var(--ease-accelerate) both;
 }

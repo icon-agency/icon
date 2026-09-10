@@ -114,12 +114,19 @@ function icon_preprocess_page(array &$variables): void {
   // the words from Content → Footer, the offices from Content → Offices, the
   // social links from the footer-social menu — icon_site reads them all; the
   // cache tags of everything read ride along so the footer refreshes with it.
+  // ONE CacheableMetadata for everything the page's chrome reads. It used to
+  // be two render-array variables written in turn, and CacheableMetadata's
+  // applyTo() REPLACES a render array's #cache rather than merging into it —
+  // so the reel's applyTo() below silently dropped the footer's and offices'
+  // tags, and editing an office or the social menu never refreshed a cached
+  // page (found in review, Sep 2026). Collect, then apply once.
+  $chrome = new CacheableMetadata();
   if (function_exists('icon_site_footer')) {
     $footer = icon_site_footer();
     $offices = icon_site_offices();
     $variables['footer'] = $footer;
     $variables['offices'] = $offices['offices'];
-    $variables['footer_cache'] = ['#cache' => ['tags' => array_merge($footer['tags'], $offices['tags'])]];
+    $chrome->addCacheTags(array_merge($footer['tags'], $offices['tags']));
   }
   // The homepage hero's own reel — the same Hero slide content, in the order
   // the front page's hero block was given in the Canvas panel — plays in two
@@ -134,15 +141,18 @@ function icon_preprocess_page(array &$variables): void {
   if (function_exists('icon_site_hero_reel')) {
     $reel = icon_site_hero_reel();
     $variables['footer_slides'] = $reel['slides'];
-    $variables['footer_cache'] = $variables['footer_cache'] ?? [];
-    $reel['cache']->applyTo($variables['footer_cache']);
+    $chrome = $chrome->merge($reel['cache']);
     $route_name = (string) \Drupal::routeMatch()->getRouteName();
     if (str_starts_with($route_name, 'user.') || str_starts_with($route_name, 'entity.user.')) {
       $variables['hero_slides'] = $reel['slides'];
-      $variables['hero_cache'] = [];
-      $reel['cache']->applyTo($variables['hero_cache']);
     }
   }
+  // Printed by the footer include, which is on EVERY page — so the chrome's
+  // tags bubble whether or not the account banner has slides to show. (The
+  // separate hero_cache was printed inside `{% if hero_slides %}`, so a site
+  // with no slides yet bubbled nothing at all.)
+  $variables['footer_cache'] = [];
+  $chrome->applyTo($variables['footer_cache']);
 }
 
 /**
@@ -237,7 +247,7 @@ function _icon_media_image(?EntityInterface $media, string $style_id, ?Cacheable
     $cache?->addCacheableDependency($style);
   }
   return [
-    'src' => $style ? $style->buildUrl($uri) : \Drupal::service('file_url_generator')->generateString($uri),
+    'src' => icon_site_file_url($style ? $style->buildUrl($uri) : $uri),
     'alt' => (string) $item->alt,
     'width' => $dimensions['width'] ?: NULL,
     'height' => $dimensions['height'] ?: NULL,

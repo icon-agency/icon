@@ -72,6 +72,23 @@ function _icon_site_login_to_front(array &$form, FormStateInterface $form_state)
 }
 
 /**
+ * A file or image-style URL, root-relative.
+ *
+ * ImageStyle::buildUrl() returns an ABSOLUTE url, and these props are
+ * render-cached — so a cached page baked in whatever scheme and host built
+ * it (locally, the DDEV port of the day; behind a CDN or a second domain,
+ * the wrong origin entirely). Core's own ImageFormatter runs every style URL
+ * through transformRelative() for exactly this reason (found in review,
+ * Sep 2026). Takes either a stream URI or a built URL.
+ */
+function icon_site_file_url(string $uri_or_url): string {
+  $generator = \Drupal::service('file_url_generator');
+  return $generator->transformRelative(preg_match('#^https?://#i', $uri_or_url)
+    ? $uri_or_url
+    : $generator->generateAbsoluteString($uri_or_url));
+}
+
+/**
  * A media item (image OR video) as {type, src, alt, width, height}.
  *
  * Images go through the image style; videos are the file itself. Empty
@@ -101,7 +118,7 @@ function icon_site_media_source(?MediaInterface $media, string $style_id, ?Cache
     }
     $source = [
       'type' => 'video',
-      'src' => \Drupal::service('file_url_generator')->generateString($file->getFileUri()),
+      'src' => icon_site_file_url($file->getFileUri()),
       'alt' => $media->label(),
     ];
     // The optional poster: the still the site shows before the film plays,
@@ -114,7 +131,7 @@ function icon_site_media_source(?MediaInterface $media, string $style_id, ?Cache
         if ($style) {
           $cache?->addCacheableDependency($style);
         }
-        $source['poster'] = $style ? $style->buildUrl($poster->getFileUri()) : \Drupal::service('file_url_generator')->generateString($poster->getFileUri());
+        $source['poster'] = icon_site_file_url($style ? $style->buildUrl($poster->getFileUri()) : $poster->getFileUri());
       }
     }
     return $source;
@@ -137,7 +154,7 @@ function icon_site_media_source(?MediaInterface $media, string $style_id, ?Cache
   $cache?->addCacheableDependency($file);
   return [
     'type' => 'image',
-    'src' => $style ? $style->buildUrl($uri) : \Drupal::service('file_url_generator')->generateString($uri),
+    'src' => icon_site_file_url($style ? $style->buildUrl($uri) : $uri),
     'alt' => (string) $item->alt,
     'width' => $dimensions['width'] ?: NULL,
     'height' => $dimensions['height'] ?: NULL,

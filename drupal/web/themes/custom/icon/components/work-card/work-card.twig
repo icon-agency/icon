@@ -22,25 +22,28 @@
   {% else %}
   {# One tile, or two: with a wide tile the figure carries both and the frame's
      CSS shows the one its shape calls for (--tile-square / --tile-wide, set by
-     the landscape rules in home-c.css and work-landing.css). A hidden variant
-     costs nothing: images are lazy, and a film's src waits in data-src until
-     js-theme/work-tile-variants.js sees which variant is showing. #}
-  {% macro tile(m, variant, client, lazySrc) %}
+     the landscape rules in home-c.css and work-landing.css). NO film carries a
+     src: images are lazy, and every film's src waits in data-src until
+     js-theme/work-tile-variants.js sees that it is both the showing variant
+     AND near the viewport. It used to be that a single-tile card wrote the src
+     with preload="auto" — a /work listing eagerly fetched tens of megabytes of
+     mp4 before the visitor had scrolled (found in review, Sep 2026). #}
+  {% macro tile(m, variant, client) %}
     {% set cls = 'work__img' ~ (variant ? ' work__img--' ~ variant) %}
     {% if m.type == 'video' %}
-      <video class="{{ cls }}"{% if lazySrc %} data-src="{{ m.src }}" preload="none"{% else %} src="{{ m.src }}" preload="auto"{% endif %}{% if m.poster %} poster="{{ m.poster }}"{% endif %} autoplay loop muted playsinline aria-label="{{ m.alt|default(client ~ ' — campaign film') }}"></video>
+      <video class="{{ cls }}" data-src="{{ m.src }}" preload="none"{% if m.poster %} poster="{{ m.poster }}"{% endif %} loop muted playsinline aria-label="{{ m.alt|default(client ~ ' — campaign film') }}"></video>
     {% else %}
       <img class="{{ cls }}" loading="lazy" src="{{ m.src }}" alt="{{ m.alt }}"{% if m.width %} width="{{ m.width }}"{% endif %}{% if m.height %} height="{{ m.height }}"{% endif %} />
     {% endif %}
   {% endmacro %}
   {% import _self as card %}
   {% set two = media_wide.src is defined and media_wide.src %}
-  <figure class="work__figure{{ foreground.src ? ' work__figure--layered' }} media-reveal" data-reveal-img{% if two %} data-tile-variants{% endif %}{% if foreground.src and inset %} style="--overlay-pad: {{ inset }}"{% endif %}>
+  <figure class="work__figure{{ foreground.src ? ' work__figure--layered' }} media-reveal" data-reveal-img data-tile-film{% if two %} data-tile-variants{% endif %}{% if foreground.src and inset %} style="--overlay-pad: {{ inset }}"{% endif %}>
     {% if two %}
-      {{ card.tile(media, 'square', client, true) }}
-      {{ card.tile(media_wide, 'wide', client, true) }}
+      {{ card.tile(media, 'square', client) }}
+      {{ card.tile(media_wide, 'wide', client) }}
     {% else %}
-      {{ card.tile(media, '', client, false) }}
+      {{ card.tile(media, '', client) }}
     {% endif %}
     {% if foreground.src %}
       <img class="work__float" loading="lazy" src="{{ foreground.src }}" alt="{{ foreground.alt }}"{% if foreground.width %} width="{{ foreground.width }}"{% endif %}{% if foreground.height %} height="{{ foreground.height }}"{% endif %} />
