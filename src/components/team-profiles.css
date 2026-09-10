@@ -55,13 +55,32 @@
   }
 }
 
+/* A card fills its grid row and the plus takes the last track, so a
+   two-line role never pushes its plus below the neighbours' (user call,
+   Sep 2026): the role's track is the one that grows. */
 .team__link {
   display: grid;
+  grid-template-rows: auto auto 1fr auto;
+  height: 100%;
   justify-items: center;
+  align-content: start;
   gap: var(--space-2xs);
   color: inherit;
   text-decoration: none;
   text-align: center;
+}
+
+.team__role {
+  align-self: start;
+}
+
+/* The scroll-velocity lean: js/team-profiles.js writes --team-skew on the
+   grid through the shared engine (js/velocity-lean.js, capped at 3deg, the
+   news rows' figure); every card inherits and skews as one. On the link,
+   which carries no other transform — the hover scale is on the photo. */
+.team__link {
+  transform: skewY(var(--team-skew, 0deg));
+  transform-origin: center center;
 }
 
 .team__figure {

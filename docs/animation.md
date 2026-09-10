@@ -214,10 +214,12 @@ The script only RE-ARMS the entrances: the classes come off while the
 profile is hidden and go back on a frame after it shows, from a forced
 start state. The portrait leans toward the cursor (the news card's 2.2deg,
 through `js/cursor-tilt.js`) on the figure, with the mask on a frame inside
-it — the tilted box and the masked box are never the same element. No
-scroll-velocity skew: the page behind does not scroll while the panel is
-open, and the panel's own scroll is not the engine's. Reduced motion:
-no fade, no entrances, no tilt — an instant swap. The grid's cards wear the shared `[data-animate]` rise with a stagger
+it — the tilted box and the masked box are never the same element. The
+GRID's cards lean with the scroll (`--team-skew` on the grid from
+`js/velocity-lean.js`, 3deg, consumed on the card link); the panel itself
+does not — the page behind does not scroll while it is open, and the
+panel's own scroll is not the engine's. Reduced motion: no fade, no
+entrances, no tilt, no lean — an instant swap. The grid's cards wear the shared `[data-animate]` rise with a stagger
 (`--animate-delay` per card) and the `.media-reveal` mask on the portrait;
 hover scales the portrait inside its square (pointer devices only).
 Reduced motion drops the slide and the mask. The URL, title and counter
@@ -275,12 +277,12 @@ are the script's — see `docs/drupal-handoff.md` for the routing.
 | Article Share rail (copy link + email) | `js/share.js` | — | `iconShare` → `icon/share` |
 | Subscribe bar hint state (news-b and work-landing-b mastheads, the footer) | `js/subscribe-reveal.js` | — | `iconSubscribeReveal` → `icon/subscribe-reveal` |
 | Work landing (filter + card motion) | `js/work-landing.js` | — | `iconWorkLanding` → `icon/work-landing` |
-| Scroll-velocity engine (shared: footer skew, news + work listing lean, work article skew, gallery scroller) | `js/velocity-lean.js` | — | `iconVelocityLean` → `icon/velocity-lean` (a dependency of its consumers) |
+| Scroll-velocity engine (shared: footer skew, news + work listing lean, work article skew, gallery scroller, the team grid) | `js/velocity-lean.js` | — | `iconVelocityLean` → `icon/velocity-lean` (a dependency of its consumers) |
 | Cursor-tilt engine (shared: news cards, work landing tiles, the team panel's portrait) | `js/cursor-tilt.js` | — | plain IIFE → `icon/cursor-tilt` (a dependency of its consumers) |
 | Work article (chameleon skew + the hero banner's breakout to the viewport edges, an IO flip at one 0.5 threshold with the travel in CSS; wide only while the header is in its scrolled state, so it opens inset and returns to inset at the top) | `js/work-article.js` | velocity-lean | `iconWorkArticle` → `icon/work-article` |
 | Work article gallery scroller | `js/work-scroller.js` | velocity-lean | `iconWorkScroller` → `icon/work-scroller` |
 | Work article click-to-play film | `js/work-video.js` | — | `iconWorkVideo` → `icon/work-video` |
-| Team profiles overlay (the About page: open / step / close, the address and title; the step's View Transition and the re-armed entrances) | `js/team-profiles.js` | reveal, cursor-tilt | `iconTeamProfiles` → `icon/team-profiles` |
+| Team profiles overlay (the About page: open / step / close, the address and title; the step's View Transition and the re-armed entrances) | `js/team-profiles.js` | reveal, cursor-tilt, velocity-lean | `iconTeamProfiles` → `icon/team-profiles` |
 | Work section + listing filter (prototype: templates/home.html, work.html) | `js/work.js`, `js/work-filter.js` | — | not ported |
 | Home-A hero (prototype) | `js/hero.js` | gsap, ScrambleText | `iconHero` → `icon/hero` |
 | Tagline (prototype) | `js/tagline.js` | gsap, Inertia | `iconTagline` → `icon/tagline` |

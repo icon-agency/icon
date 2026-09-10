@@ -33,10 +33,12 @@
        * home-c.css): this file only re-arms them — the classes come off while
        * the profile is hidden and go back on a frame after it shows. The
        * portrait tilts toward the cursor through the shared engine
-       * (js/cursor-tilt.js). Reduced motion: the CSS drops every one of them and
+       * (js/cursor-tilt.js), and the grid's cards lean with the scroll through
+       * the other one (js/velocity-lean.js). Reduced motion: the CSS drops every one of them and
        * the fade is skipped; the swap is instant.
        * Drupal: Drupal.behaviors.iconTeamProfiles via `icon/team-profiles`
-       * (after `icon/reveal`, which splits the names, and `icon/cursor-tilt`). */
+       * (after `icon/reveal`, which splits the names, `icon/cursor-tilt` and
+       * `icon/velocity-lean`). */
       (function () {
         "use strict";
 
@@ -157,6 +159,14 @@
 
         if (!reduce && window.matchMedia("(hover: hover)").matches && window.ICON && window.ICON.cursorTilt) {
           window.ICON.cursorTilt(overlay.querySelectorAll(".team-overlay__portrait"));
+        }
+
+        // The grid's cards lean with the scroll the way the news rows and the
+        // work tiles do (user call, Sep 2026): the SHARED engine writes one
+        // --team-skew on the grid per frame; the cards consume it in the CSS.
+        var grid = document.querySelector(".team__grid");
+        if (grid && !reduce && window.ICON && window.ICON.velocityLean) {
+          window.ICON.velocityLean(grid, grid, "--team-skew", 3);
         }
 
         // Back / Forward: the address is the truth
