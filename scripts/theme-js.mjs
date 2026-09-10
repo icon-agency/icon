@@ -16,8 +16,11 @@
  * pageswap/pagereveal, and pagereveal fires at first render, before a
  * behaviour would attach.
  *
- * Prototype-only behaviours (hero, tagline, hero-sphere) are not ported: the
- * pages that use them are outside the system (AGENTS.md).
+ * Prototype-only behaviours are not ported: the pages that use them are
+ * outside the system (AGENTS.md). Those are hero, tagline and hero-sphere,
+ * and since Sep 2026 also work and work-filter — they were generated and
+ * declared as libraries for a year, and nothing in Drupal ever attached
+ * them (found in review); /work is served by work-landing.js.
  *
  * Run via `npm run build:theme`; `npm run verify` checks the output is current.
  */
@@ -39,8 +42,6 @@ export const BEHAVIOURS = {
   "share": "iconShare",
   "subscribe-reveal": "iconSubscribeReveal",
   "work-landing": "iconWorkLanding",
-  "work": "iconWork",
-  "work-filter": "iconWorkFilter",
   "work-article": "iconWorkArticle",
   "work-scroller": "iconWorkScroller",
   "work-video": "iconWorkVideo",

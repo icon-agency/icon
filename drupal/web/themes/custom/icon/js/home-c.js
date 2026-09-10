@@ -13,8 +13,9 @@
        *      PiP fade-in (CSS transitions keyed off .is-ready).
        *   3. Image clip + scale reveals — now js/reveal.js's shared observer.
        *   3g. Clients logo marquee: the strip's drift + drag, shared STRIP_SPEED.
-       *   4. GSAP SplitText line-mask text reveals — a per-element timeline fired by an
-       *      IntersectionObserver (no ScrollTrigger, matching the project's approach).
+       *   (4. GSAP SplitText line-mask text reveals — removed Sep 2026: nothing
+       *      ever carried [data-reveal-text]. The site's headline gesture is the
+       *      word cascade in js/reveal.js.)
        *
        * All reduced-motion guarded; no-JS / missing-lib safe (text + images render
        * plainly, images just appear). Drupal: would become Drupal.behaviors.iconHomeC.
@@ -29,8 +30,6 @@
         var STRIP_SPEED = 55; // px/s
         var hasIO = "IntersectionObserver" in window;
         var gsapOk = typeof window.gsap !== "undefined";
-        var splitOk = gsapOk && typeof window.SplitText !== "undefined";
-        if (splitOk) { try { window.gsap.registerPlugin(window.SplitText); } catch (e) {} }
 
         // ---- 1. Lenis smooth scroll --------------------------------------------
         var USE_LENIS = true;
@@ -1193,35 +1192,14 @@
           });
         })();
 
-        // ---- 4. SplitText line-mask text reveals -------------------------------
-        var texts = Array.prototype.slice.call(document.querySelectorAll("[data-reveal-text]"));
-        if (texts.length && splitOk && !reduce && hasIO) {
-          var setup = function () {
-            texts.forEach(function (el) {
-              var split;
-              try {
-                split = new window.SplitText(el, { type: "lines", mask: "lines", linesClass: "split-line" });
-              } catch (e) { return; } // leave the text as authored on failure
-              window.gsap.set(split.lines, { yPercent: 115 });
-              var tIO = new IntersectionObserver(function (entries) {
-                entries.forEach(function (e) {
-                  if (!e.isIntersecting) return;
-                  tIO.unobserve(e.target);
-                  window.gsap.to(split.lines, {
-                    yPercent: 0,
-                    duration: 0.9,
-                    ease: "power3.out",
-                    stagger: 0.09
-                  });
-                });
-              }, { threshold: 0.25 });
-              tIO.observe(el);
-            });
-          };
-          // Wait for web fonts so line-wrapping is measured against the display font.
-          if (document.fonts && document.fonts.ready) document.fonts.ready.then(setup);
-          else setup();
-        }
+        // ---- 4. SplitText line-mask text reveals — REMOVED (Sep 2026) ----------
+        // Nothing in the design system or the Drupal theme has ever carried
+        // [data-reveal-text]: the section ran, found nothing, and the page paid
+        // for the SplitText CDN script to do it (found in review). The headline
+        // gesture the site actually uses is the word cascade in js/reveal.js
+        // ([data-reveal-words]); the masked line rise it shares is in
+        // src/utilities/animations.css. If a line-mask reveal is wanted again,
+        // start from those rather than from a second engine.
       })();
 
     },

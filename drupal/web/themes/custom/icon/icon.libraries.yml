@@ -79,18 +79,6 @@ work-landing:
     - core/drupal
     - core/once
     - icon/velocity-lean
-work:
-  js:
-    js/work.js: {}
-  dependencies:
-    - core/drupal
-    - core/once
-work-filter:
-  js:
-    js/work-filter.js: {}
-  dependencies:
-    - core/drupal
-    - core/once
 work-article:
   js:
     js/work-article.js: {}
@@ -133,7 +121,6 @@ home-c:
     - core/once
     - icon/velocity-lean
     - icon/gsap
-    - icon/gsap-splittext
     - icon/gsap-drawsvg
     - icon/lenis
 
@@ -142,11 +129,6 @@ home-c:
 gsap:
   js:
     https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js: { type: external, minified: true }
-gsap-splittext:
-  js:
-    https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js: { type: external, minified: true }
-  dependencies:
-    - icon/gsap
 gsap-drawsvg:
   js:
     https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/DrawSVGPlugin.min.js: { type: external, minified: true }

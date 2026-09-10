@@ -65,14 +65,15 @@ The homepage's choreography lives in **three** files:
   the no-JS/no-GSAP fallback — row 2's reverse from the same `--reverse`
   class — and switched off via `.is-js-marquee` so the two mechanisms never
   both run (3g) · GSAP
-  **SplitText line-mask** text reveals, fired per element by IO — no
-  ScrollTrigger (4).
+  (the SplitText line-mask reveals of section 4 were removed in Sep 2026:
+  nothing ever carried `[data-reveal-text]`, and the page was loading the
+  SplitText CDN script for them).
 - **`src/utilities/home-c.css`** — the reveal-fx primitives the JS toggles:
   `.media-reveal` (clip-path inset growing from the bottom-left corner + a
   zoom-settle; the transform stays on the *media*, never the observed frame —
   see LESSONS.md) and `.split-line` masks.
 
-Libraries on this page: GSAP core + SplitText (CDN) and Lenis (CDN). Everything
+Libraries on this page: GSAP core (CDN) and Lenis (CDN). Everything
 degrades: no GSAP/SplitText → text renders plainly; no Lenis / reduced motion →
 native scroll; no IO → everything visible.
 
@@ -235,12 +236,11 @@ so an admin page (no main.css) never transitions. Drupal: `icon/page-transition`
 | Article Share rail (copy link + email) | `js/share.js` | — | `iconShare` → `icon/share` |
 | Subscribe bar hint state (news-b and work-landing-b mastheads, the footer) | `js/subscribe-reveal.js` | — | `iconSubscribeReveal` → `icon/subscribe-reveal` |
 | Work landing (filter + card motion) | `js/work-landing.js` | — | `iconWorkLanding` → `icon/work-landing` |
-| Work section (swipe, underline, hover-video) | `js/work.js` | — | `iconWork` → `icon/work` |
-| Work listing filter | `js/work-filter.js` | — | `iconWorkFilter` → `icon/work-filter` |
 | Scroll-velocity engine (shared: footer skew, news + work listing lean, work article skew, gallery scroller) | `js/velocity-lean.js` | — | `iconVelocityLean` → `icon/velocity-lean` (a dependency of its consumers) |
 | Work article (chameleon skew + the hero banner's breakout to the viewport edges, an IO flip at one 0.5 threshold with the travel in CSS; wide only while the header is in its scrolled state, so it opens inset and returns to inset at the top) | `js/work-article.js` | velocity-lean | `iconWorkArticle` → `icon/work-article` |
 | Work article gallery scroller | `js/work-scroller.js` | velocity-lean | `iconWorkScroller` → `icon/work-scroller` |
 | Work article click-to-play film | `js/work-video.js` | — | `iconWorkVideo` → `icon/work-video` |
+| Work section + listing filter (prototype: templates/home.html, work.html) | `js/work.js`, `js/work-filter.js` | — | not ported |
 | Home-A hero (prototype) | `js/hero.js` | gsap, ScrambleText | `iconHero` → `icon/hero` |
 | Tagline (prototype) | `js/tagline.js` | gsap, Inertia | `iconTagline` → `icon/tagline` |
 | HomeB sphere (prototype) | `js/hero-sphere.js` | three, gsap, ScrollTrigger | `iconHeroSphere` → `icon/hero-sphere` |
