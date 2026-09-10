@@ -326,6 +326,9 @@
 .news-article__flow > .content-page {
   width: 100%;
   margin-inline: auto;
+  /* as work-article.css: the flow owns the gutter, so the standalone floor
+     from base/prose.css is cancelled here. */
+  padding-inline: 0;
 }
 
 @media (min-width: 1024px) {

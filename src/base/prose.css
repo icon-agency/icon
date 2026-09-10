@@ -10,6 +10,25 @@
  */
 
 @layer components {
+  /* A MEASURE OF ITS OWN. The article pages hand this one down by parent
+     (.work-article__chunk > .content-page, and the news equivalent), which
+     is fine there and left exactly as it is — but it meant a prose block
+     standing on its own, which is what a Canvas page places, ran the full
+     width of the viewport (Sep 2026). The same measure and the page gutter
+     as a floor; a page layer that wants a different one still wins, having
+     more specificity. */
+  .content-page {
+    width: 100%;
+    margin-inline: auto;
+    padding-inline: var(--gutter-page);
+  }
+
+  @media (min-width: 1024px) {
+    .content-page {
+      max-width: calc(clamp(46rem, 40vw, 64rem) + var(--gutter-page) * 2);
+    }
+  }
+
   .content-page h1 {
     font-size: clamp(2.25rem, 3vw, 3.75rem);
     font-weight: 500;
