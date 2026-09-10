@@ -403,10 +403,19 @@ select.icon-panel__count { padding: 4px 24px 4px 8px; border: 1px solid #d9d9e0;
 .icon-panel__reel-add { color: #0b64ee; font-weight: 600; }
 .icon-panel__card--spare { opacity: 0.92; }
 
-/* the hero row's action cell is the base 44px (Edit alone on the reel);
-   the Available rows' "Add to reel" needs a little more */
+/* A reel row's action cell is the base width (Edit alone); an Available
+   row carries two links, "Add to …" and Edit, and the panel is not wide
+   enough for them side by side — Edit fell off the card's edge (user call,
+   Sep 2026). Stacked instead: Add on top, Edit under it, both on the right. */
 .icon-panel--reel .icon-panel__list--available td.icon-panel__cell--action {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
   width: 84px;
+}
+.icon-panel--reel .icon-panel__list--available td.icon-panel__cell--action .icon-panel__action + .icon-panel__action {
+  margin-left: 0;
 }
 .icon-panel__empty-note.is-hidden { display: none; }
 
