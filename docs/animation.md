@@ -188,13 +188,17 @@ so an admin page (no main.css) never transitions. Drupal: `icon/page-transition`
 
 ## 8. Team profiles overlay — `src/components/team-profiles.css` + `js/team-profiles.js` (the About page)
 
-A member's profile is a native `<dialog>` that slides in from the right edge
-over the page: the panel moves `translate: 100% 0` → `0 0` with
-`@starting-style` on `[open]` (0.5s, `--ease-out-expo`), the backdrop is a
-tint of the footer ground that fades with it, and the page behind loses its
-scroll (`html.is-team-open`). Stepping to the next member swaps the
-`[data-team-profile]` articles in place — no motion, the panel is already
-there. The grid's cards wear the shared `[data-animate]` rise with a stagger
+A member's profile is a native `<dialog>` that slides in from the left edge
+over the page: the panel moves `translate: -100% 0` → `0 0` with
+`@starting-style` on `[open]` (`--duration-slow`, `--ease-decelerate`), the
+backdrop is a tint of the footer ground that fades in with it, and the page
+behind loses its scroll (`html.is-team-open`). Closing slides it back out
+the same way: the dialog transitions `display` and `overlay` with
+`allow-discrete`, so it stays painted in the top layer until the panel has
+gone (a browser without discrete transitions removes it at once). Stepping
+to the next member swaps the `[data-team-profile]` articles in place — no
+motion, the panel is already there; the arrows and the counter sit in the
+bar at the top. The grid's cards wear the shared `[data-animate]` rise with a stagger
 (`--animate-delay` per card) and the `.media-reveal` mask on the portrait;
 hover scales the portrait inside its square (pointer devices only).
 Reduced motion drops the slide and the mask. The URL, title and counter

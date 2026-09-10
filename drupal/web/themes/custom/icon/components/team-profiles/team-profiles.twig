@@ -34,7 +34,15 @@
   <dialog class="team-overlay" data-team-overlay data-team-base="{{ base }}" aria-label="{{ 'Team member'|t }}">
     <div class="team-overlay__panel">
       <div class="team-overlay__bar">
-        <span class="team-overlay__counter" aria-live="polite"><span data-team-index>01</span><span class="team-overlay__of">/{{ '%02d'|format(n) }}</span></span>
+        <div class="team-overlay__steps">
+          <button class="team-overlay__arrow" type="button" data-team-prev aria-label="{{ 'Previous'|t }}">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12H4" /><path d="m10 6-6 6 6 6" /></svg>
+          </button>
+          <button class="team-overlay__arrow" type="button" data-team-next aria-label="{{ 'Next'|t }}">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12h16" /><path d="m14 6 6 6-6 6" /></svg>
+          </button>
+          <span class="team-overlay__counter" aria-live="polite"><span data-team-index>01</span><span class="team-overlay__of">/{{ '%02d'|format(n) }}</span></span>
+        </div>
         <button class="team-overlay__close" type="button" data-team-close aria-label="{{ 'Close'|t }}">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>
         </button>
@@ -59,14 +67,6 @@
           </div>
         </article>
       {% endfor %}
-      <div class="team-overlay__nav">
-        <button class="team-overlay__arrow" type="button" data-team-prev aria-label="{{ 'Previous'|t }}">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12H4" /><path d="m10 6-6 6 6 6" /></svg>
-        </button>
-        <button class="team-overlay__arrow" type="button" data-team-next aria-label="{{ 'Next'|t }}">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12h16" /><path d="m14 6 6 6-6 6" /></svg>
-        </button>
-      </div>
     </div>
   </dialog>
 </section>

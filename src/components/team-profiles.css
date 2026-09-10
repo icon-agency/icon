@@ -156,22 +156,37 @@ html.is-team-open {
   background: transparent;
   color: var(--footer-ink);
   z-index: 10005; /* over the pill (10000–10002) and the toasts */
+  /* closing keeps the dialog painted (and in the top layer) for the
+     panel's slide back out; a browser without discrete transitions
+     simply removes it at once */
+  transition:
+    display var(--duration-slow) allow-discrete,
+    overlay var(--duration-slow) allow-discrete;
 }
 
 .team-overlay::backdrop {
   background: color-mix(in srgb, var(--footer-bg) 55%, transparent);
+  opacity: 0;
+  transition:
+    opacity var(--duration-slow) var(--ease-decelerate),
+    display var(--duration-slow) allow-discrete,
+    overlay var(--duration-slow) allow-discrete;
+}
+
+.team-overlay[open]::backdrop {
+  opacity: 1;
 }
 
 .team-overlay__panel {
   position: absolute;
   inset-block: 0;
-  right: 0;
+  left: 0;
   width: 100%;
   overflow-y: auto;
   padding: var(--space-md) var(--gutter-page) var(--space-lg);
   background: var(--footer-bg);
   color: var(--footer-ink);
-  translate: 100% 0;
+  translate: -100% 0;
   transition: translate var(--duration-slow) var(--ease-decelerate);
 }
 
@@ -179,11 +194,16 @@ html.is-team-open {
   translate: 0 0;
 }
 
-/* the first frame after opening is off the right edge, so the transition
-   above has somewhere to come from */
+/* the first frame after opening is off the left edge (and the backdrop
+   clear), so the transitions above have somewhere to come from; closing
+   runs them back the same way */
 @starting-style {
   .team-overlay[open] .team-overlay__panel {
-    translate: 100% 0;
+    translate: -100% 0;
+  }
+
+  .team-overlay[open]::backdrop {
+    opacity: 0;
   }
 }
 
@@ -198,13 +218,12 @@ html.is-team-open {
     width: clamp(48rem, 66vw, 84rem);
     display: grid;
     grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
-    grid-template-rows: auto 1fr auto;
+    grid-template-rows: auto 1fr;
     column-gap: var(--space-lg);
     align-content: start;
   }
 
-  .team-overlay__bar,
-  .team-overlay__nav {
+  .team-overlay__bar {
     grid-column: 1 / -1;
   }
 
@@ -223,7 +242,15 @@ html.is-team-open {
   border-bottom: 1px solid var(--rule);
 }
 
+/* the arrows lead, the counter reads beside them (user call, Sep 2026) */
+.team-overlay__steps {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2xs);
+}
+
 .team-overlay__counter {
+  margin-left: var(--space-2xs);
   font-size: var(--voice-label);
   font-weight: var(--font-weight-medium);
   letter-spacing: 0.05em;
@@ -319,15 +346,9 @@ html.is-team-open {
   color: var(--footer-ink);
 }
 
-.team-overlay__nav {
-  display: flex;
-  justify-content: space-between;
-  margin-top: var(--space-lg);
-  padding-top: var(--space-sm);
-  border-top: 1px solid var(--rule);
-}
-
 @media (prefers-reduced-motion: reduce) {
+  .team-overlay,
+  .team-overlay::backdrop,
   .team-overlay__panel,
   .team__photo {
     transition: none;
