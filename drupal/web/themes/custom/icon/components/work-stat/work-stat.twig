@@ -1,0 +1,12 @@
+{#
+/**
+ * @file
+ * work-stat — one cell of the results band (work-stats). A description list
+ * pair: the label is the term, the figure the description, which is why the
+ * markup reads label-then-value while the CSS stacks value over label.
+ */
+#}
+<div class="work-stats__stat">
+  <dt class="work-stats__label">{{ label }}</dt>
+  <dd class="work-stats__value">{{ value }}{% if unit %} <span class="work-stats__unit">{{ unit }}</span>{% endif %}</dd>
+</div>

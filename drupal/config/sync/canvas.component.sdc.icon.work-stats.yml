@@ -1,0 +1,21 @@
+uuid: 49cb14b9-0f26-480f-889b-0f36226ad2f6
+langcode: en
+status: true
+dependencies:
+  theme:
+    - icon
+active_version: 4ad046bfee8c5013
+versioned_properties:
+  active:
+    settings:
+      prop_field_definitions: {  }
+    fallback_metadata:
+      slot_definitions:
+        results:
+          title: Results
+          description: 'One Result per figure. Two to the row.'
+label: Results
+id: sdc.icon.work-stats
+provider: icon
+source: sdc
+source_local_id: 'icon:work-stats'

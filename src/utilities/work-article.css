@@ -310,13 +310,16 @@
 }
 
 /* Each column opens with a TITLE — CATEGORY / DELIVERABLES — in the same
-   caps voice at REGULAR weight (user call, Sep 2026), so the medium items
-   read as the content and the title as the label of the label. It replaced
-   the left column's "Work" link, which only duplicated the ← Work eyebrow. */
+   caps voice at Kumbh's HEAVIEST, 900 (user call, Sep 2026: it went regular
+   first, so the items read as the content, then the other way — the title
+   now carries the column and the medium items hang under it). 900 is the
+   masthead weight, written as the number here as everywhere else that wears
+   it; the scale's tokens stop at bold. It replaced the left column's "Work"
+   link, which only duplicated the ← Work eyebrow. */
 .work-article__facts li.work-article__facts-title {
   /* li stated in the selector: the items' `.work-article__facts li` is
      class+type and would out-specify a bare class here */
-  font-weight: var(--font-weight-normal);
+  font-weight: 900;
 }
 
 /* The category links wear the list's own ink (already full-strength, unlike

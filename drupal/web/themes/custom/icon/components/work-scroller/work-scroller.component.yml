@@ -11,13 +11,11 @@ props:
     items:
       type: array
       title: Images
+      description: The strip, in order. Portraits and landscapes mix freely; the strip drifts and can be dragged.
+      # Required and multiple: Canvas asks for the floor as well as the shape.
+      minItems: 1
       items:
-        type: object
-        properties:
-          src: { type: string }
-          alt: { type: string }
-          width: { type: integer }
-          height: { type: integer }
+        $ref: json-schema-definitions://canvas.module/image
       examples:
         - - src: https://placehold.co/800x1100
             alt: Poster

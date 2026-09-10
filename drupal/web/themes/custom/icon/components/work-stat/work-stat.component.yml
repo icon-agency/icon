@@ -1,0 +1,29 @@
+$schema: https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json
+name: Result
+group: Work
+status: stable
+description: One cell of the results band — the figure over what it counts (src/components/work-stats.css). Sits in a Results band's slot.
+props:
+  type: object
+  required:
+    - value
+    - label
+  properties:
+    value:
+      type: string
+      title: Figure
+      description: The number itself, as you want it read — 48, 3.2M, 87%.
+      examples:
+        - '48'
+    unit:
+      type: string
+      title: Unit
+      description: What the figure counts, set smaller beside it. Leave empty when the figure says it.
+      examples:
+        - people
+    label:
+      type: string
+      title: Label
+      description: The line under the figure, naming what was measured.
+      examples:
+        - Participants tested

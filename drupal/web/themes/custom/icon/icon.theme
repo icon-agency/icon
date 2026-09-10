@@ -659,7 +659,28 @@ function icon_preprocess_field(array &$variables): void {
       continue;
     }
     $flush_gallery();
-    $item = ['#type' => 'component', '#component' => 'icon:' . $sdc[$p->bundle()], '#props' => $props];
+    // The results band's cells are Result components in its slot, not a prop
+    // (work-stats.component.yml explains why: Canvas has no field type for a
+    // prop that is a list of objects).
+    if ($p->bundle() === 'work_stats') {
+      $item = [
+        '#type' => 'component',
+        '#component' => 'icon:work-stats',
+        '#slots' => [
+          'results' => array_map(
+            static fn(array $cell): array => [
+              '#type' => 'component',
+              '#component' => 'icon:work-stat',
+              '#props' => $cell,
+            ],
+            $props['items'],
+          ),
+        ],
+      ];
+    }
+    else {
+      $item = ['#type' => 'component', '#component' => 'icon:' . $sdc[$p->bundle()], '#props' => $props];
+    }
     if (in_array($p->bundle(), $run_types, TRUE)) {
       if ($current === NULL) {
         $groups[] = ['type' => 'run', 'items' => []];

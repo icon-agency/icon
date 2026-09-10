@@ -4,6 +4,17 @@
  * Paragraph "work-stats" = the work-stats SDC, props from icon_preprocess_paragraph().
  * (In the case study body the field template renders these itself, grouping
  * runs and galleries; this stands alone anywhere else a paragraph renders.)
+ *
+ * The band's cells are Result components in its `results` slot since Sep 2026
+ * — the shape the nested Result paragraphs already have, and the only one
+ * Canvas can author. The cells are built first and handed over as the slot's
+ * value: an {% embed %} renders its blocks in an isolated context, where the
+ * preprocess's props are not in scope, so the loop came out empty.
  */
 #}
-{% if sdc_props is not empty %}{{ include('icon:work-stats', sdc_props, with_context = false) }}{% endif %}
+{% if sdc_props.items is not empty %}
+  {% set results %}
+    {% for item in sdc_props.items %}{{ include('icon:work-stat', item, with_context = false) }}{% endfor %}
+  {% endset %}
+  {{ include('icon:work-stats', { results: results }, with_context = false) }}
+{% endif %}

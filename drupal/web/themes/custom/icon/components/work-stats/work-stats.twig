@@ -1,16 +1,14 @@
 {#
 /**
  * @file
- * work-stats — thin copy of the results band in templates/work-article-master.html.
+ * work-stats — the results band. The cells are work-stat components in the
+ * `results` slot; the article's template fills it from the nested Result
+ * paragraphs, a Canvas page by dropping Results in (Sep 2026 — it took an
+ * `items` array of objects before, which Canvas cannot author).
  */
 #}
 <section class="work-stats" data-animate aria-label="{{ 'Results at a glance'|t }}">
   <dl class="work-stats__grid">
-    {% for item in items %}
-      <div class="work-stats__stat">
-        <dt class="work-stats__label">{{ item.label }}</dt>
-        <dd class="work-stats__value">{{ item.value }}{% if item.unit %} <span class="work-stats__unit">{{ item.unit }}</span>{% endif %}</dd>
-      </div>
-    {% endfor %}
+    {% block results %}{{ results }}{% endblock %}
   </dl>
 </section>

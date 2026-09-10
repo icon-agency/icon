@@ -1,0 +1,54 @@
+uuid: f72a9b09-e4c5-4cec-93aa-3bb56c1c039f
+langcode: en
+status: true
+dependencies:
+  theme:
+    - icon
+active_version: f90ed1a4cdfe7c2f
+versioned_properties:
+  active:
+    settings:
+      prop_field_definitions:
+        value:
+          required: true
+          field_type: string
+          field_storage_settings: {  }
+          field_instance_settings: {  }
+          field_widget: string_textfield
+          default_value:
+            -
+              value: '48'
+          expression: ℹ︎string␟value
+          derived_schema_metadata:
+            string_shape: {  }
+        unit:
+          required: false
+          field_type: string
+          field_storage_settings: {  }
+          field_instance_settings: {  }
+          field_widget: string_textfield
+          default_value:
+            -
+              value: people
+          expression: ℹ︎string␟value
+          derived_schema_metadata:
+            string_shape: {  }
+        label:
+          required: true
+          field_type: string
+          field_storage_settings: {  }
+          field_instance_settings: {  }
+          field_widget: string_textfield
+          default_value:
+            -
+              value: 'Participants tested'
+          expression: ℹ︎string␟value
+          derived_schema_metadata:
+            string_shape: {  }
+    fallback_metadata:
+      slot_definitions: {  }
+label: Result
+id: sdc.icon.work-stat
+provider: icon
+source: sdc
+source_local_id: 'icon:work-stat'
