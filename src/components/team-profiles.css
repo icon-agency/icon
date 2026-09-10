@@ -34,7 +34,8 @@
 .team__grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: var(--space-lg) var(--grid-gutter);
+  /* the work gallery's gap between the portraits (user call, Sep 2026) */
+  gap: var(--space-md) var(--spacing-md);
   margin: 0;
   padding: 0;
   list-style: none;
@@ -49,6 +50,14 @@
 @media (min-width: 1024px) {
   .team__grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* a wide monitor takes the whole leadership team in one row (user call,
+   Sep 2026); the name comes down a step, below, so it fits its card */
+@media (min-width: 1536px) {
+  .team__grid {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
   }
 }
 
@@ -89,6 +98,12 @@
   font-weight: var(--font-weight-semibold);
   line-height: 1.2;
   letter-spacing: -0.01em;
+}
+
+@media (min-width: 1536px) {
+  .team__name {
+    font-size: var(--text-xl);
+  }
 }
 
 .team__role {
