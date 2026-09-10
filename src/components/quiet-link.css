@@ -17,7 +17,15 @@
   font-weight: var(--font-weight-medium);
   letter-spacing: -0.01em;
   line-height: 1.32;
-  color: color-mix(in srgb, var(--color-icon-black) 32%, transparent);
+  /* 60%, not the 32% it wore until Sep 2026: at 32% the resting link
+     measured 2.12:1 on white and failed WCAG AA — the intro's expertise
+     list and "About us" are the ones people read (found in review). 60% is
+     5.10:1 on white and 6.10:1 on the dark ground, where --color-icon-black
+     flips to the light ink, so the one value passes in both. It stays a
+     MIX with transparent rather than a flat grey so it keeps compositing
+     over whatever ground it sits on. The quiet is carried by the weight and
+     the absent underline now, not by the ink alone. */
+  color: color-mix(in srgb, var(--color-icon-black) 60%, transparent);
   text-decoration: none;
   transition:
     color var(--duration-fast) var(--ease-standard),
