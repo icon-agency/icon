@@ -9,8 +9,10 @@ dependencies:
     - node.type.office
     - node.type.work
     - taxonomy.vocabulary.tags
+    - workflows.workflow.editorial
   module:
     - canvas
+    - content_moderation
     - contextual
     - file
     - filter
@@ -60,8 +62,15 @@ permissions:
   - 'publish auto-saves'
   - 'revert all revisions'
   - 'update any media'
+  - 'use editorial transition archive'
+  - 'use editorial transition archived_draft'
+  - 'use editorial transition archived_published'
+  - 'use editorial transition create_new_draft'
+  - 'use editorial transition publish'
   - 'use text format basic_html'
   - 'view all revisions'
+  - 'view any unpublished content'
+  - 'view latest version'
   - 'view media'
   - 'view own unpublished content'
   - 'view the administration theme'
