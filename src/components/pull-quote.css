@@ -14,13 +14,17 @@
  */
 
 .pull-quote {
-  margin: 0;
+  margin-block: 0;
   padding-block: clamp(2rem, 6vw, 6rem);
   /* A GUTTER OF ITS OWN. The article frames self-pad on --gutter-page, so a
      statement inside one is inset by the page; a statement standing on its
      own — which is what a Canvas page places — ran edge to edge (Sep 2026).
-     The frames cancel this floor, since they already provide it. */
-  padding-inline: var(--gutter-page);
+     A MARGIN, not padding: the rules below are the element's own edges, and
+     they stop at the gutter with the wordmark and everything else (user
+     call, Sep 2026 — padded, the hairlines still ran to the viewport). The
+     frames cancel this floor, since they already provide it. */
+  margin-inline: var(--gutter-page);
+  padding-inline: 0;
   text-align: center;
   /* Ruled top and bottom (user call, Sep 2026, global): the statement sits
      between two hairlines, the site's own rule tint — which re-pitches with

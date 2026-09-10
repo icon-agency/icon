@@ -99,9 +99,13 @@
   gap: var(--space-lg);
 }
 
-/* The frame self-pads on the page gutter, so the component's own floor
-   (components/pull-quote.css) would inset the statement a second time. */
-.work-article .pull-quote,
+/* The frame self-pads on the page gutter, so the components' own floors
+   (components/pull-quote.css — a margin, its rules being its edges;
+   components/work-stats.css — padding) would inset them a second time. */
+.work-article .pull-quote {
+  margin-inline: 0;
+}
+
 .work-article .work-stats {
   padding-inline: 0;
 }

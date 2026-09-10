@@ -320,6 +320,11 @@
   position: static;
 }
 
+/* The statement's own gutter is the page's; the stage already pads. */
+.ds-demo .pull-quote {
+  margin-inline: 0;
+}
+
 /* The team panel, shown at rest out of its dialog: in the page it is
    absolute in the dialog's viewport and slides in from off the left edge;
    in the stage it is a block, in place, at the stage's width. */
