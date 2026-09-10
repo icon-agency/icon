@@ -1,0 +1,24 @@
+$schema: https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json
+name: Filmstrip
+group: ICON
+status: stable
+description: >
+  A draggable strip of tilted cards drifting past on an endless marquee —
+  photos and blue fact tiles, in the order you place them. The homepage
+  intro's strip, on any page.
+libraryOverrides:
+  dependencies:
+    - icon/filmstrip
+props:
+  type: object
+  properties:
+    label:
+      type: string
+      title: Accessible label
+      description: Names the strip for assistive technology.
+      examples:
+        - The ICON team
+slots:
+  cards:
+    title: Cards
+    description: Photo and Fact card components, in the order they drift past.

@@ -44,6 +44,7 @@ export const BEHAVIOURS = {
   "share": "iconShare",
   "subscribe-reveal": "iconSubscribeReveal",
   "team-profiles": "iconTeamProfiles",
+  "filmstrip": "iconFilmstrip",
   "work-landing": "iconWorkLanding",
   "work-article": "iconWorkArticle",
   "work-scroller": "iconWorkScroller",

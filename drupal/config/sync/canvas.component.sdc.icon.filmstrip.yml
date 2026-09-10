@@ -1,0 +1,33 @@
+uuid: 276131cf-446d-4672-bc49-ffc8b5a101d2
+langcode: en
+status: true
+dependencies:
+  theme:
+    - icon
+active_version: a95584cf959416f8
+versioned_properties:
+  active:
+    settings:
+      prop_field_definitions:
+        label:
+          required: false
+          field_type: string
+          field_storage_settings: {  }
+          field_instance_settings: {  }
+          field_widget: string_textfield
+          default_value:
+            -
+              value: 'The ICON team'
+          expression: ℹ︎string␟value
+          derived_schema_metadata:
+            string_shape: {  }
+    fallback_metadata:
+      slot_definitions:
+        cards:
+          title: Cards
+          description: 'Photo and Fact card components, in the order they drift past.'
+label: Filmstrip
+id: sdc.icon.filmstrip
+provider: icon
+source: sdc
+source_local_id: 'icon:filmstrip'

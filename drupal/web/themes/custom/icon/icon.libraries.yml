@@ -48,6 +48,12 @@ site-footer:
     - core/drupal
     - core/once
 # The team panel (the Team profiles block attaches it).
+filmstrip:
+  js:
+    js/filmstrip.js: {}
+  dependencies:
+    - core/drupal
+    - core/once
 team-profiles:
   js:
     js/team-profiles.js: {}

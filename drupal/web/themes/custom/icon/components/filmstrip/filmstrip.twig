@@ -1,0 +1,14 @@
+{#
+/**
+ * @file
+ * filmstrip — the draggable strip of tilted cards (components/filmstrip.css,
+ * js/filmstrip.js). The cards are the Photo and Fact card components in
+ * the slot; the intro embeds this for the homepage and hands its own strip
+ * slot through the block.
+ */
+#}
+<div class="filmstrip" data-filmstrip{% if label %} role="region" aria-label="{{ label }}"{% endif %}>
+  <div class="filmstrip__track">
+    {% block cards %}{{ cards }}{% endblock %}
+  </div>
+</div>

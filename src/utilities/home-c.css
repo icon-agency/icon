@@ -841,92 +841,12 @@ html:not(.js-animations) .hero__count { display: none; }
 
 /* ---- The filmstrip ------------------------------------------------------ */
 
-/* Full-bleed out of the container, like .clients. */
-.intro__viewport {
-  width: 100vw;
-  margin-inline: calc(50% - 50vw);
-  margin-top: var(--space-lg); /* air under the headline */
-  overflow: hidden;
-  cursor: grab;
-  touch-action: pan-y; /* custom horizontal drag; keep vertical page scroll */
-  user-select: none;
-  -webkit-user-select: none;
-}
-.intro__viewport.is-dragging { cursor: grabbing; }
-
-.intro__track {
-  display: flex;
-  gap: var(--space-md);
-  width: max-content;
-  /* headroom so the tilted cards never clip */
-  padding-block: var(--space-md);
-  will-change: transform;
-}
-
-.intro__card {
-  --intro-card-w: clamp(10.5rem, 17vw, 26rem);
-  flex: 0 0 auto;
-  width: var(--intro-card-w); /* keeps growing to ~2450px */
-  aspect-ratio: 4 / 5;
-  margin: 0;
-  border-radius: var(--radius-icon); /* same corner as the work + news media */
-  overflow: hidden;
-  rotate: var(--r, 0deg);
-  background: color-mix(in srgb, var(--color-icon-black) 6%, transparent);
-  will-change: rotate, transform;
-}
-/* alternating snapshot tilts (JS hands these to gsap transforms at init) */
-.intro__card:nth-child(4n + 1) { --r: -5deg; }
-.intro__card:nth-child(4n + 2) { --r: 3.5deg; }
-.intro__card:nth-child(4n + 3) { --r: -2.5deg; }
-.intro__card:nth-child(4n + 4) { --r: 5.5deg; }
-
-.intro__card img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-  pointer-events: none; /* drags hit the card, not the img */
-}
-
-/* Fact card — a stat tile in the snapshot deck (design:
-   experiments/card-fact.png): shader-blue ground, trophy top-left, uppercase
-   statement, hairline rule + label at the foot. Every ratio is measured off
-   the 340px-wide mock and scales with the card width, so the tile tracks the
-   deck's fluid sizing at every viewport. */
-.intro__card--fact {
-  display: flex;
-  flex-direction: column;
-  padding: calc(var(--intro-card-w) * 0.094);
-  background: var(--color-shader-blue);
-  color: var(--color-white);
-}
-
-.intro__fact-icon {
-  /* align-self so the flex column's default `stretch` can't pull the svg to
-     full width — stretched, the glyph sat centred in a wide box (it reads as
-     "not left aligned"); at content width it hugs the card's left padding. */
-  align-self: flex-start;
-  height: calc(var(--intro-card-w) * 0.153);
-  width: auto;
-}
-
-.intro__fact-title {
-  margin: calc(var(--intro-card-w) * 0.082) 0 0;
-  font-size: calc(var(--intro-card-w) * 0.105);
-  line-height: 1.16;
-  font-weight: 900;
-  text-transform: uppercase;
-  letter-spacing: var(--tracking-caps);
-}
-
-.intro__fact-label {
-  margin: auto 0 0; /* pins the rule + label to the foot */
-  padding-top: calc(var(--intro-card-w) * 0.082);
-  border-top: var(--rule-weight) solid var(--rule);
-  font-size: calc(var(--intro-card-w) * 0.059);
-  font-weight: var(--font-weight-medium);
-  letter-spacing: -0.01em;
+/* The strip is a COMPONENT now (components/filmstrip.css + js/filmstrip.js,
+   Sep 2026 — it was asked to go on other pages), embedded by the intro;
+   what stays here is the intro's own composition: the air under the
+   headline. */
+.intro > .filmstrip {
+  margin-top: var(--space-lg);
 }
 
 

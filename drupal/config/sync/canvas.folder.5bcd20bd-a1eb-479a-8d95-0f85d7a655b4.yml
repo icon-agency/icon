@@ -11,6 +11,7 @@ dependencies:
     - canvas.component.block.views_block.news-latest
     - canvas.component.block.views_block.news-next_up
     - canvas.component.block.views_block.work-next_up
+    - canvas.component.sdc.icon.filmstrip
     - canvas.component.sdc.icon.page-header
 name: ICON
 configEntityTypeId: component
@@ -24,4 +25,5 @@ items:
   - block.views_block.news-latest
   - block.views_block.news-next_up
   - block.views_block.work-next_up
+  - sdc.icon.filmstrip
   - sdc.icon.page-header

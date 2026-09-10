@@ -55,7 +55,7 @@ The homepage's choreography lives in **three** files:
   Lenis smooth scroll (1) · hero stack-takeover: preload → card pile → viewport
   takeover → reel with cross-fades and Ken Burns stills (2) · header inversion
   over the hero (2b) · triggered headline exit (2c) · (the word cascade of 3c
-  now lives in `js/reveal.js`, §1) · the intro filmstrip — GSAP-ticker marquee,
+  now lives in `js/reveal.js`, §1) · the intro filmstrip — now `js/filmstrip.js`, §9, a component on any page; it was a GSAP-ticker marquee here,
   drag with momentum, hover-stall, DRAG badge (3d) · scroll-velocity card lean
   (3e) · cursor tilt on work/news cards (3f) · the clients logo marquee —
   two counter-drifting rows on ONE shared phase (row 2 reads it negated), so
@@ -228,6 +228,23 @@ devices only).
 Reduced motion drops the slide and the mask. The URL, title and counter
 are the script's — see `docs/drupal-handoff.md` for the routing.
 
+## 9. The filmstrip — `src/components/filmstrip.css` + `js/filmstrip.js` (any page)
+
+The homepage intro's strip of tilted cards, made a component of its own
+(user call, Sep 2026) so an editor can place one anywhere with its own
+cards. The engine is the gallery scroller's, vanilla: a 55px/s drift on a
+duplicated track, a 1:1 drag handing its release velocity to a decaying
+momentum, a fling re-pointing the drift — the clients marquee's rule. What
+moved OUT of JS is the rotation: each card rests on its `--r` tilt (a
+repeating `4n` nth-child pattern), the script writes one `--strip-lean` on
+the viewport and holds `.is-active` while a drag or its momentum is live,
+and the CSS turns every card to that angle and settles each back after;
+the hover straighten and 1.12× zoom are `:hover` (pointer devices only).
+`rotate` and `scale` transition on the compositor. Reduced motion: no
+drift, no lean; drag still moves it. No JS: a native scroller. Drupal:
+`iconFilmstrip` → `icon/filmstrip`, attached by the `filmstrip` SDC; the
+intro embeds it.
+
 ## Rules
 
 1. **Always pair motion with a `prefers-reduced-motion` reset.** Every system
@@ -271,7 +288,8 @@ are the script's — see `docs/drupal-handoff.md` for the routing.
 |---|---|---|---|
 | Header (scroll state, the search flip, EXPERTISE drawer offset — a drop-up below md, where the pill sits at the bottom; the parked mobile menu's handlers stay) | `js/header.js` | — | `iconHeader` → `icon/header` |
 | Shared scroll-reveal | `js/reveal.js` | — | `iconReveal` → `icon/reveal` |
-| Homepage system | `js/home-c.js` | gsap, SplitText, lenis | `iconHomeC` → `icon/home-c` |
+| Homepage system (hero, intro mark + band, clients marquee, work + news sections) | `js/home-c.js` | gsap, SplitText, lenis | `iconHomeC` → `icon/home-c` |
+| Filmstrip (drift, drag, lean — any page) | `js/filmstrip.js` | — | `iconFilmstrip` → `icon/filmstrip` |
 | Hero loading screen | `js/hero-loader.js` | — (deliberately) | part of the hero SDC; its 16 rows become a Twig loop |
 | Global footer | `js/site-footer.js` | — | `iconFooter` → `icon/site-footer` |
 | Page transitions (the ground comparison + the reveal hold; the fade is CSS) | `js/page-transition.js` | — | plain IIFE in `<head>` → `icon/page-transition` (`header: true`) |

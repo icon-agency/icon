@@ -1,0 +1,141 @@
+/* filmstrip.css — the draggable strip of tilted cards: photos and blue fact
+ * tiles drifting past on an endless marquee. Born as the homepage intro's
+ * strip (utilities/home-c.css, the Strip experiment, weareboring.nl
+ * reference) and promoted to a component when it was asked to go on other
+ * pages (user call, Sep 2026). js/filmstrip.js drives the drift, the drag
+ * and the lean; without JS the strip is a plain hand-scrollable row of
+ * tilted cards. The cards are the Photo and Fact card components.
+ *
+ * The ROTATION IS CSS: every card rests on its own --r tilt (a repeating
+ * nth-child pattern, so a strip of any length scatters the same way), turns
+ * to the strip's one --strip-lean while a drag or its momentum is live
+ * (.is-active on the viewport, from the script), and straightens and zooms
+ * under the cursor. rotate and scale are compositor properties, so the
+ * strip never touches the main thread for them.
+ *
+ * Drupal: SDC `filmstrip` — a `cards` slot of intro-photo / intro-fact
+ * components; the intro embeds it for the homepage. */
+
+/* Full-bleed out of whatever centred container holds it, like .clients. */
+.filmstrip {
+  width: 100vw;
+  margin-inline: calc(50% - 50vw);
+  overflow: hidden;
+  cursor: grab;
+  touch-action: pan-y; /* custom horizontal drag; keep vertical page scroll */
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.filmstrip.is-dragging {
+  cursor: grabbing;
+}
+
+.filmstrip__track {
+  display: flex;
+  gap: var(--space-md);
+  width: max-content;
+  /* headroom so the tilted cards never clip */
+  padding-block: var(--space-md);
+  will-change: transform;
+}
+
+/* No JS: the track is a native scroller instead of a marquee. */
+.filmstrip:not(.is-ready) {
+  overflow-x: auto;
+  cursor: auto;
+}
+
+.filmstrip__card {
+  --filmstrip-card-w: clamp(10.5rem, 17vw, 26rem);
+  position: relative; /* the hovered card lifts over its neighbours */
+  flex: 0 0 auto;
+  width: var(--filmstrip-card-w); /* keeps growing to ~2450px */
+  aspect-ratio: 4 / 5;
+  margin: 0;
+  border-radius: var(--radius-icon); /* same corner as the work + news media */
+  overflow: hidden;
+  rotate: var(--r, 0deg);
+  background: color-mix(in srgb, var(--color-icon-black) 6%, transparent);
+  transition:
+    rotate 0.45s var(--ease-decelerate),
+    scale 0.45s var(--ease-decelerate);
+  will-change: rotate, scale;
+}
+
+/* alternating snapshot tilts */
+.filmstrip__card:nth-child(4n + 1) { --r: -5deg; }
+.filmstrip__card:nth-child(4n + 2) { --r: 3.5deg; }
+.filmstrip__card:nth-child(4n + 3) { --r: -2.5deg; }
+.filmstrip__card:nth-child(4n + 4) { --r: 5.5deg; }
+
+/* The lean: through a drag and its momentum every card turns to the one
+   angle the script writes, and settles back to its own tilt after. */
+.filmstrip.is-active .filmstrip__card {
+  rotate: var(--strip-lean, 0deg);
+}
+
+/* Hover straightens and zooms the card (user call, Aug 2026: the zoom is the
+   louder half of the gesture); lifted, so it grows over its neighbours. Not
+   during a gesture, where the lean owns the angle. Pointer devices only. */
+@media (hover: hover) {
+  .filmstrip:not(.is-active) .filmstrip__card:hover {
+    rotate: 0deg;
+    scale: 1.12;
+    z-index: 3;
+  }
+}
+
+.filmstrip__card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  pointer-events: none; /* drags hit the card, not the img */
+}
+
+/* Fact card — a stat tile in the snapshot deck (design:
+   experiments/card-fact.png): shader-blue ground, icon top-left, uppercase
+   statement, hairline rule + label at the foot. Every ratio is measured off
+   the 340px-wide mock and scales with the card width, so the tile tracks the
+   deck's fluid sizing at every viewport. */
+.filmstrip__card--fact {
+  display: flex;
+  flex-direction: column;
+  padding: calc(var(--filmstrip-card-w) * 0.094);
+  background: var(--color-shader-blue);
+  color: var(--color-white);
+}
+
+.filmstrip__fact-icon {
+  /* align-self so the flex column's default `stretch` can't pull the svg to
+     full width — stretched, the glyph sat centred in a wide box (it reads as
+     "not left aligned"); at content width it hugs the card's left padding. */
+  align-self: flex-start;
+  height: calc(var(--filmstrip-card-w) * 0.153);
+  width: auto;
+}
+
+.filmstrip__fact-title {
+  margin: calc(var(--filmstrip-card-w) * 0.082) 0 0;
+  font-size: calc(var(--filmstrip-card-w) * 0.105);
+  line-height: 1.16;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-caps);
+}
+
+.filmstrip__fact-label {
+  margin: auto 0 0; /* pins the rule + label to the foot */
+  padding-top: calc(var(--filmstrip-card-w) * 0.082);
+  border-top: var(--rule-weight) solid var(--rule);
+  font-size: calc(var(--filmstrip-card-w) * 0.059);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: -0.01em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .filmstrip__card {
+    transition: none;
+  }
+}

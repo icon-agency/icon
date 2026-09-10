@@ -3,7 +3,7 @@ name: Fact card (filmstrip)
 group: Homepage
 status: stable
 description: >
-  A blue fact card in the intro filmstrip — an icon from the site's Fact
+  A blue fact card in a filmstrip — an icon from the site's Fact
   icons (Icon media, inlined so it takes the card's white), headline figure,
   label under a hairline.
 props:

@@ -310,7 +310,7 @@
    viewport (100vw margin trick) and its DRAG badge is position: fixed — both
    would escape the bordered stage here, so inside a demo the strip fills the
    stage instead and the badge is hidden. Page behaviour is untouched. */
-.ds-demo .intro__viewport {
+.ds-demo .filmstrip {
   width: 100%;
   margin-inline: 0;
 }

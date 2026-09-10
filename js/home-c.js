@@ -15,8 +15,9 @@
   "use strict";
 
   var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  // One drift speed for every hand-draggable strip on the page — the intro
-  // filmstrip (3d) and the clients logo marquee (3g) read this same number,
+  // One drift speed for every hand-draggable strip on the site — the
+  // filmstrip (js/filmstrip.js), the gallery scroller and the clients logo
+  // marquee (3g) all read this same number,
   // so "they scroll at the same pace" is true by construction, not by tuning.
   var STRIP_SPEED = 55; // px/s
   var hasIO = "IntersectionObserver" in window;
@@ -757,22 +758,14 @@
   // (Sep 2026): the splitter and its observer live there now, next to the
   // other shared scroll-reveals; the CSS is in utilities/animations.css.
 
-  // ---- 3d. Intro filmstrip (promoted from the Strip experiment;
-  // weareboring.nl reference). An infinite marquee on gsap.ticker: a position
-  // counter wraps over half the duplicated track width. Pointer drag overrides
-  // it 1:1 and hands its release velocity to a decaying momentum; while a drag
-  // (or its momentum) is live the cards STRAIGHTEN out of their scattered
-  // tilts and lean together with it, settling back once it dies — every card
-  // rotation is owned by one per-card lerp here, so hover, drag and settle
-  // never fight. A fling RE-POINTS the drift, so the strip carries on in the
-  // direction you threw it — the clients marquee's rule (3g), adopted here so
-  // the page's two marquees behave alike (user call, Aug 2026). Hovering a
-  // card straightens and lifts it; hovering no longer stalls the autoplay, and
-  // the DRAG badge is gone — the clients marquee never had either. In the band
-  // below, the
+  // ---- 3d. Intro: the logo mark and the band. The FILMSTRIP that sat
+  // here (the Strip experiment's marquee on gsap.ticker: drift, 1:1 drag,
+  // momentum, the cards leaning with the gesture, a fling re-pointing the
+  // drift — the clients marquee's rule, 3g) is js/filmstrip.js since Sep
+  // 2026, a component of its own so it can go on other pages; the same
+  // gestures, vanilla, with the rotation in CSS. In the band below, the
   // sticky "Our expertise" label locks in the viewport while the list scrolls
-  // past it, and whichever item sits beside it is inked. Reduced motion: no
-  // autoplay, lean, or badge; drag still works.
+  // past it, and whichever item sits beside it is inked.
   (function () {
     // Autoplay resilience for the logo-mark video: browsers leave muted videos
     // paused when they load below the fold or while the tab is hidden — kick
@@ -791,134 +784,8 @@
       document.addEventListener("visibilitychange", kick);
     }
 
-    var viewport = document.querySelector("[data-strip]");
-    if (viewport && gsapOk) {
-      var track = viewport.querySelector(".intro__track");
-
-      // Duplicate the set once for a seamless half-width wrap.
-      var originals = Array.prototype.slice.call(track.children);
-      originals.forEach(function (card) {
-        var clone = card.cloneNode(true);
-        clone.setAttribute("aria-hidden", "true");
-        track.appendChild(clone);
-      });
-
-      var cards = Array.prototype.slice.call(track.children);
-      // Hand each card's tilt to gsap transforms (tweening the --r custom
-      // property strips its unit mid-tween and kills `rotate: var(--r)`).
-      var bases = [], curs = [];
-      cards.forEach(function (card, i) {
-        var base = parseFloat(getComputedStyle(card).getPropertyValue("--r")) || 0;
-        bases[i] = base;
-        curs[i] = base;
-        card.style.rotate = "0deg";
-        window.gsap.set(card, { rotation: base });
-      });
-      var hoverCard = null;
-
-      var loop = 0;
-      var measure = function () { loop = track.scrollWidth / 2; };
-      measure();
-      window.addEventListener("resize", measure, { passive: true });
-
-      var pos = 0;         // marquee position, px
-      var SPEED = STRIP_SPEED; // autoplay px/s — shared with the clients marquee
-      var vel = 0;         // momentum px/s after a drag
-      var lean = 0;        // smoothed drag tilt
-      var dir = 1;         // drift direction — a fling re-points it (3g's rule)
-      var dragging = false;
-      var dragVel = 0;
-
-      window.gsap.ticker.add(function (time, deltaMS) {
-        var dt = deltaMS / 1000;
-        if (!dragging) {
-          var auto = reduce ? 0 : SPEED * dir;
-          pos += (auto + vel) * dt;
-          vel *= Math.pow(0.9, dt * 60); // exponential decay, frame-rate independent
-          if (Math.abs(vel) < 1) vel = 0;
-        }
-        if (loop > 0) pos = ((pos % loop) + loop) % loop;
-
-        var active = !reduce && (dragging || Math.abs(vel) > 60);
-        var tiltTarget = active ? window.gsap.utils.clamp(-10, 10, (dragging ? dragVel : vel) / 120) : 0;
-        lean += (tiltTarget - lean) * Math.min(1, dt * 8);
-        for (var i = 0; i < cards.length; i++) {
-          var target = active ? lean : (cards[i] === hoverCard ? 0 : bases[i]);
-          curs[i] += (target - curs[i]) * Math.min(1, dt * (active ? 10 : 5));
-          window.gsap.set(cards[i], { rotation: curs[i] });
-        }
-        window.gsap.set(track, { x: -pos });
-      });
-
-      // Drag (manual, with tracked velocity for the momentum handoff).
-      var startX = 0, startPos = 0, lastX = 0, lastT = 0, moved = 0;
-      viewport.addEventListener("pointerdown", function (e) {
-        dragging = true;
-        moved = 0;
-        startX = lastX = e.clientX;
-        startPos = pos;
-        lastT = performance.now();
-        dragVel = 0;
-        vel = 0;
-        viewport.classList.add("is-dragging");
-        try { viewport.setPointerCapture(e.pointerId); } catch (err) {}
-      });
-      viewport.addEventListener("pointermove", function (e) {
-        if (!dragging) return;
-        var now = performance.now();
-        var dx = e.clientX - lastX;
-        moved += Math.abs(dx);
-        pos = startPos - (e.clientX - startX);
-        if (now - lastT > 0) dragVel = (-dx) / ((now - lastT) / 1000);
-        lastX = e.clientX;
-        lastT = now;
-      });
-      var endDrag = function () {
-        if (!dragging) return;
-        dragging = false;
-        viewport.classList.remove("is-dragging");
-        vel = reduce ? 0 : window.gsap.utils.clamp(-2200, 2200, dragVel);
-        // THE DRIFT FOLLOWS THE DRAG, the clients marquee's rule verbatim
-        // (3g): velocity decides it for a real fling, net displacement for a
-        // slow carry, and a tap — under either threshold — changes nothing.
-        if (Math.abs(vel) > 40) dir = vel > 0 ? 1 : -1;
-        else if (Math.abs(pos - startPos) > 6) dir = pos > startPos ? 1 : -1;
-        dragVel = 0;
-      };
-      viewport.addEventListener("pointerup", endDrag);
-      viewport.addEventListener("pointercancel", endDrag);
-      // A real drag must not land as a click on a card.
-      viewport.addEventListener("click", function (e) {
-        if (moved > 6) { e.preventDefault(); e.stopPropagation(); }
-      }, true);
-
-      // Hover straightens the hovered card and lifts it. The marquee no
-      // longer STALLS on hover — removed with the DRAG badge (user call, Aug
-      // 2026), matching the clients marquee, which never had either.
-      viewport.addEventListener("mouseover", function (e) {
-        var card = e.target.closest(".intro__card");
-        if (!card || dragging) return;
-        hoverCard = card; // the ticker lerps its rotation to 0
-        // Straighten AND zoom (user call, Aug 2026) — 1.04 was too slight to
-        // read next to the straightening, which is the louder half of the
-        // gesture. The card is already lifted to z-index 3 below, so it grows
-        // over its neighbours rather than into them.
-        window.gsap.to(card, { scale: 1.12, duration: reduce ? 0 : 0.45, ease: "power3.out" });
-        card.style.zIndex = 3;
-      });
-      viewport.addEventListener("mouseout", function (e) {
-        var card = e.target.closest(".intro__card");
-        if (!card || (e.relatedTarget && card.contains(e.relatedTarget))) return;
-        if (hoverCard === card) hoverCard = null; // ticker settles it back
-        window.gsap.to(card, {
-          scale: 1,
-          duration: reduce ? 0 : 0.5,
-          ease: "power3.out",
-          onComplete: function () { card.style.zIndex = ""; }
-        });
-      });
-
-    }
+    // The filmstrip's drift, drag and lean live in js/filmstrip.js now
+    // (Sep 2026) — the strip is a component of its own, embedded by the intro.
 
     // Expertise scroll-highlight: the "Our expertise" label is CSS-sticky, so
     // it locks in the viewport while the list scrolls up past it; here we ink

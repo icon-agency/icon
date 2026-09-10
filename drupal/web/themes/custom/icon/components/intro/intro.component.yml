@@ -4,8 +4,9 @@ group: Homepage
 status: stable
 description: >
   The homepage intro (templates/homeC.html): the logo-mark film, the two-voice
-  masthead, the draggable filmstrip, then the band — statement + About beside
-  the expertise list. The filmstrip and the expertise list are slots.
+  masthead, the draggable filmstrip (the Filmstrip component, embedded), then
+  the band — statement + About beside the expertise list. The filmstrip's
+  cards and the expertise list are slots.
 libraryOverrides:
   dependencies:
     - icon/home-c

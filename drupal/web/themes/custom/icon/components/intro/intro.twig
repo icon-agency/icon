@@ -1,9 +1,10 @@
 {#
 /**
  * @file
- * intro — thin copy of the intro strip in templates/homeC.html. Behaviours
- * (filmstrip drift + drag, word cascade, the pinned expertise band) are
- * js/home-c.js's (Drupal.behaviors.iconHomeC). The photos, the four fact
+ * intro — thin copy of the intro strip in templates/homeC.html. The
+ * filmstrip is its own component (icon:filmstrip, js/filmstrip.js),
+ * embedded here; the word cascade is js/reveal.js's and the pinned
+ * expertise band js/home-c.js's (Drupal.behaviors.iconHomeC). The photos, the four fact
  * cards and the expertise list are theme content for now — a later slice
  * makes them editable (see docs/drupal-handoff.md).
  */
@@ -19,12 +20,11 @@
     <span class="lockup-accent masthead-accent">{{ accent }}</span>
     <span class="lockup-caps">{{ caps }}</span>
   </h2>
-  <div class="intro__viewport" data-strip>
-    <div class="intro__track">
-{# SLOT strip: Photo and Fact card components, in the order they should drift. #}
-{{ strip }}
-</div>
-</div>
+  {# SLOT strip: Photo and Fact card components, in the order they should
+     drift — handed to the filmstrip component, which is the strip. #}
+  {% embed 'icon:filmstrip' with { label: 'The ICON team'|t } %}
+    {% block cards %}{{ strip }}{% endblock %}
+  {% endembed %}
 
 <div class="intro__band">
     <div class="intro__expertise" data-animate style="--animate-delay: 120ms">

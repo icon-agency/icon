@@ -67,6 +67,7 @@
 @import "./components/work-video.css";
 @import "./components/work-scroller.css";
 @import "./components/team-profiles.css";
+@import "./components/filmstrip.css";
 
 /* Page-specific overrides — keep tiny */
 @import "./utilities/home-page.css";

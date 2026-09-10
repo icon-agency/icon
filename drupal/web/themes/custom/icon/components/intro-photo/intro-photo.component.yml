@@ -2,7 +2,7 @@ $schema: https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schema
 name: Photo (filmstrip)
 group: Homepage
 status: stable
-description: One photo card in the intro filmstrip. Alt text comes from the media item.
+description: One photo card in a filmstrip. Alt text comes from the media item.
 props:
   type: object
   required:
