@@ -63,6 +63,18 @@
     margin-top: 0;
   }
 
+  /* …and where a flow's GAP spaces the blocks (a Canvas page, a column,
+     the article's run, the masthead's slot) the last thing gives up its
+     bottom margin too, or a block ending on a paragraph stood its 2rem
+     further from the next block than the block after it (user catch,
+     Sep 2026: the quote's two rules at different distances). */
+  .page-canvas .content-page > :last-child,
+  .columns__col .content-page > :last-child,
+  .work-article__chunk > .content-page > :last-child,
+  .page-header__inner .content-page > :last-child {
+    margin-bottom: 0;
+  }
+
   /* THREE H2s (user call, Sep 2026), picked in the editor's Styles menu:
      the CAPS default, tight-leaded like every caps display line; the
      SENTENCE one — the news article's H2 recipe, sentence case at the
