@@ -8,17 +8,15 @@ description: |
   in a Gallery row's slot.
 props:
   type: object
-  required:
-    - media
   properties:
     media:
       type: array
-      title: Media
+      title: Pictures
       description: >
         One picture for a plain or portrait figure. For a layered one, two —
         the background first, then the cut-out that floats over it. With a
-        ground colour set, one is enough: the colour is the background.
-      minItems: 1
+        ground colour set, one is enough: the colour is the background. A
+        film (below) takes one of the places.
       maxItems: 2
       items:
         $ref: json-schema-definitions://canvas.module/image
@@ -27,6 +25,26 @@ props:
             alt: Campaign creative
             width: 1600
             height: 900
+    film:
+      type: object
+      title: Film
+      description: >
+        A looping film in place of a picture: the whole figure when plain or
+        portrait; on a layered figure, the ground under the cut-out — or,
+        with Film layer set to Float, the layer over the ground.
+      $ref: json-schema-definitions://canvas.module/video
+    film_layer:
+      type: string
+      title: Film layer
+      description: On a layered figure, which layer the film is.
+      enum:
+        - ground
+        - float
+      meta:enum:
+        ground: Ground (under the cut-out)
+        float: Float (over the ground)
+      examples:
+        - ground
     style:
       type: string
       title: Style

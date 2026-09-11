@@ -647,6 +647,16 @@
   margin-top: calc(var(--spacing-md) - var(--space-lg));
 }
 
+/* On a Canvas-built article (Sep 2026) the Gallery rows stand as siblings
+   in the flow — nothing groups a run of them in a .work-gallery — so the
+   wrapper's gap between two rows is drawn here, and a row meets the
+   scroller at the same distance. */
+.work-article__flow > .work-gallery__row + .work-gallery__row,
+.work-article__flow > .work-gallery__row + .work-scroller,
+.work-article__flow > .work-scroller + .work-gallery__row {
+  margin-top: calc(var(--spacing-md) - var(--space-lg));
+}
+
 /* ---- 4. Next up — on the CLIENT theme, under a drawn line ---------------- */
 /* Settled over three passes (white → site-dark → this, all user calls): the
    rail STAYS in the chameleon — no hand-back, the client pair runs to the

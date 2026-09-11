@@ -7,7 +7,8 @@
  * icon_preprocess_page() and is where a page layer adds its shell class
  * (`.page-home` on the homepage).
  *
- * Available variables: page.highlighted (status messages), page.content.
+ * Available variables: page.highlighted (status messages), page.content;
+ * work_frame (the Canvas editor building a Work article, see below).
  */
 #}
 <a class="sr-only skip-link" href="#main">{{ 'Skip to content'|t }}</a>
@@ -16,7 +17,20 @@
   {# the extension point a page--403 / page--404 template overrides #}
   {% block content %}
     {{ page.highlighted }}
-    {{ page.content }}
+    {% if work_frame %}
+      {# The Canvas editor building a Work article: the frame the node
+         template composes on the page, composed here around the body the
+         editor is showing — from the DRAFT node, so a client or category
+         edited in Page data reads in the masthead at once
+         (icon_preprocess_page(), includes/work-frame.html.twig). #}
+      <article class="work-article" aria-labelledby="project-title">
+        {% include '@icon/includes/work-frame.html.twig' with work_frame only %}
+        <div class="work-article__flow">{{ page.content }}</div>
+        <div class="work-article__share-footer">{% include '@icon/includes/share.html.twig' %}</div>
+      </article>
+    {% else %}
+      {{ page.content }}
+    {% endif %}
   {% endblock %}
 </main>
 {% include '@icon/includes/site-footer.html.twig' %}

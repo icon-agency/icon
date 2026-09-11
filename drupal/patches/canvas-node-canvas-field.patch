@@ -1,0 +1,20 @@
+--- a/src/Storage/ComponentTreeLoader.php
++++ b/src/Storage/ComponentTreeLoader.php
+@@ -55,13 +55,10 @@
+    * @throws \LogicException
+    */
+   public function getCanvasFieldName(FieldableEntityInterface $entity): string {
+-    // @todo Remove this restriction once other entity types and bundles are
+-    //   allowed in https://drupal.org/i/3498525.
+-    $articles_allowed_only_on_tests = $entity->getEntityTypeId() === 'node' && $entity->bundle() === 'article' && (drupal_valid_test_ua() || $this->moduleHandler->moduleExists('canvas_test_article_fields'));
+-    if ($entity->getEntityTypeId() !== Page::ENTITY_TYPE_ID && !$articles_allowed_only_on_tests) {
+-      throw new \LogicException('For now Canvas only works if the entity is a canvas_page! Other entity types and bundles must use content templates for now, see https://drupal.org/i/3498525');
+-    }
+-
++    // ICON (patches/canvas-node-canvas-field.patch): the "canvas_page only"
++    // gate that stood here is lifted — a bundle that carries a Canvas field
++    // may use it, the path Canvas's own article tests exercise. Drop the
++    // patch when https://drupal.org/i/3498525 lands.
+     $map = $this->entityFieldManager->getFieldMapByFieldType(ComponentTreeItem::PLUGIN_ID);
+ 
+     foreach ($map[$entity->getEntityTypeId()] ?? [] as $field_name => $info) {

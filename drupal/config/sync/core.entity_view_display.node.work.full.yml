@@ -6,6 +6,7 @@ dependencies:
     - core.entity_view_mode.node.full
     - field.field.node.work.field_work_banner
     - field.field.node.work.field_work_bg
+    - field.field.node.work.field_work_canvas
     - field.field.node.work.field_work_category
     - field.field.node.work.field_work_client
     - field.field.node.work.field_work_content
@@ -19,27 +20,31 @@ dependencies:
     - field.field.node.work.field_work_tile_wide
     - node.type.work
   module:
-    - entity_reference_revisions
+    - canvas
     - user
 id: node.work.full
 targetEntityType: node
 bundle: work
 mode: full
 content:
-  field_work_content:
-    type: entity_reference_revisions_entity_view
-    label: hidden
-    settings:
-      view_mode: default
-      link: ''
+  content_moderation_control:
+    settings: {  }
     third_party_settings: {  }
-    weight: 0
+    weight: -20
+    region: content
+  field_work_canvas:
+    type: canvas_naive_render_sdc_tree
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    weight: 5
     region: content
 hidden:
   field_work_banner: true
   field_work_bg: true
   field_work_category: true
   field_work_client: true
+  field_work_content: true
   field_work_deliverables: true
   field_work_ink: true
   field_work_legacy_layers: true

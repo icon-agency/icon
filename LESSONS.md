@@ -579,3 +579,12 @@ rebuild put every old name back: `generateComponents()` re-derives the label
 from the source each time (an SDC's `name:`, a block plugin's admin label, a
 View's block description). Rename at the source, then `drush cr`. Folders
 and status survive a rebuild; labels do not.
+
+## Canvas gates a node's Canvas field (11 Sep 2026)
+
+`ComponentTreeLoader::getCanvasFieldName()` throws for any entity but `canvas_page` ("for now", issue 3498525) — the only gate; every other path (the editor, the Page data form, auto-save, validation) already works for nodes, which Canvas's own `canvas_test_article_fields` tests prove. A five-line composer patch (`drupal/patches/canvas-node-canvas-field.patch`, `cweagans/composer-patches` ^1.7 with `enable-patching`) lifts it. Watch for it on every Canvas update: if the patch fails to apply the build fails loudly, which is the point. `composer reinstall drupal/canvas` REMOVES the package and can leave it gone when the reinstall step fails — `composer install` puts it back, patched.
+
+## `cex` after a broken package state exports junk
+
+With the Canvas module directory missing, `drush cex` moved a `config/local` block into `config/sync` and dropped the editors' alignment plugin. Check `git status` on `config/` after every export; `git checkout -- config/sync config/local` undoes a bad one.
+

@@ -16,6 +16,7 @@
     ],
     "require": {
         "composer/installers": "^2.3",
+        "cweagans/composer-patches": "^1.7",
         "drupal/ai": "^1.4",
         "drupal/ai_image_alt_text": "^1.0",
         "drupal/ai_provider_openai": "^1.2",
@@ -49,7 +50,8 @@
             "dealerdirect/phpcodesniffer-composer-installer": true,
             "php-http/discovery": true,
             "php-tuf/composer-integration": true,
-            "symfony/runtime": true
+            "symfony/runtime": true,
+            "cweagans/composer-patches": true
         },
         "sort-packages": true
     },
@@ -111,6 +113,12 @@
                 "  * Remove the plugin that prints this message:",
                 "      composer remove drupal/core-project-message"
             ]
+        },
+        "enable-patching": true,
+        "patches": {
+            "drupal/canvas": {
+                "A bundle with a Canvas field may use it (issue 3498525)": "patches/canvas-node-canvas-field.patch"
+            }
         }
     },
     "require-dev": {

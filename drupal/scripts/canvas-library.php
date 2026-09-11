@@ -38,6 +38,7 @@ $plan = [
     'block.views_block.work-latest',
   ],
   'Work article' => [
+    'sdc.icon.run',
     'sdc.icon.work-gallery',
     'sdc.icon.work-video',
     'sdc.icon.work-scroller',
@@ -67,6 +68,8 @@ $plan = [
 // Off the library: the theme places the chrome itself, and these rows are
 // Views' to render. None is on any page.
 $hide = [
+  // Canvas 1.11's page-variant marker: the theme composes its own shell.
+  'marker.page_content',
   'block.system_branding_block',
   'block.system_breadcrumb_block',
   'block.system_messages_block',

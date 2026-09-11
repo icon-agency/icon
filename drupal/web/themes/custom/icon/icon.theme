@@ -66,7 +66,16 @@ function icon_preprocess_html(array &$variables): void {
   $node = _icon_route_node('work');
   if ($node) {
     $hex = fn(string $field, string $fallback) => _icon_hex((string) $node->get($field)->value) ?? $fallback;
-    $variables['html_attributes']->addClass('theme-work-article');
+    // In the Canvas editor the class is handed over as data-icon-opening
+    // (js-theme/opening.js): edit mode stays on the plain theme, Preview
+    // wears the client pair — the Masthead opening's rule (user call).
+    if (_icon_in_canvas_editor()) {
+      $variables['html_attributes']->setAttribute('data-icon-opening', 'theme-work-article');
+      $variables['#attached']['library'][] = 'icon/opening';
+    }
+    else {
+      $variables['html_attributes']->addClass('theme-work-article');
+    }
     $variables['html_attributes']->setAttribute('style', '--work-article-bg: ' . $hex('field_work_bg', '#0000ff') . '; --work-article-text: ' . $hex('field_work_ink', '#ffffff'));
     $variables['#attached']['library'][] = 'icon/theme-handover';
   }
@@ -185,8 +194,55 @@ function _icon_canvas_page_opening(): ?array {
  */
 function _icon_route_node(string $bundle): ?NodeInterface {
   $route = \Drupal::routeMatch();
-  $node = $route->getParameter('node');
-  return ($node instanceof NodeInterface && $node->bundle() === $bundle && $route->getRouteName() === 'entity.node.canonical') ? $node : NULL;
+  $name = (string) $route->getRouteName();
+  if ($name === 'entity.node.canonical') {
+    $node = $route->getParameter('node');
+    return ($node instanceof NodeInterface && $node->bundle() === $bundle) ? $node : NULL;
+  }
+  // The Canvas editor rendering a node's body (the canvas.api.layout.*
+  // routes): the DRAFT node — its Page data edits included — so the frame
+  // and the chameleon read what the editor is showing, as they read the
+  // saved node on the page.
+  if (str_starts_with($name, 'canvas.api.layout.') && $route->getParameter('entity_type') === 'node') {
+    $node = $route->getParameter('entity');
+    if (!$node instanceof NodeInterface || $node->bundle() !== $bundle) {
+      return NULL;
+    }
+    $draft = \Drupal::service(AutoSaveManager::class)->getAutoSaveEntityForPreview($node);
+    return !$draft->isEmpty() && $draft->entity instanceof NodeInterface ? $draft->entity : $node;
+  }
+  return NULL;
+}
+
+/**
+ * The Work article's frame — what the masthead, banner and facts read.
+ *
+ * From the node's own fields, for includes/work-frame.html.twig: on the
+ * page (node--work--full) and around the body in the Canvas editor
+ * (page.html.twig). The body is Canvas's; the frame never is, because the
+ * tiles, the listings and the chameleon read the same fields.
+ */
+function _icon_work_frame(NodeInterface $node, CacheableMetadata $cache): array {
+  $allowed = $node->get('field_work_category')->getFieldDefinition()->getSetting('allowed_values');
+  return [
+    'title' => $node->label(),
+    'client' => $node->get('field_work_client')->value ?? '',
+    'statement' => $node->get('field_work_statement')->value ?? '',
+    'categories' => array_map(fn($item) => [
+      'label' => $allowed[$item->value] ?? $item->value,
+      'url' => Url::fromUserInput('/work', ['query' => ['category' => $item->value]])->toString(),
+    ], iterator_to_array($node->get('field_work_category'))),
+    'deliverables' => array_map(fn($item) => $item->value, iterator_to_array($node->get('field_work_deliverables'))),
+    'banner' => _icon_media_source($node->get('field_work_banner')->entity, 'work_media', $cache)
+      ?: _icon_media_source($node->get('field_work_tile')->entity, 'work_media', $cache),
+  ];
+}
+
+/**
+ * The libraries the Work article's page needs, on the page and in the editor.
+ */
+function _icon_work_libraries(): array {
+  return ['icon/share', 'icon/velocity-lean', 'icon/work-article', 'icon/work-video', 'icon/work-scroller'];
 }
 
 /**
@@ -220,6 +276,18 @@ function icon_preprocess_page(array &$variables): void {
   // is its own system.
   elseif ($page) {
     $variables['main_attributes']->addClass('page-canvas');
+  }
+  // The Canvas editor building a Work article shows the body alone; the
+  // page template composes the node's frame around it (from the draft
+  // node) and loads the article's behaviours, so the editor shows the page.
+  $work = _icon_in_canvas_editor() ? _icon_route_node('work') : NULL;
+  if ($work) {
+    $cache = new CacheableMetadata();
+    $variables['work_frame'] = _icon_work_frame($work, $cache);
+    _icon_apply_cache($variables, $cache);
+    foreach (_icon_work_libraries() as $lib) {
+      $variables['#attached']['library'][] = $lib;
+    }
   }
   // The route title, for page templates that draw their own h1 (the auth
   // pages) — the page-title block is not placed in this theme.
@@ -591,7 +659,6 @@ function _icon_paragraph_props(ParagraphInterface $paragraph, ?CacheableMetadata
  * The work node: card props for the teaser, the folio frame for the full view.
  */
 function _icon_preprocess_node_work(array &$variables, NodeInterface $node): void {
-  $allowed = $node->get('field_work_category')->getFieldDefinition()->getSetting('allowed_values');
   $cache = new CacheableMetadata();
   if ($variables['view_mode'] === 'teaser') {
     // The card's headline is the Feature statement — the outcome in one line
@@ -630,15 +697,11 @@ function _icon_preprocess_node_work(array &$variables, NodeInterface $node): voi
     return;
   }
   if ($variables['view_mode'] === 'full') {
-    $variables['client'] = $node->get('field_work_client')->value ?? '';
-    $variables['statement'] = $node->get('field_work_statement')->value ?? '';
-    $variables['categories'] = array_map(fn($item) => [
-      'label' => $allowed[$item->value] ?? $item->value,
-      'url' => Url::fromUserInput('/work', ['query' => ['category' => $item->value]])->toString(),
-    ], iterator_to_array($node->get('field_work_category')));
-    $variables['deliverables'] = array_map(fn($item) => $item->value, iterator_to_array($node->get('field_work_deliverables')));
-    $variables['banner'] = _icon_media_source($node->get('field_work_banner')->entity, 'work_media', $cache)
-      ?: _icon_media_source($node->get('field_work_tile')->entity, 'work_media', $cache);
+    $variables += _icon_work_frame($node, $cache);
+    // The body built in Canvas, when there is one; an article not yet
+    // built there keeps its Paragraphs body (the migration is
+    // scripts/work-canvas.php).
+    $variables['use_canvas'] = $node->hasField('field_work_canvas') && !$node->get('field_work_canvas')->isEmpty();
     _icon_apply_cache($variables, $cache);
     $variables['next_up'] = [
       '#type' => 'view',
@@ -646,7 +709,7 @@ function _icon_preprocess_node_work(array &$variables, NodeInterface $node): voi
       '#display_id' => 'next_up',
       '#arguments' => [$node->id()],
     ];
-    foreach (['icon/share', 'icon/velocity-lean', 'icon/work-article', 'icon/work-video', 'icon/work-scroller'] as $lib) {
+    foreach (_icon_work_libraries() as $lib) {
       $variables['#attached']['library'][] = $lib;
     }
   }
@@ -693,12 +756,17 @@ function _icon_work_paragraph_props(ParagraphInterface $p, ?CacheableMetadata $c
           $media = array_reverse($media);
         }
         if ($media) {
-          $figures[] = [
+          // The component takes pictures and, apart, one film with the
+          // layer it is (work-gallery-figure.component.yml, Sep 2026).
+          $film_at = array_search('video', array_column($media, 'type'), TRUE);
+          $figures[] = array_filter([
             'style' => $style,
             'ground' => $figure->get('field_work_figure_ground')->value ?? '',
             'pad' => $figure->get('field_work_figure_inset')->value ?? '',
-            'media' => $media,
-          ];
+            'media' => array_values(array_filter($media, static fn(array $m): bool => $m['type'] !== 'video')),
+            'film' => $film_at !== FALSE ? $media[$film_at] : NULL,
+            'film_layer' => $film_at !== FALSE && $film_at > 0 ? 'float' : 'ground',
+          ], static fn($v): bool => $v !== NULL && $v !== '');
         }
       }
       return $figures ? ['rows' => [['figures' => $figures]]] : [];

@@ -1,0 +1,15 @@
+{#
+/**
+ * @file
+ * run — a chunk of the work article's reading column under one Share rail
+ * (.work-article__chunk, src/utilities/work-article.css). The rail sticks
+ * beside the text and parks at the run's end; js/share.js wires every
+ * instance. Same markup the Paragraphs article's field template composes.
+ */
+#}
+<div class="work-article__chunk">
+  <div class="work-article__share-rail">
+    {% include '@icon/includes/share.html.twig' %}
+  </div>
+  {% block content %}{{ content }}{% endblock %}
+</div>

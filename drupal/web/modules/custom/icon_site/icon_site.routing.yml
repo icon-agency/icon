@@ -50,3 +50,14 @@ icon_site.footer:
     _title: 'Footer'
   requirements:
     _permission: 'manage icon footer'
+icon_site.node_canvas:
+  path: '/node/{node}/canvas'
+  defaults:
+    _controller: '\Drupal\icon_site\Controller\NodeCanvasController::go'
+    _title: 'Build in Canvas'
+  requirements:
+    _custom_access: '\Drupal\icon_site\Controller\NodeCanvasController::access'
+  options:
+    parameters:
+      node:
+        type: entity:node

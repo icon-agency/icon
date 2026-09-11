@@ -11,6 +11,21 @@
  */
 #}
 {% set layered = style starts with 'layered' %}
+{# The layers, ground first: the pictures, with the film — when there is
+   one — taking the ground (or the float, by film_layer) on a layered
+   figure and the whole of a plain one (Sep 2026: a film was one of the
+   `media` before; Canvas's image prop cannot carry a film). #}
+{% set pictures = (media|default([]))|map(m => m|merge({ kind: 'image' })) %}
+{% set clip = film.src is defined and film.src ? { kind: 'video', src: film.src, poster: film.poster|default('') } : null %}
+{% if not layered %}
+  {% set layers = clip ? [clip] : pictures|slice(0, 1) %}
+{% elseif clip and film_layer|default('ground') == 'float' %}
+  {% set layers = pictures|slice(0, 1)|merge([clip]) %}
+{% elseif clip %}
+  {% set layers = [clip]|merge(pictures|slice(0, 1)) %}
+{% else %}
+  {% set layers = pictures %}
+{% endif %}
 {% set classes = [
   'work-gallery__figure',
   layered ? 'work-gallery__figure--layered',
@@ -23,8 +38,8 @@
   layered and pad ? '--overlay-pad: ' ~ pad,
 ]|filter(v => v) %}
 <figure class="{{ classes|join(' ') }}" data-reveal-img{% if styles %} style="{{ styles|join('; ') }}"{% endif %}>
-  {% for m in (layered ? media : media|slice(0, 1)) %}
-    {% if m.type == 'video' %}
+  {% for m in layers %}
+    {% if m.kind == 'video' %}
       {# preload="metadata", not "auto": a gallery of films fetched every body
          at once. Decorative — the figure's own caption and the article name
          the work (found in review, Sep 2026). #}

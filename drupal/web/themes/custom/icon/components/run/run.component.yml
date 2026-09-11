@@ -1,0 +1,22 @@
+$schema: https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json
+name: Run (text with the Share rail)
+group: Work article
+status: stable
+description: |
+  A run of the case study's reading column — Content blocks, results, a
+  hosted film or an embed — with ONE Share rail travelling beside it
+  (src/utilities/work-article.css `.work-article__chunk`,
+  templates/work-article-master.html). Drop the text and what travels
+  with it in here; a gallery, a scroller or a pull quote stands OUTSIDE,
+  between runs, and breaks the flow. On the Paragraphs article the runs
+  were inferred from the order of blocks; on a Canvas article the editor
+  draws them.
+props:
+  # Declared and empty on purpose: a component with no `props` key at all
+  # reads as having no schema, and SDC rejects it.
+  type: object
+  properties: {}
+slots:
+  content:
+    title: Content
+    description: Content blocks, Results and stats, Video hosted, Video embed — in reading order.

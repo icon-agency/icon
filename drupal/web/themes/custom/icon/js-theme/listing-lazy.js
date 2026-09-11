@@ -76,7 +76,11 @@
               : Drupal.t("@shown of @total @noun", { "@shown": n, "@total": total, "@noun": noun });
           }
           else {
-            statusEl.textContent = Drupal.t("That is all @count @noun.", { "@count": n, "@noun": noun });
+            // A complete list says nothing (user call, Sep 2026: the "That
+            // is all 10 stories" pill went): the pill is for a list still
+            // loading, and the sr-only status line announces the end.
+            statusEl.textContent = "";
+            statusEl.hidden = true;
             moreEl.hidden = true;
             button.hidden = true;
           }

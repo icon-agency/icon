@@ -1,0 +1,57 @@
+{#
+/**
+ * @file
+ * The Work article's frame — eyebrow, project, client, banner, feature
+ * statement, facts — composed from the node's own fields (never authored
+ * in Canvas: the tiles, the listings and the chameleon read the same
+ * fields). Placed by node--work--full.html.twig on the page and by
+ * page.html.twig around the body the Canvas editor is showing, so what an
+ * editor sees is what publishes.
+ *
+ * Variables (icon_preprocess_node() / icon_preprocess_page(), via
+ * _icon_work_frame()): title, client, banner, statement, categories,
+ * deliverables.
+ */
+#}
+<header class="work-article__head">
+  <p class="work-article__eyebrow" data-animate>
+    <a class="invite-arrow invite-arrow--back" href="{{ path('<front>') ~ 'work' }}">{{ 'Work'|t }}</a>
+  </p>
+  <h1 class="work-article__project" id="project-title" data-reveal-words>{{ title }}</h1>
+  {% if client %}
+    <p class="work-article__client masthead-accent" data-animate style="--animate-delay: 120ms">{{ client }}</p>
+  {% endif %}
+</header>
+
+{% if banner %}
+  <figure class="work-article__banner media-reveal" data-reveal-img data-theme-handover="gone" data-theme-handover-class="theme-work-article">
+    {% if banner.type == 'video' %}
+      <video autoplay muted loop playsinline preload="auto" src="{{ banner.src }}" aria-label="{{ banner.alt|default(title ~ ' — banner film') }}"></video>
+    {% else %}
+      <img src="{{ banner.src }}" alt="{{ banner.alt }}"{% if banner.width %} width="{{ banner.width }}"{% endif %}{% if banner.height %} height="{{ banner.height }}"{% endif %} />
+    {% endif %}
+  </figure>
+{% endif %}
+
+{% if statement %}
+  <blockquote class="pull-quote pull-quote--upright" data-animate>
+    <p class="pull-quote__text">{{ statement }}</p>
+  </blockquote>
+{% endif %}
+
+{% if categories or deliverables %}
+  <section class="work-article__facts" data-rule="top" aria-label="{{ 'Project facts'|t }}">
+    {% if categories %}
+      <ul data-animate>
+        <li class="work-article__facts-title">{{ 'Category'|t }}</li>
+        {% for c in categories %}<li><a href="{{ c.url }}">{{ c.label }}</a></li>{% endfor %}
+      </ul>
+    {% endif %}
+    {% if deliverables %}
+      <ul data-animate style="--animate-delay: 60ms">
+        <li class="work-article__facts-title">{{ 'Deliverables'|t }}</li>
+        {% for d in deliverables %}<li>{{ d }}</li>{% endfor %}
+      </ul>
+    {% endif %}
+  </section>
+{% endif %}

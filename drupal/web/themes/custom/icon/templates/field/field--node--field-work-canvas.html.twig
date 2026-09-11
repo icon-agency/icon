@@ -1,0 +1,10 @@
+{#
+/**
+ * @file
+ * The case study's Canvas body: the component tree, bare — no field
+ * wrappers, as the flow's CSS keys on its direct children
+ * (.work-article__flow > …). The runs are Run components; the field
+ * template for the Paragraphs body inferred them.
+ */
+#}
+{% for item in items %}{{ item.content }}{% endfor %}

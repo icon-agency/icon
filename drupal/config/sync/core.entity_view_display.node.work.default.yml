@@ -5,6 +5,7 @@ dependencies:
   config:
     - field.field.node.work.field_work_banner
     - field.field.node.work.field_work_bg
+    - field.field.node.work.field_work_canvas
     - field.field.node.work.field_work_category
     - field.field.node.work.field_work_client
     - field.field.node.work.field_work_content
@@ -25,6 +26,11 @@ targetEntityType: node
 bundle: work
 mode: default
 content:
+  content_moderation_control:
+    settings: {  }
+    third_party_settings: {  }
+    weight: -20
+    region: content
   field_work_content:
     type: entity_reference_revisions_entity_view
     label: hidden
@@ -37,6 +43,7 @@ content:
 hidden:
   field_work_banner: true
   field_work_bg: true
+  field_work_canvas: true
   field_work_category: true
   field_work_client: true
   field_work_deliverables: true

@@ -1,0 +1,21 @@
+uuid: 90bf13ac-8ce3-463e-8bac-6cdc645cdb44
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_work_canvas
+    - node.type.work
+  module:
+    - canvas
+id: node.work.field_work_canvas
+field_name: field_work_canvas
+entity_type: node
+bundle: work
+label: 'Page (Canvas)'
+description: 'The case study body, built in Canvas: runs of text under one Share rail, galleries, films, results.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: component_tree

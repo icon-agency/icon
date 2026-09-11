@@ -12,6 +12,8 @@ use Drupal\icon_site\Twig\IconSiteExtension;
 use Drupal\Core\Menu\MenuTreeParameters;
 use Drupal\icon_site\Plugin\Block\HeroBlock;
 use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Url;
+use Drupal\node\NodeInterface;
 use Drupal\canvas\PropExpressions\StructuredData\FieldTypePropExpression;
 use Drupal\canvas\PropShape\CandidateStorablePropShape;
 use Drupal\Core\Ajax\AjaxResponse;
@@ -38,6 +40,7 @@ use Drupal\media_library\MediaLibraryState;
 function icon_site_form_node_form_alter(array &$form, FormStateInterface $form_state): void {
   _icon_site_work_tile_group($form, $form_state);
   _icon_site_work_legacy_group($form, $form_state);
+  _icon_site_work_canvas_link($form, $form_state);
   _icon_site_panel_node_form_alter($form, $form_state);
   $node = $form_state->getFormObject()->getEntity();
   if ($node->bundle() !== 'news') {
@@ -51,6 +54,31 @@ function icon_site_form_node_form_alter(array &$form, FormStateInterface $form_s
     $form['sticky']['widget']['value']['#title'] = t('Pin on homepage');
     $form['sticky']['widget']['value']['#description'] = t('Keep this story at the top of the homepage feed whatever its date. It must also be promoted.');
   }
+}
+
+/**
+ * The Work form's way into Canvas, where the body is built (Sep 2026).
+ *
+ * The body field has no widget — a component tree is authored in the
+ * editor, not on a form — so the form says where it went: a link to
+ * /node/{nid}/canvas (icon_site.node_canvas), sitting where the Body was.
+ * A new article is saved first; the editor needs an id.
+ */
+function _icon_site_work_canvas_link(array &$form, FormStateInterface $form_state): void {
+  $node = $form_state->getFormObject()->getEntity();
+  if (!$node instanceof NodeInterface || $node->bundle() !== 'work' || !$node->hasField('field_work_canvas')) {
+    return;
+  }
+  $form['work_canvas'] = [
+    '#type' => 'item',
+    '#title' => t('Page'),
+    '#weight' => $form['field_work_statement']['#weight'] ?? 10,
+    '#markup' => $node->isNew()
+      ? t('Save the article first, then build its page in Canvas from the <em>Build in Canvas</em> tab.')
+      : t('The body — runs of text with the Share rail, galleries, films, results — is built in Canvas: <a href=":url">Build in Canvas</a>.', [
+        ':url' => Url::fromRoute('icon_site.node_canvas', ['node' => $node->id()])->toString(),
+      ]),
+  ];
 }
 
 /**
