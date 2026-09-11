@@ -69,16 +69,23 @@ function _icon_site_work_canvas_link(array &$form, FormStateInterface $form_stat
   if (!$node instanceof NodeInterface || $node->bundle() !== 'work' || !$node->hasField('field_work_canvas')) {
     return;
   }
+  // Where the Body sat: after the colours, before the moderation state
+  // (user catch, Sep 2026: "where is Canvas and all the content?" — it
+  // stood by the Feature statement, above the fold and easy to pass).
   $form['work_canvas'] = [
     '#type' => 'item',
-    '#title' => t('Page'),
-    '#weight' => $form['field_work_statement']['#weight'] ?? 10,
-    '#markup' => $node->isNew()
-      ? t('Save the article first, then build its page in Canvas from the <em>Build in Canvas</em> tab.')
-      : t('The body — runs of text with the Share rail, galleries, films, results — is built in Canvas: <a href=":url">Build in Canvas</a>.', [
-        ':url' => Url::fromRoute('icon_site.node_canvas', ['node' => $node->id()])->toString(),
-      ]),
+    '#title' => t('Body'),
+    '#weight' => ($form['field_work_ink']['#weight'] ?? 50) + 0.5,
+    '#description' => t('The body — runs of text with the Share rail, galleries, films, results — is built in Canvas, not on this form. Save the fields above first; the editor keeps its own draft.'),
   ];
+  $form['work_canvas']['link'] = $node->isNew()
+    ? ['#markup' => t('Save the article first, then build its body in Canvas.')]
+    : [
+      '#type' => 'link',
+      '#title' => t('Build in Canvas'),
+      '#url' => Url::fromRoute('icon_site.node_canvas', ['node' => $node->id()]),
+      '#attributes' => ['class' => ['button', 'button--primary']],
+    ];
 }
 
 /**
