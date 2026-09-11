@@ -108,6 +108,21 @@
   color: var(--color-white);
 }
 
+/* On a page that OPENS on ICON blue the tile would vanish into the ground:
+   it inverts — white card, blue words — and turns back to blue as the page
+   hands over to white (user call, Sep 2026); the cross-fade is the theme
+   handover's own pace. */
+.filmstrip__card--fact {
+  transition:
+    background-color var(--duration-normal) var(--ease-standard),
+    color var(--duration-normal) var(--ease-standard);
+}
+
+.theme-blue .filmstrip__card--fact {
+  background: var(--color-white);
+  color: var(--color-brand-blue);
+}
+
 .filmstrip__fact-icon {
   /* align-self so the flex column's default `stretch` can't pull the svg to
      full width — stretched, the glyph sat centred in a wide box (it reads as

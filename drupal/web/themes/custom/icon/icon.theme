@@ -77,7 +77,15 @@ function icon_preprocess_html(array &$variables): void {
   // the handover script.
   $opening = _icon_canvas_page_opening();
   if ($opening) {
-    $variables['html_attributes']->addClass($opening['class']);
+    // In the editor the class is decided in the frame (js-theme/opening.js):
+    // edit mode stays plain, Preview mode wears the colour (user call).
+    if (_icon_in_canvas_editor()) {
+      $variables['html_attributes']->setAttribute('data-icon-opening', $opening['class']);
+      $variables['#attached']['library'][] = 'icon/opening';
+    }
+    else {
+      $variables['html_attributes']->addClass($opening['class']);
+    }
     if (isset($opening['bg'])) {
       $variables['html_attributes']->setAttribute('style', '--work-article-bg: ' . $opening['bg'] . '; --work-article-text: ' . $opening['ink']);
     }
@@ -110,6 +118,13 @@ function _icon_route_canvas_page(): ?EntityInterface {
     return !$draft->isEmpty() && $draft->entity instanceof EntityInterface ? $draft->entity : $page;
   }
   return NULL;
+}
+
+/**
+ * Whether this request is the Canvas editor rendering its frame.
+ */
+function _icon_in_canvas_editor(): bool {
+  return str_starts_with((string) \Drupal::routeMatch()->getRouteName(), 'canvas.api.layout.');
 }
 
 /**

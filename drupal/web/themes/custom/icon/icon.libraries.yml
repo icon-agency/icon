@@ -76,6 +76,13 @@ team-profiles:
     - icon/velocity-lean
 
 # ── Page bundles ────────────────────────────────────────────────────────────
+# A Canvas page's opening colour inside the editor: edit mode plain, Preview
+# mode in the colour (js-theme/opening.js, in <head> so nothing flashes).
+opening:
+  header: true
+  js:
+    js-theme/opening.js: {}
+
 theme-handover:
   js:
     js/theme-handover.js: {}

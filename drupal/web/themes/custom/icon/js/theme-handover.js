@@ -36,6 +36,9 @@
         "use strict";
 
         if (!("IntersectionObserver" in window)) return;
+        // The Canvas editor's edit mode keeps the page on the plain theme
+        // (drupal js-theme/opening.js marks the root): nothing to hand over.
+        if (document.documentElement.hasAttribute("data-icon-opening-off")) return;
 
         // Two criteria, picked by the attribute's value:
         //
