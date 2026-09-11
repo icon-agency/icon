@@ -300,6 +300,26 @@
               </div>
 
               <div class="ds-group">
+                <h4 class="ds-group__title">The three prose H2s</h4>
+                <p class="ds-group__note">
+                  In a Content block (<code class="ds-code">.content-page</code>, <code class="ds-code">src/base/prose.css</code>)
+                  Heading 2 is the CAPS line by default, tight-leaded like every caps display line;
+                  the editor&rsquo;s Styles menu offers two more (Sep 2026): <strong>Sentence</strong>,
+                  the news article&rsquo;s H2 recipe at the bold weight, and <strong>Miller</strong>, the
+                  serif at medium &mdash; the pull quote&rsquo;s voice as a heading. Classes
+                  <code class="ds-code">is-sentence</code> / <code class="ds-code">is-serif</code> on the h2.
+                </p>
+                <div class="ds-demo">
+                  <div class="content-page">
+                    <h2>We make it meaningful. Make it loved.</h2>
+                    <h2 class="is-sentence">We make it meaningful. Make it loved.</h2>
+                    <h2 class="is-serif">We make it meaningful. Make it loved.</h2>
+                  </div>
+                  <p class="ds-demo__label">.content-page h2 · h2.is-sentence · h2.is-serif</p>
+                </div>
+              </div>
+
+              <div class="ds-group">
                 <h4 class="ds-group__title">Wrapping &amp; the lockup rule</h4>
                 <p class="ds-group__note">
                   <p class="ds-group__note">Theme-aware component roles also live in <code class="ds-code">colors.css</code> and are overridden per theme: <code class="ds-code">--nav-bg-scrolled</code> (the frosted nav pill), <code class="ds-code">--pager-surface</code> / <code class="ds-code">--pager-surface-strong</code> (pager prev + status pill), and the work-article accent pair <code class="ds-code">--work-article-text</code> / <code class="ds-code">--work-article-bg</code> (per-route override in the v0 build).</p>

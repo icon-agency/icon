@@ -61,6 +61,9 @@ settings:
     ckeditor5_style:
       styles:
         -
+          label: 'Paragraph — Small'
+          element: '<p class="is-small">'
+        -
           label: 'Slash list'
           element: '<ul class="list-slash">'
 image_upload:

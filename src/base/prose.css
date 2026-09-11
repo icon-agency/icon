@@ -63,13 +63,41 @@
     margin-top: 0;
   }
 
+  /* THREE H2s (user call, Sep 2026), picked in the editor's Styles menu:
+     the CAPS default, tight-leaded like every caps display line; the
+     SENTENCE one — the news article's H2 recipe, sentence case at the
+     bold weight; and the MILLER one — the serif at medium, the pull
+     quote's voice as a heading. The classes are the editor's. */
   .content-page h2 {
     font-size: clamp(2.25rem, 3vw, 3.5rem);
-    font-weight: 800;
+    font-weight: 900; /* the heaviest cut, as the masthead's caps (user call) */
+    line-height: 1;
     margin-bottom: 1.25rem;
     text-wrap: pretty;
     color: var(--icon-black);
     text-transform: uppercase;
+  }
+
+  .content-page h2.is-sentence {
+    font-size: clamp(1.75rem, 2.3vw, 3.7rem);
+    font-weight: var(--font-weight-bold);
+    line-height: var(--line-height-tight);
+    text-transform: none;
+  }
+
+  /* Paragraph — Small (user call, Sep 2026): a step down for asides and
+     captions, the team panel's bio size; the editor's Styles menu. */
+  .content-page p.is-small {
+    font-size: 1.0625rem;
+    line-height: 1.6;
+  }
+
+  .content-page h2.is-serif {
+    font-family: var(--font-serif);
+    font-size: clamp(2rem, 2.6vw, 3.75rem);
+    font-weight: var(--font-weight-medium);
+    line-height: 1.15;
+    text-transform: none;
   }
 
   .content-page h3 {

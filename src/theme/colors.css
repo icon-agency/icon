@@ -148,9 +148,12 @@
   --input: rgba(255, 255, 255, 0.28);
   --ring: rgba(255, 255, 255, 0.6);
 
-  /* ICON brand on blue */
+  /* ICON brand on blue. The grey is WHITE here, not a tint: on the
+     saturated ground a 75% white read as lavender, a colour shift rather
+     than a lighter grey (user call, Sep 2026 — "just checking this is
+     white"). The dark theme keeps its 80%. */
   --icon-black: #ffffff;
-  --icon-grey: rgba(255, 255, 255, 0.75);
+  --icon-grey: #ffffff;
   --icon-blue: #ffffff;
 
   --nav-bg-scrolled: rgb(0 0 190 / 0.8); /* frosted pill, blue */

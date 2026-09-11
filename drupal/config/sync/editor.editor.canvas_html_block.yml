@@ -53,7 +53,7 @@ settings:
         - '<dd>'
         - '<a hreflang>'
         - '<blockquote cite>'
-        - '<h2 id>'
+        - '<h2 id class>'
         - '<h3 id>'
         - '<h4 id>'
         - '<h5 id>'
@@ -68,6 +68,15 @@ settings:
         - '<caption>'
     ckeditor5_style:
       styles:
+        -
+          label: 'Heading 2 — Sentence'
+          element: '<h2 class="is-sentence">'
+        -
+          label: 'Heading 2 — Miller'
+          element: '<h2 class="is-serif">'
+        -
+          label: 'Paragraph — Small'
+          element: '<p class="is-small">'
         -
           label: 'Slash list'
           element: '<ul class="list-slash">'
