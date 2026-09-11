@@ -361,16 +361,29 @@
   margin-top: var(--space-2xs);
 }
 
-/* THE CONTACT PAGE'S FOOTER (templates/contact.html): the four offices are
-   open on the page just above, so the accordion would repeat them a scroll
-   later (user call, Sep 2026: "the contact details on the right are the
-   same as the open contact details above, so these are hidden"). The
-   column stays so the blurb keeps its place; the rows go. And the LET'S
-   TALK / Get in touch row goes with them (user call): it is the invitation
-   to this very page, so here it would point at itself. */
-.site-footer--no-offices .site-footer__locations,
-.site-footer--no-offices .site-footer__cta {
+/* THE CONTACT PAGE'S FOOTER (templates/contact.html, user calls, Sep
+   2026). The four offices are open on the page just above, so the
+   accordion would repeat them a scroll later; LET'S TALK / Get in touch
+   is the invitation to this very page; and the newsletter, rather than
+   sit small in the body's left column, takes the CTA's place — "Join our
+   newsletter" in the display caps with the Subscribe bar centred beneath
+   it (.site-footer__cta--newsletter, in the markup). So the body goes:
+   both its columns are covered. The base row stays. */
+.site-footer--contact .site-footer__body {
   display: none;
+}
+
+.site-footer__cta--newsletter .site-footer__talk {
+  /* three words: the lockup wraps on a phone, so the lines need their air */
+  text-wrap: balance;
+}
+
+/* the Subscribe bar under the caps, centred, in the newsletter column's
+   measure so the pill opens to the width it does in the body */
+.site-footer__cta-subscribe {
+  max-width: 28ch;
+  margin: var(--space-sm) auto 0;
+  font-size: var(--footer-voice-mid);
 }
 
 /* ---- base row: socials + acknowledgement --------------------------------- */
