@@ -16,6 +16,8 @@ editor: ckeditor5
 settings:
   toolbar:
     items:
+      - heading
+      - '|'
       - bold
       - italic
       - '|'
@@ -26,8 +28,6 @@ settings:
       - style
       - '|'
       - blockQuote
-      - '|'
-      - heading
       - code
       - '|'
       - sourceEditing

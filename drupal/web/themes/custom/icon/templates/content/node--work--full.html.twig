@@ -19,7 +19,7 @@
 <article class="work-article" aria-labelledby="project-title">
   <header class="work-article__head">
     <p class="work-article__eyebrow" data-animate>
-      <a class="invite-arrow invite-arrow--back" href="{{ path('view.work.page_1') }}">{{ 'Work'|t }}</a>
+      <a class="invite-arrow invite-arrow--back" href="{{ path('<front>') ~ 'work' }}">{{ 'Work'|t }}</a>
     </p>
     <h1 class="work-article__project" id="project-title" data-reveal-words>{{ label }}</h1>
     {% if client %}
