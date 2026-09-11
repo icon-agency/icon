@@ -54,13 +54,30 @@ function icon_site_form_node_form_alter(array &$form, FormStateInterface $form_s
       'field_work_category' => t('Categories'),
       'field_work_deliverables' => t('Deliverables'),
     ];
-    // …and the status block (published, last saved, author) and the
-    // publishing footer (current state, change to) head themselves too —
-    // the footer FIRST in the panel (user call: "important, top of the
-    // list"), beside Review changes.
-    $sections += ['meta' => t('Status'), 'footer' => t('Publishing')];
+    // …and the publishing footer (current state, change to) heads itself
+    // too, FIRST in the panel (user call: "important, top of the list"),
+    // beside Review changes. Under it, closed, one Status group holds the
+    // published facts, the URL alias and the redirects (user call), which
+    // Drupal keeps in the vertical tabs the panel does not draw.
+    $sections += ['footer' => t('Publishing')];
     if (isset($form['footer'])) {
       $form['footer']['#weight'] = -100;
+    }
+    // Drupal's "advanced" vertical tabs (the published facts, the URL
+    // alias, the redirects) become that group: one closed details, Status,
+    // under Publishing, its facts laid bare and the two URL groups inside.
+    if (isset($form['advanced'])) {
+      $form['advanced'] = [
+        '#type' => 'details',
+        '#title' => t('Status'),
+        '#open' => FALSE,
+        '#weight' => -90,
+      ] + $form['advanced'];
+      unset($form['advanced']['#type_original']);
+    }
+    if (isset($form['meta'])) {
+      $form['meta']['#type'] = 'container';
+      $form['meta']['#weight'] = -10;
     }
     foreach ($sections as $field => $heading) {
       if (isset($form[$field])) {

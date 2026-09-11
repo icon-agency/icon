@@ -54,9 +54,9 @@ form[data-form-id="page_data_form"] > #edit-field-work-ink-wrapper {
    details head themselves with their summary, sized the same, and the
    URL and footer groups keep a rule of their own. */
 form[data-form-id="page_data_form"] .icon-pd-section,
+form[data-form-id="page_data_form"] > #edit-advanced,
 form[data-form-id="page_data_form"] > #edit-tile,
-form[data-form-id="page_data_form"] > #edit-legacy,
-form[data-form-id="page_data_form"] > #edit-path-wrapper {
+form[data-form-id="page_data_form"] > #edit-legacy {
   padding-top: 18px;
   margin-top: 8px;
   border-top: 1px solid var(--pd-ink);
@@ -267,7 +267,8 @@ form[data-form-id="page_data_form"] #edit-work-canvas .button--primary {
   text-decoration: none;
 }
 
-/* the STATUS block (user call, Sep 2026: "neaten this up"): no card,
+/* the STATUS group (user calls, Sep 2026: "neaten this up", "at the top
+   as a section that is closed"): the published facts with no card,
    each fact one line — the label in the muted voice on the left, the
    value in ink on the right — under its own heading; the publishing
    footer's two items the same */
@@ -287,6 +288,7 @@ form[data-form-id="page_data_form"] .entity-meta__title {
   color: var(--pd-ink);
 }
 
+form[data-form-id="page_data_form"] #edit-meta .form-item,
 form[data-form-id="page_data_form"] .entity-meta .form-item,
 form[data-form-id="page_data_form"] #edit-moderation-state-0 .form-item {
   display: grid;
@@ -298,6 +300,7 @@ form[data-form-id="page_data_form"] #edit-moderation-state-0 .form-item {
   color: var(--pd-ink);
 }
 
+form[data-form-id="page_data_form"] #edit-meta .form-item label,
 form[data-form-id="page_data_form"] .entity-meta .form-item label,
 form[data-form-id="page_data_form"] #edit-moderation-state-0 .form-item label {
   margin: 0;
@@ -306,10 +309,29 @@ form[data-form-id="page_data_form"] #edit-moderation-state-0 .form-item label {
   color: var(--pd-muted);
 }
 
+form[data-form-id="page_data_form"] #edit-meta .form-item [class*="_description"],
+form[data-form-id="page_data_form"] #edit-meta .form-item .description,
 form[data-form-id="page_data_form"] .entity-meta .form-item [class*="_description"],
 form[data-form-id="page_data_form"] .entity-meta .form-item .description {
   grid-column: 2;
   margin: 0;
+}
+
+/* the path container stays behind, empty, once its URL alias details has
+   moved into Status */
+form[data-form-id="page_data_form"] > #edit-path-wrapper:empty,
+form[data-form-id="page_data_form"] > #edit-path-wrapper:not(:has(input, select, textarea)) {
+  display: none;
+}
+
+/* the status facts inside the group: the published word, then the pairs */
+form[data-form-id="page_data_form"] #edit-meta > .form-item:first-child,
+form[data-form-id="page_data_form"] #edit-meta .entity-meta__title {
+  display: block;
+  margin: 0 0 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--pd-ink);
 }
 
 /* the field a click in the frame opened (js/page-data.js): lit for a beat */
