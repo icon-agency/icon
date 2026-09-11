@@ -3,8 +3,8 @@ langcode: en
 status: true
 dependencies:
   config:
-    - canvas.component.sdc.icon.run
     - canvas.component.sdc.icon.work-gallery
+    - canvas.component.sdc.icon.work-masthead
     - canvas.component.sdc.icon.work-scroller
     - canvas.component.sdc.icon.work-stats
     - canvas.component.sdc.icon.work-video
@@ -12,8 +12,8 @@ name: 'Work article'
 configEntityTypeId: component
 weight: 1
 items:
-  - sdc.icon.run
   - sdc.icon.work-gallery
+  - sdc.icon.work-masthead
   - sdc.icon.work-scroller
   - sdc.icon.work-stats
   - sdc.icon.work-video

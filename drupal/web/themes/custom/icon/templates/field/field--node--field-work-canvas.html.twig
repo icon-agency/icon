@@ -1,10 +1,27 @@
 {#
 /**
  * @file
- * The case study's Canvas body: the component tree, bare — no field
- * wrappers, as the flow's CSS keys on its direct children
- * (.work-article__flow > …). The runs are Run components; the field
- * template for the Paragraphs body inferred them.
+ * The case study's Canvas body, bare — no field wrappers, as the flow's CSS
+ * keys on its direct children (.work-article__flow > …). The runs are
+ * INFERRED (_icon_preprocess_field_work_canvas(), Sep 2026): consecutive
+ * text, results and films under one Share rail, the rest breaking the
+ * flow — the Paragraphs template's rule, so an editor stacks blocks and
+ * never has to place a Run.
  */
 #}
-{% for item in items %}{{ item.content }}{% endfor %}
+{% if groups is defined %}
+  {% for group in groups %}
+    {% if group.type == 'run' %}
+      <div class="work-article__chunk">
+        <div class="work-article__share-rail">
+          {% include '@icon/includes/share.html.twig' %}
+        </div>
+        {% for item in group.items %}{{ item }}{% endfor %}
+      </div>
+    {% else %}
+      {{ group.item }}
+    {% endif %}
+  {% endfor %}
+{% else %}
+  {% for item in items %}{{ item.content }}{% endfor %}
+{% endif %}

@@ -12,6 +12,7 @@
 
 use Drupal\Core\Cache\CacheableMetadata;
 use Drupal\canvas\AutoSave\AutoSaveManager;
+use Drupal\canvas\Plugin\Field\FieldType\ComponentTreeItemList;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Template\Attribute;
 use Drupal\Core\Url;
@@ -833,11 +834,58 @@ function _icon_work_paragraph_props(ParagraphInterface $p, ?CacheableMetadata $c
 }
 
 /**
+ * The Canvas body's runs, inferred (user call, Sep 2026).
+ *
+ * The Paragraphs body's rule, back for the Canvas tree: consecutive text,
+ * results and films — whatever the editor stacked — travel under ONE Share
+ * rail, and a gallery, a scroller, a quote or the masthead breaks the run.
+ * The editor never has to know a Run; the Run component (hidden from the
+ * library since) still renders where an older article has one, and
+ * breaks a run like the rest. Canvas's naive formatter hands the tree as
+ * one root of component containers, in order; they are regrouped here into
+ * `groups` for field--node--field-work-canvas.html.twig.
+ */
+function _icon_preprocess_field_work_canvas(array &$variables): void {
+  $root = $variables['items'][0]['content'][ComponentTreeItemList::ROOT_UUID] ?? NULL;
+  if (!is_array($root)) {
+    return;
+  }
+  $run_types = ['icon:prose', 'icon:work-stats', 'icon:work-video', 'icon:news-article-video'];
+  $groups = [];
+  $current = NULL;
+  foreach ($root as $key => $child) {
+    if (str_starts_with((string) $key, '#') || !is_array($child)) {
+      continue;
+    }
+    // A container's #component is the SDC render array itself, whose own
+    // #component is the plugin id ('icon:prose').
+    $inner = $child['#component'] ?? [];
+    $id = is_array($inner) ? (string) ($inner['#component'] ?? '') : (string) $inner;
+    if (in_array($id, $run_types, TRUE)) {
+      if ($current === NULL) {
+        $groups[] = ['type' => 'run', 'items' => []];
+        $current = count($groups) - 1;
+      }
+      $groups[$current]['items'][$key] = $child;
+    }
+    else {
+      $current = NULL;
+      $groups[] = ['type' => 'block', 'item' => $child];
+    }
+  }
+  $variables['groups'] = $groups;
+}
+
+/**
  * Implements hook_preprocess_HOOK() for field.html.twig.
  *
  * The case study body: paragraphs → `groups` (see the field template).
  */
 function icon_preprocess_field(array &$variables): void {
+  if ($variables['field_name'] === 'field_work_canvas') {
+    _icon_preprocess_field_work_canvas($variables);
+    return;
+  }
   if ($variables['field_name'] !== 'field_work_content') {
     return;
   }

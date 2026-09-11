@@ -464,6 +464,34 @@
   gap: var(--space-lg);
 }
 
+/* IN THE EDITOR the runs are not drawn (Canvas renders the tree itself,
+   flat; the theme infers the runs only on the page and in Preview), so a
+   text block shows a MARKER where its rail will stand: "Share rail", in
+   the gutter beside it, at the rail's own spot — enough to read that the
+   rail travels with the text, without touching Canvas's markup. */
+@media (min-width: 1024px) {
+  /* (in the editor the components sit in Canvas's block wrappers, so the
+     block is reached through them rather than as the flow's own child) */
+  html[data-icon-editing] .work-article__flow div[id^="block-"] > .content-page {
+    position: relative;
+  }
+
+  html[data-icon-editing] .work-article__flow div[id^="block-"] > .content-page::before {
+    content: "Share rail";
+    position: absolute;
+    top: 0;
+    left: calc(50% - 50vw + var(--gutter-page));
+    padding: 0.35em 0.6em;
+    border: 1px dashed var(--rule);
+    border-radius: 999px;
+    font: 500 11px/1.2 system-ui, -apple-system, "Segoe UI", sans-serif;
+    letter-spacing: 0.02em;
+    color: var(--icon-grey);
+    white-space: nowrap;
+    pointer-events: none;
+  }
+}
+
 /* In the Canvas editor the body arrives inside the region's and the
    block's divs (page.html.twig composes the flow around page.content
    there); flattened, the components are the flow's own children, so its

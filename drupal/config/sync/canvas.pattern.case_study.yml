@@ -1,0 +1,86 @@
+uuid: c528e9d7-1b09-493f-89e9-455c42781264
+langcode: en
+status: true
+dependencies:
+  config:
+    - canvas.component.sdc.icon.prose
+    - canvas.component.sdc.icon.work-gallery
+    - canvas.component.sdc.icon.work-stat
+    - canvas.component.sdc.icon.work-stats
+    - filter.format.canvas_html_block
+  module:
+    - text
+id: case_study
+label: 'Case study'
+component_tree:
+  '0:ca0435f9-fb17-4177-bd99-244f9f2fdfea':
+    parent_uuid: null
+    slot: null
+    uuid: ca0435f9-fb17-4177-bd99-244f9f2fdfea
+    component_id: sdc.icon.prose
+    component_version: d978db5974445544
+    inputs:
+      text:
+        value: '<h2 class="is-sentence">The challenge</h2><p>What the client faced, in a paragraph or two. What was at stake, and why it was hard.</p>'
+        format: canvas_html_block
+    label: null
+  '1:e5d53c6c-ec9e-4e27-ba44-f80e610a6587':
+    parent_uuid: null
+    slot: null
+    uuid: e5d53c6c-ec9e-4e27-ba44-f80e610a6587
+    component_id: sdc.icon.work-gallery
+    component_version: 6cc3a72cc1075162
+    inputs: {  }
+    label: null
+  '2:c14edf2c-c1fa-4688-9ebd-afc9daf9c649':
+    parent_uuid: null
+    slot: null
+    uuid: c14edf2c-c1fa-4688-9ebd-afc9daf9c649
+    component_id: sdc.icon.prose
+    component_version: d978db5974445544
+    inputs:
+      text:
+        value: '<h2 class="is-sentence">What we made</h2><p>The idea, then the work: the strategy, the creative, the channels. Keep each paragraph to one thought.</p>'
+        format: canvas_html_block
+    label: null
+  '3:4da87a0d-7493-457f-a788-47f7fc2380d0':
+    parent_uuid: null
+    slot: null
+    uuid: 4da87a0d-7493-457f-a788-47f7fc2380d0
+    component_id: sdc.icon.work-stats
+    component_version: 4ad046bfee8c5013
+    inputs: {  }
+    label: null
+  '3:results:0:aa5cc2b6-d779-4361-addd-c094ba574f42':
+    parent_uuid: 4da87a0d-7493-457f-a788-47f7fc2380d0
+    slot: results
+    uuid: aa5cc2b6-d779-4361-addd-c094ba574f42
+    component_id: sdc.icon.work-stat
+    component_version: f90ed1a4cdfe7c2f
+    inputs:
+      value: '12'
+      unit: million
+      label: 'Earned impressions'
+    label: null
+  '3:results:1:0a22d686-930e-4609-b08d-50f5c870bc7b':
+    parent_uuid: 4da87a0d-7493-457f-a788-47f7fc2380d0
+    slot: results
+    uuid: 0a22d686-930e-4609-b08d-50f5c870bc7b
+    component_id: sdc.icon.work-stat
+    component_version: f90ed1a4cdfe7c2f
+    inputs:
+      value: 2x
+      unit: coverage
+      label: 'Against the year before'
+    label: null
+  '4:4404d97e-8ae0-485a-8659-19fcbdc75b57':
+    parent_uuid: null
+    slot: null
+    uuid: 4404d97e-8ae0-485a-8659-19fcbdc75b57
+    component_id: sdc.icon.prose
+    component_version: d978db5974445544
+    inputs:
+      text:
+        value: '<h2 class="is-sentence">Why it mattered</h2><p>The outcome for the client and for the people the work reached.</p>'
+        format: canvas_html_block
+    label: null

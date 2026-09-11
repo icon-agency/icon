@@ -39,7 +39,6 @@ $plan = [
   ],
   'Work article' => [
     'sdc.icon.work-masthead',
-    'sdc.icon.run',
     'sdc.icon.work-gallery',
     'sdc.icon.work-video',
     'sdc.icon.work-scroller',
@@ -71,6 +70,9 @@ $plan = [
 $hide = [
   // Canvas 1.11's page-variant marker: the theme composes its own shell.
   'marker.page_content',
+  // The Run: the runs are inferred on the page since Sep 2026 (user call —
+  // a Run could be missed); the older articles' Runs still render.
+  'sdc.icon.run',
   'block.system_branding_block',
   'block.system_breadcrumb_block',
   'block.system_messages_block',
