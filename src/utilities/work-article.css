@@ -464,6 +464,20 @@
   gap: var(--space-lg);
 }
 
+/* IN THE EDITOR'S FRAME the scroll reveals never fire (Canvas loads the
+   frame hidden and swaps it in; the observer sees nothing), which left
+   every banner, gallery figure and film at its pre-reveal state — blank
+   (user catch, Sep 2026). Edit mode shows the media at rest; the page and
+   Preview keep the reveal. */
+html[data-icon-editing].js-animations .media-reveal img,
+html[data-icon-editing].js-animations .media-reveal video,
+html[data-icon-editing].js-animations .media-reveal iframe {
+  clip-path: none;
+  scale: 1;
+  opacity: 1;
+  transition: none;
+}
+
 /* IN THE EDITOR the runs are not drawn (Canvas renders the tree itself,
    flat; the theme infers the runs only on the page and in Preview), so a
    text block shows a MARKER where its rail will stand: "Share rail", in
@@ -694,8 +708,11 @@
    2026): the flow's --space-lg gap between chunks is pulled back to the
    --spacing-md the gallery's own rows sit at, whichever side of the gallery
    the scroller is on — the strip reads as one more row of the gallery. */
-.work-article__flow > .work-gallery + .work-scroller,
-.work-article__flow > .work-scroller + .work-gallery {
+/* (descendants of the flow, not its children: in the Canvas editor the
+   components sit together inside one block wrapper, and the same
+   neighbours must meet at the same distance there — user catch, Sep 2026) */
+.work-article__flow .work-gallery + .work-scroller,
+.work-article__flow .work-scroller + .work-gallery {
   margin-top: calc(var(--spacing-md) - var(--space-lg));
 }
 
@@ -703,9 +720,9 @@
    in the flow — nothing groups a run of them in a .work-gallery — so the
    wrapper's gap between two rows is drawn here, and a row meets the
    scroller at the same distance. */
-.work-article__flow > .work-gallery__row + .work-gallery__row,
-.work-article__flow > .work-gallery__row + .work-scroller,
-.work-article__flow > .work-scroller + .work-gallery__row {
+.work-article__flow .work-gallery__row + .work-gallery__row,
+.work-article__flow .work-gallery__row + .work-scroller,
+.work-article__flow .work-scroller + .work-gallery__row {
   margin-top: calc(var(--spacing-md) - var(--space-lg));
 }
 
