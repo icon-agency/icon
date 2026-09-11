@@ -113,7 +113,11 @@
    hands over to white (user call, Sep 2026); the cross-fade is the theme
    handover's own pace. */
 .filmstrip__card--fact {
+  /* the card's own rotate + scale transitions restated: a shorthand here
+     REPLACES the base list, and without them the hover snapped (user call) */
   transition:
+    rotate 0.45s var(--ease-decelerate),
+    scale 0.45s var(--ease-decelerate),
     background-color var(--duration-normal) var(--ease-standard),
     color var(--duration-normal) var(--ease-standard);
 }
