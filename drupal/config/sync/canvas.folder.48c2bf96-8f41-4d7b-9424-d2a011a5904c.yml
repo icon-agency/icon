@@ -1,0 +1,13 @@
+uuid: 48c2bf96-8f41-4d7b-9424-d2a011a5904c
+langcode: en
+status: true
+dependencies:
+  config:
+    - canvas.component.sdc.icon.news-article-video
+    - canvas.component.sdc.icon.work-video
+name: Video
+configEntityTypeId: component
+weight: 2
+items:
+  - sdc.icon.news-article-video
+  - sdc.icon.work-video

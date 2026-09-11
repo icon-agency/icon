@@ -19,37 +19,43 @@
 use Drupal\canvas\Entity\Component;
 use Drupal\canvas\Entity\Folder;
 
-// Folder => component ids, in library order.
+// Folder => component ids, in library order. BY WHAT A BLOCK DOES, not
+// by page (user call, Sep 2026: About, Digital and the Work article all
+// draw on one set, so page folders made editors guess).
 $plan = [
-  'Page' => [
+  'Text' => [
     'sdc.icon.page-header',
+    'sdc.icon.work-masthead',
     'sdc.icon.prose',
     'sdc.icon.pull-quote',
-    'sdc.icon.divider',
     'sdc.icon.columns',
+    'sdc.icon.work-stats',
+    'sdc.icon.divider',
+  ],
+  'Pictures' => [
     'sdc.icon.news-article-figure',
-    'sdc.icon.news-article-video',
+    'sdc.icon.work-gallery',
+    'sdc.icon.work-scroller',
     'block.icon_filmstrip',
-    'block.icon_team_profiles',
-    'block.icon_clients_marquee',
+  ],
+  'Video' => [
+    'sdc.icon.news-article-video',
+    'sdc.icon.work-video',
+  ],
+  'Listings' => [
     'block.views_block.news-landing',
     'block.views_block.work-landing',
+    'block.views_block.work-latest',
     'block.views_block.news-next_up',
     'block.views_block.work-next_up',
-    'block.views_block.work-latest',
-  ],
-  'Work article' => [
-    'sdc.icon.work-masthead',
-    'sdc.icon.work-gallery',
-    'sdc.icon.work-video',
-    'sdc.icon.work-scroller',
-    'sdc.icon.work-stats',
+    'block.icon_news_latest',
+    'block.icon_featured_work',
+    'block.icon_team_profiles',
+    'block.icon_clients_marquee',
   ],
   'Homepage' => [
     'block.icon_hero',
     'sdc.icon.intro',
-    'block.icon_featured_work',
-    'block.icon_news_latest',
   ],
   'Parts (go inside a block above)' => [
     'sdc.icon.work-gallery-figure',

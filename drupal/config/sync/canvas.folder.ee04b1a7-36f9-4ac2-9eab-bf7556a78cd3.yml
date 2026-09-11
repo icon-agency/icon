@@ -3,15 +3,11 @@ langcode: en
 status: true
 dependencies:
   config:
-    - canvas.component.block.icon_featured_work
     - canvas.component.block.icon_hero
-    - canvas.component.block.icon_news_latest
     - canvas.component.sdc.icon.intro
 name: Homepage
 configEntityTypeId: component
-weight: 2
+weight: 4
 items:
-  - block.icon_featured_work
   - block.icon_hero
-  - block.icon_news_latest
   - sdc.icon.intro

@@ -1,6 +1,6 @@
 $schema: https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json
 name: Line
-group: Page
+group: Text
 status: stable
 description: |
   A hairline across the page — the same 1px rule every line on the site

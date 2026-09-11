@@ -1,6 +1,6 @@
 $schema: https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json
 name: Image
-group: Page
+group: Pictures
 status: stable
 description: >
   A wide image breaking out of the article's prose measure, revealed on

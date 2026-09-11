@@ -1,6 +1,6 @@
 $schema: https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json
 name: Gallery
-group: Work article
+group: Pictures
 status: stable
 description: |
   A row of the work article's media (src/components/work-gallery.css): one

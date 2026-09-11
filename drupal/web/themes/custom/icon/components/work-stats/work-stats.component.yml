@@ -1,6 +1,6 @@
 $schema: https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json
 name: Results and stats
-group: Work article
+group: Text
 status: stable
 description: |
   The results band — two columns of ruled cells, each a figure over what it

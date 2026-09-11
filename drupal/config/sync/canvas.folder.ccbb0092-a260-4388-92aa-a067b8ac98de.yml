@@ -1,39 +1,27 @@
-uuid: 99993d24-1f17-4dda-a4ea-ac535d055b7c
+uuid: ccbb0092-a260-4388-92aa-a067b8ac98de
 langcode: en
 status: true
 dependencies:
   config:
     - canvas.component.block.icon_clients_marquee
-    - canvas.component.block.icon_filmstrip
+    - canvas.component.block.icon_featured_work
+    - canvas.component.block.icon_news_latest
     - canvas.component.block.icon_team_profiles
     - canvas.component.block.views_block.news-landing
     - canvas.component.block.views_block.news-next_up
     - canvas.component.block.views_block.work-landing
     - canvas.component.block.views_block.work-latest
     - canvas.component.block.views_block.work-next_up
-    - canvas.component.sdc.icon.columns
-    - canvas.component.sdc.icon.divider
-    - canvas.component.sdc.icon.news-article-figure
-    - canvas.component.sdc.icon.news-article-video
-    - canvas.component.sdc.icon.page-header
-    - canvas.component.sdc.icon.prose
-    - canvas.component.sdc.icon.pull-quote
-name: Page
+name: Listings
 configEntityTypeId: component
-weight: 0
+weight: 3
 items:
   - block.icon_clients_marquee
-  - block.icon_filmstrip
+  - block.icon_featured_work
+  - block.icon_news_latest
   - block.icon_team_profiles
   - block.views_block.news-landing
   - block.views_block.news-next_up
   - block.views_block.work-landing
   - block.views_block.work-latest
   - block.views_block.work-next_up
-  - sdc.icon.columns
-  - sdc.icon.divider
-  - sdc.icon.news-article-figure
-  - sdc.icon.news-article-video
-  - sdc.icon.page-header
-  - sdc.icon.prose
-  - sdc.icon.pull-quote

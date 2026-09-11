@@ -1,6 +1,6 @@
 $schema: https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json
 name: Gallery scroller
-group: Work article
+group: Pictures
 status: stable
 description: The drifting gallery strip for a series — posters, clippings, looping films — on an optional colour ground (src/components/work-scroller.css, js/work-scroller.js).
 props:

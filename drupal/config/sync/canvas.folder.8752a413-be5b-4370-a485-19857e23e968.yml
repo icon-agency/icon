@@ -1,0 +1,17 @@
+uuid: 8752a413-be5b-4370-a485-19857e23e968
+langcode: en
+status: true
+dependencies:
+  config:
+    - canvas.component.block.icon_filmstrip
+    - canvas.component.sdc.icon.news-article-figure
+    - canvas.component.sdc.icon.work-gallery
+    - canvas.component.sdc.icon.work-scroller
+name: Pictures
+configEntityTypeId: component
+weight: 1
+items:
+  - block.icon_filmstrip
+  - sdc.icon.news-article-figure
+  - sdc.icon.work-gallery
+  - sdc.icon.work-scroller

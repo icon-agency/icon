@@ -11,7 +11,7 @@ dependencies:
     - canvas.component.sdc.icon.work-stat
 name: 'Parts (go inside a block above)'
 configEntityTypeId: component
-weight: 3
+weight: 5
 items:
   - sdc.icon.intro-expertise
   - sdc.icon.intro-fact

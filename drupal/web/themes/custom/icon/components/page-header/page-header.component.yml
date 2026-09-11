@@ -1,5 +1,6 @@
 $schema: https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json
 name: Masthead
+group: Text
 status: stable
 description: |
   The centred page masthead: a serif accent line over the big caps line, the

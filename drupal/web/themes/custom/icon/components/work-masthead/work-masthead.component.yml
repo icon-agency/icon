@@ -1,6 +1,6 @@
 $schema: https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json
 name: Work masthead
-group: Work article
+group: Text
 status: stable
 description: |
   The case study's frame — eyebrow, project name, client, banner, feature
