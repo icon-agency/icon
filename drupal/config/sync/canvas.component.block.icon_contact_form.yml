@@ -1,0 +1,24 @@
+uuid: b9065472-5955-403f-bb5b-d7429291b5f1
+langcode: en
+status: true
+dependencies:
+  module:
+    - icon_site
+active_version: 9e3ff8a7778744af
+versioned_properties:
+  active:
+    settings:
+      default_settings:
+        id: icon_contact_form
+        label: 'Contact form'
+        label_display: '0'
+        provider: icon_site
+        lead: 'Simply fill in the form below'
+        intro: 'Whether it’s a brand refresh, public relations push, new website or end-to-end behaviour change campaign — we’re interested and ready to talk solutions.'
+    fallback_metadata:
+      slot_definitions: null
+label: 'Contact form'
+id: block.icon_contact_form
+provider: icon_site
+source: block
+source_local_id: icon_contact_form
