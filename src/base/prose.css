@@ -79,7 +79,10 @@
   }
 
   .content-page h2.is-sentence {
-    font-size: clamp(1.75rem, 2.3vw, 3.7rem);
+    /* the headline voice — the Team profiles heading's size (user call,
+       Sep 2026: "Our journey should be the size of Leadership team"); it
+       ran the news article's smaller H2 recipe before */
+    font-size: var(--voice-headline);
     font-weight: var(--font-weight-bold);
     line-height: var(--line-height-tight);
     text-transform: none;
