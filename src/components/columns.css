@@ -25,6 +25,13 @@
   gap: var(--spacing-md);
 }
 
+/* Wide (user ask, Sep 2026: "I thought we had a bigger padding option"):
+   two text columns held apart by a section's air, the page's column
+   gutter reading tight for prose beside prose. */
+.columns--gap-wide {
+  column-gap: var(--space-lg);
+}
+
 /* STACKED (below 768 every Columns is one column): the columns read as
    one flow, so the grid's row gap goes and the prose's own margins carry
    the rhythm — a heading sits its usual 1.25rem over the paragraph that

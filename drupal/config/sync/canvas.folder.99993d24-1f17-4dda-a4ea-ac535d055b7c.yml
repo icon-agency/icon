@@ -12,6 +12,7 @@ dependencies:
     - canvas.component.block.views_block.work-latest
     - canvas.component.block.views_block.work-next_up
     - canvas.component.sdc.icon.columns
+    - canvas.component.sdc.icon.divider
     - canvas.component.sdc.icon.news-article-figure
     - canvas.component.sdc.icon.news-article-video
     - canvas.component.sdc.icon.page-header
@@ -30,6 +31,7 @@ items:
   - block.views_block.work-latest
   - block.views_block.work-next_up
   - sdc.icon.columns
+  - sdc.icon.divider
   - sdc.icon.news-article-figure
   - sdc.icon.news-article-video
   - sdc.icon.page-header

@@ -28,9 +28,11 @@ props:
       description: The space between the columns.
       enum:
         - normal
+        - wide
         - tight
       meta:enum:
         normal: Normal (the page's column gutter)
+        wide: Wide (a section's air between them)
         tight: Tight (the gallery's 16px)
       examples:
         - normal
