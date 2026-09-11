@@ -371,6 +371,16 @@ function icon_site_entity_operation_alter(array &$operations, EntityInterface $e
 }
 
 /**
+ * Implements hook_form_FORM_ID_alter() for component_instance_form.
+ *
+ * Canvas's settings panel form (a component's props): its editors carry
+ * the library that keeps CKEditor's menus inside the panel.
+ */
+function icon_site_form_component_instance_form_alter(array &$form, FormStateInterface $form_state): void {
+  $form['#attached']['library'][] = 'icon_site/editor_panel';
+}
+
+/**
  * Implements hook_form_FORM_ID_alter() for user_login_form.
  *
  * After logging in, land on the homepage rather than the account page. A

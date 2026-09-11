@@ -1,0 +1,23 @@
+/* The editors inside Canvas's settings panel (the Content block's, the
+   quote's). The panel is a narrow scroll area that clips whatever hangs
+   past its edges, and CKEditor's Styles menu — a two-column grid of
+   previews, wider than the editor — opened half outside it (user catch,
+   Sep 2026: "this is hidden"). One column, sized to the editor, so the
+   menu opens inside the panel whichever side CKEditor picks. */
+.ck.ck-dropdown__panel .ck-style-panel {
+  max-width: 220px;
+}
+
+.ck.ck-dropdown__panel .ck-style-panel .ck-style-grid {
+  grid-template-columns: 1fr;
+}
+
+.ck.ck-dropdown__panel .ck-style-panel .ck-style-grid__button {
+  width: 100%;
+  min-width: 0;
+}
+
+/* The wrapped toolbar's second row keeps its menus inside the panel too. */
+.ck.ck-dropdown__panel {
+  max-width: min(100vw, 340px);
+}

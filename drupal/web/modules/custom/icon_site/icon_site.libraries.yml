@@ -44,3 +44,11 @@ page_data:
   dependencies:
     - core/drupal
     - core/once
+
+# The editors inside Canvas's settings panel: CKEditor's menus sized to
+# the panel (editor-panel.css); attached by icon_site_form_alter() to the
+# component instance form.
+editor_panel:
+  css:
+    component:
+      css/editor-panel.css: {}
