@@ -12,13 +12,16 @@
   "use strict";
 
   var root = document.documentElement;
-  var opening = root.getAttribute("data-icon-opening");
-  if (!opening) return;
   var editing = false;
   try {
     var frame = window.frameElement;
     editing = !!(frame && frame.hasAttribute("data-canvas-preview"));
   } catch (err) {}
+  // The edit-mode frame is marked for the theme (the Work frame's edit
+  // targets, utilities/work-article.css), opening or not.
+  if (editing) root.setAttribute("data-icon-editing", "");
+  var opening = root.getAttribute("data-icon-opening");
+  if (!opening) return;
   if (editing) root.setAttribute("data-icon-opening-off", "");
   else root.classList.add(opening);
 })();

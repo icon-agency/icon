@@ -21,6 +21,7 @@ use Drupal\Core\Ajax\CloseDialogCommand;
 use Drupal\Core\Ajax\InvokeCommand;
 use Drupal\Core\Ajax\ReplaceCommand;
 use Drupal\Core\Cache\Cache;
+use Drupal\Core\Cache\RefinableCacheableDependencyInterface;
 use Drupal\Core\Cache\CacheableMetadata;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\image\Entity\ImageStyle;
@@ -115,6 +116,45 @@ function _icon_site_work_colour_weights(array $element, FormStateInterface $form
     $element['field_work_ink']['#weight'] = $statement + 0.2;
   }
   return $element;
+}
+
+/**
+ * Implements hook_menu_local_tasks_alter().
+ *
+ * On a Work node Canvas is THE editor (user call, Sep 2026): the Edit
+ * tab — and so the Navigation bar's Edit button, which reads the same
+ * tabs — opens the Canvas editor, whose Page data panel carries every
+ * field; the classic form stays a tab behind it, "Fields".
+ */
+function icon_site_menu_local_tasks_alter(array &$data, string $route_name, RefinableCacheableDependencyInterface $cacheability): void {
+  $node = \Drupal::routeMatch()->getParameter('node');
+  if (!$node instanceof NodeInterface || $node->bundle() !== 'work' || !$node->hasField('field_work_canvas')) {
+    return;
+  }
+  $cacheability->addCacheableDependency($node);
+  $tabs = &$data['tabs'][0];
+  if (isset($tabs['entity.node.edit_form'], $tabs['icon_site.node_canvas'])) {
+    $tabs['entity.node.edit_form']['#link']['url'] = Url::fromRoute('icon_site.node_canvas', ['node' => $node->id()]);
+    $tabs['icon_site.node_canvas']['#link']['title'] = t('Fields');
+    $tabs['icon_site.node_canvas']['#link']['url'] = $node->toUrl('edit-form');
+    $tabs['icon_site.node_canvas']['#weight'] = ($tabs['entity.node.edit_form']['#weight'] ?? 10) + 0.5;
+  }
+}
+
+/**
+ * Implements hook_entity_operation_alter().
+ *
+ * The content list's Edit on a Work item opens Canvas too; Fields is the
+ * classic form.
+ */
+function icon_site_entity_operation_alter(array &$operations, EntityInterface $entity, CacheableMetadata $cacheability): void {
+  if (!$entity instanceof NodeInterface || $entity->bundle() !== 'work' || !$entity->hasField('field_work_canvas') || !isset($operations['edit'])) {
+    return;
+  }
+  $cacheability->addCacheableDependency($entity);
+  $operations['fields'] = $operations['edit'] + ['weight' => ($operations['edit']['weight'] ?? 10) + 1];
+  $operations['fields']['title'] = t('Fields');
+  $operations['edit']['url'] = Url::fromRoute('icon_site.node_canvas', ['node' => $entity->id()]);
 }
 
 /**

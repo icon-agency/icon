@@ -18,6 +18,8 @@ icon_site.footer:
   route_name: icon_site.footer
   base_route: system.admin_content
   weight: 23
+# On a Work node the two are swapped by icon_site_menu_local_tasks_alter():
+# Edit opens Canvas, this tab is the classic form as "Fields".
 icon_site.node_canvas:
   title: 'Build in Canvas'
   route_name: icon_site.node_canvas

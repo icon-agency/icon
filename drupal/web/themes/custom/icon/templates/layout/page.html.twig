@@ -24,7 +24,7 @@
          edited in Page data reads in the masthead at once
          (icon_preprocess_page(), includes/work-frame.html.twig). #}
       <article class="work-article" aria-labelledby="project-title">
-        {% include '@icon/includes/work-frame.html.twig' with work_frame only %}
+        {% include '@icon/includes/work-frame.html.twig' with work_frame|merge({ editor: true }) only %}
         <div class="work-article__flow">{{ page.content }}</div>
         <div class="work-article__share-footer">{% include '@icon/includes/share.html.twig' %}</div>
       </article>

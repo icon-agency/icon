@@ -453,6 +453,42 @@
   gap: var(--space-lg);
 }
 
+/* THE FRAME'S EDIT TARGETS, in the Canvas editor's edit-mode frame only
+   (html[data-icon-editing], js-theme/opening.js): the masthead's parts
+   name the field they come from (includes/work-frame.html.twig) and the
+   editor page hit-tests the pointer into the frame — its overlay takes
+   every click — outlining the part under it and, on a click, opening that
+   field in Page data (icon_site/js/page-data.js). User call, Sep 2026:
+   "something a bit more connected". */
+html[data-icon-editing] [data-edit-field] {
+  position: relative;
+  outline: 1px dashed transparent;
+  outline-offset: 6px;
+  border-radius: 2px;
+  transition: outline-color 120ms;
+}
+
+html[data-icon-editing] [data-edit-field].is-edit-hover {
+  outline-color: var(--icon-blue);
+}
+
+html[data-icon-editing] [data-edit-field].is-edit-hover::after {
+  content: attr(data-edit-label);
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  translate: 0 -100%;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: var(--icon-blue);
+  color: var(--white);
+  font: 600 11px/1.4 system-ui, -apple-system, "Segoe UI", sans-serif;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
 /* In the Canvas editor the body arrives inside the region's and the
    block's divs (page.html.twig composes the flow around page.content
    there); flattened, the components are the flow's own children, so its
