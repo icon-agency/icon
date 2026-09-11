@@ -42,6 +42,24 @@
   margin-inline: calc(-1 * var(--gutter-page));
 }
 
+/* And UNDER THE HEADING the placed blocks are prose, not lockup (user
+   catch, Sep 2026: a Columns of two Content blocks under the About H1 came
+   out centred, on the inner's text-align, and sat hard against it). They
+   start left, as body copy does everywhere, and stand a section's air
+   below the lockup; the Subscribe bar keeps its own centring and margin. */
+.page-header__inner .columns,
+.page-header__inner .content-page,
+.page-header__inner .work-stats,
+.page-header__inner .pull-quote {
+  margin-top: var(--space-lg);
+}
+
+.page-header__inner .columns,
+.page-header__inner .content-page,
+.page-header__inner .work-stats {
+  text-align: start;
+}
+
 .page-header__inner {
   text-align: center;
   margin-bottom: var(--spacing-3xl);

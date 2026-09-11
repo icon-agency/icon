@@ -669,8 +669,11 @@
 }
 
 /* The cards are the work landing's own (.work__item / __figure / __caption);
-   only the rail's geometry lives here. The comp pairs a landscape tile with
-   a square one — the landing's own masonry feel at rail scale. */
+   only the rail's geometry lives here. The comp paired a landscape tile
+   with a square one; the pair is now two squares (user call, Sep 2026:
+   "exactly like the one on the right") — every project has a square tile
+   and only some a wide one, so the landscape frame was cropping a square
+   image on most rails. */
 .work-article__next-grid {
   display: grid;
   grid-template-columns: 1fr;
@@ -684,8 +687,7 @@
   }
 }
 
-.work-article__next-grid .work__figure { aspect-ratio: 3 / 2; }
-.work-article__next-grid .work__item:nth-child(2) .work__figure { aspect-ratio: 1; }
+.work-article__next-grid .work__figure { aspect-ratio: 1; }
 
 /* The rail's More — the homepage rails' own invitation (.news__more +
    .invite-arrow, reused as-is), centred under the cards like the masthead

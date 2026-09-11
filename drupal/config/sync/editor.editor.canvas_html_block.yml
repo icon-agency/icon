@@ -26,12 +26,19 @@ settings:
       - bulletedList
       - numberedList
       - style
+      - alignment
       - '|'
       - blockQuote
       - code
       - '|'
       - sourceEditing
   plugins:
+    ckeditor5_alignment:
+      enabled_alignments:
+        - left
+        - center
+        - right
+        - justify
     ckeditor5_heading:
       enabled_headings:
         - heading2
@@ -74,6 +81,9 @@ settings:
         -
           label: 'Heading 2 — Miller'
           element: '<h2 class="is-serif">'
+        -
+          label: 'Paragraph — Large'
+          element: '<p class="is-large">'
         -
           label: 'Paragraph — Small'
           element: '<p class="is-small">'

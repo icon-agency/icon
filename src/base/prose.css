@@ -92,6 +92,18 @@
     line-height: 1.6;
   }
 
+  /* Paragraph — Large (user ask, Sep 2026): the homepage intro's statement
+     voice, letter for letter (.intro__statement in home-c.css) — the mid
+     voice at medium weight, tight-leaded, in the page ink — so an editor
+     can open a page on the same line the home page does. */
+  .content-page p.is-large {
+    font-size: var(--voice-mid);
+    line-height: 1.2;
+    font-weight: var(--font-weight-medium);
+    letter-spacing: -0.01em;
+    color: var(--icon-black);
+  }
+
   .content-page h2.is-serif {
     font-family: var(--font-serif);
     font-size: clamp(2rem, 2.6vw, 3.75rem);
@@ -239,6 +251,25 @@
     position: absolute;
     left: 0;
     font-weight: var(--font-weight-bold);
+  }
+
+  /* The editor's Alignment tool (user ask, Sep 2026) writes these classes
+     on any block; core ships no front-end rule for them, so here they are,
+     in the prose scope where that HTML lives. */
+  .content-page .text-align-left {
+    text-align: left;
+  }
+
+  .content-page .text-align-center {
+    text-align: center;
+  }
+
+  .content-page .text-align-right {
+    text-align: right;
+  }
+
+  .content-page .text-align-justify {
+    text-align: justify;
   }
 
   /* Animated underline-grow link (brand blue → ink). */

@@ -21,6 +21,7 @@ settings:
       - bulletedList
       - numberedList
       - style
+      - alignment
       - '|'
       - blockQuote
       - drupalInsertImage
@@ -30,6 +31,12 @@ settings:
       - '|'
       - sourceEditing
   plugins:
+    ckeditor5_alignment:
+      enabled_alignments:
+        - left
+        - center
+        - right
+        - justify
     ckeditor5_heading:
       enabled_headings:
         - heading2
@@ -60,6 +67,9 @@ settings:
         - '<h6 id>'
     ckeditor5_style:
       styles:
+        -
+          label: 'Paragraph — Large'
+          element: '<p class="is-large">'
         -
           label: 'Paragraph — Small'
           element: '<p class="is-small">'
