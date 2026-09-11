@@ -365,8 +365,11 @@
    open on the page just above, so the accordion would repeat them a scroll
    later (user call, Sep 2026: "the contact details on the right are the
    same as the open contact details above, so these are hidden"). The
-   column stays so the blurb keeps its place; the rows go. */
-.site-footer--no-offices .site-footer__locations {
+   column stays so the blurb keeps its place; the rows go. And the LET'S
+   TALK / Get in touch row goes with them (user call): it is the invitation
+   to this very page, so here it would point at itself. */
+.site-footer--no-offices .site-footer__locations,
+.site-footer--no-offices .site-footer__cta {
   display: none;
 }
 
