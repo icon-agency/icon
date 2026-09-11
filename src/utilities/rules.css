@@ -85,6 +85,20 @@
   background-size: 100% var(--rule-weight);
 }
 
+/* In the Canvas editor's edit-mode frame (html[data-icon-editing],
+   js-theme/opening.js) the scroll observer never fires — Canvas loads the
+   frame hidden — so a drawn rule would never arrive; there the line is
+   simply present, as it is without JS. */
+html[data-icon-editing].js-animations [data-rule] {
+  --rule-draw: 1;
+  background-size: 100% var(--rule-weight);
+  transition: none;
+}
+
+html[data-icon-editing].js-animations [data-rule="both"] {
+  background-size: 100% var(--rule-weight), 100% var(--rule-weight);
+}
+
 /* An element can carry rules on BOTH edges (the footer's last office row).
    Two gradients, two sizes, one transition. */
 [data-rule="both"] {

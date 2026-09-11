@@ -1,0 +1,14 @@
+$schema: https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json
+name: Line
+group: Page
+status: stable
+description: |
+  A hairline across the page — the same 1px rule every line on the site
+  is, drawn in from the left as it scrolls into view. It stands on the page
+  gutter; inside a column it runs the column's width. The page's own gap
+  spaces it above and below (src/components/divider.css).
+props:
+  # Declared and empty on purpose: a component with no `props` key at all
+  # reads as having no schema, and SDC rejects it.
+  type: object
+  properties: {}

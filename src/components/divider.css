@@ -1,0 +1,21 @@
+/* divider.css — the Line: THE hairline as a block of its own, for a Canvas
+ * page (user ask, Sep 2026: "add a line to the Library"). The same 1px of
+ * --rule every rule on the site is, drawn in from the left as it arrives
+ * (utilities/rules.css, [data-rule] in the markup), padded on the page
+ * gutter as the quote's rules are; inside a column or the masthead it
+ * runs the column's width. The page's flow gap spaces it; it brings none
+ * of its own.
+ *
+ * Drupal: SDC `divider` (named Line in the library). */
+
+.divider {
+  margin: 0 var(--gutter-page);
+  border: 0;
+  border-top: var(--rule-weight) solid var(--rule);
+  height: 0;
+}
+
+.columns .divider,
+.page-header__inner .divider {
+  margin-inline: 0;
+}
