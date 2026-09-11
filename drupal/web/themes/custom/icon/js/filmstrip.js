@@ -35,13 +35,17 @@
           var track = viewport.querySelector(".filmstrip__track");
           if (!track || track.children.length === 0) return;
 
-          // Duplicate the set once for a seamless wrap. The clones keep the
-          // nth-child tilt pattern by construction — a set of 4n cards repeats
-          // exactly, any other count simply continues the sequence.
+          // Duplicate the set once for a seamless wrap. Each clone carries ITS
+          // ORIGINAL'S tilt, written inline: the CSS tilts by position in the row
+          // (a pattern of four), and a set that is not a multiple of four would
+          // put its clones a step off the pattern — every card snapping to a new
+          // angle at the seam (user catch, Sep 2026: nine cards on the About
+          // page; the homepage's twelve never showed it).
           var originals = Array.prototype.slice.call(track.children);
           originals.forEach(function (card) {
             var clone = card.cloneNode(true);
             clone.setAttribute("aria-hidden", "true");
+            clone.style.setProperty("--r", getComputedStyle(card).getPropertyValue("--r"));
             track.appendChild(clone);
           });
           var cards = Array.prototype.slice.call(track.children);
