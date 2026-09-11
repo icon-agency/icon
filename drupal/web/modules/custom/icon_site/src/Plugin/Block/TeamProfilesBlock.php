@@ -60,7 +60,7 @@ final class TeamProfilesBlock extends BlockBase implements ContainerFactoryPlugi
    * {@inheritdoc}
    */
   public function defaultConfiguration(): array {
-    return ['heading' => 'Leadership team'];
+    return ['heading' => ''];
   }
 
   /**
@@ -89,14 +89,6 @@ final class TeamProfilesBlock extends BlockBase implements ContainerFactoryPlugi
    */
   public function blockForm($form, FormStateInterface $form_state): array {
     $form['#attached']['library'][] = 'icon_site/panel_lists';
-    $form['heading'] = [
-      '#type' => 'textfield',
-      '#title' => $this->t('Heading'),
-      '#default_value' => $this->configuration['heading'],
-      '#description' => $this->t('Above the grid.'),
-      '#weight' => 5,
-      '#attributes' => ['class' => ['icon-panel__field']],
-    ];
     $dialog = self::dialog(860);
     $action = Url::fromRoute('icon_site.team_action')->toString();
     $add = Url::fromRoute('node.add', ['node_type' => 'team_member'], [
@@ -144,7 +136,10 @@ final class TeamProfilesBlock extends BlockBase implements ContainerFactoryPlugi
    * {@inheritdoc}
    */
   public function blockSubmit($form, FormStateInterface $form_state): void {
-    $this->configuration['heading'] = trim((string) $form_state->getValue('heading'));
+    // The heading setting stays in the schema for the stored settings'
+    // sake but is no longer offered or drawn (user call, Sep 2026: a
+    // Content block above the grid does that job).
+    $this->configuration['heading'] = '';
   }
 
   /**
@@ -174,7 +169,6 @@ final class TeamProfilesBlock extends BlockBase implements ContainerFactoryPlugi
       '#type' => 'component',
       '#component' => 'icon:team-profiles',
       '#props' => [
-        'heading' => $this->configuration['heading'] ?: 'Leadership team',
         'base' => self::BASE_PATH,
         'members' => $members,
       ],

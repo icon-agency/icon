@@ -11,13 +11,13 @@ description: |
 props:
   type: object
   required:
-    - heading
     - base
     - members
   properties:
     heading:
       type: string
       title: Heading
+      description: Optional — the block no longer draws one; a Content block above the grid does (Sep 2026).
       examples:
         - Leadership team
     base:

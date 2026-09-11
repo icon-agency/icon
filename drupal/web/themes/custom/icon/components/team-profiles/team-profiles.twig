@@ -12,8 +12,8 @@
  */
 #}
 {% set n = members|length %}
-<section class="team" aria-labelledby="team-heading">
-  <h2 class="team__heading" id="team-heading" data-animate>{{ heading }}</h2>
+<section class="team"{% if heading %} aria-labelledby="team-heading"{% else %} aria-label="{{ 'Team'|t }}"{% endif %}>
+  {% if heading %}<h2 class="team__heading" id="team-heading" data-animate>{{ heading }}</h2>{% endif %}
   <ul class="team__grid">
     {% for m in members %}
       <li class="team__member" data-animate{% if not loop.first %} style="--animate-delay: {{ (loop.index0 % 3) * 70 }}ms"{% endif %}>

@@ -4,9 +4,19 @@ status: true
 dependencies:
   module:
     - icon_site
-active_version: 0551154e433f7232
+active_version: a819e1ec65e9e461
 versioned_properties:
   active:
+    settings:
+      default_settings:
+        id: icon_team_profiles
+        label: 'Team profiles'
+        label_display: '0'
+        provider: icon_site
+        heading: ''
+    fallback_metadata:
+      slot_definitions: null
+  0551154e433f7232:
     settings:
       default_settings:
         id: icon_team_profiles
