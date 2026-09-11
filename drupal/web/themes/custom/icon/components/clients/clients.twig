@@ -5,8 +5,9 @@
  * counter-drifting rows, the client list's first half over its second, each
  * row a seamless track pair (the second track aria-hidden, empty alts). The
  * component owns colour and sizing (.client__logo forces mono ink); the file
- * owns clean geometry — assets/client-logos/README.md. Behaviour: js/home-c.js
- * §3g (drift + drag); the CSS keyframes are the no-JS fallback.
+ * owns clean geometry — assets/client-logos/README.md. Behaviour:
+ * js/clients-marquee.js (drift + drag, on the shared strip-drift engine);
+ * the CSS keyframes are the no-JS fallback.
  */
 #}
 {% set half = ((logos|length) / 2)|round(0, 'ceil') %}

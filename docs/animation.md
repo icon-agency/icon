@@ -232,7 +232,7 @@ are the script's — see `docs/drupal-handoff.md` for the routing.
 
 The homepage intro's strip of tilted cards, made a component of its own
 (user call, Sep 2026) so an editor can place one anywhere with its own
-cards. The engine is the gallery scroller's, vanilla: a 55px/s drift on a
+cards. The engine is the shared `js/strip-drift.js`: a 55px/s drift on a
 duplicated track, a 1:1 drag handing its release velocity to a decaying
 momentum, a fling re-pointing the drift — the clients marquee's rule. What
 moved OUT of JS is the rotation: each card rests on its `--r` tilt (a
@@ -271,6 +271,11 @@ intro embeds it.
    files that call it. The cursor tilt followed the same path: news.js and
    work-landing.js each carried the loop until the team panel's portrait
    made three, and it is now `js/cursor-tilt.js` (`window.ICON.cursorTilt`).
+   And the marquee integrator: the gallery scroller and the filmstrip each
+   carried it until the clients marquee left home-c.js as the third, and it
+   is now `js/strip-drift.js` (`window.ICON.stripDrift`) — drift, drag,
+   momentum and the fling that re-points, with each strip drawing its own
+   thing from the one position.
 5. **Don't use JS for what CSS handles** — hover, focus, and theme
    cross-fades stay in CSS; observer-triggered reveals (including the hairline
    draw) keep the *transition* in CSS and use JS only to flip a class. JS
@@ -288,8 +293,8 @@ intro embeds it.
 |---|---|---|---|
 | Header (scroll state, the search flip, EXPERTISE drawer offset — a drop-up below md, where the pill sits at the bottom; the parked mobile menu's handlers stay) | `js/header.js` | — | `iconHeader` → `icon/header` |
 | Shared scroll-reveal | `js/reveal.js` | — | `iconReveal` → `icon/reveal` |
-| Homepage system (hero, intro mark + band, clients marquee, work + news sections) | `js/home-c.js` | gsap, SplitText, lenis | `iconHomeC` → `icon/home-c` |
-| Filmstrip (drift, drag, lean — any page) | `js/filmstrip.js` | — | `iconFilmstrip` → `icon/filmstrip` |
+| Homepage system (hero, intro mark + band, work + news sections; Lenis on the homepage only) | `js/home-c.js` | gsap, SplitText, lenis | `iconHomeC` → `icon/home-c` |
+| Filmstrip (the wrap and the lean — any page) | `js/filmstrip.js` | strip-drift | `iconFilmstrip` → `icon/filmstrip` |
 | Hero loading screen | `js/hero-loader.js` | — (deliberately) | part of the hero SDC; its 16 rows become a Twig loop |
 | Global footer | `js/site-footer.js` | — | `iconFooter` → `icon/site-footer` |
 | Page transitions (the ground comparison + the reveal hold; the fade is CSS) | `js/page-transition.js` | — | plain IIFE in `<head>` → `icon/page-transition` (`header: true`) |
@@ -300,8 +305,10 @@ intro embeds it.
 | Work landing (filter + card motion) | `js/work-landing.js` | — | `iconWorkLanding` → `icon/work-landing` |
 | Scroll-velocity engine (shared: footer skew, news + work listing lean, work article skew, gallery scroller, the team grid) | `js/velocity-lean.js` | — | `iconVelocityLean` → `icon/velocity-lean` (a dependency of its consumers) |
 | Cursor-tilt engine (shared: news cards, work landing tiles, the team panel's portrait) | `js/cursor-tilt.js` | — | plain IIFE → `icon/cursor-tilt` (a dependency of its consumers) |
+| Strip-drift engine (shared: the gallery scroller, the filmstrip, the clients marquee — drift, drag, momentum, the fling that re-points) | `js/strip-drift.js` | — | plain IIFE → `icon/strip-drift` (a dependency of its consumers) |
+| Clients logo marquee (two mirror-linked rows on one phase) | `js/clients-marquee.js` | strip-drift | `iconClientsMarquee` → `icon/clients-marquee` (attached by the `clients` SDC) |
 | Work article (chameleon skew + the hero banner's breakout to the viewport edges, an IO flip at one 0.5 threshold with the travel in CSS; wide only while the header is in its scrolled state, so it opens inset and returns to inset at the top) | `js/work-article.js` | velocity-lean | `iconWorkArticle` → `icon/work-article` |
-| Work article gallery scroller | `js/work-scroller.js` | velocity-lean | `iconWorkScroller` → `icon/work-scroller` |
+| Work article gallery scroller (the height governor and the click-to-centre) | `js/work-scroller.js` | strip-drift, velocity-lean | `iconWorkScroller` → `icon/work-scroller` |
 | Work article click-to-play film | `js/work-video.js` | — | `iconWorkVideo` → `icon/work-video` |
 | Team profiles overlay (the About page: open / step / close, the address and title; the step's View Transition and the re-armed entrances) | `js/team-profiles.js` | reveal, cursor-tilt, velocity-lean | `iconTeamProfiles` → `icon/team-profiles` |
 | Work section + listing filter (prototype: templates/home.html, work.html) | `js/work.js`, `js/work-filter.js` | — | not ported |

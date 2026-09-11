@@ -9,7 +9,7 @@ description: >
   component, on a page.
 libraryOverrides:
   dependencies:
-    - icon/home-c
+    - icon/clients-marquee
 props:
   type: object
   required:

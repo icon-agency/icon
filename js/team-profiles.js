@@ -50,6 +50,12 @@
   var panel = overlay.firstElementChild;
   var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   var fluid = typeof document.startViewTransition === "function" && !reduce;
+  // The address is written where it can be: inside the Canvas editor's
+  // preview frame (about:srcdoc) the history is not ours to write, and the
+  // browser throws — the panel still opens, the address simply stays.
+  var go = function (how, state, title, url) {
+    try { history[how](state, title, url); } catch (err) {}
+  };
   var deepLink = new RegExp("^" + base.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "/([a-z0-9-]+)/?$");
 
   function pad(n) { return (n < 10 ? "0" : "") + n; }
@@ -110,7 +116,7 @@
       overlay.showModal();
       root.classList.add("is-team-open");
     }
-    if (push) history.pushState({ team: slug }, "", base + "/" + slug);
+    if (push) go("pushState", { team: slug }, "", base + "/" + slug);
     if (closeBtn) closeBtn.focus();
     return true;
   }
@@ -120,7 +126,7 @@
     overlay.close();
     document.documentElement.classList.remove("is-team-open");
     document.title = pageTitle;
-    if (push) history.pushState({ team: null }, "", base);
+    if (push) go("pushState", { team: null }, "", base);
     // hand focus back to the card that was opened
     if (current >= 0) {
       var link = document.querySelector('[data-team-open="' + slugs[current] + '"]');
@@ -178,6 +184,6 @@
   var here = location.pathname.match(deepLink);
   if (here && slugs.indexOf(here[1]) >= 0) {
     open(here[1], false);
-    history.replaceState({ team: here[1] }, "", location.pathname + location.search);
+    go("replaceState", { team: here[1] }, "", location.pathname + location.search);
   }
 })();

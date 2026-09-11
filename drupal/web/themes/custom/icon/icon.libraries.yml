@@ -41,6 +41,16 @@ velocity-lean:
 cursor-tilt:
   js:
     js/cursor-tilt.js: {}
+strip-drift:
+  js:
+    js/strip-drift.js: {}
+clients-marquee:
+  js:
+    js/clients-marquee.js: {}
+  dependencies:
+    - core/drupal
+    - core/once
+    - icon/strip-drift
 site-footer:
   js:
     js/site-footer.js: {}
@@ -54,6 +64,7 @@ filmstrip:
   dependencies:
     - core/drupal
     - core/once
+    - icon/strip-drift
 team-profiles:
   js:
     js/team-profiles.js: {}
@@ -112,6 +123,7 @@ work-scroller:
   dependencies:
     - core/drupal
     - core/once
+    - icon/strip-drift
     - icon/velocity-lean
 work-video:
   js:

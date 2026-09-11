@@ -9,7 +9,10 @@
 
       /* work-scroller.js — the gallery scroller (born on The Athlete's Foot
        * posters, Sep 2026). The homepage intro filmstrip's marquee, re-built
-       * vanilla (no GSAP on article pages) and WITHOUT the tilts:
+       * vanilla (no GSAP on article pages) and WITHOUT the tilts — and since Sep
+       * 2026 on the SHARED engine (js/strip-drift.js, lifted at its third
+       * consumer), this file keeping only what is the scroller's own: the wrap,
+       * the height governor and the click-to-centre:
        *
        *   - drifts at the site's shared strip speed (55px/s, the intro strip and
        *     clients marquee number), wrapping on a duplicated track;
@@ -26,13 +29,14 @@
        *
        * Reduced motion: no autoplay — the strip sits still, drag and the
        * click-to-centre still work (centring jumps rather than glides).
-       * Drupal: Drupal.behaviors.iconWorkScroller over [data-work-scroller];
-       * a work_scroller paragraph — media items + optional ground colour. */
+       * Drupal: Drupal.behaviors.iconWorkScroller over [data-work-scroller]
+       * (after `icon/strip-drift`); a work_scroller paragraph — media items +
+       * optional ground colour. */
       (function () {
         "use strict";
 
+        if (!window.ICON || !window.ICON.stripDrift) return;
         var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-        var SPEED = 55; // px/s — the shared strip speed
 
         var scrollers = document.querySelectorAll("[data-work-scroller]");
         scrollers.forEach(function (viewport) {
@@ -74,7 +78,7 @@
             if (!img.complete) img.addEventListener("load", function () { setHeight(); measure(); }, { once: true });
           });
 
-          // ---- the marquee engine ----------------------------------------------
+          // ---- the marquee: the SHARED engine (js/strip-drift.js) ---------------
           var loop = 0;
           var measure = function () {
             loop = cards.length > originals.length
@@ -85,42 +89,35 @@
           measure();
           window.addEventListener("resize", function () { setHeight(); measure(); }, { passive: true });
 
-          var pos = 0;        // marquee position, px
-          var vel = 0;        // momentum px/s after a drag
-          var dir = 1;        // drift direction — a fling re-points it
-          var dragging = false;
-          var dragVel = 0;
           var focused = null; // the centred card, while the drift is paused
           var glide = null;   // {from, to, start, dur} while centring
+
+          var drift = window.ICON.stripDrift({
+            reduce: reduce,
+            render: function (state, dt, now) {
+              if (glide) {
+                var t = Math.min(1, (now - glide.start) / glide.dur);
+                var e = 1 - Math.pow(1 - t, 3); // easeOutCubic
+                state.pos = glide.from + (glide.to - glide.from) * e;
+                if (t >= 1) glide = null;
+              }
+              if (loop > 0 && !glide) state.pos = ((state.pos % loop) + loop) % loop;
+              track.style.transform = "translate3d(" + -state.pos + "px, 0, 0)";
+            },
+            // a real drag restarts the drift; a tap acts on the pressed card
+            onDragEnd: function (el, tapped) { if (!tapped) unfocus(); },
+            onTap: function (target) { tap(target && target.closest ? target.closest(".work-scroller__card") : null); }
+          });
+          var state = drift.state;
 
           var unfocus = function () {
             if (!focused) return;
             focused.classList.remove("is-focused");
             focused = null;
             glide = null;
+            state.hold = false;
             viewport.classList.remove("is-focused");
           };
-
-          var last = performance.now();
-          var tick = function (now) {
-            var dt = Math.min(0.05, (now - last) / 1000);
-            last = now;
-            if (glide) {
-              var t = Math.min(1, (now - glide.start) / glide.dur);
-              var e = 1 - Math.pow(1 - t, 3); // easeOutCubic
-              pos = glide.from + (glide.to - glide.from) * e;
-              if (t >= 1) glide = null;
-            } else if (!dragging && !focused) {
-              var auto = reduce ? 0 : SPEED * dir;
-              pos += (auto + vel) * dt;
-              vel *= Math.pow(0.9, dt * 60);
-              if (Math.abs(vel) < 1) vel = 0;
-            }
-            if (loop > 0 && !glide) pos = ((pos % loop) + loop) % loop;
-            track.style.transform = "translate3d(" + -pos + "px, 0, 0)";
-            requestAnimationFrame(tick);
-          };
-          requestAnimationFrame(tick);
 
           // ---- centring --------------------------------------------------------
           var centreOn = function (card) {
@@ -128,87 +125,34 @@
             focused = card;
             card.classList.add("is-focused");
             viewport.classList.add("is-focused");
+            state.hold = true; // the drift and its momentum wait while the card is centred
             var target = card.offsetLeft + card.offsetWidth / 2 - viewport.clientWidth / 2;
             // nearest wrapped equivalent of the target to the current position
-            var norm = loop > 0 ? ((pos % loop) + loop) % loop : pos;
+            var norm = loop > 0 ? ((state.pos % loop) + loop) % loop : state.pos;
             var best = target, bestD = Infinity;
             [-1, 0, 1].forEach(function (k) {
               var cand = target + k * loop;
               if (Math.abs(cand - norm) < bestD) { bestD = Math.abs(cand - norm); best = cand; }
             });
-            pos = norm;
-            vel = 0;
+            state.pos = norm;
+            state.vel = 0;
             glide = reduce
               ? { from: best, to: best, start: performance.now(), dur: 1 }
               : { from: norm, to: best, start: performance.now(), dur: 650 };
-            if (reduce) pos = best;
+            if (reduce) state.pos = best;
           };
 
           // ---- taps ------------------------------------------------------------
-          // Selection is decided in the POINTER path, not the click event: with
-          // setPointerCapture the browser retargets the synthesized click at the
-          // viewport, so the card is never the click target — clicks felt dead
-          // (user catch). The card is recorded at pointerdown, and a gesture that
-          // stayed under the tap slop acts on it at pointerup.
-          var TAP_SLOP = 10; // px of accumulated movement that still counts as a tap
+          // Selection is decided in the POINTER path (the engine's onTap), not the
+          // click event: with setPointerCapture the browser retargets the
+          // synthesized click at the viewport, so the card is never the click
+          // target — clicks felt dead (user catch).
           var tap = function (card) {
             if (!card) { unfocus(); return; }            // the band: resume
             if (card === focused) { unfocus(); return; } // the centred card: resume
             centreOn(card);                              // any card: centre and pause
           };
-
-          // ---- drag ------------------------------------------------------------
-          var startX = 0, startPos = 0, lastX = 0, lastT = 0, moved = 0;
-          var downCard = null;
-          viewport.addEventListener("pointerdown", function (e) {
-            dragging = true;
-            moved = 0;
-            glide = null;
-            downCard = e.target.closest(".work-scroller__card");
-            startX = lastX = e.clientX;
-            startPos = pos;
-            lastT = performance.now();
-            dragVel = 0;
-            vel = 0;
-            viewport.classList.add("is-dragging");
-            try { viewport.setPointerCapture(e.pointerId); } catch (err) {}
-          });
-          viewport.addEventListener("pointermove", function (e) {
-            if (!dragging) return;
-            var now = performance.now();
-            var dx = e.clientX - lastX;
-            moved += Math.abs(dx);
-            pos = startPos - (e.clientX - startX);
-            if (now - lastT > 0) dragVel = (-dx) / ((now - lastT) / 1000);
-            lastX = e.clientX;
-            lastT = now;
-          });
-          var endDrag = function (e) {
-            if (!dragging) return;
-            dragging = false;
-            viewport.classList.remove("is-dragging");
-            if (moved <= TAP_SLOP && e && e.type === "pointerup") {
-              // a tap (mouse click or touch tap alike) — act on the pressed card
-              tap(downCard);
-              downCard = null;
-              dragVel = 0;
-              return;
-            }
-            unfocus(); // a real drag restarts the drift
-            vel = reduce ? 0 : Math.max(-2200, Math.min(2200, dragVel));
-            // the drift follows the drag — the clients marquee's rule verbatim
-            if (Math.abs(vel) > 40) dir = vel > 0 ? 1 : -1;
-            else if (Math.abs(pos - startPos) > 6) dir = pos > startPos ? 1 : -1;
-            dragVel = 0;
-            downCard = null;
-          };
-          viewport.addEventListener("pointerup", endDrag);
-          viewport.addEventListener("pointercancel", endDrag);
-          // a lost capture (tab switch, gesture stolen mid-drag) must not leave
-          // the strip stuck in the dragging state
-          viewport.addEventListener("lostpointercapture", endDrag);
-          // images must not start a native drag mid-gesture (Firefox ghosts)
-          viewport.addEventListener("dragstart", function (e) { e.preventDefault(); });
+          drift.attach(viewport, 1);
 
           // ---- keyboard --------------------------------------------------------
           // The pointer path owns real clicks; the click event is kept ONLY for

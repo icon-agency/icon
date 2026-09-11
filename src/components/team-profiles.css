@@ -234,6 +234,11 @@ html.is-team-open {
   color: var(--footer-ink);
   translate: -100% 0;
   transition: translate var(--duration-slow) var(--ease-decelerate);
+  /* its own scrollbar, thin and in the panel's ink at a quarter strength —
+     the browser's default drew a white bar down the panel's edge (user
+     call, Sep 2026) */
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--footer-ink) 25%, transparent) transparent;
 }
 
 .team-overlay[open] .team-overlay__panel {
