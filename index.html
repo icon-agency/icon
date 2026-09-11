@@ -96,6 +96,7 @@
                 <li><a class="ds-nav__link" href="#work">Work grid</a></li>
                 <li><a class="ds-nav__link" href="#work-gallery">Work gallery</a></li>
                 <li><a class="ds-nav__link" href="#work-blocks">Work article blocks</a></li>
+                <li><a class="ds-nav__link" href="#columns">Columns</a></li>
                 <li><a class="ds-nav__link" href="#clients">Clients marquee</a></li>
                 <li><a class="ds-nav__link" href="#news-stack">News — cards &amp; stack</a></li>
                 <li><a class="ds-nav__link" href="#team">Team profiles</a></li>
@@ -1251,6 +1252,42 @@
                   <code class="ds-code">page-header</code> + banner pair; pages built in Canvas get the
                   same blocks through the <code class="ds-code">Masthead</code> component and the
                   article block palette.
+                </p>
+              </div>
+            </section>
+
+            <section class="ds-section" id="columns">
+              <h3 class="ds-section__title">Columns</h3>
+              <p class="ds-section__intro">
+                <code class="ds-code">.columns</code> (<code class="ds-code">src/components/columns.css</code>)
+                &mdash; two, three or four blocks side by side on the page grid. A LAYOUT component
+                (Sep 2026): in Canvas each column is a drop slot that takes any block &mdash; Content,
+                an Image, a Pull quote, a Fact card &mdash; so the columns are made of the site&rsquo;s
+                own pieces rather than a text field per column, which is the pattern Canvas ships as
+                its own Columns example. Equal widths; one column on a phone, two from 768px, the chosen
+                count from 1024px; <code class="ds-code">--gap-tight</code> closes the gutter to the
+                gallery&rsquo;s 16px. A block inside a column drops its page-wide framing (the prose
+                measure and gutter, a pull quote&rsquo;s gutter) &mdash; the column is the measure now,
+                the same rule the article frames and the masthead apply to what they hold.
+              </p>
+              <div class="ds-group">
+                <h4 class="ds-group__title">Live &mdash; three columns of Content</h4>
+                <div class="ds-demo">
+                  <div class="columns columns--3 columns--gap-normal">
+                    <div class="columns__col"><div class="content-page"><h3>Strategy</h3><p>Research, positioning and the plan that turns a brief into a programme of work, with the measures agreed before anything is made.</p></div></div>
+                    <div class="columns__col"><div class="content-page"><h3>Creative</h3><p>Brand, campaign and content, made by the people who will produce it, so the idea survives contact with the channel.</p></div></div>
+                    <div class="columns__col"><div class="content-page"><h3>Digital</h3><p>Websites, products and services designed around the people who use them, built to be run by the people who own them.</p></div></div>
+                  </div>
+                  <p class="ds-demo__label">div.columns.columns--3.columns--gap-normal &gt; div.columns__col &times; 3 &gt; (any block) · columns--2 / --4 · columns--gap-tight</p>
+                </div>
+              </div>
+              <div class="ds-group">
+                <h4 class="ds-group__title">Drupal (Canvas / SDC)</h4>
+                <p class="ds-group__note">
+                  The <code class="ds-code">columns</code> SDC (Page folder): <strong>Columns</strong> 2 / 3 / 4
+                  and <strong>Gap</strong> normal / tight, with slots Column 1&ndash;4. Only as many slots
+                  render as the count says; a filled slot beyond the count is kept, not lost, and comes
+                  back when the count grows.
                 </p>
               </div>
             </section>

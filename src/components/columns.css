@@ -1,0 +1,70 @@
+/* columns.css — two, three or four blocks side by side, on the page grid.
+ * A LAYOUT component (Sep 2026, user call): each column is a drop slot in
+ * Canvas that takes any block, so the columns are made of the site's own
+ * pieces — Content, an Image, a Pull quote, a Fact card — not a text field
+ * per column. Equal widths; one column on a phone, two from 768px, the
+ * chosen count from 1024px. Self-padded on the page gutter like every
+ * block a Canvas page places.
+ *
+ * A block inside a column drops its own page-wide framing: the prose
+ * measure and gutter, the pull quote's and the results band's gutter — the
+ * column is the measure now. (The same rule the article frames and the
+ * masthead apply to what they hold.)
+ *
+ * Drupal: SDC `columns` — `columns` 2/3/4, `gap` normal/tight, slots
+ * column_1…column_4. */
+
+.columns {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-md) var(--grid-gutter);
+  padding-inline: var(--gutter-page);
+}
+
+.columns--gap-tight {
+  gap: var(--spacing-md);
+}
+
+@media (min-width: 768px) {
+  .columns {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .columns--3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .columns--4 {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+/* a column's blocks stack with the page's own rhythm between them */
+.columns__col {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  min-width: 0;
+}
+
+.columns__col > div,
+.columns__col > div > div {
+  display: contents; /* Canvas's wrappers, lifted as the page lifts them */
+}
+
+/* the column is the measure: the blocks' own framing comes off */
+.columns .content-page {
+  max-width: none;
+  margin-inline: 0;
+  padding-inline: 0;
+}
+
+.columns .pull-quote {
+  margin-inline: 0;
+}
+
+.columns .work-stats {
+  padding-inline: 0;
+}

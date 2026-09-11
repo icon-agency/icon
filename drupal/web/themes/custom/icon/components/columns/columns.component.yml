@@ -1,0 +1,49 @@
+$schema: https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json
+name: Columns
+group: Page
+status: stable
+description: >
+  Two, three or four columns side by side, each a drop slot that takes any
+  block — Content, an Image, a Pull quote, a Fact card. Equal widths; they
+  stack on a phone, pair from 768px and take the chosen count from 1024px.
+  Change the count and the columns you have filled stay.
+props:
+  type: object
+  required:
+    - columns
+  properties:
+    columns:
+      type: integer
+      title: Columns
+      description: How many, side by side.
+      enum:
+        - 2
+        - 3
+        - 4
+      examples:
+        - 2
+    gap:
+      type: string
+      title: Gap
+      description: The space between the columns.
+      enum:
+        - normal
+        - tight
+      meta:enum:
+        normal: Normal (the page's column gutter)
+        tight: Tight (the gallery's 16px)
+      examples:
+        - normal
+slots:
+  column_1:
+    title: Column 1
+    description: The first column's blocks.
+  column_2:
+    title: Column 2
+    description: The second column's blocks.
+  column_3:
+    title: Column 3
+    description: The third column's blocks — with three or four columns.
+  column_4:
+    title: Column 4
+    description: The fourth column's blocks — with four columns.

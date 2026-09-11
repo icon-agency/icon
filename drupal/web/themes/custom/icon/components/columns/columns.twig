@@ -1,0 +1,17 @@
+{#
+/**
+ * @file
+ * columns — two, three or four drop slots side by side
+ * (src/components/columns.css). Only as many slots render as the count
+ * says, so the editor sees the columns it asked for; a filled slot beyond
+ * the count is kept, not lost, and comes back when the count grows —
+ * Canvas's own Columns example, with the site's grid and gutters.
+ */
+#}
+{% set count = columns|default(2) %}
+<div class="columns columns--{{ count }} columns--gap-{{ gap|default('normal') }}">
+  <div class="columns__col">{% block column_1 %}{{ column_1 }}{% endblock %}</div>
+  <div class="columns__col">{% block column_2 %}{{ column_2 }}{% endblock %}</div>
+  {% if count >= 3 %}<div class="columns__col">{% block column_3 %}{{ column_3 }}{% endblock %}</div>{% endif %}
+  {% if count >= 4 %}<div class="columns__col">{% block column_4 %}{{ column_4 }}{% endblock %}</div>{% endif %}
+</div>

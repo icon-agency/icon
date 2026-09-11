@@ -69,6 +69,7 @@
 @import "./components/team-profiles.css";
 @import "./components/filmstrip.css";
 @import "./components/listing-band.css";
+@import "./components/columns.css";
 
 /* Page-specific overrides — keep tiny */
 @import "./utilities/home-page.css";

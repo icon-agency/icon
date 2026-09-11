@@ -1,0 +1,56 @@
+uuid: 5aea0e7e-d38f-4af5-9a49-1bb187eef9a5
+langcode: en
+status: true
+dependencies:
+  module:
+    - options
+  theme:
+    - icon
+active_version: c060b37df568e286
+versioned_properties:
+  active:
+    settings:
+      prop_field_definitions:
+        columns:
+          required: true
+          field_type: list_integer
+          field_storage_settings:
+            allowed_values_function: canvas_load_allowed_values_for_component_prop
+          field_instance_settings: {  }
+          field_widget: options_select
+          default_value:
+            -
+              value: 2
+          expression: ℹ︎list_integer␟value
+          derived_schema_metadata: {  }
+        gap:
+          required: false
+          field_type: list_string
+          field_storage_settings:
+            allowed_values_function: canvas_load_allowed_values_for_component_prop
+          field_instance_settings: {  }
+          field_widget: options_select
+          default_value:
+            -
+              value: normal
+          expression: ℹ︎list_string␟value
+          derived_schema_metadata: {  }
+    fallback_metadata:
+      slot_definitions:
+        column_1:
+          title: 'Column 1'
+          description: "The first column's blocks."
+        column_2:
+          title: 'Column 2'
+          description: "The second column's blocks."
+        column_3:
+          title: 'Column 3'
+          description: "The third column's blocks — with three or four columns."
+        column_4:
+          title: 'Column 4'
+          description: "The fourth column's blocks — with four columns."
+label: Columns
+id: sdc.icon.columns
+provider: icon
+source: sdc
+source_local_id: 'icon:columns'

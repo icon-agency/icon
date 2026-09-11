@@ -10,6 +10,7 @@ dependencies:
     - canvas.component.block.views_block.news-next_up
     - canvas.component.block.views_block.work-landing
     - canvas.component.block.views_block.work-next_up
+    - canvas.component.sdc.icon.columns
     - canvas.component.sdc.icon.news-article-figure
     - canvas.component.sdc.icon.news-article-video
     - canvas.component.sdc.icon.page-header
@@ -26,6 +27,7 @@ items:
   - block.views_block.news-next_up
   - block.views_block.work-landing
   - block.views_block.work-next_up
+  - sdc.icon.columns
   - sdc.icon.news-article-figure
   - sdc.icon.news-article-video
   - sdc.icon.page-header

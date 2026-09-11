@@ -25,6 +25,7 @@ $plan = [
     'sdc.icon.page-header',
     'sdc.icon.prose',
     'sdc.icon.pull-quote',
+    'sdc.icon.columns',
     'sdc.icon.news-article-figure',
     'sdc.icon.news-article-video',
     'block.icon_filmstrip',
