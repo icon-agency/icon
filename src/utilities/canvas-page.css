@@ -26,6 +26,16 @@
    alternative is keying on `#block-icon-content`, an id the block's machine
    name happens to produce. */
 .page-canvas > div,
-.page-canvas > div > div {
+.page-canvas > div > div:not(.toast) {
   display: contents;
+}
+
+/* …but not the message toast, which page.highlighted puts in the same
+   wrapper: flattened, its fixed placement is gone and a warning flows in
+   at the top of the page, under the wordmark and the nav (user catch,
+   Sep 2026: "warning should be over the logo navigation yeah?"). It keeps
+   its box, so it sits where every toast sits — bottom-left, above the
+   chrome. */
+.page-canvas > div > .toast {
+  display: flex;
 }
