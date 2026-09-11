@@ -104,8 +104,10 @@
    prose clamp at medium, a step tighter in leading for label duty */
 .work-stats__label {
   margin-top: var(--stat-gap, 0.45rem);
-  font-size: clamp(1.1875rem, 1.2vw, 1.875rem);
+  /* Paragraph — Small's size and leading (user call, Sep 2026: "can these
+     be the paragraph small font"), a step under the body it answers */
+  font-size: 1.0625rem;
   font-weight: var(--font-weight-medium);
-  line-height: 1.4;
+  line-height: 1.6;
   text-wrap: balance; /* user call: multi-line labels break evenly */
 }
