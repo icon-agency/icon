@@ -25,7 +25,10 @@
 
 .team__heading {
   margin: 0 0 var(--space-md);
-  font-size: var(--voice-headline);
+  /* the sentence-case H2's size (base/prose.css h2.is-sentence), so the
+     grid's heading and a Content block's beside it are one size (user
+     call, Sep 2026) */
+  font-size: clamp(1.75rem, 2.3vw, 3.7rem);
   font-weight: var(--font-weight-bold);
   line-height: 1.1;
   letter-spacing: -0.02em;
