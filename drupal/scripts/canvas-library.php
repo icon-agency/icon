@@ -35,6 +35,7 @@ $plan = [
     'block.views_block.work-landing',
     'block.views_block.news-next_up',
     'block.views_block.work-next_up',
+    'block.views_block.work-latest',
   ],
   'Work article' => [
     'sdc.icon.work-gallery',

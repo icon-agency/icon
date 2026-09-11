@@ -1,0 +1,26 @@
+uuid: a9b2c27c-b30a-4e95-8758-eabd8416cde2
+langcode: en
+status: true
+dependencies:
+  config:
+    - views.view.work
+  module:
+    - views
+active_version: 8c7f697933e08a09
+versioned_properties:
+  active:
+    settings:
+      default_settings:
+        id: 'views_block:work-latest'
+        label: 'Latest work'
+        label_display: '0'
+        provider: views
+        views_label: ''
+        items_per_page: null
+    fallback_metadata:
+      slot_definitions: null
+label: 'Latest work'
+id: block.views_block.work-latest
+provider: views
+source: block
+source_local_id: 'views_block:work-latest'

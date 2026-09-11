@@ -1,0 +1,20 @@
+{#
+/**
+ * @file
+ * The "Latest work" rail — the Next up rail for any page (the Digital
+ * expertise page first, Sep 2026), the two newest work items, nothing
+ * excluded:
+ * the two-voice lockup, two work cards, More. Still on the client theme —
+ * the footer alone returns to the site theme.
+ */
+#}
+<section class="work-article__next" data-rule="top" aria-label="{{ 'Latest work'|t }}">
+  <h2 class="work-article__next-heading reveal-lines" data-animate>
+    <span class="reveal-lines__line lockup-accent masthead-accent"><span class="reveal-lines__word" style="--w: 0">{{ 'Latest'|t }}</span></span>
+    <span class="reveal-lines__line lockup-caps"><span class="reveal-lines__word" style="--w: 1">{{ 'Work'|t }}</span></span>
+  </h2>
+  {{ rows }}
+  <div class="work-article__next-more">
+    <a class="news__more invite-arrow" href="{{ path('<front>') ~ 'work' }}" aria-label="{{ 'More work'|t }}">{{ 'More'|t }}</a>
+  </div>
+</section>

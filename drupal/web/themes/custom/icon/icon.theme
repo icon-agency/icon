@@ -456,7 +456,8 @@ function _icon_listing_url(?string $category = NULL): string {
 function icon_preprocess_views_view_unformatted(array &$variables): void {
   $view = $variables['view'];
   if ($view->id() === 'work') {
-    $is_rail = $view->current_display === 'next_up';
+    // next_up: the case study's rail; latest: the same rail on any page.
+    $is_rail = in_array($view->current_display, ['next_up', 'latest'], TRUE);
     $variables['filtered'] = !$is_rail && ($view->args[0] ?? 'all') !== 'all';
     foreach ($variables['rows'] as $i => &$row) {
       $node = $row['content']['#node'] ?? NULL;

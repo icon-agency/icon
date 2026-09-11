@@ -207,6 +207,31 @@ display:
         - 'user.node_grants:view'
         - user.permissions
       tags: {  }
+  latest:
+    id: latest
+    display_title: 'Latest work'
+    display_plugin: block
+    position: 3
+    display_options:
+      pager:
+        type: some
+        options:
+          offset: 0
+          items_per_page: 2
+      arguments: {  }
+      defaults:
+        pager: false
+        arguments: false
+      display_description: 'The two newest work items as a rail, on any page.'
+      display_extenders: {  }
+      block_description: 'Latest work'
+    cache_metadata:
+      max-age: -1
+      contexts:
+        - 'languages:language_interface'
+        - 'user.node_grants:view'
+        - user.permissions
+      tags: {  }
   next_up:
     id: next_up
     display_title: 'Next up (article rail)'
