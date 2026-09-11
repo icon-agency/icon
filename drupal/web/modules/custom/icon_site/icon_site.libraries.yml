@@ -44,3 +44,5 @@ page_data:
   dependencies:
     - core/drupal
     - core/once
+    # the drag itself, and the ghost and drop-line styles
+    - icon_site/panel_lists

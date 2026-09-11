@@ -147,7 +147,48 @@
   pointer-events: none;
 }
 
-/* the deliverables list, compact: the drag handle, the field, a quiet Remove */
+/* the deliverables list, compact: the sorter's handle, the field, a quiet
+   Remove (the drag itself is the panel sorter's, js/page-data.js) */
+[data-form-id="page_data_form"] .icon-panel__weight {
+  display: none;
+}
+
+[data-form-id="page_data_form"] .icon-panel__list tr.draggable td {
+  padding: 4px 6px 4px 0;
+  background: none;
+  border: 0;
+  border-radius: 0;
+}
+
+[data-form-id="page_data_form"] .icon-panel__list tr.draggable td:first-child {
+  width: 26px;
+  padding-left: 4px;
+}
+
+[data-form-id="page_data_form"] .icon-panel__handle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 30px;
+  padding: 0;
+  border: 0;
+  border-radius: 4px;
+  background: none;
+  color: var(--pd-muted);
+  cursor: grab;
+}
+
+[data-form-id="page_data_form"] .icon-panel__handle svg {
+  fill: currentColor;
+}
+
+[data-form-id="page_data_form"] .icon-panel__handle:hover,
+[data-form-id="page_data_form"] .icon-panel__handle:focus-visible {
+  background: #eef0f4;
+  color: var(--pd-ink);
+}
+
 [data-form-id="page_data_form"] .field-multiple-table {
   width: 100%;
   border-collapse: collapse;
