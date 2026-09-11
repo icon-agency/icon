@@ -959,7 +959,7 @@ function icon_site_form_media_form_alter(array &$form, FormStateInterface $form_
   $form['actions']['delete']['#access'] = FALSE;
   // A photo added from the filmstrip panel: its Type is the panel's
   // (?category=intro), and it has no marquee to be removed from.
-  if ($media->bundle() === 'image') {
+  if (in_array($media->bundle(), ['image', 'video'], TRUE)) {
     $type = (string) $request->query->get('category', '');
     if ($type !== '' && isset($form['field_media_category']['widget']) && $media->isNew()) {
       $form['field_media_category']['widget']['#default_value'] = [$type];

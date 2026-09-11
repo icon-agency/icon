@@ -1,2 +1,8 @@
-{# intro-photo — a filmstrip photo card (components/filmstrip.css .filmstrip__card). #}
-<figure class="filmstrip__card"><img src="{{ image.src }}" alt="{{ image.alt }}"{% if image.width %} width="{{ image.width }}"{% endif %}{% if image.height %} height="{{ image.height }}"{% endif %} /></figure>
+{# intro-photo — a filmstrip card (components/filmstrip.css .filmstrip__card): a picture, or a film that loops, muted (Sep 2026). #}
+<figure class="filmstrip__card">
+  {% if film.src is defined and film.src %}
+    <video autoplay muted loop playsinline preload="metadata" src="{{ film.src }}"{% if film.poster is defined and film.poster %} poster="{{ film.poster }}"{% endif %} aria-hidden="true"></video>
+  {% elseif image.src is defined and image.src %}
+    <img src="{{ image.src }}" alt="{{ image.alt|default('') }}"{% if image.width is defined and image.width %} width="{{ image.width }}"{% endif %}{% if image.height is defined and image.height %} height="{{ image.height }}"{% endif %} />
+  {% endif %}
+</figure>

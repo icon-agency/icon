@@ -7,6 +7,10 @@
   font: 13px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif;
   color: #1c2024;
 }
+.icon-panel__buttons {
+  display: inline-flex;
+  gap: 8px;
+}
 .icon-panel__bar {
   display: flex;
   align-items: center;

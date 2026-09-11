@@ -50,8 +50,10 @@
     };
     measure();
     window.addEventListener("resize", measure, { passive: true });
-    Array.prototype.slice.call(track.querySelectorAll("img")).forEach(function (img) {
-      if (!img.complete) img.addEventListener("load", measure, { once: true });
+    Array.prototype.slice.call(track.querySelectorAll("img, video")).forEach(function (m) {
+      // a film's height arrives with its metadata, a picture's with its load
+      if (m.tagName === "VIDEO") m.addEventListener("loadedmetadata", measure, { once: true });
+      else if (!m.complete) m.addEventListener("load", measure, { once: true });
     });
 
     var active = false; // the lean is on

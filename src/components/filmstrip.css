@@ -86,12 +86,13 @@
   }
 }
 
-.filmstrip__card img {
+.filmstrip__card img,
+.filmstrip__card video {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
-  pointer-events: none; /* drags hit the card, not the img */
+  pointer-events: none; /* drags hit the card, not the media */
 }
 
 /* Fact card — a stat tile in the snapshot deck (design:

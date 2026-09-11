@@ -90,7 +90,7 @@ final class FilmstripBlock extends BlockBase implements ContainerFactoryPluginIn
     $storage = $this->entityTypeManager->getStorage('media');
     $ids = $storage->getQuery()
       ->accessCheck(TRUE)
-      ->condition('bundle', 'image')
+      ->condition('bundle', ['image', 'video'], 'IN')
       ->condition('status', 1)
       ->condition('field_media_category', self::PHOTO_TYPE)
       ->sort('created', 'DESC')
@@ -149,10 +149,16 @@ final class FilmstripBlock extends BlockBase implements ContainerFactoryPluginIn
     $add = Url::fromRoute('entity.media.add_form', ['media_type' => 'image'], [
       'query' => ['panel' => 1, 'use_admin_theme' => 1, 'category' => self::PHOTO_TYPE],
     ])->toString();
+    // A looping film in the strip (user ask, Sep 2026): a Video media item
+    // tagged Intro, uploaded the same way.
+    $add_film = Url::fromRoute('entity.media.add_form', ['media_type' => 'video'], [
+      'query' => ['panel' => 1, 'use_admin_theme' => 1, 'category' => self::PHOTO_TYPE],
+    ])->toString();
     $dialog = self::dialog(760);
     $thumb = $this->entityTypeManager->getStorage('image_style')->load('thumbnail');
     $row = function (MediaInterface $media) use ($dialog, $thumb): string {
-      $file = $media->get('field_media_image')->entity;
+      // The media's own thumbnail: the picture itself, a film's poster.
+      $file = $media->get('thumbnail')->entity;
       $src = $file ? icon_site_file_url($thumb ? $thumb->buildUrl($file->getFileUri()) : $file->getFileUri()) : '';
       $edit = $media->toUrl('edit-form', ['query' => ['panel' => 1, 'use_admin_theme' => 1]])->toString();
       $name = htmlspecialchars((string) $media->label(), ENT_QUOTES);
@@ -175,7 +181,7 @@ final class FilmstripBlock extends BlockBase implements ContainerFactoryPluginIn
       '#markup' => '<div class="icon-panel__bar"><p class="icon-panel__title">' . $this->t('Photos · @count of @max', [
         '@count' => count($chosen),
         '@max' => count($chosen) + count($spare),
-      ]) . '</p><a class="icon-panel__button icon-panel__button--primary use-ajax" href="' . $add . '"' . $dialog . '>' . $this->t('+ Add photo') . '</a></div>',
+      ]) . '</p><span class="icon-panel__buttons"><a class="icon-panel__button icon-panel__button--primary use-ajax" href="' . $add . '"' . $dialog . '>' . $this->t('+ Add photo') . '</a> <a class="icon-panel__button use-ajax" href="' . $add_film . '"' . $dialog . '>' . $this->t('+ Add film') . '</a></span></div>',
     ];
     $form['panel']['card'] = ['#type' => 'container', '#attributes' => ['class' => ['icon-panel__card']]];
     $form['panel']['card']['list'] = [
@@ -189,14 +195,14 @@ final class FilmstripBlock extends BlockBase implements ContainerFactoryPluginIn
         'data-group' => 'available',
       ] + ($spares ? [] : ['hidden' => 'hidden']),
     ];
-    $form['panel']['spare']['title'] = ['#markup' => '<p class="icon-panel__group-title">' . $this->t('Available — Intro photos not in this strip') . '</p>'];
+    $form['panel']['spare']['title'] = ['#markup' => '<p class="icon-panel__group-title">' . $this->t('Available — Intro photos and films not in this strip') . '</p>'];
     $form['panel']['spare']['card'] = [
       '#type' => 'container',
       '#attributes' => ['class' => ['icon-panel__card', 'icon-panel__card--spare']],
     ];
     $form['panel']['spare']['card']['list'] = ['#markup' => '<table class="icon-panel__list icon-panel__list--available"><tbody>' . $spares . '</tbody></table>'];
     $form['panel']['note'] = [
-      '#markup' => '<p class="icon-panel__note">' . $this->t('The strip runs these in order — drag to reorder. Add photo uploads a new one, tagged Intro, straight into the strip; any image tagged Intro in the media library is offered under Available.') . '</p>',
+      '#markup' => '<p class="icon-panel__note">' . $this->t('The strip runs these in order — drag to reorder. Add photo or Add film uploads a new one, tagged Intro, straight into the strip; any image or video tagged Intro in the media library is offered under Available. A film loops, muted.') . '</p>',
     ];
 
     $form['every'] = [
@@ -321,17 +327,22 @@ final class FilmstripBlock extends BlockBase implements ContainerFactoryPluginIn
     ];
     $n = 0;
     foreach ($photos as $source) {
-      $cards[] = [
-        '#type' => 'component',
-        '#component' => 'icon:intro-photo',
-        '#props' => [
+      // A film is its own prop (the component's image prop cannot carry
+      // one); a picture as before.
+      $props = ($source['type'] ?? '') === 'video'
+        ? ['film' => array_filter(['src' => $source['src'], 'poster' => $source['poster'] ?? NULL])]
+        : [
           'image' => [
             'src' => $source['src'],
             'alt' => $source['alt'] ?? '',
             'width' => $source['width'] ?? NULL,
             'height' => $source['height'] ?? NULL,
           ],
-        ],
+        ];
+      $cards[] = [
+        '#type' => 'component',
+        '#component' => 'icon:intro-photo',
+        '#props' => $props,
       ];
       if (++$n % $every === 0 && isset($stats[$next])) {
         $cards[] = $fact($stats[$next++]);

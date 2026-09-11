@@ -5,15 +5,19 @@ status: stable
 description: One photo card in a filmstrip. Alt text comes from the media item.
 props:
   type: object
-  required:
-    - image
   properties:
     image:
       $ref: json-schema-definitions://canvas.module/image
       type: object
       title: Photo
+      description: A picture — or set a film below instead.
       examples:
         - src: https://placehold.co/800x1000
           alt: The ICON team
           width: 800
           height: 1000
+    film:
+      $ref: json-schema-definitions://canvas.module/video
+      type: object
+      title: Film
+      description: A short film that loops, muted, in the picture's place (Sep 2026).
