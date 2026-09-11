@@ -188,8 +188,9 @@ so an admin page (no main.css) never transitions. Drupal: `icon/page-transition`
 
 ## 8. Team profiles overlay — `src/components/team-profiles.css` + `js/team-profiles.js` (the About page)
 
-A member's profile is a native `<dialog>` that slides in from the left edge
-over the page: the panel moves `translate: -100% 0` → `0 0` with
+A member's profile is a native `<dialog>` that slides in from the right edge
+over the page (the left was tried, Sep 2026; on the right its scrollbar sits
+where a page's does): the panel moves `translate: 100% 0` → `0 0` with
 `@starting-style` on `[open]` (`--duration-slow`, `--ease-decelerate`), the
 backdrop is a tint of the footer ground that fades in with it, and the page
 behind loses its scroll (`html.is-team-open`). Closing slides it back out

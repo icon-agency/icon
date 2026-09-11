@@ -202,6 +202,7 @@ html.is-team-open {
   background: transparent;
   color: var(--footer-ink);
   z-index: 10005; /* over the pill (10000–10002) and the toasts */
+  overflow: visible; /* the panel reaches past the dialog's box, below */
   /* closing keeps the dialog painted (and in the top layer) for the
      panel's slide back out; a browser without discrete transitions
      simply removes it at once */
@@ -226,13 +227,18 @@ html.is-team-open {
 .team-overlay__panel {
   position: absolute;
   inset-block: 0;
-  left: 0;
+  /* Past the dialog's edge by the scrollbar's width: the lock keeps the
+     page's scrollbar gutter (html.is-team-open, above), and a fixed box
+     stops short of it — so the panel reaches over it to the viewport's
+     true edge. js/team-profiles.js measures the bar into --team-scrollbar
+     as the panel opens. */
+  right: calc(-1 * var(--team-scrollbar));
   width: 100%;
   overflow-y: auto;
   padding: var(--space-md) var(--gutter-page) var(--space-lg);
   background: var(--footer-bg);
   color: var(--footer-ink);
-  translate: -100% 0;
+  translate: 100% 0;
   transition: translate var(--duration-slow) var(--ease-decelerate);
   /* its own scrollbar, thin and in the panel's ink at a quarter strength —
      the browser's default drew a white bar down the panel's edge (user
@@ -245,12 +251,13 @@ html.is-team-open {
   translate: 0 0;
 }
 
-/* the first frame after opening is off the left edge (and the backdrop
+/* the first frame after opening is off the right edge (and the backdrop
    clear), so the transitions above have somewhere to come from; closing
-   runs them back the same way */
+   runs them back the same way. The right edge (user call, Sep 2026, after
+   a spell on the left): its scrollbar then sits where a page's does. */
 @starting-style {
   .team-overlay[open] .team-overlay__panel {
-    translate: -100% 0;
+    translate: 100% 0;
   }
 
   .team-overlay[open]::backdrop {

@@ -1791,8 +1791,8 @@
                   One native <code class="ds-code">&lt;dialog&gt;</code> holds every profile and is the
                   viewport (transparent, so the click beside the panel lands on it and closes); the visible
                   surface is <code class="ds-code">.team-overlay__panel</code>, on the footer&rsquo;s fixed
-                  ground and ink, anchored to the LEFT edge and sliding in from it
-                  (<code class="ds-code">translate: -100% 0 &rarr; 0 0</code>, <code class="ds-code">@starting-style</code>,
+                  ground and ink, anchored to the RIGHT edge and sliding in from it
+                  (<code class="ds-code">translate: 100% 0 &rarr; 0 0</code>, <code class="ds-code">@starting-style</code>,
                   <code class="ds-code">--duration-slow</code>) &mdash; and back out on close, the dialog
                   transitioning <code class="ds-code">display</code> and <code class="ds-code">overlay</code>
                   with <code class="ds-code">allow-discrete</code> so it stays painted until the panel has gone.
