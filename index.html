@@ -660,17 +660,23 @@
               <div class="ds-group">
                 <h4 class="ds-group__title">Drupal (Canvas / SDC)</h4>
                 <p class="ds-group__note">
-                  Editors place the <strong>Filmstrip block</strong> (Page folder), whose Canvas panel
-                  IS the strip: the photos as a reel &mdash; Intro-tagged images from the media library,
-                  dragged into order, the rest under Available with an Add, and &ldquo;+ Add photo&rdquo;
-                  uploading one over the editor straight into the strip &mdash; and up to six fact cards
-                  typed in place (icon from the Fact icons list, heading, label), with a fact card
-                  after every N photos. The block feeds the <code class="ds-code">filmstrip</code> SDC&rsquo;s
-                  <strong>Cards</strong> slot with a Photo or Fact card component per card &mdash; the
-                  same child components the homepage intro places by hand in its own strip slot (the
-                  slot-based Filmstrip is off the library; the intro embeds it). Each placement holds
-                  its own photos and facts, so a strip on the About page and the homepage&rsquo;s show
-                  different things; a new kind of card is a new child component, not a change to the
+                  ONE system, on every page (user call, 11 Sep 2026: &ldquo;the stat cards should work
+                  like the homepage intro &mdash; these are two systems&rdquo;): editors place the
+                  <strong>Filmstrip</strong> component (Pictures folder; one optional prop, the
+                  accessible label) and fill its <strong>Cards</strong> slot with
+                  <strong>Photo (filmstrip)</strong> and <strong>Fact card (filmstrip)</strong>
+                  components from Parts &mdash; press + on the slot, or drag them in &mdash; in the
+                  order they should drift, reordered in Layers. A Photo takes a picture through the
+                  standard media library, or a film that loops muted in its place; a Fact card is an
+                  icon from the Fact icons list, a heading and a label, edited by clicking the card.
+                  The homepage intro has always worked this way through its own strip slot; the About
+                  page&rsquo;s strip was a block that bundled photos and fact cards into one panel
+                  form, retired for this (<code class="ds-code">scripts/filmstrip-components.php</code>
+                  turned each placed block into the component and its cards). The component&rsquo;s
+                  panel opens with a note saying where the cards go, because a slot-holding
+                  component has nothing else to show there. Each placement holds its own cards, so
+                  a strip on the About page and the homepage&rsquo;s show different things; a new
+                  kind of card is a new child component, not a change to the
                   strip. <code class="ds-code">icon/filmstrip</code> attaches wherever the component renders.
                 </p>
               </div>
@@ -1146,13 +1152,19 @@
               <div class="ds-group">
                 <h4 class="ds-group__title">Drupal (Canvas / SDC)</h4>
                 <p class="ds-group__note">
-                  A <code class="ds-code">work_gallery</code> paragraph of rows, each row 1&ndash;2
-                  media references; the layered figure is a
-                  <code class="ds-code">layered_media</code> paragraph &mdash; ground (media
-                  reference OR a colour field), float (media reference), an inset percentage
-                  feeding <code class="ds-code">--overlay-pad</code>, and an optional ratio feeding
-                  the inline <code class="ds-code">aspect-ratio</code>. All figures reveal via the
-                  shared <code class="ds-code">iconReveal</code> behaviour.
+                  The <strong>Gallery</strong> component (Pictures folder) is a row holder with no
+                  settings of its own: its <strong>Figures</strong> slot takes one or two
+                  <strong>Figure (gallery)</strong> components from Parts &mdash; press + on the slot,
+                  or drag one in &mdash; and the column count is the number of figures. A Figure
+                  takes one picture (plain, or portrait-cropped when paired), two for a layered
+                  figure (the ground first, then the float), or a film in a picture&rsquo;s place,
+                  with a ground colour, an inset feeding <code class="ds-code">--overlay-pad</code>
+                  and an optional ratio for the layered form. The Work articles arrived as Canvas
+                  trees with their gallery rows and figures converted from the old
+                  <code class="ds-code">work_gallery</code> Paragraphs (Sep 2026). The Gallery&rsquo;s
+                  panel opens with a note saying where the pictures go, since it has no fields to
+                  show. All figures reveal via the shared <code class="ds-code">iconReveal</code>
+                  behaviour.
                 </p>
               </div>
             </section>
