@@ -649,7 +649,7 @@ display:
             operator: field_media_category_value_op
             operator_limit_selection: false
             operator_list: {  }
-            identifier: type
+            identifier: folder
             required: false
             remember: false
             multiple: false
