@@ -25,6 +25,22 @@
   gap: var(--spacing-md);
 }
 
+/* STACKED (below 768 every Columns is one column): the columns read as
+   one flow, so the grid's row gap goes and the prose's own margins carry
+   the rhythm — a heading sits its usual 1.25rem over the paragraph that
+   was beside it (user catch, Sep 2026: "a bit much"). Two stacked columns
+   with no prose at the join keep the page gap between them. */
+@media (max-width: 767.98px) {
+  .columns {
+    row-gap: 0;
+  }
+
+  .columns__col:not(:has(.content-page)) + .columns__col,
+  .columns__col + .columns__col:not(:has(.content-page)) {
+    margin-top: var(--space-md);
+  }
+}
+
 @media (min-width: 768px) {
   .columns {
     grid-template-columns: repeat(2, minmax(0, 1fr));
