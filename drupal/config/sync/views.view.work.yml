@@ -189,6 +189,24 @@ display:
         - 'user.node_grants:view'
         - user.permissions
       tags: {  }
+  landing:
+    id: landing
+    display_title: 'Work listing'
+    display_plugin: block
+    position: 1
+    display_options:
+      display_description: 'The landing page listing: chips, rows, pager — on the Work Canvas page.'
+      display_extenders: {  }
+      block_description: 'Work listing'
+    cache_metadata:
+      max-age: -1
+      contexts:
+        - 'languages:language_interface'
+        - url
+        - url.query_args
+        - 'user.node_grants:view'
+        - user.permissions
+      tags: {  }
   next_up:
     id: next_up
     display_title: 'Next up (article rail)'
@@ -248,24 +266,6 @@ display:
       contexts:
         - 'languages:language_interface'
         - url
-        - 'user.node_grants:view'
-        - user.permissions
-      tags: {  }
-  page_1:
-    id: page_1
-    display_title: /news
-    display_plugin: page
-    position: 1
-    display_options:
-      display_description: "The listing. ?category=slug filters server-side (the contextual filter's query-parameter default); js/news.js filters the loaded page in place."
-      display_extenders: {  }
-      path: work
-    cache_metadata:
-      max-age: -1
-      contexts:
-        - 'languages:language_interface'
-        - url
-        - url.query_args
         - 'user.node_grants:view'
         - user.permissions
       tags: {  }

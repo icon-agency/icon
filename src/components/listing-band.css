@@ -1,0 +1,43 @@
+/* listing-band.css — the category chips' band on the News and Work
+ * landings, standing on its own under the page's Masthead (Sep 2026: the
+ * landings became Canvas pages, so the band left the masthead's slot and
+ * sits at the top of the listing block). Two hairlines frame the pills,
+ * drawn in by rules.css ([data-rule] in the markup); --open drops the
+ * bottom one where the first story's own drawn hairline is the line under
+ * the chips. The pills are the .filter-bar component at the system's label
+ * voice, fully round, per the mock — the page-header--stack recipe, which
+ * the static templates still wear.
+ *
+ * Drupal: views-view--news--landing.html.twig and --work--landing. */
+
+.listing-band {
+  padding-block: var(--space-sm);
+  padding-inline: var(--gutter-page);
+  border-top: var(--rule-weight) solid var(--rule);
+  border-bottom: var(--rule-weight) solid var(--rule);
+}
+
+.listing-band--open {
+  border-bottom: 0;
+}
+
+/* The band belongs to the masthead above it, not to the page's rhythm: on
+   a Canvas page it closes the gap the page puts between blocks and sits on
+   the masthead's own foot, as it did inside it. */
+.page-canvas .listing-band {
+  margin-top: calc(-1 * var(--space-lg));
+}
+
+/* Horizontally-scrollable filter row — bleeds to the page edges on mobile so
+   chips scroll under the viewport edge; the inner .filter-bar re-adds the
+   edge padding and centres once the chips fit (lg+). */
+.listing-band__filters {
+  margin-inline: calc(-1 * var(--gutter-page));
+  overflow-x: auto;
+}
+
+.listing-band .filter-bar__chip {
+  font-size: var(--voice-label);
+  border-radius: 9999px;
+  padding: 0.5em 1.1em;
+}

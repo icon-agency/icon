@@ -50,10 +50,11 @@ function icon_preprocess_html(array &$variables): void {
     ],
   ];
 
-  // The dark-opening pages (templates/news-b.html, news-article.html): the
-  // class is in the markup so there is no flash, and iconThemeHandover hands
-  // over to light as the head scrolls away.
-  if (_icon_is_news_page() || \Drupal::routeMatch()->getRouteName() === 'view.work.page_1') {
+  // The dark-opening news article (templates/news-article.html): the class
+  // is in the markup so there is no flash, and iconThemeHandover hands over
+  // to light as the head scrolls away. (The /news and /work landings are
+  // Canvas pages since Sep 2026 — their Masthead's "Opens on" does this.)
+  if (_icon_is_news_page()) {
     $variables['html_attributes']->addClass('dark');
     $variables['#attached']['library'][] = 'icon/theme-handover';
   }
@@ -193,9 +194,6 @@ function _icon_route_node(string $bundle): ?NodeInterface {
  */
 function _icon_is_news_page(): bool {
   $route = \Drupal::routeMatch();
-  if ($route->getRouteName() === 'view.news.page_1') {
-    return TRUE;
-  }
   $node = $route->getParameter('node');
   return $node instanceof NodeInterface && $node->bundle() === 'news' && $route->getRouteName() === 'entity.node.canonical';
 }
@@ -310,7 +308,8 @@ function icon_preprocess_node(array &$variables): void {
 
   if ($variables['view_mode'] === 'full') {
     $variables['category_label'] = $allowed[$category] ?? $category;
-    $variables['category_url'] = Url::fromRoute('view.news.page_1', [], ['query' => ['category' => $category]])->toString();
+    // The listing is a Canvas page at /news (its alias), not a View route.
+    $variables['category_url'] = Url::fromUserInput('/news', ['query' => ['category' => $category]])->toString();
     $variables['date_iso'] = $date;
     $variables['date'] = \Drupal::service('date.formatter')->format(strtotime($date), 'custom', 'j M Y');
     $variables['image'] = _icon_media_image($node->get('field_news_image')->entity, 'news_banner', $cache);
@@ -374,7 +373,10 @@ function _icon_media_image(?EntityInterface $media, string $style_id, ?Cacheable
  */
 function icon_preprocess_views_view(array &$variables): void {
   $view = $variables['view'];
-  if ($view->id() === 'work' && $view->current_display === 'page_1') {
+  // The landings are Canvas pages (Sep 2026): the listing is the View's
+  // `landing` block display, placed under the page's Masthead, and the
+  // chips link to the page it sits on — whatever its address.
+  if ($view->id() === 'work' && $view->current_display === 'landing') {
     $current = $view->args[0] ?? 'all';
     $allowed = \Drupal::service('entity_field.manager')
       ->getFieldStorageDefinitions('node')['field_work_category']->getSetting('allowed_values');
@@ -382,7 +384,7 @@ function icon_preprocess_views_view(array &$variables): void {
       [
         'key' => 'all',
         'label' => t('All'),
-        'url' => Url::fromRoute('view.work.page_1')->toString(),
+        'url' => _icon_listing_url(),
         'active' => $current === 'all',
       ],
     ];
@@ -390,7 +392,7 @@ function icon_preprocess_views_view(array &$variables): void {
       $chips[] = [
         'key' => $key,
         'label' => $label,
-        'url' => Url::fromRoute('view.work.page_1', [], ['query' => ['category' => $key]])->toString(),
+        'url' => _icon_listing_url($key),
         'active' => $current === $key,
       ];
     }
@@ -405,7 +407,7 @@ function icon_preprocess_views_view(array &$variables): void {
   if ($view->id() !== 'news') {
     return;
   }
-  if ($view->current_display === 'page_1') {
+  if ($view->current_display === 'landing') {
     // The category chips: the list field's allowed values as real links to
     // this page's ?category=slug, "All" first. Active = the current argument
     // (the View's query-parameter contextual filter; 'all' is its exception).
@@ -416,7 +418,7 @@ function icon_preprocess_views_view(array &$variables): void {
       [
         'key' => 'all',
         'label' => t('All'),
-        'url' => Url::fromRoute('view.news.page_1')->toString(),
+        'url' => _icon_listing_url(),
         'active' => $current === 'all',
       ],
     ];
@@ -424,7 +426,7 @@ function icon_preprocess_views_view(array &$variables): void {
       $chips[] = [
         'key' => $key,
         'label' => $label,
-        'url' => Url::fromRoute('view.news.page_1', [], ['query' => ['category' => $key]])->toString(),
+        'url' => _icon_listing_url($key),
         'active' => $current === $key,
       ];
     }
@@ -436,6 +438,16 @@ function icon_preprocess_views_view(array &$variables): void {
     // crawlers.
     $variables['#attached']['library'][] = 'icon/listing-lazy';
   }
+}
+
+/**
+ * The listing page's own address, with a category — for its chips.
+ *
+ * The listing block sits on a Canvas page; the page's route is the current
+ * one, and its alias (/news, /work) is what the URL generator prints.
+ */
+function _icon_listing_url(?string $category = NULL): string {
+  return Url::fromRoute('<current>', [], $category ? ['query' => ['category' => $category]] : [])->toString();
 }
 
 /**
@@ -621,7 +633,7 @@ function _icon_preprocess_node_work(array &$variables, NodeInterface $node): voi
     $variables['statement'] = $node->get('field_work_statement')->value ?? '';
     $variables['categories'] = array_map(fn($item) => [
       'label' => $allowed[$item->value] ?? $item->value,
-      'url' => Url::fromRoute('view.work.page_1', [], ['query' => ['category' => $item->value]])->toString(),
+      'url' => Url::fromUserInput('/work', ['query' => ['category' => $item->value]])->toString(),
     ], iterator_to_array($node->get('field_work_category')));
     $variables['deliverables'] = array_map(fn($item) => $item->value, iterator_to_array($node->get('field_work_deliverables')));
     $variables['banner'] = _icon_media_source($node->get('field_work_banner')->entity, 'work_media', $cache)

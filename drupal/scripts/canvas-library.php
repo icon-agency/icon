@@ -30,6 +30,8 @@ $plan = [
     'block.icon_filmstrip',
     'block.icon_team_profiles',
     'block.icon_clients_marquee',
+    'block.views_block.news-landing',
+    'block.views_block.work-landing',
     'block.views_block.news-next_up',
     'block.views_block.work-next_up',
   ],
@@ -51,6 +53,7 @@ $plan = [
     'sdc.icon.intro-photo',
     'sdc.icon.intro-fact',
     'sdc.icon.intro-expertise',
+    'sdc.icon.subscribe-bar',
   ],
 ];
 

@@ -1,0 +1,18 @@
+uuid: 350984ed-4feb-44a0-8282-03478230f8ac
+langcode: en
+status: true
+dependencies:
+  theme:
+    - icon
+active_version: 8fe3be948e0194e1
+versioned_properties:
+  active:
+    settings:
+      prop_field_definitions: {  }
+    fallback_metadata:
+      slot_definitions: {  }
+label: 'Subscribe bar (masthead)'
+id: sdc.icon.subscribe-bar
+provider: icon
+source: sdc
+source_local_id: 'icon:subscribe-bar'

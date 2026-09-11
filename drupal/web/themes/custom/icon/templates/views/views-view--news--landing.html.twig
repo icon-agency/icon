@@ -1,0 +1,29 @@
+{#
+/**
+ * @file
+ * The /news listing — the News listing block on the News Canvas page
+ * (Sep 2026; the masthead above it is the page's own Masthead component).
+ * The chips are the View's category argument rendered as links
+ * (icon_preprocess_views_view() builds `chips` from the field's allowed
+ * values + the ?category param), so they filter server-side and js/news.js
+ * enhances them in place. `rows` is views-view-unformatted--news.html.twig;
+ * `pager` is the themed pager. The band closes with no line of its own —
+ * the first story's drawn hairline is the line under the chips.
+ */
+#}
+<div class="listing-band listing-band--open" data-rule="top">
+  <div class="listing-band__filters">
+    <div class="filter-bar" role="group" aria-label="{{ 'Filter news by category'|t }}">
+      {% for chip in chips %}
+        <a class="filter-bar__chip{{ chip.active ? ' is-active' }}" href="{{ chip.url }}" data-filter="{{ chip.key }}"{% if chip.active %} aria-current="true"{% endif %}>{{ chip.label }}</a>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<section aria-label="{{ 'News stories'|t }}">
+  <p class="sr-only" aria-live="polite" data-news-status></p>
+  {{ rows }}
+  {{ empty }}
+  {{ pager }}
+</section>

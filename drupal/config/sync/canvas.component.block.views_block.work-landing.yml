@@ -1,0 +1,26 @@
+uuid: 3f69537c-92dd-4712-a5cd-62a9686b0dc4
+langcode: en
+status: true
+dependencies:
+  config:
+    - views.view.work
+  module:
+    - views
+active_version: e4d09147d243a796
+versioned_properties:
+  active:
+    settings:
+      default_settings:
+        id: 'views_block:work-landing'
+        label: 'Work listing'
+        label_display: '0'
+        provider: views
+        views_label: ''
+        items_per_page: null
+    fallback_metadata:
+      slot_definitions: null
+label: 'Work listing'
+id: block.views_block.work-landing
+provider: views
+source: block
+source_local_id: 'views_block:work-landing'

@@ -4,11 +4,11 @@ status: true
 dependencies:
   config:
     - core.entity_view_mode.node.teaser
-    - field.storage.node.field_news_category
-    - field.storage.node.field_news_date
     - node.type.news
   module:
+    - datetime
     - node
+    - options
     - user
 id: news
 label: News
@@ -198,7 +198,24 @@ display:
     cache_metadata:
       max-age: -1
       contexts:
-        - 'languages:language_content'
+        - 'languages:language_interface'
+        - url
+        - url.query_args
+        - 'user.node_grants:view'
+        - user.permissions
+      tags: {  }
+  landing:
+    id: landing
+    display_title: 'News listing'
+    display_plugin: block
+    position: 1
+    display_options:
+      display_description: 'The landing page listing: chips, rows, pager — on the News Canvas page.'
+      display_extenders: {  }
+      block_description: 'News listing'
+    cache_metadata:
+      max-age: -1
+      contexts:
         - 'languages:language_interface'
         - url
         - url.query_args
@@ -301,9 +318,7 @@ display:
     cache_metadata:
       max-age: -1
       contexts:
-        - 'languages:language_content'
         - 'languages:language_interface'
-        - url
         - 'user.node_grants:view'
         - user.permissions
       tags: {  }
@@ -364,28 +379,8 @@ display:
     cache_metadata:
       max-age: -1
       contexts:
-        - 'languages:language_content'
         - 'languages:language_interface'
         - url
-        - 'user.node_grants:view'
-        - user.permissions
-      tags: {  }
-  page_1:
-    id: page_1
-    display_title: /news
-    display_plugin: page
-    position: 1
-    display_options:
-      display_description: "The listing. ?category=slug filters server-side (the contextual filter's query-parameter default); js/news.js filters the loaded page in place."
-      display_extenders: {  }
-      path: news
-    cache_metadata:
-      max-age: -1
-      contexts:
-        - 'languages:language_content'
-        - 'languages:language_interface'
-        - url
-        - url.query_args
         - 'user.node_grants:view'
         - user.permissions
       tags: {  }

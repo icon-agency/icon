@@ -1,0 +1,11 @@
+$schema: https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json
+name: Subscribe bar (masthead)
+group: Parts (go inside a block above)
+status: stable
+description: >
+  The newsletter Subscribe pill — the header search face's twin. Goes in
+  the Masthead's "Under the heading" slot, as on the News and Work landings.
+  Inert until the newsletter is wired up.
+props:
+  type: object
+  properties: {}

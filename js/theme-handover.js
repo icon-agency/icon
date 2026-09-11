@@ -89,7 +89,11 @@
   // filtered view simply renders it on its own first row) and announces the
   // move with this event — js/news.js is the only dispatcher.
   var bind = function () {
-    var head = document.querySelector("[data-theme-handover]");
+    // A carrier that says "end" — the news listing's lead band — wins over
+    // the page's Masthead, which names the opening but, on that page, is
+    // not where the theme lets go (the dark holds to the first story's
+    // foot; user call, Sep 2026).
+    var head = document.querySelector('[data-theme-handover="end"]') || document.querySelector("[data-theme-handover]");
     if (!head) return;
     io.disconnect();
     io.observe(head);

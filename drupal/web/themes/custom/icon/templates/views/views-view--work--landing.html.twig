@@ -1,0 +1,26 @@
+{#
+/**
+ * @file
+ * The /work landing — the Work listing block on the Work Canvas page
+ * (Sep 2026; the masthead above it is the page's own Masthead component,
+ * whose "Opens on" is the dark opening and its handover). The six category
+ * chips (from icon_preprocess_views_view()) in a ruled band, the uncapped
+ * project grid (views-view-unformatted--work.html.twig) and the pager.
+ */
+#}
+<div class="listing-band" data-rule="both">
+  <div class="listing-band__filters">
+    <div class="filter-bar" role="group" aria-label="{{ 'Filter work by category'|t }}">
+      {% for chip in chips %}
+        <a class="filter-bar__chip{{ chip.active ? ' is-active' }}" href="{{ chip.url }}" data-filter="{{ chip.key }}"{% if chip.active %} aria-current="true"{% endif %}>{{ chip.label }}</a>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<section class="work-landing__projects u-container" aria-label="{{ 'Work projects'|t }}">
+  <p class="sr-only" aria-live="polite" data-work-status></p>
+  {{ rows }}
+  {{ empty }}
+  {{ pager }}
+</section>

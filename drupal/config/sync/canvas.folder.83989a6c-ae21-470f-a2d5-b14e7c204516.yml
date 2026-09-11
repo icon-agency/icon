@@ -6,6 +6,7 @@ dependencies:
     - canvas.component.sdc.icon.intro-expertise
     - canvas.component.sdc.icon.intro-fact
     - canvas.component.sdc.icon.intro-photo
+    - canvas.component.sdc.icon.subscribe-bar
     - canvas.component.sdc.icon.work-gallery-figure
     - canvas.component.sdc.icon.work-stat
 name: 'Parts (go inside a block above)'
@@ -15,5 +16,6 @@ items:
   - sdc.icon.intro-expertise
   - sdc.icon.intro-fact
   - sdc.icon.intro-photo
+  - sdc.icon.subscribe-bar
   - sdc.icon.work-gallery-figure
   - sdc.icon.work-stat
