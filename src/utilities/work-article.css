@@ -558,11 +558,13 @@
      (letterboxed inside its narrowed box, never stretched). */
   position: absolute;
   z-index: 1; /* the float rides ABOVE the ground, explicitly */
-  inset: var(--overlay-pad, 5vw);
+  /* capped a side, as the card's float is (home-c.css) */
+  --_pad: min(var(--overlay-pad, 5vw), 40%);
+  inset: var(--_pad);
   margin: auto;
-  height: calc(100% - var(--overlay-pad, 5vw) * 2);
+  height: calc(100% - var(--_pad) * 2);
   width: auto;
-  max-width: calc(100% - var(--overlay-pad, 5vw) * 2);
+  max-width: calc(100% - var(--_pad) * 2);
   object-fit: contain;
   border-radius: var(--radius-icon);
   /* the float sits OUT the scroll-velocity skew (user call): the figure

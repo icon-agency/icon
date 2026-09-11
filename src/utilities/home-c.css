@@ -1298,11 +1298,15 @@ html:not(.js-animations) .intro__expertise-list li:first-child a {
 .work__float {
   position: absolute;
   z-index: 1;
-  inset: var(--overlay-pad, 18%);
+  /* CAPPED at 40% a side (user catch, Sep 2026: an inset of 50% — read
+     as "half the tile" — left the float with no room at all; 40% still
+     leaves a fifth of the tile) */
+  --_pad: min(var(--overlay-pad, 18%), 40%);
+  inset: var(--_pad);
   margin: auto;
-  height: calc(100% - var(--overlay-pad, 18%) * 2);
+  height: calc(100% - var(--_pad) * 2);
   width: auto;
-  max-width: calc(100% - var(--overlay-pad, 18%) * 2);
+  max-width: calc(100% - var(--_pad) * 2);
   object-fit: contain;
   pointer-events: none;
   transition: filter 0.35s var(--ease-standard);

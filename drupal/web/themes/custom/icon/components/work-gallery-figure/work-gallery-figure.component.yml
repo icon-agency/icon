@@ -68,6 +68,6 @@ props:
     pad:
       type: string
       title: Float inset
-      description: How far the floating cut-out sits in from the figure's edges, e.g. 22%. Leave empty for the default.
+      description: How far in from each edge the floating cut-out sits, so 22% leaves it 56% of the figure wide (50% would leave nothing; over 40% is capped). Leave empty for the default.
       examples:
         - 22%

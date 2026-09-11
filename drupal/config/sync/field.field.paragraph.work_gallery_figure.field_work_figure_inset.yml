@@ -10,7 +10,7 @@ field_name: field_work_figure_inset
 entity_type: paragraph
 bundle: work_gallery_figure
 label: 'Float inset'
-description: 'Layered figures only: how far the float sits in from the frame, e.g. 22%. Leave empty for the default.'
+description: 'Layered figures only: how far in from each edge the float sits, so 22% leaves it 56% of the frame wide (50% would leave nothing; values over 40% are capped). Leave empty for the default.'
 required: false
 translatable: true
 default_value: {  }
