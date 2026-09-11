@@ -661,11 +661,11 @@ function _icon_paragraph_props(ParagraphInterface $paragraph, ?CacheableMetadata
 function _icon_preprocess_node_work(array &$variables, NodeInterface $node): void {
   $cache = new CacheableMetadata();
   if ($variables['view_mode'] === 'teaser') {
-    // The card's headline is the Feature statement — the outcome in one line
-    // (user call, Sep 2026) — and the project name when none is written.
-    $statement = trim((string) ($node->get('field_work_statement')->value ?? ''));
+    // The card's headline is the PROJECT NAME (user call, Sep 2026 — it was
+    // the Feature statement for a while, the outcome in one line; the
+    // statement stays the case study's own serif line under its banner).
     $variables['card'] = [
-      'title' => $statement !== '' ? $statement : $node->label(),
+      'title' => $node->label(),
       'url' => $node->toUrl()->toString(),
       'client' => $node->get('field_work_client')->value ?? '',
       'media' => _icon_media_source($node->get('field_work_tile')->entity, 'work_media', $cache),
