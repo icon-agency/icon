@@ -44,6 +44,19 @@ function icon_site_form_node_form_alter(array &$form, FormStateInterface $form_s
   // reach it, one the form carries does (work-tiles.css found that out).
   if (\Drupal::routeMatch()->getRouteName() === 'canvas.api.form.content_entity') {
     $form['#attached']['library'][] = 'icon_site/page_data';
+    // Section headings to scan by (user call, Sep 2026), drawn by the
+    // panel's CSS from the attribute, inside each section's rule.
+    $sections = [
+      'title' => t('Project'),
+      'field_work_bg' => t('Colours'),
+      'field_work_banner' => t('Banner'),
+      'field_work_category' => t('Facts'),
+    ];
+    foreach ($sections as $field => $heading) {
+      if (isset($form[$field])) {
+        $form[$field]['#attributes']['data-section'] = $heading;
+      }
+    }
   }
   _icon_site_work_tile_group($form, $form_state);
   _icon_site_work_legacy_group($form, $form_state);
