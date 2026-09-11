@@ -1,0 +1,18 @@
+uuid: 5efce22d-9605-476e-b779-9a9d8ded7d04
+langcode: en
+status: true
+dependencies:
+  theme:
+    - icon
+active_version: 8fe3be948e0194e1
+versioned_properties:
+  active:
+    settings:
+      prop_field_definitions: {  }
+    fallback_metadata:
+      slot_definitions: {  }
+label: Line
+id: sdc.icon.divider
+provider: icon
+source: sdc
+source_local_id: 'icon:divider'
