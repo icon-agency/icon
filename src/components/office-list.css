@@ -1,65 +1,74 @@
-/* office-list.css — the offices, OPEN: the footer accordion's rows with the
- * address and the contact laid out beside each other, for the page that is
- * about getting in touch (templates/contact.html, design: the live
- * iconagency.com.au/contact). Same anatomy and voices as the footer's
- * .site-footer__office rows — the icon, the city over its place name, a
- * hairline between rows — so the two lists read as one thing; here nothing
- * is folded, so there is no toggle and no <details>.
+/* office-list.css — the offices, OPEN: the footer accordion's rows
+ * (components/site-footer.css, .site-footer__office*) laid out for the page
+ * that is about getting in touch (templates/contact.html). The same anatomy
+ * and the same voices — the icon, the city in the mid voice with its place
+ * name in the muted meta voice on the right, hairlines between rows that
+ * draw in like every rule on the site — in the page's own ink; only nothing
+ * is folded, so the address and the contact stand beside each other under
+ * the name, and there is no toggle and no <details>. Not the old site's
+ * blue capitals (user call, Sep 2026: "use our styling").
  *
  * Drupal: the Offices content (Content → Offices, icon_site's OfficesForm)
- * rendered through an office-list SDC; the footer's accordion draws on the
- * same rows.
+ * through an office-list SDC; the footer's accordion draws on the same rows.
  */
 
 .office-list {
   margin: 0;
   padding: 0;
   list-style: none;
+  color: var(--color-icon-black);
 }
 
 .office-list__item {
   display: grid;
+  /* the icon column the details indent to — the footer's own derivation */
   grid-template-columns: var(--voice-mid) 1fr;
   column-gap: var(--space-xs);
-  row-gap: var(--space-2xs);
+  row-gap: var(--space-xs);
+  align-items: center;
   padding-block: var(--space-sm);
-  border-top: var(--rule-weight) solid var(--rule);
-  color: var(--color-icon-blue);
 }
 
-.office-list__item:last-child {
+/* the hairlines are drawn in by rules.css ([data-rule] in the markup) */
+.office-list__item[data-rule] {
+  border-top: var(--rule-weight) solid var(--rule);
+}
+
+.office-list__item[data-rule="both"] {
   border-bottom: var(--rule-weight) solid var(--rule);
 }
 
-/* a 1em square, as the footer's: the column the details indent to */
+/* a 1em square, as the footer's: non-square art letterboxes inside it */
 .office-list__icon {
   width: 1em;
   height: 1em;
   font-size: var(--voice-mid);
-  /* optically on the city's cap line */
-  margin-top: 0.1em;
+}
+
+.office-list__head {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-xs);
+  min-width: 0;
 }
 
 .office-list__city {
   margin: 0;
   font-size: var(--voice-mid);
-  font-weight: var(--font-weight-semibold);
+  font-weight: var(--font-weight-medium);
   letter-spacing: -0.01em;
-  line-height: 1.1;
-  text-transform: uppercase;
+  line-height: 1.2;
 }
 
 .office-list__place {
-  display: block;
-  margin-top: 0.15em;
-  font-size: var(--voice-label);
-  font-weight: var(--font-weight-normal);
-  letter-spacing: 0;
-  text-transform: none;
+  margin-left: auto;
+  font-size: var(--voice-meta);
+  color: color-mix(in srgb, currentColor 60%, transparent);
+  white-space: nowrap;
 }
 
-/* the details start under the city name (grid column 2) and split into
-   address | contact from 640, the mock's two short columns */
+/* under the city name (grid column 2): address | contact from 640, the two
+   short columns the footer's open panel stacks */
 .office-list__details {
   grid-column: 2;
   display: grid;
@@ -80,13 +89,14 @@
   margin: 0;
 }
 
+/* the footer's link treatment: quiet at rest, full ink on hover */
 .office-list__details a {
-  color: inherit;
+  color: color-mix(in srgb, currentColor 60%, transparent);
   text-decoration: none;
+  transition: color var(--duration-fast) var(--ease-standard);
 }
 
 .office-list__details a:hover,
 .office-list__details a:focus-visible {
-  text-decoration: underline;
-  text-underline-offset: 0.15em;
+  color: var(--color-icon-black);
 }

@@ -1,29 +1,27 @@
-/* contact-form.css — the enquiry form (templates/contact.html, design: the
- * live iconagency.com.au/contact): a caps lead in the brand blue, an intro
- * paragraph, then underlined fields — the label sits over a single blue
- * hairline, the field beneath it, nothing boxed — a captcha slot, and
- * "Send your message" as the site's quiet invitation link rather than a
- * button block. Every value is a token; the field rule is the same
- * --rule-weight the rest of the site draws with, in the blue.
+/* contact-form.css — the enquiry form (templates/contact.html) in the
+ * site's own voices, not the old site's blue (user call, Sep 2026): the
+ * lead is the mid voice at medium — the weight the footer's city names and
+ * the quiet links carry — the intro is body copy in the meta voice, and a
+ * field is a label in the muted ink over THE hairline (rules.css: --rule,
+ * --rule-weight) with the answer typed in full ink beneath it; nothing is
+ * boxed. Focus fills the hairline with the ink. The captcha's place is a
+ * hairline box; "Send your message" is the quiet invitation link.
  *
  * Drupal: a Webform (contact) rendered with these classes on its elements
- * — the form is the site's, the markup below is its visual spec; the
- * captcha is the Webform's own (reCAPTCHA / Turnstile), the box here holds
- * its place. No behaviour of its own.
+ * — the form is the site's, this markup is its visual spec; the captcha is
+ * the Webform's own (reCAPTCHA / Turnstile). No behaviour of its own.
  */
 
 .contact-form {
-  color: var(--color-icon-blue);
+  color: var(--color-icon-black);
 }
 
-/* the lead: the caps label voice at its heaviest, as the footer's headings */
 .contact-form__lead {
   margin: 0 0 var(--space-xs);
-  font-size: var(--voice-meta);
-  font-weight: 900;
-  letter-spacing: 0.02em;
+  font-size: var(--voice-mid);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: -0.01em;
   line-height: 1.2;
-  text-transform: uppercase;
 }
 
 .contact-form__intro {
@@ -47,19 +45,20 @@
   display: grid;
   gap: var(--space-2xs);
   padding-bottom: var(--space-2xs);
-  border-bottom: var(--rule-weight) solid currentColor;
+  border-bottom: var(--rule-weight) solid var(--rule);
   transition: border-color var(--duration-fast) var(--ease-standard);
 }
 
+/* the label in the quiet ink, the site's resting-link mix */
 .contact-form__label {
-  font-size: calc(var(--voice-label) * 1.35);
+  font-size: var(--voice-meta);
   font-weight: var(--font-weight-normal);
   line-height: 1.2;
+  color: color-mix(in srgb, currentColor 60%, transparent);
 }
 
 .contact-form__required {
-  /* the asterisk reads as part of the label; screen readers get `required` */
-  speak: never;
+  speak: never; /* `required` on the field says it; the mark is for the eye */
 }
 
 .contact-form__input,
@@ -71,34 +70,32 @@
   border-radius: 0;
   background: none;
   font: inherit;
-  font-size: calc(var(--voice-label) * 1.35);
+  font-size: var(--voice-meta);
   line-height: 1.4;
-  color: var(--color-icon-black);
-  caret-color: var(--color-icon-blue);
+  color: inherit;
+  caret-color: currentColor;
   appearance: none;
 }
 
-/* the field's focus is the RULE thickening, not a ring around the text:
-   the ring would box a design that has no boxes (the global focus ring
-   stays for keyboard users on the buttons and links) */
+/* the field's focus is the hairline filling with ink, not a ring around the
+   text — a ring would box a design that has no boxes; the global ring stays
+   for the button and the links */
 .contact-form__input:focus-visible,
 .contact-form__textarea:focus-visible {
   outline: none;
 }
 
 .contact-form__field:focus-within {
-  border-bottom-width: calc(var(--rule-weight) * 2);
-  padding-bottom: calc(var(--space-2xs) - var(--rule-weight));
+  border-color: currentColor;
 }
 
 .contact-form__textarea {
   min-height: 3.5em;
   resize: vertical;
-  /* room for the attachment glyph at the end of the first line */
-  padding-inline-end: 2em;
+  padding-inline-end: 2em; /* room for the paperclip */
 }
 
-/* the paperclip: a real file input, the glyph its label */
+/* the attachment: a real file input, the glyph its label */
 .contact-form__attach {
   position: absolute;
   right: 0;
@@ -107,9 +104,15 @@
   place-items: center;
   width: 1.5em;
   height: 1.5em;
-  font-size: calc(var(--voice-label) * 1.35);
+  font-size: var(--voice-meta);
   cursor: pointer;
-  color: inherit;
+  color: color-mix(in srgb, currentColor 60%, transparent);
+  transition: color var(--duration-fast) var(--ease-standard);
+}
+
+.contact-form__attach:hover,
+.contact-form__attach:focus-within {
+  color: var(--color-icon-black);
 }
 
 .contact-form__attach svg {
@@ -126,8 +129,8 @@
   white-space: nowrap;
 }
 
-/* the captcha's place: the widget's own size, a hairline box in the grey
-   until the real one mounts */
+/* the captcha's place: the widget's own size, a hairline box until the
+   real one mounts */
 .contact-form__captcha {
   width: min(100%, 19rem);
   height: 4.875rem;
@@ -137,7 +140,7 @@
   display: grid;
   place-items: center;
   font-size: var(--voice-label);
-  color: var(--color-icon-black);
+  color: color-mix(in srgb, currentColor 60%, transparent);
 }
 
 /* Send: the quiet link (components/quiet-link.css) as a <button>, which
@@ -149,5 +152,4 @@
   background: none;
   cursor: pointer;
   font-family: inherit;
-  color: var(--color-icon-blue);
 }
