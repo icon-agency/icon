@@ -10,7 +10,7 @@ id: node.work.field_work_tile_fg
 field_name: field_work_tile_fg
 entity_type: node
 bundle: work
-label: Foreground
+label: 'Foreground overlay'
 description: "Optional: a picture that floats over the tile, centred, the way a gallery figure's foreground does — a logo or a cut-out. A transparent PNG or SVG. It floats over the wide tile too."
 required: false
 translatable: true

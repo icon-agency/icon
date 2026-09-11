@@ -22,7 +22,7 @@
 
   Drupal.behaviors.iconPageDataColours = {
     attach: function (context) {
-      once("icon-page-data-colours", '[data-form-id="page_data_form"]', context).forEach(function (form) {
+      once("icon-page-data-colours", 'form[data-form-id="page_data_form"]', context).forEach(function (form) {
         form.querySelectorAll("#edit-field-work-bg-wrapper input[type='text'], #edit-field-work-ink-wrapper input[type='text']").forEach(dress);
       });
     }

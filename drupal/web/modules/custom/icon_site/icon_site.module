@@ -44,17 +44,29 @@ function icon_site_form_node_form_alter(array &$form, FormStateInterface $form_s
   // reach it, one the form carries does (work-tiles.css found that out).
   if (\Drupal::routeMatch()->getRouteName() === 'canvas.api.form.content_entity') {
     $form['#attached']['library'][] = 'icon_site/page_data';
-    // Section headings to scan by (user call, Sep 2026), drawn by the
-    // panel's CSS from the attribute, inside each section's rule.
+    // Section headings to scan by (user call, Sep 2026): a heading ahead
+    // of each section's first field, carrying the section's rule
+    // (css/page-data.css); the Tile and Legacy details head themselves.
     $sections = [
       'title' => t('Project'),
       'field_work_bg' => t('Colours'),
       'field_work_banner' => t('Banner'),
-      'field_work_category' => t('Facts'),
+      'field_work_category' => t('Categories'),
+      'field_work_deliverables' => t('Deliverables'),
     ];
+    // …and the status block (published, last saved, author) and the
+    // publishing footer (current state, change to) head themselves too —
+    // the footer FIRST in the panel (user call: "important, top of the
+    // list"), beside Review changes.
+    $sections += ['meta' => t('Status'), 'footer' => t('Publishing')];
+    if (isset($form['footer'])) {
+      $form['footer']['#weight'] = -100;
+    }
     foreach ($sections as $field => $heading) {
       if (isset($form[$field])) {
-        $form[$field]['#attributes']['data-section'] = $heading;
+        // AHEAD of any prefix the widget has: the multi-value widget opens
+        // its AJAX wrapper there, and Add another item replaces that.
+        $form[$field]['#prefix'] = '<h3 class="icon-pd-section">' . $heading . '</h3>' . ($form[$field]['#prefix'] ?? '');
       }
     }
   }

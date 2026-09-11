@@ -1,12 +1,14 @@
 /* The Canvas editor's Page data panel — the Work node's own form, rendered
    by the site theme into Canvas's panel (user call, Sep 2026: "modern
    simple formatting"). One quiet register: small semibold labels, help
-   a step down and muted, the form read as SECTIONS under hairlines
-   (project · colours · tile · banner · facts · body · URL), the category
+   a step down and muted, the form read as SECTIONS under black rules
+   (project · colours · tile · banner · categories · deliverables · URL), the category
    options as pills, the colours side by side with a swatch of the value
    (js/page-data.js), the deliverables list compact. Colours are Canvas's
-   neutrals so the form sits in the panel rather than on it. */
-[data-form-id="page_data_form"] {
+   neutrals so the form sits in the panel rather than on it. Scoped to the
+   FORM element: Canvas stamps data-form-id on every input too, and a
+   grid on the buttons broke them (user catch, Sep 2026). */
+form[data-form-id="page_data_form"] {
   --pd-ink: #1c2024;
   --pd-muted: #60646c;
   --pd-rule: #e0e1e6;
@@ -16,72 +18,113 @@
   color: var(--pd-ink);
 }
 
-/* rhythm: every top-level field a step apart, sections a rule apart */
-[data-form-id="page_data_form"] > .js-form-wrapper,
-[data-form-id="page_data_form"] > .form-item,
-[data-form-id="page_data_form"] > div[id^="edit-"] {
+/* THE FORM IS A GRID of two columns: everything spans both, the colour
+   pair takes one each — no floats, no moved fields (Canvas reads a moved
+   field as an edit). Every top-level field a step apart. */
+form[data-form-id="page_data_form"] {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 12px;
+  row-gap: 0;
+}
+
+form[data-form-id="page_data_form"] > * {
+  grid-column: 1 / -1;
+  min-width: 0;
+}
+
+form[data-form-id="page_data_form"] > .js-form-wrapper,
+form[data-form-id="page_data_form"] > .form-item,
+form[data-form-id="page_data_form"] > div[id^="edit-"] {
   margin: 0 0 18px;
 }
 
-[data-form-id="page_data_form"] > #edit-field-work-bg-wrapper,
-[data-form-id="page_data_form"] > #edit-tile,
-[data-form-id="page_data_form"] > #edit-field-work-banner-wrapper,
-[data-form-id="page_data_form"] > #edit-field-work-category-wrapper,
-[data-form-id="page_data_form"] > #edit-work-canvas,
-[data-form-id="page_data_form"] > #edit-path-wrapper,
-[data-form-id="page_data_form"] > .entity-content-form-footer {
-  padding-top: 20px;
-  margin-top: 6px;
-  border-top: 1px solid var(--pd-rule);
+form[data-form-id="page_data_form"] > #edit-field-work-bg-wrapper {
+  grid-column: 1;
 }
 
-/* section headings to scan by (user call, Sep 2026): drawn from the
-   data-section the form alter sets on each section's first field, and the
-   two details' summaries (Tile, Legacy folio card) set the same */
-[data-form-id="page_data_form"] [data-section]::before {
-  content: attr(data-section);
-  display: block;
-  margin: 0 0 12px;
-  font-size: 16px;
+form[data-form-id="page_data_form"] > #edit-field-work-ink-wrapper {
+  grid-column: 2;
+}
+
+/* SECTION HEADINGS to scan by (user calls, Sep 2026: "bigger", "the
+   divider black"): a heading ahead of each section's first field
+   (icon_site_form_node_form_alter()) carries the section's rule — one
+   black line, then the heading, then the fields; the Tile and Legacy
+   details head themselves with their summary, sized the same, and the
+   URL and footer groups keep a rule of their own. */
+form[data-form-id="page_data_form"] .icon-pd-section,
+form[data-form-id="page_data_form"] > #edit-tile,
+form[data-form-id="page_data_form"] > #edit-legacy,
+form[data-form-id="page_data_form"] > #edit-path-wrapper {
+  padding-top: 18px;
+  margin-top: 8px;
+  border-top: 1px solid var(--pd-ink);
+}
+
+/* the first section opens the panel with no rule above it */
+form[data-form-id="page_data_form"] > .icon-pd-section:first-child {
+  border-top: 0;
+  padding-top: 0;
+  margin-top: 0;
+}
+
+form[data-form-id="page_data_form"] .icon-pd-section {
+  margin: 8px 0 14px;
+  font-size: 19px;
   font-weight: 700;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.015em;
   line-height: 1.2;
   color: var(--pd-ink);
 }
 
-/* the Banner section's one field is named by the heading already */
-[data-form-id="page_data_form"] #edit-field-work-banner-wrapper > label,
-[data-form-id="page_data_form"] #edit-field-work-banner-wrapper legend,
-[data-form-id="page_data_form"] #edit-field-work-banner-wrapper .field-label {
-  display: none;
-}
-
-[data-form-id="page_data_form"] summary,
-[data-form-id="page_data_form"] [class*="_trigger_"] {
-  font-size: 16px !important;
+form[data-form-id="page_data_form"] summary,
+form[data-form-id="page_data_form"] [class*="_trigger_"],
+form[data-form-id="page_data_form"] [class*="_trigger_"] > * {
+  /* the details' summary is Canvas's own button, its text a sized span
+     inside it — both take the section size (user catch: Tile stayed small) */
+  font-size: 19px !important;
   font-weight: 700 !important;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.015em;
   color: var(--pd-ink);
 }
 
+/* a section of one field is named by its heading already: the Banner's
+   label, the Categories' legend, the Deliverables' table head */
+form[data-form-id="page_data_form"] #edit-field-work-banner-wrapper > label,
+form[data-form-id="page_data_form"] #edit-field-work-banner-wrapper legend,
+form[data-form-id="page_data_form"] #edit-field-work-banner-wrapper .field-label,
+form[data-form-id="page_data_form"] #edit-field-work-category-wrapper legend,
+form[data-form-id="page_data_form"] .multivalue-label,
+form[data-form-id="page_data_form"] .field-multiple-table thead {
+  display: none;
+}
+
+form[data-form-id="page_data_form"] #edit-field-work-category-wrapper fieldset,
+form[data-form-id="page_data_form"] #edit-field-work-category-wrapper .fieldset-wrapper {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
 /* labels and help */
-[data-form-id="page_data_form"] label,
-[data-form-id="page_data_form"] .field-label .label,
-[data-form-id="page_data_form"] legend {
+form[data-form-id="page_data_form"] label,
+form[data-form-id="page_data_form"] .field-label .label,
+form[data-form-id="page_data_form"] legend {
   font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.01em;
   color: var(--pd-ink);
 }
 
-[data-form-id="page_data_form"] .form-required::after {
+form[data-form-id="page_data_form"] .form-required::after {
   content: " *";
   color: var(--pd-muted);
 }
 
-[data-form-id="page_data_form"] .description,
-[data-form-id="page_data_form"] .description-unwrapped,
-[data-form-id="page_data_form"] [class*="_description_"] {
+form[data-form-id="page_data_form"] .description,
+form[data-form-id="page_data_form"] .description-unwrapped,
+form[data-form-id="page_data_form"] [class*="_description_"] {
   margin-top: 4px;
   font-size: 11.5px;
   line-height: 1.4;
@@ -89,24 +132,24 @@
 }
 
 /* the statement reads as a short paragraph, not a slab */
-[data-form-id="page_data_form"] textarea {
+form[data-form-id="page_data_form"] textarea {
   min-height: 72px;
   resize: vertical;
 }
 
 /* the category options as pills, the chosen ones filled */
-[data-form-id="page_data_form"] .form-checkboxes {
+form[data-form-id="page_data_form"] .form-checkboxes {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
   margin-top: 6px;
 }
 
-[data-form-id="page_data_form"] .form-checkboxes .form-item {
+form[data-form-id="page_data_form"] .form-checkboxes .form-item {
   margin: 0;
 }
 
-[data-form-id="page_data_form"] .form-checkboxes .form-item label {
+form[data-form-id="page_data_form"] .form-checkboxes .form-item label {
   display: inline-flex;
   align-items: center;
   padding: 5px 11px;
@@ -117,13 +160,13 @@
   transition: background-color 0.15s, border-color 0.15s, color 0.15s;
 }
 
-[data-form-id="page_data_form"] .form-checkboxes .form-item:has(input:checked) label {
+form[data-form-id="page_data_form"] .form-checkboxes .form-item:has(input:checked) label {
   background: var(--pd-ink);
   border-color: var(--pd-ink);
   color: #fff;
 }
 
-[data-form-id="page_data_form"] .form-checkboxes input[type="checkbox"] {
+form[data-form-id="page_data_form"] .form-checkboxes input[type="checkbox"] {
   position: absolute;
   width: 1px;
   height: 1px;
@@ -133,37 +176,18 @@
   white-space: nowrap;
 }
 
-/* the two colours side by side (floated: the form is a flat stack and the
-   pair cannot be wrapped without moving fields, which Canvas would read
-   as an edit), each with a swatch of its value in the field */
-[data-form-id="page_data_form"] > #edit-field-work-bg-wrapper,
-[data-form-id="page_data_form"] > #edit-field-work-ink-wrapper {
-  float: left;
-  width: calc(50% - 6px);
-}
-
-[data-form-id="page_data_form"] > #edit-field-work-ink-wrapper {
-  margin-left: 12px;
-  padding-top: 20px;
-  margin-top: 6px;
-  border-top: 1px solid var(--pd-rule);
-}
-
-[data-form-id="page_data_form"] > #edit-field-work-ink-wrapper + * {
-  clear: both;
-}
-
-[data-form-id="page_data_form"] .icon-colour [class*="_wrap_"] {
+/* the colour pair: a swatch of the value in each field */
+form[data-form-id="page_data_form"] .icon-colour [class*="_wrap_"] {
   position: relative;
 }
 
-[data-form-id="page_data_form"] .icon-colour input {
+form[data-form-id="page_data_form"] .icon-colour input {
   padding-left: 34px;
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
   font-size: 12px;
 }
 
-[data-form-id="page_data_form"] .icon-colour__swatch {
+form[data-form-id="page_data_form"] .icon-colour__swatch {
   position: absolute;
   left: 8px;
   top: 50%;
@@ -178,39 +202,39 @@
 /* the deliverables list, compact: Canvas's own tabledrag (its handle in
    the first cell, the row moving live as it is dragged — the Drupal
    default, user call, Sep 2026), the field, a quiet Remove */
-[data-form-id="page_data_form"] .field-multiple-table {
+form[data-form-id="page_data_form"] .field-multiple-table {
   width: 100%;
   border-collapse: collapse;
 }
 
-[data-form-id="page_data_form"] .field-multiple-table thead th {
+form[data-form-id="page_data_form"] .field-multiple-table thead th {
   padding: 0 0 6px;
   text-align: left;
   border: 0;
 }
 
-[data-form-id="page_data_form"] .field-multiple-table thead .label {
+form[data-form-id="page_data_form"] .field-multiple-table thead .label {
   margin: 0;
 }
 
-[data-form-id="page_data_form"] .field-multiple-table td {
+form[data-form-id="page_data_form"] .field-multiple-table td {
   padding: 3px 4px 3px 0;
   border: 0;
   vertical-align: middle;
 }
 
-[data-form-id="page_data_form"] .field-multiple-table .form-item {
+form[data-form-id="page_data_form"] .field-multiple-table .form-item {
   margin: 0;
 }
 
-[data-form-id="page_data_form"] .field-multiple-table .field-multiple-drag {
+form[data-form-id="page_data_form"] .field-multiple-table .field-multiple-drag {
   width: 22px;
   color: var(--pd-muted);
 }
 
-[data-form-id="page_data_form"] .field-multiple-table .button,
-[data-form-id="page_data_form"] .field-add-more-submit,
-[data-form-id="page_data_form"] .button--small {
+form[data-form-id="page_data_form"] .field-multiple-table .button,
+form[data-form-id="page_data_form"] .field-add-more-submit,
+form[data-form-id="page_data_form"] .button--small {
   padding: 5px 10px;
   font-size: 12px;
   font-weight: 500;
@@ -221,13 +245,13 @@
   cursor: pointer;
 }
 
-[data-form-id="page_data_form"] .field-multiple-table .button:hover,
-[data-form-id="page_data_form"] .field-add-more-submit:hover {
+form[data-form-id="page_data_form"] .field-multiple-table .button:hover,
+form[data-form-id="page_data_form"] .field-add-more-submit:hover {
   border-color: var(--pd-muted);
 }
 
 /* the way into the body: the primary button, full-width */
-[data-form-id="page_data_form"] #edit-work-canvas .button--primary {
+form[data-form-id="page_data_form"] #edit-work-canvas .button--primary {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -243,20 +267,53 @@
   text-decoration: none;
 }
 
-/* the footer: author and dates as a muted meta line, the state select under */
-[data-form-id="page_data_form"] .entity-meta__header {
+/* the STATUS block (user call, Sep 2026: "neaten this up"): no card,
+   each fact one line — the label in the muted voice on the left, the
+   value in ink on the right — under its own heading; the publishing
+   footer's two items the same */
+form[data-form-id="page_data_form"] .entity-meta,
+form[data-form-id="page_data_form"] .entity-meta__header {
   padding: 0;
+  margin: 0;
+  border: 0;
   background: none;
+  box-shadow: none;
 }
 
-[data-form-id="page_data_form"] .entity-meta .form-item {
-  margin: 0 0 6px;
+form[data-form-id="page_data_form"] .entity-meta__title {
+  margin: 0 0 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--pd-ink);
+}
+
+form[data-form-id="page_data_form"] .entity-meta .form-item,
+form[data-form-id="page_data_form"] #edit-moderation-state-0 .form-item {
+  display: grid;
+  grid-template-columns: 92px 1fr;
+  align-items: baseline;
+  gap: 6px 12px;
+  margin: 0 0 8px;
+  font-size: 12.5px;
+  color: var(--pd-ink);
+}
+
+form[data-form-id="page_data_form"] .entity-meta .form-item label,
+form[data-form-id="page_data_form"] #edit-moderation-state-0 .form-item label {
+  margin: 0;
   font-size: 12px;
+  font-weight: 500;
   color: var(--pd-muted);
 }
 
+form[data-form-id="page_data_form"] .entity-meta .form-item [class*="_description"],
+form[data-form-id="page_data_form"] .entity-meta .form-item .description {
+  grid-column: 2;
+  margin: 0;
+}
+
 /* the field a click in the frame opened (js/page-data.js): lit for a beat */
-[data-form-id="page_data_form"] .is-targeted {
+form[data-form-id="page_data_form"] .is-targeted {
   animation: icon-pd-target 1.6s ease-out;
 }
 
