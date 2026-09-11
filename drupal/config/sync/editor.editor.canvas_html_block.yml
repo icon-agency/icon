@@ -16,33 +16,60 @@ editor: ckeditor5
 settings:
   toolbar:
     items:
-      - heading
-      - '|'
       - bold
       - italic
-      - underline
-      - strikethrough
+      - '|'
       - link
       - '|'
       - bulletedList
       - numberedList
-      - blockQuote
-      - code
-      - insertTable
-      - horizontalLine
+      - style
       - '|'
-      - removeFormat
+      - blockQuote
+      - '|'
+      - heading
+      - code
+      - '|'
+      - sourceEditing
   plugins:
     ckeditor5_heading:
       enabled_headings:
         - heading2
         - heading3
         - heading4
+        - heading5
+        - heading6
     ckeditor5_list:
       properties:
         reversed: false
-        startIndex: false
-        styles: false
-      multiBlock: false
+        startIndex: true
+        styles: true
+      multiBlock: true
+    ckeditor5_sourceEditing:
+      allowed_tags:
+        - '<cite>'
+        - '<dl>'
+        - '<dt>'
+        - '<dd>'
+        - '<a hreflang>'
+        - '<blockquote cite>'
+        - '<h2 id>'
+        - '<h3 id>'
+        - '<h4 id>'
+        - '<h5 id>'
+        - '<h6 id>'
+        - '<hr>'
+        - '<table>'
+        - '<thead>'
+        - '<tbody>'
+        - '<tr>'
+        - '<th scope>'
+        - '<td>'
+        - '<caption>'
+    ckeditor5_style:
+      styles:
+        -
+          label: 'Slash list'
+          element: '<ul class="list-slash">'
 image_upload:
   status: false
