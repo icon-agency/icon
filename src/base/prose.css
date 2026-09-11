@@ -205,7 +205,7 @@
   }
 
   .content-page p {
-    font-size: clamp(1.125rem, 1.75vw, 1.375rem);
+    font-size: var(--voice-paragraph);
     line-height: 1.75;
     margin-bottom: 2rem;
     text-wrap: pretty;

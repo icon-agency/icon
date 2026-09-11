@@ -1,11 +1,13 @@
 /* contact-form.css — the enquiry form (templates/contact.html) in the
  * site's own voices, not the old site's blue (user call, Sep 2026): the
  * lead is the mid voice at medium — the weight the footer's city names and
- * the quiet links carry — the intro is body copy in the meta voice, and a
- * field is a label in the muted ink over THE hairline (rules.css: --rule,
- * --rule-weight) with the answer typed in full ink beneath it; nothing is
- * boxed. Focus fills the hairline with the ink. The captcha's place is a
- * hairline box; "Send your message" is the quiet invitation link.
+ * the quiet links carry — the intro is a Paragraph (the prose voice,
+ * --voice-paragraph, in the prose grey), and a field is its label in the
+ * same Paragraph voice, heavier, over THE hairline (rules.css: --rule,
+ * --rule-weight) with the answer typed beneath it in the Paragraph voice
+ * too (user call: "the Paragraph font and heavier font labels"); nothing
+ * is boxed. Focus fills the hairline with the ink. The captcha's place is
+ * a hairline box; "Send your message" is the quiet invitation link.
  *
  * Drupal: a Webform (contact) rendered with these classes on its elements
  * — the form is the site's, this markup is its visual spec; the captcha is
@@ -27,8 +29,9 @@
 .contact-form__intro {
   max-width: 44ch;
   margin: 0 0 var(--space-md);
-  font-size: var(--voice-meta);
-  line-height: var(--line-height-normal);
+  font-size: var(--voice-paragraph);
+  line-height: 1.75;
+  color: var(--icon-grey);
 }
 
 .contact-form__fields {
@@ -49,12 +52,11 @@
   transition: border-color var(--duration-fast) var(--ease-standard);
 }
 
-/* the label in the quiet ink, the site's resting-link mix */
+/* the label: the Paragraph voice, a weight up, in full ink */
 .contact-form__label {
-  font-size: var(--voice-meta);
-  font-weight: var(--font-weight-normal);
-  line-height: 1.2;
-  color: color-mix(in srgb, currentColor 60%, transparent);
+  font-size: var(--voice-paragraph);
+  font-weight: var(--font-weight-semibold);
+  line-height: 1.3;
 }
 
 .contact-form__required {
@@ -70,7 +72,7 @@
   border-radius: 0;
   background: none;
   font: inherit;
-  font-size: var(--voice-meta);
+  font-size: var(--voice-paragraph);
   line-height: 1.4;
   color: inherit;
   caret-color: currentColor;
@@ -104,7 +106,7 @@
   place-items: center;
   width: 1.5em;
   height: 1.5em;
-  font-size: var(--voice-meta);
+  font-size: var(--voice-paragraph);
   cursor: pointer;
   color: color-mix(in srgb, currentColor 60%, transparent);
   transition: color var(--duration-fast) var(--ease-standard);

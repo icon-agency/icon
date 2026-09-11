@@ -1,8 +1,11 @@
 /* contact-page.css — the contact page's one arrangement
  * (templates/contact.html, design: the live iconagency.com.au/contact):
  * the masthead, then the enquiry form on the left and the offices, open,
- * on the right, splitting at the footer's own half-line (768). The
- * masthead opens light; the page has no handover.
+ * on the right, splitting at the footer's own half-line (768). Both
+ * columns start on a drawn hairline with the same air beneath it, so the
+ * form's lead and the first city name sit level (user annotation, Sep
+ * 2026). The page opens DARK, the footer's ground, and stays there — no
+ * handover; the offices read as the footer's own rows, open.
  *
  * Drupal: a Canvas page — Masthead component over a Columns of the
  * contact Webform block and the office-list SDC; the footer wears
@@ -29,4 +32,12 @@
 .contact-page__form,
 .contact-page__offices {
   min-width: 0;
+}
+
+/* the form's rule and the air beneath it are the office row's exactly
+   (components/office-list.css: padding-block --space-sm), which is what
+   levels the lead with "Melbourne"; drawn in by rules.css */
+.contact-page__form[data-rule] {
+  border-top: var(--rule-weight) solid var(--rule);
+  padding-top: var(--space-sm);
 }

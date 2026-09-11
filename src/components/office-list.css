@@ -2,11 +2,12 @@
  * (components/site-footer.css, .site-footer__office*) laid out for the page
  * that is about getting in touch (templates/contact.html). The same anatomy
  * and the same voices — the icon, the city in the mid voice with its place
- * name in the muted meta voice on the right, hairlines between rows that
- * draw in like every rule on the site — in the page's own ink; only nothing
- * is folded, so the address and the contact stand beside each other under
- * the name, and there is no toggle and no <details>. Not the old site's
- * blue capitals (user call, Sep 2026: "use our styling").
+ * name in the muted meta voice beside it, hairlines between rows that draw
+ * in like every rule on the site, the address and the contact in ONE
+ * column under the name as the open panel stacks them — in the page's own
+ * ink; only nothing is folded, so there is no toggle and no <details>. Not
+ * the old site's blue capitals (user call, Sep 2026: "use our styling",
+ * then "match fonts and alignment" to the footer's open row).
  *
  * Drupal: the Offices content (Content → Offices, icon_site's OfficesForm)
  * through an office-list SDC; the footer's accordion draws on the same rows.
@@ -61,28 +62,20 @@
 }
 
 .office-list__place {
-  margin-left: auto;
   font-size: var(--voice-meta);
   color: color-mix(in srgb, currentColor 60%, transparent);
   white-space: nowrap;
 }
 
-/* under the city name (grid column 2): address | contact from 640, the two
-   short columns the footer's open panel stacks */
+/* under the city name (grid column 2), one column: the address, then
+   Phone, then the email — the footer's open panel, line for line */
 .office-list__details {
   grid-column: 2;
   display: grid;
-  grid-template-columns: 1fr;
-  gap: var(--space-2xs) var(--space-md);
+  gap: var(--space-2xs);
   font-size: var(--voice-meta);
   font-style: normal; /* address element */
   line-height: var(--line-height-normal);
-}
-
-@media (min-width: 640px) {
-  .office-list__details {
-    grid-template-columns: 1fr 1fr;
-  }
 }
 
 .office-list__details p {

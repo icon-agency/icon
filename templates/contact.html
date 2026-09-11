@@ -3,8 +3,10 @@
      iconagency.com.au/contact): the centred page-header--stack masthead,
      then the enquiry form on the left and the four offices, open, on the
      right; the footer hides its office accordion because the same details
-     are open just above. Opens LIGHT — no theme class, no handover. -->
-<html lang="en">
+     are open just above. Opens DARK (user call: "try dark theme") and
+     stays there — no handover; the footer is the same ground. Theme class
+     on <html>, never <body> — see LESSONS.md. -->
+<html lang="en" class="dark">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -204,7 +206,7 @@
 
       <!-- ================= FORM + OFFICES ================= -->
       <div class="contact-page">
-        <div class="contact-page__form" data-animate>
+        <div class="contact-page__form" data-rule="top" data-animate>
           <!-- Drupal: the contact Webform block; the classes are its visual
                spec (components/contact-form.css). The captcha box is the
                widget's place. -->
