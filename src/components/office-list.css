@@ -1,0 +1,92 @@
+/* office-list.css — the offices, OPEN: the footer accordion's rows with the
+ * address and the contact laid out beside each other, for the page that is
+ * about getting in touch (templates/contact.html, design: the live
+ * iconagency.com.au/contact). Same anatomy and voices as the footer's
+ * .site-footer__office rows — the icon, the city over its place name, a
+ * hairline between rows — so the two lists read as one thing; here nothing
+ * is folded, so there is no toggle and no <details>.
+ *
+ * Drupal: the Offices content (Content → Offices, icon_site's OfficesForm)
+ * rendered through an office-list SDC; the footer's accordion draws on the
+ * same rows.
+ */
+
+.office-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.office-list__item {
+  display: grid;
+  grid-template-columns: var(--voice-mid) 1fr;
+  column-gap: var(--space-xs);
+  row-gap: var(--space-2xs);
+  padding-block: var(--space-sm);
+  border-top: var(--rule-weight) solid var(--rule);
+  color: var(--color-icon-blue);
+}
+
+.office-list__item:last-child {
+  border-bottom: var(--rule-weight) solid var(--rule);
+}
+
+/* a 1em square, as the footer's: the column the details indent to */
+.office-list__icon {
+  width: 1em;
+  height: 1em;
+  font-size: var(--voice-mid);
+  /* optically on the city's cap line */
+  margin-top: 0.1em;
+}
+
+.office-list__city {
+  margin: 0;
+  font-size: var(--voice-mid);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: -0.01em;
+  line-height: 1.1;
+  text-transform: uppercase;
+}
+
+.office-list__place {
+  display: block;
+  margin-top: 0.15em;
+  font-size: var(--voice-label);
+  font-weight: var(--font-weight-normal);
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+/* the details start under the city name (grid column 2) and split into
+   address | contact from 640, the mock's two short columns */
+.office-list__details {
+  grid-column: 2;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-2xs) var(--space-md);
+  font-size: var(--voice-meta);
+  font-style: normal; /* address element */
+  line-height: var(--line-height-normal);
+}
+
+@media (min-width: 640px) {
+  .office-list__details {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.office-list__details p {
+  margin: 0;
+}
+
+.office-list__details a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.office-list__details a:hover,
+.office-list__details a:focus-visible {
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}

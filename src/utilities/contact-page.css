@@ -1,0 +1,32 @@
+/* contact-page.css — the contact page's one arrangement
+ * (templates/contact.html, design: the live iconagency.com.au/contact):
+ * the masthead, then the enquiry form on the left and the offices, open,
+ * on the right, splitting at the footer's own half-line (768). The
+ * masthead opens light; the page has no handover.
+ *
+ * Drupal: a Canvas page — Masthead component over a Columns of the
+ * contact Webform block and the office-list SDC; the footer wears
+ * .site-footer--no-offices on this page (page.html.twig, by path).
+ */
+
+.contact-page {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-lg) var(--space-md);
+  padding-inline: var(--gutter-page);
+  padding-bottom: var(--space-section);
+}
+
+@media (min-width: 768px) {
+  .contact-page {
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+  }
+}
+
+/* the masthead above gives its own air; the columns start at the lockup's
+   distance, the same the news landing's first row keeps */
+.contact-page__form,
+.contact-page__offices {
+  min-width: 0;
+}
