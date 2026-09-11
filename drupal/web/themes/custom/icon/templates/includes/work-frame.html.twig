@@ -10,26 +10,23 @@
  *
  * Variables (icon_preprocess_node() / icon_preprocess_page(), via
  * _icon_work_frame()): title, client, banner, statement, categories,
- * deliverables; editor (true in the Canvas editor's frame — the parts
- * then name the field they come from, data-edit-field, and the editor
- * page opens that field in Page data when one is clicked:
- * icon_site/js/page-data.js, styles in utilities/work-article.css).
+ * deliverables. Since Sep 2026 the frame is normally the Work masthead
+ * COMPONENT at the top of the article's tree (components/work-masthead);
+ * this include stands in on an article that has none yet.
  */
 #}
-{% macro edit(field, label, editor) %}{% if editor %} data-edit-field="{{ field }}" data-edit-label="{{ label }}"{% endif %}{% endmacro %}
-{% import _self as f %}
-<header class="work-article__head"{{ f.edit('field_work_bg', 'Colours'|t, editor) }}>
+<header class="work-article__head">
   <p class="work-article__eyebrow" data-animate>
     <a class="invite-arrow invite-arrow--back" href="{{ path('<front>') ~ 'work' }}">{{ 'Work'|t }}</a>
   </p>
-  <h1 class="work-article__project" id="project-title" data-reveal-words{{ f.edit('title', 'Project name'|t, editor) }}>{{ title }}</h1>
+  <h1 class="work-article__project" id="project-title" data-reveal-words>{{ title }}</h1>
   {% if client %}
-    <p class="work-article__client masthead-accent" data-animate style="--animate-delay: 120ms"{{ f.edit('field_work_client', 'Client'|t, editor) }}>{{ client }}</p>
+    <p class="work-article__client masthead-accent" data-animate style="--animate-delay: 120ms">{{ client }}</p>
   {% endif %}
 </header>
 
 {% if banner %}
-  <figure class="work-article__banner media-reveal" data-reveal-img data-theme-handover="gone" data-theme-handover-class="theme-work-article"{{ f.edit('field_work_banner', 'Banner'|t, editor) }}>
+  <figure class="work-article__banner media-reveal" data-reveal-img data-theme-handover="gone" data-theme-handover-class="theme-work-article">
     {% if banner.type == 'video' %}
       <video autoplay muted loop playsinline preload="auto" src="{{ banner.src }}" aria-label="{{ banner.alt|default(title ~ ' — banner film') }}"></video>
     {% else %}
@@ -39,7 +36,7 @@
 {% endif %}
 
 {% if statement %}
-  <blockquote class="pull-quote pull-quote--upright" data-animate{{ f.edit('field_work_statement', 'Feature statement'|t, editor) }}>
+  <blockquote class="pull-quote pull-quote--upright" data-animate>
     <p class="pull-quote__text">{{ statement }}</p>
   </blockquote>
 {% endif %}
@@ -47,13 +44,13 @@
 {% if categories or deliverables %}
   <section class="work-article__facts" data-rule="top" aria-label="{{ 'Project facts'|t }}">
     {% if categories %}
-      <ul data-animate{{ f.edit('field_work_category', 'Categories'|t, editor) }}>
+      <ul data-animate>
         <li class="work-article__facts-title">{{ 'Category'|t }}</li>
         {% for c in categories %}<li><a href="{{ c.url }}">{{ c.label }}</a></li>{% endfor %}
       </ul>
     {% endif %}
     {% if deliverables %}
-      <ul data-animate style="--animate-delay: 60ms"{{ f.edit('field_work_deliverables', 'Deliverables'|t, editor) }}>
+      <ul data-animate style="--animate-delay: 60ms">
         <li class="work-article__facts-title">{{ 'Deliverables'|t }}</li>
         {% for d in deliverables %}<li>{{ d }}</li>{% endfor %}
       </ul>

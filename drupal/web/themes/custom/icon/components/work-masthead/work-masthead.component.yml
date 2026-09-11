@@ -1,0 +1,89 @@
+$schema: https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json
+name: Work masthead
+group: Work article
+status: stable
+description: |
+  The case study's frame — eyebrow, project name, client, banner, feature
+  statement, category and deliverables — as ONE component at the top of
+  the article's tree, edited like any other block (user call, Sep 2026:
+  "why don't we get the masthead to work like this"). Its values are the
+  node's fields' mirror: on publish icon_site copies them into the fields
+  the cards, the listings and the filters read (icon_site_node_presave()),
+  and the classic Fields form writes the other way. One per article; the
+  theme draws the frame from the fields on an article that has none.
+props:
+  type: object
+  required:
+    - title
+  properties:
+    title:
+      type: string
+      title: Project name
+      description: Short — "Raise It". The heading, and the card's headline.
+      examples:
+        - Raise It
+    client:
+      type: string
+      title: Client
+      description: Under the project name, and on the card.
+      examples:
+        - PHN North Western Melbourne
+    statement:
+      type: string
+      title: Feature statement
+      description: The outcome in one line — the serif line under the banner.
+      examples:
+        - Transforming the elephant in the room into conversations that change lives
+    categories:
+      type: array
+      title: Categories
+      description: One or more. The first is the card's filter key on /work; all are listed in the facts row.
+      items:
+        type: string
+        enum:
+          - behaviour-change
+          - brand
+          - creative
+          - communications
+          - reputation
+          - websites
+        meta:enum:
+          behaviour-change: Behaviour change
+          brand: Brand
+          creative: Creative
+          communications: Communications
+          reputation: Reputation
+          websites: Websites
+      examples:
+        - - creative
+    deliverables:
+      type: array
+      title: Deliverables
+      description: The services list in the facts row, one per line.
+      items:
+        type: string
+      examples:
+        - - Creative strategy
+          - Production
+    banner:
+      type: object
+      title: Banner picture
+      description: The wide hero under the title, 16:9. A film below takes its place when set.
+      $ref: json-schema-definitions://canvas.module/image
+    banner_film:
+      type: object
+      title: Banner film
+      description: A looping film as the banner, in place of the picture.
+      $ref: json-schema-definitions://canvas.module/video
+    bg:
+      type: string
+      title: Page colour
+      description: The client colour the whole page wears, as a hex value. Check the pair clears AA.
+      examples:
+        - '#0000ff'
+    ink:
+      type: string
+      title: Ink colour
+      description: The text colour on the page colour, as a hex value.
+      examples:
+        - '#ffffff'

@@ -333,13 +333,3 @@ form[data-form-id="page_data_form"] #edit-meta .entity-meta__title {
   font-weight: 600;
   color: var(--pd-ink);
 }
-
-/* the field a click in the frame opened (js/page-data.js): lit for a beat */
-form[data-form-id="page_data_form"] .is-targeted {
-  animation: icon-pd-target 1.6s ease-out;
-}
-
-@keyframes icon-pd-target {
-  0% { box-shadow: 0 0 0 4px rgb(0 0 255 / 0.25); }
-  100% { box-shadow: 0 0 0 4px rgb(0 0 255 / 0); }
-}

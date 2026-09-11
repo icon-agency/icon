@@ -588,3 +588,7 @@ and status survive a rebuild; labels do not.
 
 With the Canvas module directory missing, `drush cex` moved a `config/local` block into `config/sync` and dropped the editors' alignment plugin. Check `git status` on `config/` after every export; `git checkout -- config/sync config/local` undoes a bad one.
 
+## A component that mirrors fields (11 Sep 2026)
+
+Canvas can only select what is in the tree, so a masthead the theme drew from node fields could never open a Settings panel. The Work masthead is a component whose props are the fields' mirror: `hook_node_presave` writes component → fields on every save (Canvas's publish saves the node, so it runs there too) and the classic form's entity builder writes fields → component. Two things to remember: Canvas stores static prop values PLAIN (`{"categories": ["creative"]}`, `{"banner_film": {"target_id": 38}}`), and a list-of-enum prop (`type: array`, `items: {type: string, enum: […]}`) registers as a multi-value `list_string` with a chips widget — the shape the summary earlier said Canvas rejected was a list of OBJECTS, not of strings. A pathauto alias that includes a synced field (the client) regenerates and leaves a redirect behind when a sync test changes it; test with values that do not touch the alias, or clean the redirect up.
+

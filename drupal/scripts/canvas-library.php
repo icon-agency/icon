@@ -38,6 +38,7 @@ $plan = [
     'block.views_block.work-latest',
   ],
   'Work article' => [
+    'sdc.icon.work-masthead',
     'sdc.icon.run',
     'sdc.icon.work-gallery',
     'sdc.icon.work-video',

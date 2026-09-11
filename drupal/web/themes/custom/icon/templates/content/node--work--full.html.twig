@@ -7,18 +7,23 @@
  * properties on <html>, and the banner carries the handover hook that hands
  * the page back to the site theme as it scrolls away.
  *
- * Frame from the node (includes/work-frame.html.twig): eyebrow, project,
- * client, banner, feature statement, facts. Body: the Canvas field
+ * Frame: the Work masthead component at the top of the Canvas body
+ * (components/work-masthead), or, on an article without one yet, the
+ * theme's own from the fields (includes/work-frame.html.twig). Body: the Canvas field
  * (field_work_canvas — runs drawn by the Run component, galleries,
  * scrollers, quotes, built in the editor), or, on an article not yet
  * built there, the Paragraphs body whose field template infers the runs.
  * Then the share footer (below lg) and the Next up rail (the work View's
  * next_up display). Variables from icon_preprocess_node(): client,
- * statement, categories, deliverables, banner, use_canvas, next_up.
+ * statement, categories, deliverables, banner, use_canvas, has_masthead, next_up.
  */
 #}
 <article class="work-article" aria-labelledby="project-title">
-  {% include '@icon/includes/work-frame.html.twig' with { title: node.label, client: client, banner: banner, statement: statement, categories: categories, deliverables: deliverables } only %}
+  {# the frame: the Work masthead component in the tree, or the theme's
+     own on an article that has none yet #}
+  {% if not has_masthead %}
+    {% include '@icon/includes/work-frame.html.twig' with { title: node.label, client: client, banner: banner, statement: statement, categories: categories, deliverables: deliverables } only %}
+  {% endif %}
 
   <div class="work-article__flow">
     {{ use_canvas ? content.field_work_canvas : content.field_work_content }}

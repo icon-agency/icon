@@ -39,21 +39,27 @@ use Drupal\media_library\MediaLibraryState;
  * promote and sorts sticky first, then date) — they just need to say so.
  */
 function icon_site_form_node_form_alter(array &$form, FormStateInterface $form_state): void {
+  $entity = $form_state->getFormObject()->getEntity();
+  if ($entity instanceof NodeInterface && $entity->bundle() === 'work' && $entity->hasField('field_work_canvas')
+    && \Drupal::routeMatch()->getRouteName() !== 'canvas.api.form.content_entity') {
+    $form['#entity_builders'][] = '_icon_site_work_masthead_from_fields';
+  }
   // In the Canvas editor's Page data panel the form dresses itself
   // (css/page-data.css): a library attached to the editor page does not
   // reach it, one the form carries does (work-tiles.css found that out).
   if (\Drupal::routeMatch()->getRouteName() === 'canvas.api.form.content_entity') {
     $form['#attached']['library'][] = 'icon_site/page_data';
+    // The frame's fields are the Work masthead component's mirror: edited
+    // by clicking the masthead in the frame, so not here (Sep 2026).
+    foreach (_icon_site_work_masthead_fields() as $field) {
+      if (isset($form[$field])) {
+        $form[$field]['#access'] = FALSE;
+      }
+    }
     // Section headings to scan by (user call, Sep 2026): a heading ahead
     // of each section's first field, carrying the section's rule
     // (css/page-data.css); the Tile and Legacy details head themselves.
-    $sections = [
-      'title' => t('Project'),
-      'field_work_bg' => t('Colours'),
-      'field_work_banner' => t('Banner'),
-      'field_work_category' => t('Categories'),
-      'field_work_deliverables' => t('Deliverables'),
-    ];
+    $sections = [];
     // …and the publishing footer (current state, change to) heads itself
     // too, FIRST in the panel (user call: "important, top of the list"),
     // beside Review changes. Under it, closed, one Status group holds the
@@ -158,6 +164,171 @@ function _icon_site_work_colour_weights(array $element, FormStateInterface $form
     $element['field_work_ink']['#weight'] = $statement + 0.2;
   }
   return $element;
+}
+
+/**
+ * The node fields the Work masthead component mirrors.
+ */
+function _icon_site_work_masthead_fields(): array {
+  return [
+    'title',
+    'field_work_client',
+    'field_work_statement',
+    'field_work_category',
+    'field_work_deliverables',
+    'field_work_bg',
+    'field_work_ink',
+    'field_work_banner',
+  ];
+}
+
+/**
+ * A stored prop value, whatever shape Canvas kept it in.
+ *
+ * Canvas stores static inputs as plain values; an entity reference may
+ * arrive as an id, a {target_id} item or a list of them.
+ */
+function _icon_site_prop(array $inputs, string $name): mixed {
+  $value = $inputs[$name] ?? NULL;
+  if (is_array($value) && array_key_exists('value', $value) && !array_key_exists('target_id', $value)) {
+    $value = $value['value'];
+  }
+  return $value;
+}
+
+/**
+ * The media id a stored reference prop points at, or NULL.
+ */
+function _icon_site_prop_id(array $inputs, string $name): ?int {
+  $value = _icon_site_prop($inputs, $name);
+  if (is_array($value) && array_is_list($value)) {
+    $value = $value[0] ?? NULL;
+  }
+  if (is_array($value)) {
+    $value = $value['target_id'] ?? NULL;
+  }
+  return is_numeric($value) ? (int) $value : NULL;
+}
+
+/**
+ * The Work masthead component's inputs from the node's fields.
+ */
+function _icon_site_work_masthead_inputs(NodeInterface $node): array {
+  $values = static fn(string $field): array => array_values(array_filter(array_map(
+    static fn($item) => trim((string) $item->value),
+    iterator_to_array($node->get($field)),
+  ), static fn(string $v): bool => $v !== ''));
+  $inputs = [
+    'title' => $node->label(),
+    'client' => trim((string) ($node->get('field_work_client')->value ?? '')),
+    'statement' => trim((string) ($node->get('field_work_statement')->value ?? '')),
+    'categories' => $values('field_work_category'),
+    'deliverables' => $values('field_work_deliverables'),
+    'bg' => trim((string) ($node->get('field_work_bg')->value ?? '')),
+    'ink' => trim((string) ($node->get('field_work_ink')->value ?? '')),
+  ];
+  $banner = $node->get('field_work_banner')->entity;
+  if ($banner instanceof MediaInterface) {
+    $inputs[$banner->bundle() === 'video' ? 'banner_film' : 'banner'] = ['target_id' => (int) $banner->id()];
+  }
+  return array_filter($inputs, static fn($v) => $v !== '' && $v !== [] && $v !== NULL);
+}
+
+/**
+ * Writes the Work masthead component's inputs into the node's fields.
+ */
+function _icon_site_work_fields_from_masthead(NodeInterface $node, array $inputs): void {
+  $string = static fn(string $name): string => trim((string) (_icon_site_prop($inputs, $name) ?? ''));
+  $list = static function (string $name) use ($inputs): array {
+    $value = _icon_site_prop($inputs, $name);
+    $value = is_array($value) ? $value : [];
+    $strings = array_map(static fn($v) => trim((string) (is_array($v) ? ($v['value'] ?? '') : $v)), $value);
+    return array_values(array_filter($strings, static fn(string $v): bool => $v !== ''));
+  };
+  if ($string('title') !== '') {
+    $node->setTitle($string('title'));
+  }
+  $node->set('field_work_client', $string('client'));
+  $node->set('field_work_statement', $string('statement'));
+  $node->set('field_work_category', array_map(static fn(string $v): array => ['value' => $v], $list('categories')));
+  $node->set('field_work_deliverables', array_map(static fn(string $v): array => ['value' => $v], $list('deliverables')));
+  if ($string('bg') !== '') {
+    $node->set('field_work_bg', $string('bg'));
+  }
+  if ($string('ink') !== '') {
+    $node->set('field_work_ink', $string('ink'));
+  }
+  $banner = _icon_site_prop_id($inputs, 'banner_film') ?? _icon_site_prop_id($inputs, 'banner');
+  $node->set('field_work_banner', $banner ? ['target_id' => $banner] : NULL);
+}
+
+/**
+ * The delta of the Work masthead component in the node's tree, or NULL.
+ */
+function _icon_site_work_masthead_delta(NodeInterface $node): ?int {
+  foreach ($node->get('field_work_canvas') as $delta => $item) {
+    if ($item->get('component_id')->getValue() === 'sdc.icon.work-masthead') {
+      return $delta;
+    }
+  }
+  return NULL;
+}
+
+/**
+ * Implements hook_ENTITY_TYPE_presave() for node.
+ *
+ * The Work masthead component is the frame's editor and the fields are
+ * its mirror (Sep 2026): on every save of a Work article the component's
+ * values go into the fields the cards, the listings and the filters read.
+ * An article whose tree has no masthead yet gets one from its fields,
+ * first in the tree — a new article from the classic form, or one from
+ * before the component.
+ */
+function icon_site_node_presave(NodeInterface $node): void {
+  if ($node->bundle() !== 'work' || !$node->hasField('field_work_canvas')) {
+    return;
+  }
+  $delta = _icon_site_work_masthead_delta($node);
+  $items = $node->get('field_work_canvas');
+  if ($delta === NULL) {
+    $component = \Drupal::entityTypeManager()->getStorage('component')->load('sdc.icon.work-masthead');
+    if (!$component) {
+      return;
+    }
+    $values = $items->getValue();
+    array_unshift($values, [
+      'parent_uuid' => NULL,
+      'slot' => NULL,
+      'uuid' => \Drupal::service('uuid')->generate(),
+      'component_id' => 'sdc.icon.work-masthead',
+      'component_version' => (string) $component->get('active_version'),
+      'inputs' => json_encode(_icon_site_work_masthead_inputs($node) ?: new \stdClass(), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE),
+      'label' => NULL,
+    ]);
+    $items->setValue($values);
+    return;
+  }
+  $inputs = $items->get($delta)->get('inputs')->getValue();
+  $inputs = is_string($inputs) ? (json_decode($inputs, TRUE) ?: []) : (array) $inputs;
+  _icon_site_work_fields_from_masthead($node, $inputs);
+}
+
+/**
+ * Entity builder for the classic Work form: the fields into the masthead.
+ *
+ * The other direction of the mirror, for a save from the Fields form: the
+ * masthead component takes the fields' values before presave copies them
+ * back, so the two agree whichever form saved.
+ */
+function _icon_site_work_masthead_from_fields(string $entity_type, NodeInterface $node, array &$form, FormStateInterface $form_state): void {
+  $delta = _icon_site_work_masthead_delta($node);
+  if ($delta === NULL) {
+    return;
+  }
+  $items = $node->get('field_work_canvas');
+  $values = $items->getValue();
+  $values[$delta]['inputs'] = json_encode(_icon_site_work_masthead_inputs($node) ?: new \stdClass(), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+  $items->setValue($values);
 }
 
 /**

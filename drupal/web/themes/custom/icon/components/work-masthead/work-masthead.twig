@@ -1,0 +1,63 @@
+{#
+/**
+ * @file
+ * work-masthead — the case study's frame as a component: the same parts
+ * includes/work-frame.html.twig draws from the node's fields (eyebrow,
+ * project, client, banner, statement, facts), in the article's own rhythm
+ * (.work-masthead is a flex column on the frame's gap,
+ * utilities/work-article.css). The page colours are props here too; the
+ * theme reads them off this component for <html> (icon_preprocess_html()).
+ */
+#}
+{% set labels = {
+  'behaviour-change': 'Behaviour change'|t,
+  brand: 'Brand'|t,
+  creative: 'Creative'|t,
+  communications: 'Communications'|t,
+  reputation: 'Reputation'|t,
+  websites: 'Websites'|t,
+} %}
+<div class="work-masthead">
+  <header class="work-article__head">
+    <p class="work-article__eyebrow" data-animate>
+      <a class="invite-arrow invite-arrow--back" href="{{ path('<front>') ~ 'work' }}">{{ 'Work'|t }}</a>
+    </p>
+    <h1 class="work-article__project" id="project-title" data-reveal-words>{{ title }}</h1>
+    {% if client %}
+      <p class="work-article__client masthead-accent" data-animate style="--animate-delay: 120ms">{{ client }}</p>
+    {% endif %}
+  </header>
+
+  {% if banner_film.src is defined and banner_film.src %}
+    <figure class="work-article__banner media-reveal" data-reveal-img data-theme-handover="gone" data-theme-handover-class="theme-work-article">
+      <video autoplay muted loop playsinline preload="auto" src="{{ banner_film.src }}"{% if banner_film.poster is defined and banner_film.poster %} poster="{{ banner_film.poster }}"{% endif %} aria-label="{{ title ~ ' — banner film' }}"></video>
+    </figure>
+  {% elseif banner.src is defined and banner.src %}
+    <figure class="work-article__banner media-reveal" data-reveal-img data-theme-handover="gone" data-theme-handover-class="theme-work-article">
+      <img src="{{ banner.src }}" alt="{{ banner.alt|default('') }}"{% if banner.width is defined and banner.width %} width="{{ banner.width }}"{% endif %}{% if banner.height is defined and banner.height %} height="{{ banner.height }}"{% endif %} />
+    </figure>
+  {% endif %}
+
+  {% if statement %}
+    <blockquote class="pull-quote pull-quote--upright" data-animate>
+      <p class="pull-quote__text">{{ statement }}</p>
+    </blockquote>
+  {% endif %}
+
+  {% if categories or deliverables %}
+    <section class="work-article__facts" data-rule="top" aria-label="{{ 'Project facts'|t }}">
+      {% if categories %}
+        <ul data-animate>
+          <li class="work-article__facts-title">{{ 'Category'|t }}</li>
+          {% for c in categories %}<li><a href="{{ path('<front>') ~ 'work' }}?category={{ c }}">{{ labels[c]|default(c) }}</a></li>{% endfor %}
+        </ul>
+      {% endif %}
+      {% if deliverables %}
+        <ul data-animate style="--animate-delay: 60ms">
+          <li class="work-article__facts-title">{{ 'Deliverables'|t }}</li>
+          {% for d in deliverables %}<li>{{ d }}</li>{% endfor %}
+        </ul>
+      {% endif %}
+    </section>
+  {% endif %}
+</div>

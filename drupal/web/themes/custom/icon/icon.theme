@@ -65,7 +65,10 @@ function icon_preprocess_html(array &$variables): void {
   // scrolls away (iconThemeHandover, hook in node--work--full.html.twig).
   $node = _icon_route_node('work');
   if ($node) {
-    $hex = fn(string $field, string $fallback) => _icon_hex((string) $node->get($field)->value) ?? $fallback;
+    // The masthead component's colours when the tree has one (the draft's,
+    // in the editor), the fields' otherwise.
+    $masthead = _icon_work_masthead($node) ?? [];
+    $hex = fn(string $field, string $fallback) => _icon_hex((string) ($masthead[substr($field, 11)] ?? $node->get($field)->value)) ?? $fallback;
     // In the Canvas editor the class is handed over as data-icon-opening
     // (js-theme/opening.js): edit mode stays on the plain theme, Preview
     // wears the client pair — the Masthead opening's rule (user call).
@@ -239,6 +242,26 @@ function _icon_work_frame(NodeInterface $node, CacheableMetadata $cache): array 
 }
 
 /**
+ * The Work masthead component's inputs, when the article's tree has one.
+ *
+ * The masthead is the frame as a component (components/work-masthead,
+ * Sep 2026); its values are the fields' mirror, and in the editor the
+ * DRAFT tree is ahead of the fields, so the page colours are read here.
+ */
+function _icon_work_masthead(NodeInterface $node): ?array {
+  if (!$node->hasField('field_work_canvas')) {
+    return NULL;
+  }
+  foreach ($node->get('field_work_canvas') as $item) {
+    if ($item->get('component_id')->getValue() === 'sdc.icon.work-masthead') {
+      $inputs = $item->get('inputs')->getValue();
+      return is_string($inputs) ? (json_decode($inputs, TRUE) ?: []) : (array) $inputs;
+    }
+  }
+  return NULL;
+}
+
+/**
  * The libraries the Work article's page needs, on the page and in the editor.
  */
 function _icon_work_libraries(): array {
@@ -283,7 +306,9 @@ function icon_preprocess_page(array &$variables): void {
   $work = _icon_in_canvas_editor() ? _icon_route_node('work') : NULL;
   if ($work) {
     $cache = new CacheableMetadata();
-    $variables['work_frame'] = _icon_work_frame($work, $cache);
+    $variables['work_shell'] = TRUE;
+    // The theme's frame only on an article whose tree has no masthead yet.
+    $variables['work_frame'] = _icon_work_masthead($work) === NULL ? _icon_work_frame($work, $cache) : NULL;
     _icon_apply_cache($variables, $cache);
     foreach (_icon_work_libraries() as $lib) {
       $variables['#attached']['library'][] = $lib;
@@ -702,6 +727,7 @@ function _icon_preprocess_node_work(array &$variables, NodeInterface $node): voi
     // built there keeps its Paragraphs body (the migration is
     // scripts/work-canvas.php).
     $variables['use_canvas'] = $node->hasField('field_work_canvas') && !$node->get('field_work_canvas')->isEmpty();
+    $variables['has_masthead'] = $variables['use_canvas'] && _icon_work_masthead($node) !== NULL;
     _icon_apply_cache($variables, $cache);
     $variables['next_up'] = [
       '#type' => 'view',

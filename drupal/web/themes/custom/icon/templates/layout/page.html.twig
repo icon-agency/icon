@@ -8,7 +8,7 @@
  * (`.page-home` on the homepage).
  *
  * Available variables: page.highlighted (status messages), page.content;
- * work_frame (the Canvas editor building a Work article, see below).
+ * work_shell / work_frame (the Canvas editor building a Work article, see below).
  */
 #}
 <a class="sr-only skip-link" href="#main">{{ 'Skip to content'|t }}</a>
@@ -17,14 +17,14 @@
   {# the extension point a page--403 / page--404 template overrides #}
   {% block content %}
     {{ page.highlighted }}
-    {% if work_frame %}
-      {# The Canvas editor building a Work article: the frame the node
-         template composes on the page, composed here around the body the
-         editor is showing — from the DRAFT node, so a client or category
-         edited in Page data reads in the masthead at once
-         (icon_preprocess_page(), includes/work-frame.html.twig). #}
+    {% if work_shell %}
+      {# The Canvas editor building a Work article: the article's shell
+         around the body the editor is showing; the frame is the Work
+         masthead component in the tree, or, on an article that has none
+         yet, the theme's own from the draft node (icon_preprocess_page(),
+         includes/work-frame.html.twig). #}
       <article class="work-article" aria-labelledby="project-title">
-        {% include '@icon/includes/work-frame.html.twig' with work_frame|merge({ editor: true }) only %}
+        {% if work_frame %}{% include '@icon/includes/work-frame.html.twig' with work_frame only %}{% endif %}
         <div class="work-article__flow">{{ page.content }}</div>
         <div class="work-article__share-footer">{% include '@icon/includes/share.html.twig' %}</div>
       </article>
