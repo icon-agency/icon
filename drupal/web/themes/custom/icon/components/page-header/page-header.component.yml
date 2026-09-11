@@ -22,7 +22,7 @@ props:
     caps:
       type: string
       title: Headline
-      description: The large caps line. Type it in sentence case; the CSS sets the capitals.
+      description: The large caps line. Type it in sentence case; the CSS sets the capitals. A line break in the text breaks the line.
       examples:
         - Selected work and case studies
     heading_level:
@@ -46,12 +46,14 @@ props:
       enum:
         - none
         - dark
+        - dark-hold
         - blue
         - light-grey
         - custom
       meta:enum:
         none: The page theme (no handover)
         dark: Black (the dark theme)
+        dark-hold: Black, all the way down (no handover)
         blue: ICON blue
         light-grey: Light grey
         custom: Custom colours (below)

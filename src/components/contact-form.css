@@ -18,6 +18,26 @@
   color: var(--color-icon-black);
 }
 
+/* the frame starts on a drawn hairline (rules.css) with the office row's
+   air beneath it, so beside the offices the lead and the first city name
+   sit level (user annotation, Sep 2026) */
+.contact-form[data-rule] {
+  border-top: var(--rule-weight) solid var(--rule);
+  padding-top: var(--space-sm);
+}
+
+/* In the two-column arrangement the form stops short of its half-page
+   column (user annotations, Sep 2026: "narrower on the two column, bigger
+   sizes", then "narrower here too" at a laptop width): a field rule
+   running the full half read too long against the office rows' short
+   lines. 85% of the column, capped at 40rem on a wide screen; on a phone,
+   one column, it is the column. */
+@media (min-width: 768px) {
+  .contact-form {
+    max-width: min(40rem, 85%);
+  }
+}
+
 .contact-form__lead {
   margin: 0 0 var(--space-xs);
   font-size: var(--voice-mid);
@@ -52,8 +72,10 @@
   transition: border-color var(--duration-fast) var(--ease-standard);
 }
 
-/* the label: the Paragraph voice, a weight up, in full ink */
-.contact-form__label {
+/* the label: the Paragraph voice, a weight up, in full ink (the second
+   selector is Drupal's file widget, whose label takes no class of its own) */
+.contact-form__label,
+.contact-form__form .form-item > label {
   font-size: var(--voice-paragraph);
   font-weight: var(--font-weight-semibold);
   line-height: 1.3;
@@ -156,4 +178,48 @@
   background: none;
   cursor: pointer;
   font-family: inherit;
+}
+
+/* ---- Drupal's own form (icon_site_form_contact_message_contact_form_alter)
+   The classes above land on the core Contact form's elements; what core
+   adds of its own is quietened here: the required mark on the label, the
+   field wrappers' margins, the file widget's chrome. */
+.contact-form__form .contact-form__field {
+  margin: 0;
+}
+
+.contact-form__form .contact-form__field + .contact-form__field {
+  margin-top: var(--space-sm);
+}
+
+.contact-form__form label.form-required::after {
+  content: "*";
+}
+
+.contact-form__form .form-managed-file {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2xs);
+  font-size: var(--voice-meta);
+}
+
+.contact-form__form .form-managed-file input[type="file"] {
+  font: inherit;
+  color: inherit;
+}
+
+.contact-form__form .form-managed-file .button {
+  padding: 0.3em 0.9em;
+  border: var(--rule-weight) solid var(--rule);
+  border-radius: var(--radius-sm);
+  background: none;
+  font: inherit;
+  font-size: var(--voice-label);
+  color: inherit;
+  cursor: pointer;
+}
+
+.contact-form__form .form-actions {
+  margin: 0;
 }

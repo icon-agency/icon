@@ -29,6 +29,7 @@ use Drupal\file\FileInterface;
 use Drupal\image\Plugin\Field\FieldWidget\ImageWidget;
 use Drupal\media\MediaInterface;
 use Drupal\Core\Render\Element;
+use Drupal\contact\MessageInterface;
 use Drupal\media_library\MediaLibraryState;
 
 /**
@@ -397,6 +398,92 @@ function icon_site_form_component_instance_form_alter(array &$form, FormStateInt
       'text' => ['#markup' => '<p class="icon-slot-note__text">' . $notes[$id] . '</p>'],
     ];
   }
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter() for contact_message_contact_form.
+ *
+ * The site's Contact form (core contact module, contact.form.contact) in the
+ * enquiry form's dress (templates/contact.html, components/contact-form.css):
+ * First name, Last name, Your email, Your phone, Tell us about your project,
+ * an attachment, then "Send your message" as the quiet invitation link. The
+ * sender's name and the subject are not asked — the name is the two names,
+ * the subject is written from it (_icon_site_contact_message_builder()) —
+ * and Preview and "send yourself a copy" are not offered.
+ */
+function icon_site_form_contact_message_contact_form_alter(array &$form, FormStateInterface $form_state): void {
+  $form['#attributes']['class'][] = 'contact-form__form';
+  $form['#attributes']['novalidate'] = 'novalidate';
+  // Not asked: written by the entity builder from what is.
+  foreach (['name', 'subject', 'copy'] as $key) {
+    if (isset($form[$key])) {
+      $form[$key]['#access'] = FALSE;
+    }
+  }
+  $form['#entity_builders'][] = '_icon_site_contact_message_builder';
+  $fields = [
+    'field_contact_first_name' => [t('First name'), 'contact-form__input'],
+    'field_contact_last_name' => [t('Last name'), 'contact-form__input'],
+    'mail' => [t('Your email'), 'contact-form__input'],
+    'field_contact_phone' => [t('Your phone'), 'contact-form__input'],
+    'message' => [t('Tell us about your project'), 'contact-form__textarea'],
+    'field_contact_attachment' => [t('Attach a file'), ''],
+  ];
+  $weight = 0;
+  foreach ($fields as $key => [$title, $class]) {
+    if (!isset($form[$key])) {
+      continue;
+    }
+    $form[$key]['#weight'] = $weight++;
+    // A field widget wraps its one element (cardinality 1) — the label and
+    // the input sit in widget[0][value], or widget[0] for the file — and
+    // the wrapper is the field; the sender's email is a plain element for
+    // an anonymous sender, the field wrapper being its own form-item.
+    if (isset($form[$key]['widget'])) {
+      $form[$key]['#attributes']['class'][] = 'contact-form__field';
+      if (isset($form[$key]['widget'][0]['value'])) {
+        $element = &$form[$key]['widget'][0]['value'];
+      }
+      else {
+        $element = &$form[$key]['widget'][0];
+      }
+    }
+    else {
+      $form[$key]['#wrapper_attributes']['class'][] = 'contact-form__field';
+      $element = &$form[$key];
+    }
+    if (!is_array($element)) {
+      unset($element);
+      continue;
+    }
+    $element['#title'] = $title;
+    $element['#label_attributes']['class'][] = 'contact-form__label';
+    if ($class) {
+      $element['#attributes']['class'][] = $class;
+    }
+    if ($key === 'message') {
+      $element['#rows'] = 2;
+    }
+    unset($element['#description']);
+    unset($element);
+  }
+  $form['actions']['#weight'] = 100;
+  if (isset($form['actions']['preview'])) {
+    $form['actions']['preview']['#access'] = FALSE;
+  }
+  $form['actions']['submit']['#value'] = t('Send your message');
+  $form['actions']['submit']['#attributes']['class'] = ['contact-form__submit', 'quiet-link', 'invite-arrow'];
+}
+
+/**
+ * Entity builder: the sender's name and the subject from the fields asked.
+ */
+function _icon_site_contact_message_builder(string $entity_type, MessageInterface $message, array &$form, FormStateInterface $form_state): void {
+  $first = trim((string) ($message->get('field_contact_first_name')->value ?? ''));
+  $last = trim((string) ($message->get('field_contact_last_name')->value ?? ''));
+  $name = trim("$first $last") ?: (string) $message->getSenderMail();
+  $message->setSenderName($name);
+  $message->setSubject((string) t('Website enquiry from @name', ['@name' => $name]));
 }
 
 /**

@@ -1,0 +1,12 @@
+uuid: 0076ab33-a401-4025-a1fd-04b61c1b6c96
+langcode: en
+status: true
+dependencies: {  }
+id: contact
+label: Contact
+recipients:
+  - melbourne@iconagency.com.au
+reply: 'Thanks for getting in touch — we’ll be back to you soon.'
+weight: 0
+message: 'Thanks — your message is on its way to us.'
+redirect: /contact

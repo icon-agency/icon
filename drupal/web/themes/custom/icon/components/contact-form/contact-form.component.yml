@@ -1,0 +1,28 @@
+$schema: https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json
+name: Contact form
+group: Listings
+status: stable
+description: |
+  The enquiry form (src/components/contact-form.css): a lead in the mid
+  voice, an intro Paragraph, then the fields — label over a hairline, the
+  answer beneath — and "Send your message" as the quiet invitation link.
+  Rendered by the Contact form block (icon_site), which builds the site's
+  Contact form (the core Contact module's "Contact" form: Content →
+  Contact forms sets who receives it) into the slot; place the block.
+props:
+  type: object
+  properties:
+    lead:
+      type: string
+      title: Lead
+      examples:
+        - Simply fill in the form below
+    intro:
+      type: string
+      title: Intro
+      examples:
+        - Whether it’s a brand refresh, public relations push, new website or end-to-end behaviour change campaign — we’re interested and ready to talk solutions.
+slots:
+  form:
+    title: The form
+    description: The Contact message form, built by the block.

@@ -52,6 +52,8 @@ $plan = [
     'block.icon_featured_work',
     'block.icon_team_profiles',
     'block.icon_clients_marquee',
+    'block.icon_contact_form',
+    'block.icon_office_list',
   ],
   'Homepage' => [
     'block.icon_hero',
@@ -96,6 +98,9 @@ $hide = [
   // component with Photo and Fact card components in its slot, as the
   // homepage intro has always been (scripts/filmstrip-components.php).
   'block.icon_filmstrip',
+  // rendered by their blocks (Contact form, Offices), which read the site
+  'sdc.icon.contact-form',
+  'sdc.icon.office-list',
 ];
 
 $storage = \Drupal::entityTypeManager()->getStorage('component');

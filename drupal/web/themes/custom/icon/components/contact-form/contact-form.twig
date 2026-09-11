@@ -1,0 +1,15 @@
+{#
+/**
+ * @file
+ * contact-form — the enquiry form's frame (src/components/contact-form.css):
+ * the lead, the intro Paragraph, then the form the block built into the
+ * slot. data-rule="top": the frame starts on a drawn hairline with the
+ * office row's air beneath it, so beside the Offices block the lead and the
+ * first city name sit level (templates/contact.html).
+ */
+#}
+<div class="contact-form" data-rule="top">
+  {% if lead %}<h2 class="contact-form__lead">{{ lead }}</h2>{% endif %}
+  {% if intro %}<p class="contact-form__intro">{{ intro }}</p>{% endif %}
+  {% block form %}{{ form }}{% endblock %}
+</div>

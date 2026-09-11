@@ -1,0 +1,45 @@
+$schema: https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json
+name: Offices
+group: Listings
+status: stable
+description: |
+  The offices, open (src/components/office-list.css): the footer accordion's
+  rows — icon, city, place name — with the address, phone and email under
+  each and nothing folded. Rendered by the Offices block (icon_site), which
+  reads Content → Offices; the offices prop is the block's, not for Canvas
+  to author — place the block.
+props:
+  type: object
+  required:
+    - offices
+  properties:
+    offices:
+      type: array
+      title: Offices
+      items:
+        type: object
+        properties:
+          city:
+            type: string
+          place:
+            type: string
+          lines:
+            type: array
+            items:
+              type: string
+          phone:
+            type: string
+          phone_href:
+            type: string
+          email:
+            type: string
+          icon:
+            type: [integer, 'null']
+      examples:
+        - - city: Melbourne
+            place: Naarm
+            lines: ['Suite 1, Level 2', '132 Gwynne Street', 'Cremorne VIC 3121 Australia']
+            phone: 03 9642 4107
+            phone_href: 'tel:+61396424107'
+            email: melbourne@iconagency.com.au
+            icon: null

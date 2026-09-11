@@ -374,13 +374,18 @@
 }
 
 .site-footer__cta--newsletter .site-footer__talk {
-  /* three words: the lockup wraps on a phone, so the lines need their air */
+  /* two lines, so the masthead lockup's line height (page-header.css,
+     .page-header__lockup-caps: 1), not the single-line CTA's 0.82, which
+     stacked JOIN OUR onto NEWSLETTER (user call, Sep 2026) */
+  line-height: 1;
   text-wrap: balance;
 }
 
 /* the Subscribe bar under the caps, centred, in the newsletter column's
    measure so the pill opens to the width it does in the body */
 .site-footer__cta-subscribe {
+  display: flex;
+  justify-content: center; /* the pill is narrower than its measure at rest */
   max-width: 28ch;
   margin: var(--space-sm) auto 0;
   font-size: var(--footer-voice-mid);

@@ -74,12 +74,15 @@
   min-width: 0;
 }
 
-/* A block plugin's wrapper (the Filmstrip, Team profiles — div#block-…),
+/* A block plugin's wrapper (Team profiles, the Contact form — div#block-…),
    lifted as the page lifts them. ONLY those: the editor's empty-slot
    placeholder is a div here too, and lifted it had no height and nothing
-   to drop on (user catch, Sep 2026). */
+   to drop on (user catch, Sep 2026). And only a BARE inner div: core's
+   block template prints the content straight into the wrapper, so its
+   first div is the component's own root — the contact form's, whose top
+   rule and width vanished with it (found Sep 2026). */
 .columns__col > div[id^="block-"],
-.columns__col > div[id^="block-"] > div {
+.columns__col > div[id^="block-"] > div:not([class]) {
   display: contents;
 }
 

@@ -82,6 +82,19 @@ icon_site.footer:
       type: integer
       label: 'The Canvas page whose hero the login page plays (0 = the front page)'
 
+block.settings.icon_contact_form:
+  type: block_settings
+  label: 'Contact form block settings'
+  constraints:
+    FullyValidatable: ~
+  mapping:
+    lead:
+      type: label
+      label: 'Lead'
+    intro:
+      type: text
+      label: 'Intro'
+
 block.settings.icon_team_profiles:
   type: block_settings
   label: 'Team profiles block settings'

@@ -600,3 +600,15 @@ A deploy rebuilds caches before `config:import`, and Canvas creates the config e
 ## A wrapper flattened with `display: contents` flattens the messages too (11 Sep 2026)
 
 The Canvas page flattens Drupal's region/block wrappers (`.page-canvas > div, .page-canvas > div > div`) so the components are the flex items; `page.highlighted` renders the message toast into the same wrapper, so the toast lost its `position: fixed` and a warning flowed in at the top of the page under the wordmark (11 Sep 2026). Exempt the toast (`:not(.toast)` and a rule giving it back its box). Rule of thumb: when a selector flattens "whatever Drupal wrapped", list what else lands in that wrapper.
+
+## An SDC slot must be a render array all the way down (11 Sep 2026)
+
+`#type => 'component'` with `#slots` runs `Element::isRenderArray()` on each slot, which recurses into every child and fails on the first that is not an array or is empty. A built form (`entity.form_builder->getForm()`) carries such children, so handing the form array to a slot threw "A render array or a scalar is expected for the slot". Render it first — `renderer->render($form)` inside the block's build, which bubbles the form's attachments and placeholders to the page as the array would — and give the slot `['#markup' => $markup]`.
+
+## A `> div` flattener catches a component's own root (11 Sep 2026)
+
+columns.css lifted a block's wrapper AND its first inner div with `display: contents`, meant for a block template's content wrapper. Core's block template prints the content straight into the wrapper, so that first div was the contact-form SDC's root: `display: contents` on it dropped its top rule and its max-width (a flattened box paints no border and has no width). Flatten only a BARE wrapper — `> div:not([class])` — and when a rule says "the wrapper", check what the template actually wraps.
+
+## A Canvas block plugin with settings needs a FullyValidatable schema (11 Sep 2026)
+
+Canvas registers a block plugin as a component only if its `block.settings.<id>` config schema carries `constraints: FullyValidatable: ~` (and no required contexts). Without it the block simply never appears — no error in the log, and a seed script that places `block.<id>` fails with "not registered". The Offices block, which has no settings, registered at once; the Contact form block, with a lead and an intro, did not until the schema entry existed.

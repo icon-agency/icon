@@ -179,7 +179,9 @@ function _icon_canvas_page_opening(): ?array {
     // A stored input is the plain value, or a {value: …} static source.
     $in = fn(string $key) => is_array($inputs[$key] ?? NULL) ? ($inputs[$key]['value'] ?? NULL) : ($inputs[$key] ?? NULL);
     return match ((string) $in('opening')) {
-      'dark' => ['class' => 'dark'],
+      // dark-hold: the same dark theme, held all the way down — the masthead
+      // simply does not mark itself for the handover (page-header.twig).
+      'dark', 'dark-hold' => ['class' => 'dark'],
       'blue' => ['class' => 'theme-blue'],
       'light-grey' => ['class' => 'theme-work-article', 'bg' => 'var(--light-grey)', 'ink' => 'var(--black)'],
       'custom' => [
@@ -191,6 +193,25 @@ function _icon_canvas_page_opening(): ?array {
     };
   }
   return NULL;
+}
+
+/**
+ * Whether the page being built is the contact page (alias /contact).
+ *
+ * The Canvas page of the route — the page itself, or the editor's preview
+ * of it — or, failing that, the request path's alias.
+ */
+function _icon_is_contact_page(): bool {
+  $page = _icon_route_canvas_page();
+  if ($page && !$page->isNew() && $page->hasField('path')) {
+    $alias = (string) ($page->get('path')->alias ?? '');
+    if ($alias === '') {
+      $alias = \Drupal::service('path_alias.manager')->getAliasByPath('/page/' . $page->id());
+    }
+    return $alias === '/contact';
+  }
+  $alias = \Drupal::service('path_alias.manager')->getAliasByPath(\Drupal::service('path.current')->getPath());
+  return $alias === '/contact';
 }
 
 /**
@@ -336,6 +357,13 @@ function icon_preprocess_page(array &$variables): void {
   $offices = icon_site_offices();
   $variables['footer'] = $footer;
   $variables['offices'] = $offices['offices'];
+  // The contact page's footer (templates/contact.html, user calls, Sep
+  // 2026): its CTA is "Join our newsletter" with the Subscribe bar beneath,
+  // not LET'S TALK — which would invite the reader to the page they are on
+  // — and the body's newsletter column and office accordion go, since the
+  // offices are open on the page. Keyed on the page's alias, in the editor
+  // as on the page.
+  $variables['footer_contact'] = _icon_is_contact_page();
   $chrome->addCacheTags(array_merge($footer['tags'], $offices['tags']));
   // The homepage hero's own reel — the same Hero slide content, in the order
   // the front page's hero block was given in the Canvas panel — plays in two

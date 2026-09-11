@@ -1,0 +1,26 @@
+{#
+/**
+ * @file
+ * office-list — the offices, open (src/components/office-list.css): the
+ * footer accordion's row anatomy (includes/site-footer.html.twig) with the
+ * address then Phone then email under the name and no fold. Each row draws
+ * its hairline in (rules.css); the last closes with one too.
+ */
+#}
+<ul class="office-list" role="list">
+  {% for office in offices %}
+    <li class="office-list__item" data-rule="{{ loop.last ? 'both' : 'top' }}">
+      {{ icon_inline_svg(office.icon, 'office-list__icon') }}
+      <div class="office-list__head">
+        <h3 class="office-list__city">{{ office.city }}</h3>
+        {% if office.place %}<span class="office-list__place">{{ office.place }}</span>{% endif %}
+      </div>
+      <address class="office-list__details">
+        <p>{% for line in office.lines %}{% if not loop.first %}<br />{% endif %}{{ line }}{% endfor %}</p>
+        {% if office.phone or office.email %}
+          <p class="office-list__contact">{% if office.phone %}{{ 'Phone'|t }} <a href="{{ office.phone_href }}">{{ office.phone }}</a>{% endif %}{% if office.phone and office.email %}<br />{% endif %}{% if office.email %}<a href="mailto:{{ office.email }}">{{ office.email }}</a>{% endif %}</p>
+        {% endif %}
+      </address>
+    </li>
+  {% endfor %}
+</ul>
