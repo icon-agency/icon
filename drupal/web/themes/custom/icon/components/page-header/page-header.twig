@@ -14,7 +14,13 @@
  */
 #}
 {% set tag = heading_level|default('h1') %}
-<div class="page-header page-header--stack"{% if handover %} data-theme-handover{% endif %}>
+{# The opening: which <html> class hands over as this masthead scrolls away.
+   The class itself is put on <html> by icon_preprocess_html() (a Canvas
+   page reads it off this component; the listings set their own), so the
+   page opens in it with no flash; here the masthead only names it for
+   js/theme-handover.js. #}
+{% set handover_class = attribute({ dark: 'dark', blue: 'theme-blue', 'light-grey': 'theme-work-article', custom: 'theme-work-article' }, opening|default('none'))|default('') %}
+<div class="page-header page-header--stack"{% if handover_class %} data-theme-handover data-theme-handover-class="{{ handover_class }}"{% endif %}>
   <div class="page-header__inner">
     <{{ tag }} class="page-header__heading page-header__heading--lockup" data-reveal-words>
       <span class="page-header__lockup-accent masthead-accent">{{ accent }}</span>

@@ -48,14 +48,15 @@ $add = static function (string $component, array $inputs, ?string $parent = NULL
 $prose = static fn(string $html): array => ['text' => ['value' => $html, 'format' => 'canvas_html_block']];
 
 // ---- The masthead -----------------------------------------------------------
-// handover FALSE: the dark opening is a route-level decision the listings make
+// Opens on light grey — the third ICON colour — and hands over to white
+// as the masthead scrolls away (user call, Sep 2026).
 // in icon_preprocess_html(); a Canvas page opens light, so the hook would have
 // nothing to hand over from.
 $add('sdc.icon.page-header', [
   'accent' => 'About',
   'caps' => 'Makers, shakers, interdisciplinary groundbreakers',
   'heading_level' => 'h1',
-  'handover' => FALSE,
+  'opening' => 'light-grey',
 ]);
 
 // ---- Who we are -------------------------------------------------------------

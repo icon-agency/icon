@@ -6,9 +6,92 @@ dependencies:
     - options
   theme:
     - icon
-active_version: 5959fee20d99e5f0
+active_version: e03f751f35b7ce48
 versioned_properties:
   active:
+    settings:
+      prop_field_definitions:
+        accent:
+          required: true
+          field_type: string
+          field_storage_settings: {  }
+          field_instance_settings: {  }
+          field_widget: string_textfield
+          default_value:
+            -
+              value: Work
+          expression: ℹ︎string␟value
+          derived_schema_metadata:
+            string_shape: {  }
+        caps:
+          required: true
+          field_type: string
+          field_storage_settings: {  }
+          field_instance_settings: {  }
+          field_widget: string_textfield
+          default_value:
+            -
+              value: 'Selected work and case studies'
+          expression: ℹ︎string␟value
+          derived_schema_metadata:
+            string_shape: {  }
+        heading_level:
+          required: false
+          field_type: list_string
+          field_storage_settings:
+            allowed_values_function: canvas_load_allowed_values_for_component_prop
+          field_instance_settings: {  }
+          field_widget: options_select
+          default_value:
+            -
+              value: h1
+          expression: ℹ︎list_string␟value
+          derived_schema_metadata: {  }
+        opening:
+          required: false
+          field_type: list_string
+          field_storage_settings:
+            allowed_values_function: canvas_load_allowed_values_for_component_prop
+          field_instance_settings: {  }
+          field_widget: options_select
+          default_value:
+            -
+              value: none
+          expression: ℹ︎list_string␟value
+          derived_schema_metadata: {  }
+        bg:
+          required: false
+          field_type: string
+          field_storage_settings: {  }
+          field_instance_settings: {  }
+          field_widget: string_textfield
+          default_value:
+            -
+              value: '#f0f4f9'
+          expression: ℹ︎string␟value
+          derived_schema_metadata:
+            string_shape: {  }
+        ink:
+          required: false
+          field_type: string
+          field_storage_settings: {  }
+          field_instance_settings: {  }
+          field_widget: string_textfield
+          default_value:
+            -
+              value: '#0d0d0d'
+          expression: ℹ︎string␟value
+          derived_schema_metadata:
+            string_shape: {  }
+    fallback_metadata:
+      slot_definitions:
+        extras:
+          title: 'Under the heading'
+          description: 'Inside the centred column, under the lockup — the listings put the Subscribe bar here.'
+        band:
+          title: 'Full-width band'
+          description: 'Below the centred column, still inside the masthead — the listings put the filter chips here.'
+  5959fee20d99e5f0:
     settings:
       prop_field_definitions:
         accent:

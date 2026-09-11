@@ -156,6 +156,7 @@
                   <li class="ds-swatch"><div class="ds-swatch__chip bg-icon-black"></div><div class="ds-swatch__meta"><span class="ds-swatch__name">Icon black</span><span class="ds-swatch__token">--color-icon-black</span><div class="ds-group"><h4 class="ds-group__title">Rules — THE hairline</h4><p class="ds-group__note">Every divider on the site is <code class="ds-code">1px solid var(--rule)</code> and nothing else — no ad-hoc alphas, and ONE value: <code class="ds-code">--rule</code> is <code class="ds-code">color-mix(in srgb, currentColor 25%, transparent)</code>, so a line drawn on any ground — light, dark, or a client’s chameleon pair — takes 25% of the ink around it automatically. No per-surface re-pointing; the old <code class="ds-code">--rule-on-color</code> escape hatch is deleted. Deliberately a plain, unregistered property: the registered <code class="ds-code">--color-*</code> aliases resolve at <code class="ds-code">:root</code> and inherit their resolved value, so a component-level override of those would silently do nothing (see LESSONS.md). Thickness and the draw-in entrance are <code class="ds-code">--rule-weight</code> / <code class="ds-code">--rule-draw-dur</code> in <code class="ds-code">src/utilities/rules.css</code>.</p></div></div></li>
                   <li class="ds-swatch"><div class="ds-swatch__chip bg-icon-grey"></div><div class="ds-swatch__meta"><span class="ds-swatch__name">Icon grey</span><span class="ds-swatch__token">--color-icon-grey</span><span class="ds-swatch__value">icon-black @ 80%</span></div></li>
                   <li class="ds-swatch"><div class="ds-swatch__chip bg-icon-blue"></div><div class="ds-swatch__meta"><span class="ds-swatch__name">Icon blue</span><span class="ds-swatch__token">--color-icon-blue</span><span class="ds-swatch__value">#0000ff (dark: white @ 80%)</span></div></li>
+                  <li class="ds-swatch"><div class="ds-swatch__chip bg-light-grey"></div><div class="ds-swatch__meta"><span class="ds-swatch__name">Light grey</span><span class="ds-swatch__token">--color-light-grey</span><span class="ds-swatch__value">#f0f4f9 &mdash; fixed, never theme-flips. The third ICON colour (Sep 2026): a ground a page can OPEN on (the Masthead&rsquo;s Opens on), taking the light theme&rsquo;s black ink through the chameleon and handing over to white as the masthead scrolls away.</span></div></li>
                 </ul>
               </div>
 
@@ -282,7 +283,11 @@
                   Drupal (Canvas / SDC): one <code class="ds-code">masthead</code> component with
                   <code class="ds-code">accent</code> and <code class="ds-code">caps</code> string props
                   &mdash; the accent optional, the wrapper element decided by the host (h1 on the
-                  landings, h2 on the homepage).
+                  landings, h2 on the homepage) &mdash; and <strong>Opens on</strong>: the colour the
+                  whole page opens on and hands over from as the masthead scrolls away (black, the dark
+                  theme; ICON blue; light grey; or a custom background + foreground hex pair through the
+                  work article&rsquo;s chameleon), put on <code class="ds-code">&lt;html&gt;</code> by
+                  the theme so the page opens in it with no flash.
                 </p>
                 <div class="ds-demo">
                   <h2 class="page-header__heading page-header__heading--lockup">

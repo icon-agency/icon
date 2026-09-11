@@ -33,15 +33,41 @@ props:
         - h2
       examples:
         - h1
-    handover:
-      type: boolean
-      title: Opens dark
+    opening:
+      type: string
+      title: Opens on
       description: >
-        The page opens on the dark theme and hands over to light as this
-        masthead scrolls away (js/theme-handover.js). The /work listing does
-        this; /news hands over from its lead band instead.
+        The colour the page opens on — the whole page, wordmark and pill
+        included — handing over to the site's light theme as this masthead
+        scrolls away (js/theme-handover.js). Black is the dark theme; ICON
+        blue and light grey take their own ink; Custom takes the two hex
+        values below.
+      enum:
+        - none
+        - dark
+        - blue
+        - light-grey
+        - custom
+      meta:enum:
+        none: The page theme (no handover)
+        dark: Black (the dark theme)
+        blue: ICON blue
+        light-grey: Light grey
+        custom: Custom colours (below)
       examples:
-        - false
+        - none
+    bg:
+      type: string
+      title: Custom background
+      description: 'A hex colour, e.g. #f0f4f9. Used when Opens on is Custom.'
+      examples:
+        - '#f0f4f9'
+    ink:
+      type: string
+      title: Custom foreground
+      description: 'The text and line colour on it, a hex value, e.g. #0d0d0d.'
+      examples:
+        - '#0d0d0d'
 slots:
   extras:
     title: Under the heading

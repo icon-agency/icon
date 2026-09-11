@@ -63,11 +63,73 @@ function icon_preprocess_html(array &$variables): void {
   // scrolls away (iconThemeHandover, hook in node--work--full.html.twig).
   $node = _icon_route_node('work');
   if ($node) {
-    $hex = fn(string $field, string $fallback) => preg_match('/^#[0-9a-f]{3,8}$/i', $v = trim((string) $node->get($field)->value)) ? $v : $fallback;
+    $hex = fn(string $field, string $fallback) => _icon_hex((string) $node->get($field)->value) ?? $fallback;
     $variables['html_attributes']->addClass('theme-work-article');
     $variables['html_attributes']->setAttribute('style', '--work-article-bg: ' . $hex('field_work_bg', '#0000ff') . '; --work-article-text: ' . $hex('field_work_ink', '#ffffff'));
     $variables['#attached']['library'][] = 'icon/theme-handover';
   }
+
+  // A CANVAS PAGE opens on what its Masthead says (the component's "Opens
+  // on", Sep 2026): the dark theme, ICON blue, the light grey, or a custom
+  // pair through the chameleon. The class is here, in the markup, so the
+  // page opens in it with no flash; the masthead names the same class for
+  // the handover script.
+  $opening = _icon_canvas_page_opening();
+  if ($opening) {
+    $variables['html_attributes']->addClass($opening['class']);
+    if (isset($opening['bg'])) {
+      $variables['html_attributes']->setAttribute('style', '--work-article-bg: ' . $opening['bg'] . '; --work-article-text: ' . $opening['ink']);
+    }
+    $variables['#attached']['library'][] = 'icon/theme-handover';
+  }
+}
+
+/**
+ * A hex colour, trimmed and validated, or NULL.
+ */
+function _icon_hex(string $value): ?string {
+  $value = trim($value);
+  return preg_match('/^#[0-9a-f]{3,8}$/i', $value) ? $value : NULL;
+}
+
+/**
+ * What the current Canvas page opens on, from its Masthead's "Opens on".
+ *
+ * @return array{class: string, bg?: string, ink?: string}|null
+ *   The <html> class, with the chameleon's pair where the opening is a
+ *   colour of its own; NULL when the page opens on the site theme.
+ */
+function _icon_canvas_page_opening(): ?array {
+  $route = \Drupal::routeMatch();
+  if ($route->getRouteName() !== 'entity.canvas_page.canonical') {
+    return NULL;
+  }
+  $page = $route->getParameter('canvas_page');
+  if (!$page instanceof EntityInterface || !$page->hasField('components')) {
+    return NULL;
+  }
+  foreach ($page->get('components') as $item) {
+    $value = $item->getValue();
+    if (($value['component_id'] ?? '') !== 'sdc.icon.page-header') {
+      continue;
+    }
+    $inputs = $value['inputs'] ?? [];
+    $inputs = is_string($inputs) ? (json_decode($inputs, TRUE) ?: []) : $inputs;
+    // A stored input is the plain value, or a {value: …} static source.
+    $in = fn(string $key) => is_array($inputs[$key] ?? NULL) ? ($inputs[$key]['value'] ?? NULL) : ($inputs[$key] ?? NULL);
+    return match ((string) $in('opening')) {
+      'dark' => ['class' => 'dark'],
+      'blue' => ['class' => 'theme-blue'],
+      'light-grey' => ['class' => 'theme-work-article', 'bg' => 'var(--light-grey)', 'ink' => 'var(--black)'],
+      'custom' => [
+        'class' => 'theme-work-article',
+        'bg' => _icon_hex((string) $in('bg')) ?? 'var(--light-grey)',
+        'ink' => _icon_hex((string) $in('ink')) ?? 'var(--black)',
+      ],
+      default => NULL,
+    };
+  }
+  return NULL;
 }
 
 /**

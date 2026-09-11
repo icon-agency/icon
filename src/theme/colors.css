@@ -57,6 +57,10 @@
      flipped the whole footer white in dark mode. */
   --black: #0d0d0d; /* was #111, before that #1e1e1e; the footer's black won */
   --blue: #0000ff;
+  /* The third ICON colour (user call, Sep 2026): a light grey ground that
+     takes the light theme's ink — a page can open on it (the Masthead's
+     "Opens on") and hand over to white. Fixed, like the others. */
+  --light-grey: #f0f4f9;
 
   --icon-black: var(--black);
   --icon-grey: color-mix(in srgb, var(--black) 80%, transparent); /* derived, cannot drift */
@@ -206,6 +210,7 @@
    custom properties, so the utilities must resolve at runtime. */
 @theme inline {
   --color-black: var(--black); /* was #000 — folded onto the one black */
+  --color-light-grey: var(--light-grey); /* the ICON light grey — bg-light-grey */
   --color-brand-blue: var(--blue); /* fixed twin of --icon-blue's light value: the work reveal swipe + promo card keep the brand blue even in dark */
   --color-shader-blue: var(--blue); /* was its own #142cfe — folded onto the one blue (the role name stays; the hue no longer diverges) */
 }

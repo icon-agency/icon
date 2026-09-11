@@ -67,17 +67,9 @@
   border-bottom: var(--rule-weight) solid var(--rule);
 }
 
-/* the table opens with a rule too (user call): the first cell — and its
-   row-mate once the grid is two across */
-.work-stats__stat:first-child {
-  border-top: var(--rule-weight) solid var(--rule);
-}
-
-@media (min-width: 40rem) {
-  .work-stats__stat:nth-child(2) {
-    border-top: var(--rule-weight) solid var(--rule);
-  }
-}
+/* No rule ABOVE the first row (user call, Sep 2026 — it had one, and it
+   read as a second line under a statement's own): a cell's rule is the
+   one beneath it, so the band closes on a line and opens on air. */
 
 .work-stats__value {
   order: -1;
