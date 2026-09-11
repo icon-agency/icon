@@ -49,9 +49,19 @@
   min-width: 0;
 }
 
-.columns__col > div,
-.columns__col > div > div {
-  display: contents; /* Canvas's wrappers, lifted as the page lifts them */
+/* A block plugin's wrapper (the Filmstrip, Team profiles — div#block-…),
+   lifted as the page lifts them. ONLY those: the editor's empty-slot
+   placeholder is a div here too, and lifted it had no height and nothing
+   to drop on (user catch, Sep 2026). */
+.columns__col > div[id^="block-"],
+.columns__col > div[id^="block-"] > div {
+  display: contents;
+}
+
+/* an empty column still stands, so the editor's drop zone has a body */
+.columns__col:empty,
+.columns__col > .canvas--slot-empty-placeholder {
+  min-height: 4rem;
 }
 
 /* the column is the measure: the blocks' own framing comes off */
