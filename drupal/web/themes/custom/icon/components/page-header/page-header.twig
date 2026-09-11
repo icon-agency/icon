@@ -28,5 +28,8 @@
     </{{ tag }}>
     {% block extras %}{{ extras }}{% endblock %}
   </div>
-  {% block band %}{{ band }}{% endblock %}
+  {# the band is FULL width — the masthead's gutter is given back here, and
+     whatever is placed brings its own (the Filmstrip bleeds, Columns and a
+     pull quote pad on the page gutter) #}
+  <div class="page-header__band">{% block band %}{{ band }}{% endblock %}</div>
 </div>

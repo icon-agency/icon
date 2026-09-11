@@ -20,18 +20,26 @@
   padding-top: clamp(8rem, 12vw, 10rem);
 }
 
-/* A block placed in the masthead's slots carries its own gutter (a pull
-   quote's margin, the results band's padding) and the masthead already
-   pads on the page gutter, so theirs comes off here — the article frames'
-   rule (utilities/work-article.css). Without it a statement under the
-   heading sat inset twice, its rules short of the page's (user call, Sep
-   2026). */
-.page-header .pull-quote {
+/* THE TWO SLOTS AND THE GUTTER (user call, Sep 2026: "no double up").
+   The masthead pads on the page gutter for its centred column. A block
+   placed UNDER THE HEADING sits inside that column and drops its own
+   gutter (a pull quote's margin, the results band's, Columns', the
+   prose's padding) — the article frames' rule; the FULL-WIDTH BAND gives
+   the gutter back (the negative margin below) so what is placed there
+   brings its own: Columns and a pull quote pad on the page gutter once,
+   the Filmstrip bleeds to the viewport as it does anywhere. */
+.page-header__inner .pull-quote {
   margin-inline: 0;
 }
 
-.page-header .work-stats {
+.page-header__inner .work-stats,
+.page-header__inner .columns,
+.page-header__inner .content-page {
   padding-inline: 0;
+}
+
+.page-header__band {
+  margin-inline: calc(-1 * var(--gutter-page));
 }
 
 .page-header__inner {
