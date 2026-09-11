@@ -265,9 +265,10 @@
       var group = table.closest(".icon-panel--reel").querySelector("[data-group=available]");
       if (group) group.hidden = rowsOf(group.querySelector("table")).length === 0;
     }
-    // The marquee's order is content: post it, then reload.
+    // An order that is CONTENT (the marquee's logos, the team's members):
+    // the card names the action, and the order is posted, then reloaded.
     var orderUrl = table.closest(".icon-panel__card") && table.closest(".icon-panel__card").getAttribute("data-order-url");
-    if (table.closest(".icon-panel--clients") && orderUrl) {
+    if (orderUrl) {
       var ids = rows.map(function (r) { return r.getAttribute("data-row"); }).join(",");
       fetch(orderUrl + "&ids=" + ids, { method: "POST", headers: { "X-Requested-With": "XMLHttpRequest" }, credentials: "same-origin" })
         .then(function () { window.location.reload(); });

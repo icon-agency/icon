@@ -441,3 +441,9 @@ select.icon-panel__count { padding: 4px 24px 4px 8px; border: 1px solid #d9d9e0;
   object-fit: cover;
   border-radius: 4px;
 }
+
+/* A team member not in the grid (unpublished): the row dimmed. */
+.icon-panel__row--off .icon-panel__name,
+.icon-panel__row--off .icon-panel__photo {
+  opacity: 0.55;
+}

@@ -28,6 +28,14 @@ icon_site.logo_action:
   requirements:
     _permission: 'manage icon lists'
     _csrf_token: 'TRUE'
+icon_site.team_action:
+  path: '/icon-site/team-action'
+  defaults:
+    _controller: '\Drupal\icon_site\Controller\TeamActionController::act'
+  methods: [POST]
+  requirements:
+    _permission: 'edit any team_member content'
+    _csrf_token: 'TRUE'
 icon_site.offices:
   path: '/admin/content/offices'
   defaults:

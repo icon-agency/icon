@@ -497,7 +497,9 @@ function icon_site_page_attachments(array &$attachments): void {
 }
 
 /**
- * Fits a Hero slide form opened from the Canvas panel (?panel=1) to a dialog.
+ * Fits a Hero slide or Team member form from a Canvas panel to a dialog.
+ *
+ * The form arrives with ?panel=1.
  *
  * The form lives in a dialog over the editor: Save submits by ajax and
  * closes the dialog (or re-renders the form with its errors); Preview and
@@ -505,7 +507,7 @@ function icon_site_page_attachments(array &$attachments): void {
  */
 function _icon_site_panel_node_form_alter(array &$form, FormStateInterface $form_state): void {
   $node = $form_state->getFormObject()->getEntity();
-  if ($node->bundle() !== 'hero_slide' || !\Drupal::request()->query->get('panel')) {
+  if (!in_array($node->bundle(), ['hero_slide', 'team_member'], TRUE) || !\Drupal::request()->query->get('panel')) {
     return;
   }
   $form['#prefix'] = '<div id="icon-panel-form">';
@@ -514,7 +516,7 @@ function _icon_site_panel_node_form_alter(array &$form, FormStateInterface $form
   // or "Add to reel", which one the panel script decides from where the
   // slide's row sits when the dialog opens. The reel is the block's setting
   // (Canvas autosaves it), so the move is made client-side, not saved here.
-  if (!$node->isNew()) {
+  if ($node->bundle() === 'hero_slide' && !$node->isNew()) {
     $form['actions']['reel'] = [
       '#markup' => '<a href="#" role="button" class="button button--danger icon-panel__remove icon-panel__dialog-reel" data-nid="' . (int) $node->id() . '">' . t('Remove from reel') . '</a>',
       '#weight' => 10,
@@ -541,7 +543,8 @@ function _icon_site_panel_node_form_after_build(array $form, FormStateInterface 
   // save unpublished the slide. Published stays — it is how a slide leaves
   // the reel without being deleted.
   // (`footer` is where the node form keeps that checkbox — leave it too.)
-  // (`field_logo_weight`: the marquee panel's drag writes the order.)
+  // (`field_logo_weight`, `field_team_weight`: the panels' drags write
+  // the order.)
   $hidden = [
     'menu',
     'meta',
@@ -554,6 +557,7 @@ function _icon_site_panel_node_form_after_build(array $form, FormStateInterface 
     'path',
     'advanced',
     'field_logo_weight',
+    'field_team_weight',
   ];
   foreach ($hidden as $key) {
     if (isset($form[$key])) {
