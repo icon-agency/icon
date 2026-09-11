@@ -21,3 +21,16 @@
 .ck.ck-dropdown__panel {
   max-width: min(100vw, 340px);
 }
+
+/* A slot-holding component's note: where its pictures and cards go
+   (icon_site_form_component_instance_form_alter). */
+.icon-slot-note__text {
+  margin: 0 0 12px;
+  padding: 10px 12px;
+  border: 1px solid #d9d9e0;
+  border-radius: 6px;
+  background: #f4f4f6;
+  font-size: 13px;
+  line-height: 1.45;
+  color: #1c2024;
+}

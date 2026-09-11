@@ -378,6 +378,25 @@ function icon_site_entity_operation_alter(array &$operations, EntityInterface $e
  */
 function icon_site_form_component_instance_form_alter(array &$form, FormStateInterface $form_state): void {
   $form['#attached']['library'][] = 'icon_site/editor_panel';
+  // A component whose content is other components in a slot has few or no
+  // settings of its own, so its panel came up blank and said nothing about
+  // where the pictures go (user, Sep 2026, on a Gallery: "How do I add
+  // images/videos"). The panel says so.
+  $tree = json_decode((string) ($form['form_canvas_tree']['#value'] ?? ''), TRUE);
+  $id = explode('@', (string) ($tree['type'] ?? ''))[0];
+  $notes = [
+    'sdc.icon.work-gallery' => t('A row of one or two figures. Pictures and films go in as <strong>Figure (gallery)</strong> components: press + on the Figures slot, or drag one in from Parts in the library. A Figure takes a picture, or a film in its place.'),
+    'sdc.icon.filmstrip' => t('The cards are <strong>Photo (filmstrip)</strong> and <strong>Fact card (filmstrip)</strong> components in the Cards slot: press + on the slot, or drag them in from Parts in the library; reorder them in Layers. A Photo takes a picture or a film.'),
+    'sdc.icon.intro' => t('The strip’s cards are <strong>Photo (filmstrip)</strong> and <strong>Fact card (filmstrip)</strong> components in the Filmstrip cards slot, and the links are <strong>Expertise link (intro)</strong> components in the Expertise links slot — press + on a slot, or drag them in from Parts.'),
+  ];
+  if (isset($notes[$id])) {
+    $form['icon_slot_note'] = [
+      '#type' => 'container',
+      '#weight' => -50,
+      '#attributes' => ['class' => ['icon-slot-note']],
+      'text' => ['#markup' => '<p class="icon-slot-note__text">' . $notes[$id] . '</p>'],
+    ];
+  }
 }
 
 /**
