@@ -104,6 +104,47 @@
     color: var(--icon-black);
   }
 
+  /* THE CAPS LABEL VOICE in the editor (user ask, Sep 2026: the Work
+     article's facts row — CATEGORY over CREATIVE — as styles): Heading 4 —
+     Caps label is the column title, the label voice at Kumbh's heaviest
+     900; Paragraph — Caps and the Caps list are its items, the same voice
+     at medium, no bullets, one item a line. */
+  .content-page h4.is-caps-label,
+  .content-page p.is-caps,
+  .content-page ul.list-caps li {
+    font-size: var(--voice-label);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    line-height: 1.7;
+    text-wrap: pretty;
+  }
+
+  .content-page h4.is-caps-label {
+    font-weight: 900;
+    margin: 0;
+    color: var(--icon-black);
+  }
+
+  .content-page p.is-caps,
+  .content-page ul.list-caps li {
+    font-weight: var(--font-weight-medium);
+    color: var(--icon-black);
+  }
+
+  .content-page p.is-caps {
+    margin-bottom: 0;
+  }
+
+  .content-page ul.list-caps {
+    list-style: none;
+    padding-left: 0;
+    margin-bottom: 1.5rem;
+  }
+
+  .content-page ul.list-caps li:not(:last-child) {
+    margin-bottom: 0;
+  }
+
   .content-page h2.is-serif {
     font-family: var(--font-serif);
     font-size: clamp(2rem, 2.6vw, 3.75rem);

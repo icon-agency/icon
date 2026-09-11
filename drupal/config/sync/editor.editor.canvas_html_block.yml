@@ -88,7 +88,16 @@ settings:
           label: 'Paragraph — Small'
           element: '<p class="is-small">'
         -
+          label: 'Heading 4 — Caps label'
+          element: '<h4 class="is-caps-label">'
+        -
+          label: 'Paragraph — Caps'
+          element: '<p class="is-caps">'
+        -
           label: 'Slash list'
           element: '<ul class="list-slash">'
+        -
+          label: 'Caps list'
+          element: '<ul class="list-caps">'
 image_upload:
   status: false
