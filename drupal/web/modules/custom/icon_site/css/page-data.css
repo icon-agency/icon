@@ -1,0 +1,226 @@
+/* The Canvas editor's Page data panel — the Work node's own form, rendered
+   by the site theme into Canvas's panel (user call, Sep 2026: "modern
+   simple formatting"). One quiet register: small semibold labels, help
+   a step down and muted, the form read as SECTIONS under hairlines
+   (project · colours · tile · banner · facts · body · URL), the category
+   options as pills, the colours side by side with a swatch of the value
+   (js/page-data.js), the deliverables list compact. Colours are Canvas's
+   neutrals so the form sits in the panel rather than on it. */
+[data-form-id="page_data_form"] {
+  --pd-ink: #1c2024;
+  --pd-muted: #60646c;
+  --pd-rule: #e0e1e6;
+  --pd-field: #f9f9fb;
+  --pd-accent: #0000ff;
+  font: 13px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif;
+  color: var(--pd-ink);
+}
+
+/* rhythm: every top-level field a step apart, sections a rule apart */
+[data-form-id="page_data_form"] > .js-form-wrapper,
+[data-form-id="page_data_form"] > .form-item,
+[data-form-id="page_data_form"] > div[id^="edit-"] {
+  margin: 0 0 18px;
+}
+
+[data-form-id="page_data_form"] > #edit-field-work-bg-wrapper,
+[data-form-id="page_data_form"] > #edit-tile,
+[data-form-id="page_data_form"] > #edit-field-work-banner-wrapper,
+[data-form-id="page_data_form"] > #edit-field-work-category-wrapper,
+[data-form-id="page_data_form"] > #edit-work-canvas,
+[data-form-id="page_data_form"] > #edit-path-wrapper,
+[data-form-id="page_data_form"] > .entity-content-form-footer {
+  padding-top: 20px;
+  margin-top: 6px;
+  border-top: 1px solid var(--pd-rule);
+}
+
+/* labels and help */
+[data-form-id="page_data_form"] label,
+[data-form-id="page_data_form"] .field-label .label,
+[data-form-id="page_data_form"] legend,
+[data-form-id="page_data_form"] summary {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: var(--pd-ink);
+}
+
+[data-form-id="page_data_form"] .form-required::after {
+  content: " *";
+  color: var(--pd-muted);
+}
+
+[data-form-id="page_data_form"] .description,
+[data-form-id="page_data_form"] .description-unwrapped,
+[data-form-id="page_data_form"] [class*="_description_"] {
+  margin-top: 4px;
+  font-size: 11.5px;
+  line-height: 1.4;
+  color: var(--pd-muted);
+}
+
+/* the statement reads as a short paragraph, not a slab */
+[data-form-id="page_data_form"] textarea {
+  min-height: 72px;
+  resize: vertical;
+}
+
+/* the category options as pills, the chosen ones filled */
+[data-form-id="page_data_form"] .form-checkboxes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+[data-form-id="page_data_form"] .form-checkboxes .form-item {
+  margin: 0;
+}
+
+[data-form-id="page_data_form"] .form-checkboxes .form-item label {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 11px;
+  border: 1px solid var(--pd-rule);
+  border-radius: 999px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.15s, border-color 0.15s, color 0.15s;
+}
+
+[data-form-id="page_data_form"] .form-checkboxes .form-item:has(input:checked) label {
+  background: var(--pd-ink);
+  border-color: var(--pd-ink);
+  color: #fff;
+}
+
+[data-form-id="page_data_form"] .form-checkboxes input[type="checkbox"] {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* the two colours side by side (floated: the form is a flat stack and the
+   pair cannot be wrapped without moving fields, which Canvas would read
+   as an edit), each with a swatch of its value in the field */
+[data-form-id="page_data_form"] > #edit-field-work-bg-wrapper,
+[data-form-id="page_data_form"] > #edit-field-work-ink-wrapper {
+  float: left;
+  width: calc(50% - 6px);
+}
+
+[data-form-id="page_data_form"] > #edit-field-work-ink-wrapper {
+  margin-left: 12px;
+  padding-top: 20px;
+  margin-top: 6px;
+  border-top: 1px solid var(--pd-rule);
+}
+
+[data-form-id="page_data_form"] > #edit-field-work-ink-wrapper + * {
+  clear: both;
+}
+
+[data-form-id="page_data_form"] .icon-colour [class*="_wrap_"] {
+  position: relative;
+}
+
+[data-form-id="page_data_form"] .icon-colour input {
+  padding-left: 34px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 12px;
+}
+
+[data-form-id="page_data_form"] .icon-colour__swatch {
+  position: absolute;
+  left: 8px;
+  top: 50%;
+  translate: 0 -50%;
+  width: 18px;
+  height: 18px;
+  border-radius: 5px;
+  border: 1px solid rgb(0 0 0 / 0.12);
+  pointer-events: none;
+}
+
+/* the deliverables list, compact: the drag handle, the field, a quiet Remove */
+[data-form-id="page_data_form"] .field-multiple-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+[data-form-id="page_data_form"] .field-multiple-table thead th {
+  padding: 0 0 6px;
+  text-align: left;
+  border: 0;
+}
+
+[data-form-id="page_data_form"] .field-multiple-table thead .label {
+  margin: 0;
+}
+
+[data-form-id="page_data_form"] .field-multiple-table td {
+  padding: 3px 4px 3px 0;
+  border: 0;
+  vertical-align: middle;
+}
+
+[data-form-id="page_data_form"] .field-multiple-table .form-item {
+  margin: 0;
+}
+
+[data-form-id="page_data_form"] .field-multiple-table .field-multiple-drag {
+  width: 22px;
+  color: var(--pd-muted);
+}
+
+[data-form-id="page_data_form"] .field-multiple-table .button,
+[data-form-id="page_data_form"] .field-add-more-submit,
+[data-form-id="page_data_form"] .button--small {
+  padding: 5px 10px;
+  font-size: 12px;
+  font-weight: 500;
+  border: 1px solid var(--pd-rule);
+  border-radius: 6px;
+  background: #fff;
+  color: var(--pd-ink);
+  cursor: pointer;
+}
+
+[data-form-id="page_data_form"] .field-multiple-table .button:hover,
+[data-form-id="page_data_form"] .field-add-more-submit:hover {
+  border-color: var(--pd-muted);
+}
+
+/* the way into the body: the primary button, full-width */
+[data-form-id="page_data_form"] #edit-work-canvas .button--primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin-top: 6px;
+  padding: 9px 14px;
+  border: 0;
+  border-radius: 6px;
+  background: var(--pd-accent);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+/* the footer: author and dates as a muted meta line, the state select under */
+[data-form-id="page_data_form"] .entity-meta__header {
+  padding: 0;
+  background: none;
+}
+
+[data-form-id="page_data_form"] .entity-meta .form-item {
+  margin: 0 0 6px;
+  font-size: 12px;
+  color: var(--pd-muted);
+}

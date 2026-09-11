@@ -38,6 +38,12 @@ use Drupal\media_library\MediaLibraryState;
  * promote and sorts sticky first, then date) — they just need to say so.
  */
 function icon_site_form_node_form_alter(array &$form, FormStateInterface $form_state): void {
+  // In the Canvas editor's Page data panel the form dresses itself
+  // (css/page-data.css): a library attached to the editor page does not
+  // reach it, one the form carries does (work-tiles.css found that out).
+  if (\Drupal::routeMatch()->getRouteName() === 'canvas.api.form.content_entity') {
+    $form['#attached']['library'][] = 'icon_site/page_data';
+  }
   _icon_site_work_tile_group($form, $form_state);
   _icon_site_work_legacy_group($form, $form_state);
   _icon_site_work_canvas_link($form, $form_state);
@@ -72,10 +78,16 @@ function _icon_site_work_canvas_link(array &$form, FormStateInterface $form_stat
   // Where the Body sat: after the colours, before the moderation state
   // (user catch, Sep 2026: "where is Canvas and all the content?" — it
   // stood by the Feature statement, above the fold and easy to pass).
+  // The colour pair stands at the top, under the Feature statement (user
+  // call, Sep 2026: "colour at the top") — the page's identity, read
+  // before its tiles and facts. Set in a #process callback: the form
+  // display's own (EntityFormDisplay::processForm()) runs after every
+  // alter and writes the display's weights back over the fields.
+  $form['#process'][] = '_icon_site_work_colour_weights';
   $form['work_canvas'] = [
     '#type' => 'item',
     '#title' => t('Body'),
-    '#weight' => ($form['field_work_ink']['#weight'] ?? 50) + 0.5,
+    '#weight' => ($form['field_work_deliverables']['#weight'] ?? 50) + 0.5,
     '#description' => t('The body — runs of text with the Share rail, galleries, films, results — is built in Canvas, not on this form. Save the fields above first; the editor keeps its own draft.'),
   ];
   $form['work_canvas']['link'] = $node->isNew()
@@ -86,6 +98,18 @@ function _icon_site_work_canvas_link(array &$form, FormStateInterface $form_stat
       '#url' => Url::fromRoute('icon_site.node_canvas', ['node' => $node->id()]),
       '#attributes' => ['class' => ['button', 'button--primary']],
     ];
+}
+
+/**
+ * Process callback: the Work form's colour pair right under the statement.
+ */
+function _icon_site_work_colour_weights(array $element, FormStateInterface $form_state, array &$complete_form): array {
+  $statement = $element['field_work_statement']['#weight'] ?? 2;
+  if (isset($element['field_work_bg'], $element['field_work_ink'])) {
+    $element['field_work_bg']['#weight'] = $statement + 0.1;
+    $element['field_work_ink']['#weight'] = $statement + 0.2;
+  }
+  return $element;
 }
 
 /**
@@ -527,6 +551,9 @@ function icon_site_canvas_storable_prop_shape_alter(CandidateStorablePropShape $
  */
 function icon_site_page_attachments(array &$attachments): void {
   if (str_starts_with((string) \Drupal::routeMatch()->getRouteName(), 'canvas.')) {
+    // Canvas 1.11's editor builds its own HtmlResponse, past this hook;
+    // the panels' forms carry the library themselves (blockForm(),
+    // icon_site_form_node_form_alter()). Kept for the other canvas.* pages.
     $attachments['#attached']['library'][] = 'icon_site/panel_lists';
   }
 }

@@ -31,3 +31,16 @@ work_tiles:
   css:
     component:
       css/work-tiles.css: {}
+
+# The Canvas editor's Page data panel — the node form dressed in one quiet
+# register (page-data.css) with colour swatches (page-data.js); the form
+# attaches it (icon_site_form_node_form_alter()).
+page_data:
+  css:
+    component:
+      css/page-data.css: {}
+  js:
+    js/page-data.js: {}
+  dependencies:
+    - core/drupal
+    - core/once
