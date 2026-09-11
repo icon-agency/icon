@@ -64,6 +64,13 @@
   min-height: 4rem;
 }
 
+/* A Columns INSIDE a column (user call, Sep 2026): the column is already
+   on the page gutter, so the nested grid drops its own and its columns
+   split the column's width edge to edge. */
+.columns .columns {
+  padding-inline: 0;
+}
+
 /* the column is the measure: the blocks' own framing comes off */
 .columns .content-page {
   max-width: none;
