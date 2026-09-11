@@ -56,6 +56,13 @@
     line-height: var(--line-height-tight);
   }
 
+  /* A heading's top margin is rhythm INSIDE the prose; the first thing in
+     a block starts flush, or a Content block opening on an H3 sat a gap
+     below its neighbours in a row of columns (user catch, Sep 2026). */
+  .content-page > :first-child {
+    margin-top: 0;
+  }
+
   .content-page h2 {
     font-size: clamp(2.25rem, 3vw, 3.5rem);
     font-weight: 800;
