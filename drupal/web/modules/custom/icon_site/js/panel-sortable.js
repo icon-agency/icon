@@ -251,16 +251,6 @@
   // so the inputs are found from the document.
   var sync = function (table) {
     var rows = rowsOf(table);
-    // A FIELD's own list (a multi-value widget's table, marked
-    // .icon-panel__list--weights by js/page-data.js): the row order is its
-    // hidden weight selects, written as core's tabledrag would write them.
-    if (table.classList.contains("icon-panel__list--weights")) {
-      rows.forEach(function (r, i) {
-        var weight = r.querySelector("select.delta-order, select[name$='[_weight]']");
-        if (weight && weight.value !== String(i)) setValue(weight, i);
-      });
-      return;
-    }
     var order = document.querySelector("input.icon-panel__order");
     var projects = document.querySelectorAll("input.icon-panel__project");
     if (table.closest(".icon-panel--reel") && order) {
