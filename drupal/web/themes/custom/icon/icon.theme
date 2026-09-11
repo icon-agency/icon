@@ -724,8 +724,16 @@ function _icon_work_paragraph_props(ParagraphInterface $p, ?CacheableMetadata $c
       ] : [];
 
     case 'work_scroller':
-      $items = array_values(array_filter(array_map(fn($m) => _icon_media_image($m, 'work_media', $cache), $p->get('field_work_scroller_media')->referencedEntities())));
-      return $items ? ['items' => $items, 'ground' => $p->get('field_work_scroller_ground')->value ?? ''] : [];
+      // Images and films in one media field (Sep 2026): the strip shows the
+      // images in order, then the films, looping.
+      $sources = array_filter(array_map(fn($m) => _icon_media_source($m, 'work_media', $cache), $p->get('field_work_scroller_media')->referencedEntities()));
+      $items = array_values(array_filter($sources, fn($s) => ($s['type'] ?? '') === 'image'));
+      $films = array_values(array_filter($sources, fn($s) => ($s['type'] ?? '') === 'video'));
+      return ($items || $films) ? [
+        'items' => $items,
+        'films' => $films,
+        'ground' => $p->get('field_work_scroller_ground')->value ?? '',
+      ] : [];
   }
   return [];
 }

@@ -21,6 +21,7 @@ settings:
   handler_settings:
     target_bundles:
       image: image
+      video: video
     sort:
       field: _none
       direction: ASC

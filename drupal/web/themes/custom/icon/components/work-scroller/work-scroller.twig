@@ -12,5 +12,14 @@
         <img loading="lazy" src="{{ item.src }}" alt="{{ item.alt }}"{% if item.width %} width="{{ item.width }}"{% endif %}{% if item.height %} height="{{ item.height }}"{% endif %} />
       </button>
     {% endfor %}
+    {# Films loop muted, after the images (user call, Sep 2026); decorative,
+       like every looping film on the site — the card is the control. #}
+    {% for film in films|default([]) %}
+      {% if film.src %}
+        <button class="work-scroller__card" type="button">
+          <video autoplay muted loop playsinline preload="metadata" src="{{ film.src }}"{% if film.poster %} poster="{{ film.poster }}"{% endif %}></video>
+        </button>
+      {% endif %}
+    {% endfor %}
   </div>
 </div>

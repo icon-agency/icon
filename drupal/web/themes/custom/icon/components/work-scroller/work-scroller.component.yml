@@ -2,7 +2,7 @@ $schema: https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schema
 name: Gallery scroller
 group: Work article
 status: stable
-description: The drifting gallery strip for a series — posters, clippings — on an optional colour ground (src/components/work-scroller.css, js/work-scroller.js).
+description: The drifting gallery strip for a series — posters, clippings, looping films — on an optional colour ground (src/components/work-scroller.css, js/work-scroller.js).
 props:
   type: object
   required:
@@ -21,6 +21,14 @@ props:
             alt: Poster
             width: 800
             height: 1100
+    films:
+      type: array
+      title: Films (looping)
+      description: Short films that loop, muted, after the images. Pick Video media or upload an MP4.
+      items:
+        $ref: json-schema-definitions://canvas.module/video
+      examples:
+        - - src: https://example.com/loop.mp4
     ground:
       type: string
       title: Ground colour

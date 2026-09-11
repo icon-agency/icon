@@ -66,7 +66,8 @@
   transition: scale 0.45s var(--ease-standard);
 }
 
-.work-scroller__card img {
+.work-scroller__card img,
+.work-scroller__card video {
   display: block;
   max-height: 100%;
   width: auto;

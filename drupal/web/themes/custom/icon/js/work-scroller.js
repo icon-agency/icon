@@ -55,12 +55,20 @@
           viewport.classList.add("is-ready");
 
           // ---- height: min(tallest natural image, viewport allowance) ----------
-          var imgs = Array.prototype.slice.call(track.querySelectorAll("img"));
+          // Films count too (Sep 2026): a video's natural size is its
+          // videoWidth/Height, known once its metadata has loaded.
+          var imgs = Array.prototype.slice.call(track.querySelectorAll("img, video"));
+          var natural = function (el) {
+            return el.tagName === "VIDEO"
+              ? { w: el.videoWidth, h: el.videoHeight }
+              : { w: el.naturalWidth, h: el.naturalHeight };
+          };
           var setHeight = function () {
             var tallest = 0, maxRatio = 0;
             imgs.forEach(function (img) {
-              if (img.naturalHeight > tallest) tallest = img.naturalHeight;
-              if (img.naturalHeight > 0) maxRatio = Math.max(maxRatio, img.naturalWidth / img.naturalHeight);
+              var n = natural(img);
+              if (n.h > tallest) tallest = n.h;
+              if (n.h > 0) maxRatio = Math.max(maxRatio, n.w / n.h);
             });
             var pad = parseFloat(getComputedStyle(viewport).paddingTop) || 0;
             // three governors, smallest wins: the tallest image's natural height
@@ -75,7 +83,10 @@
             viewport.style.setProperty("--ws-card-h", h + "px");
           };
           imgs.forEach(function (img) {
-            if (!img.complete) img.addEventListener("load", function () { setHeight(); measure(); }, { once: true });
+            if (img.tagName === "VIDEO") {
+              if (img.readyState < 1) img.addEventListener("loadedmetadata", function () { setHeight(); measure(); }, { once: true });
+            }
+            else if (!img.complete) img.addEventListener("load", function () { setHeight(); measure(); }, { once: true });
           });
 
           // ---- the marquee: the SHARED engine (js/strip-drift.js) ---------------
