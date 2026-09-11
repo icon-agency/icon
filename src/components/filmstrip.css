@@ -102,6 +102,7 @@
 .filmstrip__card--fact {
   display: flex;
   flex-direction: column;
+  text-align: left; /* its own: inside a centred masthead it inherited the centre (user call, Sep 2026) */
   padding: calc(var(--filmstrip-card-w) * 0.094);
   background: var(--color-shader-blue);
   color: var(--color-white);
