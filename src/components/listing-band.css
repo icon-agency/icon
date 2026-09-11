@@ -47,7 +47,11 @@
 }
 
 .listing-band .filter-bar__chip {
-  font-size: var(--voice-label);
+  /* A step under the label voice (user call, Sep 2026: "these can be
+     smaller", both landings): 12px on a phone to 15px on a wide screen,
+     where the label voice ran to 18px. The em padding scales with it and
+     keeps the chip past the 24px tap floor at every size. */
+  font-size: clamp(0.75rem, 0.55rem + 0.35vw, 0.9375rem);
   border-radius: 9999px;
   padding: 0.5em 1.1em;
 }
