@@ -596,8 +596,17 @@
 /* a heading block ahead of the band is ITS heading — sit it at the close
    heading distance, not the chunk's full section gap (user call: "move the
    results heading closer"; the negative margin eats the flex gap down) */
-.work-article__prose + .work-stats {
+.work-article__prose + .work-stats,
+.work-article__chunk > .content-page + .work-stats {
   margin-top: calc(var(--space-sm) - var(--space-lg));
+}
+
+/* …and the prose's closing paragraph gives up its own bottom margin there
+   (user catch, Sep 2026: "why is there so much space" — the Drupal prose
+   block is .content-page, which the tuck above never matched, and its last
+   paragraph's 2rem stacked on the chunk gap and the first cell's padding). */
+.work-article__chunk > .content-page:has(+ .work-stats) > :last-child {
+  margin-bottom: 0;
 }
 
 
