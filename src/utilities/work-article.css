@@ -453,6 +453,17 @@
   gap: var(--space-lg);
 }
 
+/* In the Canvas editor the body arrives inside the region's and the
+   block's divs (page.html.twig composes the flow around page.content
+   there); flattened, the components are the flow's own children, so its
+   rhythm and the sibling rules above hold as on the page (user catch,
+   Sep 2026: "all the padding seems to be missing"). canvas-page.css does
+   the same for a Canvas page. */
+.work-article__flow > div:not([class]),
+.work-article__flow > div:not([class]) > div[id^="block-"] {
+  display: contents;
+}
+
 /* Same measure as .news-article__prose — shared by intent, see header.
    Two ways to be a prose chunk: the static template's explicit
    .work-article__prose, or — in Drupal — a bare .content-page placed in a
