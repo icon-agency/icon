@@ -12,9 +12,19 @@
 
 .listing-band {
   padding-block: var(--space-sm);
-  padding-inline: var(--gutter-page);
+  /* INSET, not padded (user catch, Sep 2026: the hairlines ran edge to
+     edge): a border spans the box, so the page gutter is a margin here and
+     the two lines stop where every rule on the site stops. */
+  margin-inline: var(--gutter-page);
   border-top: var(--rule-weight) solid var(--rule);
   border-bottom: var(--rule-weight) solid var(--rule);
+}
+
+/* Under a closed band the grid stands a step below the line (same user
+   catch: the cards sat on it); the open band's first story brings its own
+   hairline and rhythm. */
+.listing-band:not(.listing-band--open) + * {
+  margin-top: var(--space-md);
 }
 
 .listing-band--open {
