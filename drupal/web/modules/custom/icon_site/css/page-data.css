@@ -161,8 +161,8 @@
 }
 
 [data-form-id="page_data_form"] .icon-panel__list tr.draggable td:first-child {
-  width: 26px;
-  padding-left: 4px;
+  width: 32px;
+  padding-left: 2px;
 }
 
 [data-form-id="page_data_form"] .icon-panel__handle {
@@ -175,7 +175,7 @@
   border: 0;
   border-radius: 4px;
   background: none;
-  color: var(--pd-muted);
+  color: #8b8d98; /* a step darker than the help text: the dots must read */
   cursor: grab;
 }
 

@@ -84,6 +84,11 @@ function _icon_site_work_canvas_link(array &$form, FormStateInterface $form_stat
   // display's own (EntityFormDisplay::processForm()) runs after every
   // alter and writes the display's weights back over the fields.
   $form['#process'][] = '_icon_site_work_colour_weights';
+  // Inside the Canvas editor's own panel the body is right there: no link
+  // to itself (user catch, Sep 2026).
+  if (\Drupal::routeMatch()->getRouteName() === 'canvas.api.form.content_entity') {
+    return;
+  }
   $form['work_canvas'] = [
     '#type' => 'item',
     '#title' => t('Body'),
