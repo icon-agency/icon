@@ -93,6 +93,7 @@
                 <li><a class="ds-nav__link" href="#intro">Intro statement</a></li>
                 <li><a class="ds-nav__link" href="#filmstrip">Filmstrip</a></li>
                 <li><a class="ds-nav__link" href="#news-article">News article</a></li>
+                <li><a class="ds-nav__link" href="#contact-page">Contact page</a></li>
                 <li><a class="ds-nav__link" href="#site-header">Site header</a></li>
                 <li><a class="ds-nav__link" href="#work">Work grid</a></li>
                 <li><a class="ds-nav__link" href="#work-gallery">Work gallery</a></li>
@@ -736,6 +737,121 @@
                   guard per <code class="ds-code">base/typography.css</code>) and the shared
                   <code class="ds-code">iconReveal</code>. No-JS reads dark end to end &mdash; a
                   legitimate rendering, not a fallback apology.
+                </p>
+              </div>
+            </section>
+
+            <section class="ds-section" id="contact-page">
+              <h3 class="ds-section__title">Contact page</h3>
+              <p class="ds-section__intro">
+                <code class="ds-code">templates/contact.html</code> (design: the live
+                iconagency.com.au/contact, dressed in the system&rsquo;s own voices &mdash; user call,
+                11 Sep 2026): the <code class="ds-code">page-header--stack</code> masthead
+                (&ldquo;Contact&rdquo; over &ldquo;This is how / we finally meet&rdquo;) opening
+                <strong>dark and holding it</strong> &mdash; no handover, the footer is the same ground
+                &mdash; then two columns on the footer&rsquo;s own half-line (768): the enquiry form on
+                the left and the four offices, open, on the right. Both columns start on a drawn
+                hairline with the office row&rsquo;s air beneath it, so the form&rsquo;s lead and the
+                first city name sit level. Three pieces are new and reusable:
+                <code class="ds-code">.contact-form</code>
+                (<code class="ds-code">src/components/contact-form.css</code>) &mdash; the lead in the
+                mid voice, the intro a Paragraph, each field its label in the Paragraph voice
+                (<code class="ds-code">--voice-paragraph</code>, the prose&rsquo;s own token) a weight up
+                over THE hairline with the answer beneath, focus filling the hairline, a paperclip file
+                input on the message, a captcha slot, and &ldquo;Send your message&rdquo; as the quiet
+                invitation link; from the two-column breakpoint the form is 85% of its column, capped
+                at 40rem on a wide screen. <code class="ds-code">.office-list</code>
+                (<code class="ds-code">src/components/office-list.css</code>) &mdash; the footer
+                accordion&rsquo;s row exactly, the city in the mid voice with its place name muted
+                beside it, the address then Phone then email in one column under the name, nothing
+                folded. And the footer&rsquo;s contact dress, <code class="ds-code">.site-footer--contact</code>
+                &mdash; the CTA row becomes &ldquo;Join our newsletter&rdquo; in the display caps at the
+                masthead lockup&rsquo;s line height with the Subscribe bar centred beneath, and the
+                body&rsquo;s newsletter column and office accordion go, because LET&rsquo;S TALK would
+                invite the reader to the page they are on and the offices are open just above.
+              </p>
+
+              <div class="ds-group">
+                <h4 class="ds-group__title">Live &mdash; the form beside the offices</h4>
+                <p class="ds-group__note">
+                  The two components in the page&rsquo;s own arrangement, on this page&rsquo;s light
+                  ground (the template holds dark); two of the four offices, the first fields.
+                </p>
+                <div class="ds-demo">
+                  <div class="contact-page">
+                    <div class="contact-page__form">
+                      <form class="contact-form" action="#" method="post" novalidate data-rule="top">
+                        <h2 class="contact-form__lead">Simply fill in the form below</h2>
+                        <p class="contact-form__intro">Whether it&rsquo;s a brand refresh, public relations push, new website or end-to-end behaviour change campaign &mdash; we&rsquo;re interested and ready to talk solutions.</p>
+                        <fieldset class="contact-form__fields">
+                          <legend class="sr-only">Your details</legend>
+                          <div class="contact-form__field">
+                            <label class="contact-form__label" for="ds-contact-first-name">First name<span class="contact-form__required" aria-hidden="true">*</span></label>
+                            <input class="contact-form__input" id="ds-contact-first-name" name="first_name" type="text" autocomplete="given-name" required />
+                          </div>
+                          <div class="contact-form__field">
+                            <label class="contact-form__label" for="ds-contact-email">Your email<span class="contact-form__required" aria-hidden="true">*</span></label>
+                            <input class="contact-form__input" id="ds-contact-email" name="email" type="email" autocomplete="email" required />
+                          </div>
+                          <div class="contact-form__field">
+                            <label class="contact-form__label" for="ds-contact-message">Tell us about your project</label>
+                            <textarea class="contact-form__textarea" id="ds-contact-message" name="message" rows="2"></textarea>
+                            <label class="contact-form__attach" for="ds-contact-file" title="Attach a file">
+                              <span class="sr-only">Attach a file</span>
+                              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48" /></svg>
+                              <input class="contact-form__attach-input" id="ds-contact-file" name="attachment" type="file" />
+                            </label>
+                          </div>
+                        </fieldset>
+                        <button class="contact-form__submit quiet-link invite-arrow" type="button">Send your message</button>
+                      </form>
+                    </div>
+                    <div class="contact-page__offices">
+                      <ul class="office-list" role="list">
+            <li class="office-list__item" data-rule="top">
+              <svg class="office-list__icon" viewBox="0 0 278 278" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M243.62,97.25l-7.01-60.45h-15.78l-3.63-22.98L60.7.06l-4.26,36.74h-15.06l-7.01,60.45h14.37l25.68,180.69h129.15l25.68-180.69h14.37ZM52.08,48.8h15.06l4.15-35.77,135.53,11.92,3.76,23.85h15.35l4.23,36.45H47.85l4.23-36.45ZM193.16,265.94h-108.32l-23.98-168.69h156.27l-23.98,168.69Z" /></svg>
+              <div class="office-list__head"><h3 class="office-list__city">Melbourne</h3><span class="office-list__place">Naarm</span></div>
+              <address class="office-list__details">
+                <p>Suite 1, Level 2<br />132 Gwynne Street<br />Cremorne VIC 3121 Australia</p>
+                <p class="office-list__contact">Phone <a href="tel:+61396424107">03 9642 4107</a><br /><a href="mailto:melbourne@iconagency.com.au">melbourne@iconagency.com.au</a></p>
+              </address>
+            </li>
+            <li class="office-list__item" data-rule="both">
+              <svg class="office-list__icon" viewBox="0 0 278 278" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M230.52,104.99h-19.73v-53.65h-65.79V0h-12v51.34h-65.79v53.65h-19.73l14.24,100.92h31.04v72.1h92.47v-72.1h31.05l14.24-100.92ZM79.21,63.34h119.59v41.65h-119.59v-41.65ZM216.71,116.99l-4.58,32.44H65.87l-4.58-32.44h155.41ZM173.23,266h-68.47v-60.1h68.47v60.1ZM72.15,193.9l-4.58-32.47h142.87l-4.58,32.47H72.15Z" /></svg>
+              <div class="office-list__head"><h3 class="office-list__city">Sydney</h3><span class="office-list__place">Gadigal</span></div>
+              <address class="office-list__details">
+                <p>Suite 5, Level 6<br />2&ndash;12 Foveaux Street<br />Surry Hills NSW 2010 Australia</p>
+                <p class="office-list__contact">Phone <a href="tel:+61261852860">02 6185 2860</a><br /><a href="mailto:sydney@iconagency.com.au">sydney@iconagency.com.au</a></p>
+              </address>
+            </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+                <a class="ds-thumb-link" href="templates/contact.html">
+                  <figure>
+                    <figcaption>Open the Contact template, at full scale &mdash; dark, with the footer&rsquo;s contact dress</figcaption>
+                  </figure>
+                </a>
+              </div>
+
+              <div class="ds-group">
+                <h4 class="ds-group__title">Drupal (Canvas / SDC)</h4>
+                <p class="ds-group__note">
+                  Built, and live (<code class="ds-code">scripts/contact-page.php</code>): a Canvas page at
+                  <code class="ds-code">/contact</code> &mdash; the Masthead component with the opening
+                  <strong>&ldquo;Black, all the way down (no handover)&rdquo;</strong> (the caps prop
+                  takes a line break), over a two-column <strong>Columns</strong> holding two blocks
+                  from the Listings folder. <strong>Contact form</strong> builds the core Contact
+                  module&rsquo;s &ldquo;Contact&rdquo; form into the <code class="ds-code">contact-form</code>
+                  SDC&rsquo;s slot &mdash; first name, last name, email, phone, message, an attachment;
+                  the sender&rsquo;s name and the subject written from the names; Preview and
+                  &ldquo;send yourself a copy&rdquo; off; the lead and intro its settings; who
+                  receives it and the reply are Content &rarr; Contact forms.
+                  <strong>Offices</strong> lays Content &rarr; Offices out through the
+                  <code class="ds-code">office-list</code> SDC. The footer wears its contact dress by
+                  the page&rsquo;s alias, in the editor&rsquo;s preview too. Not yet: a captcha (the
+                  captcha module) and outbound mail on the host.
                 </p>
               </div>
             </section>
@@ -2501,7 +2617,9 @@
                   Theme <strong>region</strong> (footer), not a paragraph type &mdash; one SDC
                   <code class="ds-code">site-footer</code> with menu/newsletter/offices props; the
                   offices are a content entity or a settings tray. The accordion needs no behaviour,
-                  so the Twig stays a pure template; Subscribe is the same element and
+                  so the Twig stays a pure template (on the contact page, the region wears
+                  <code class="ds-code">.site-footer--contact</code> &mdash; see the Contact page above &mdash;
+                  by the page&rsquo;s alias); Subscribe is the same element and
                   <code class="ds-code">data-subscribe</code> hook as the mobile menu&rsquo;s control
                   &mdash; one future behaviour serves both, inert until it is written. Behaviour js
                   maps to <code class="ds-code">Drupal.behaviors.iconFooter</code>, attached via the
