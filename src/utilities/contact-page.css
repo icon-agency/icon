@@ -34,6 +34,18 @@
   min-width: 0;
 }
 
+/* From the desktop breakpoint the form stops short of its column (user
+   annotation, Sep 2026: "narrower on the two column, bigger sizes"): a
+   field rule running the full half-page read too long against the office
+   rows' short lines. The column's own rule above still spans the column,
+   as the office rows' do. Below 1024 the column is narrower than the cap,
+   so nothing changes. */
+@media (min-width: 1024px) {
+  .contact-page__form .contact-form {
+    max-width: 40rem;
+  }
+}
+
 /* the form's rule and the air beneath it are the office row's exactly
    (components/office-list.css: padding-block --space-sm), which is what
    levels the lead with "Melbourne"; drawn in by rules.css */

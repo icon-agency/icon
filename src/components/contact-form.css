@@ -93,7 +93,9 @@
 
 .contact-form__textarea {
   min-height: 3.5em;
-  resize: vertical;
+  /* no resize grip: it sat against the paperclip on the rule (user
+     annotation, Sep 2026); the box grows by rows, the Webform can size it */
+  resize: none;
   padding-inline-end: 2em; /* room for the paperclip */
 }
 
