@@ -98,23 +98,44 @@ $add('sdc.icon.prose', $prose(
 // The Team profiles block: the people are Team member content (Content →
 // Team members), each opening a panel at /about/<name>. It replaced a
 // Content block listing them (10 Sep 2026).
-// ---- The filmstrip: the homepage's photos and two of its facts -----------
+// ---- The filmstrip: the homepage's photos and three of its facts --------
+// The Filmstrip component with Photo and Fact card components in its slot
+// — the homepage intro's system, one for both pages (user call, Sep 2026),
+// a fact card after every two photos.
 $mediaId = static function (string $bundle, string $name): int {
   $found = \Drupal::entityTypeManager()->getStorage('media')->loadByProperties(['bundle' => $bundle, 'name' => $name]);
   return $found ? (int) reset($found)->id() : 0;
 };
-$add('block.icon_filmstrip', [
-  'label' => 'Filmstrip',
-  'label_display' => '0',
-  'heading' => 'The ICON team',
-  'photos' => array_values(array_filter(array_map(fn(int $n) => $mediaId('image', "team-$n.jpg"), range(1, 6)))),
-  'stats' => [
-    ['icon' => $mediaId('icon', 'Trophy'), 'title' => '14 Agency of the Year awards', 'label' => 'Since 2021'],
-    ['icon' => $mediaId('icon', 'World'), 'title' => '83 global partners', 'label' => 'In 60 countries'],
-    ['icon' => $mediaId('icon', 'Peace sign'), 'title' => '24+ years of experience', 'label' => 'An independent Australian agency'],
+$strip = $add('sdc.icon.filmstrip', ['label' => 'The ICON team']);
+$facts = [
+  [
+    'icon' => $mediaId('icon', 'Trophy'),
+    'title' => '14 Agency of the Year awards',
+    'label' => 'Since 2021',
   ],
-  'every' => 2,
-]);
+  [
+    'icon' => $mediaId('icon', 'World'),
+    'title' => '83 global partners',
+    'label' => 'In 60 countries',
+  ],
+  [
+    'icon' => $mediaId('icon', 'Peace sign'),
+    'title' => '24+ years of experience',
+    'label' => 'An independent Australian agency',
+  ],
+];
+foreach (range(1, 6) as $n) {
+  if ($mid = $mediaId('image', "team-$n.jpg")) {
+    $add('sdc.icon.intro-photo', ['image' => ['target_id' => $mid]], $strip, 'cards');
+  }
+  if ($n % 2 === 0 && ($fact = array_shift($facts))) {
+    $add('sdc.icon.intro-fact', [
+      'icon' => ['target_id' => $fact['icon']],
+      'title' => $fact['title'],
+      'label' => $fact['label'],
+    ], $strip, 'cards');
+  }
+}
 
 $add('block.icon_team_profiles', ['label' => 'Team profiles', 'label_display' => '0', 'heading' => 'Leadership team']);
 

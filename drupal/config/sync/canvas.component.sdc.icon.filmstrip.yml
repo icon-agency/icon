@@ -1,6 +1,6 @@
 uuid: 276131cf-446d-4672-bc49-ffc8b5a101d2
 langcode: en
-status: false
+status: true
 dependencies:
   theme:
     - icon

@@ -36,7 +36,7 @@ $plan = [
     'sdc.icon.news-article-figure',
     'sdc.icon.work-gallery',
     'sdc.icon.work-scroller',
-    'block.icon_filmstrip',
+    'sdc.icon.filmstrip',
   ],
   'Video' => [
     'sdc.icon.news-article-video',
@@ -91,9 +91,11 @@ $hide = [
   'sdc.navigation.title',
   'sdc.olivero.teaser',
   'sdc.icon.news-card',
-  // the slot-based strip: the intro embeds it; editors place the Filmstrip
-  // BLOCK, whose panel is the photos and the fact cards
-  'sdc.icon.filmstrip',
+  // The Filmstrip BLOCK, whose panel bundled photos and fact cards into one
+  // form: one system now (user call, Sep 2026) — the strip is the Filmstrip
+  // component with Photo and Fact card components in its slot, as the
+  // homepage intro has always been (scripts/filmstrip-components.php).
+  'block.icon_filmstrip',
 ];
 
 $storage = \Drupal::entityTypeManager()->getStorage('component');
