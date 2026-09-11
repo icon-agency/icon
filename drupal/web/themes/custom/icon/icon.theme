@@ -11,6 +11,7 @@
  */
 
 use Drupal\Core\Cache\CacheableMetadata;
+use Drupal\canvas\AutoSave\AutoSaveManager;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Template\Attribute;
 use Drupal\Core\Url;
@@ -85,6 +86,41 @@ function icon_preprocess_html(array &$variables): void {
 }
 
 /**
+ * The Canvas page this request renders: on its own route, or in the editor.
+ *
+ * The editor's preview (the canvas.api.layout.* routes, `entity` +
+ * `entity_type`) renders the DRAFT — the auto-save — so that is what comes
+ * back there, and the page's spacing and its opening colour are read off
+ * the same tree the editor is showing (user call, Sep 2026: the preview
+ * spaced blocks tighter than the page, and showed no opening colour).
+ */
+function _icon_route_canvas_page(): ?EntityInterface {
+  $route = \Drupal::routeMatch();
+  $name = (string) $route->getRouteName();
+  if ($name === 'entity.canvas_page.canonical') {
+    $page = $route->getParameter('canvas_page');
+    return $page instanceof EntityInterface ? $page : NULL;
+  }
+  if (str_starts_with($name, 'canvas.api.layout.') && $route->getParameter('entity_type') === 'canvas_page') {
+    $page = $route->getParameter('entity');
+    if (!$page instanceof EntityInterface) {
+      return NULL;
+    }
+    $draft = \Drupal::service(AutoSaveManager::class)->getAutoSaveEntity($page);
+    return !$draft->isEmpty() && $draft->entity instanceof EntityInterface ? $draft->entity : $page;
+  }
+  return NULL;
+}
+
+/**
+ * Whether a Canvas page is the site's front page.
+ */
+function _icon_canvas_page_is_front(EntityInterface $page): bool {
+  $front = (string) \Drupal::config('system.site')->get('page.front');
+  return $front !== '' && \Drupal::service('path_alias.manager')->getPathByAlias($front) === '/page/' . $page->id();
+}
+
+/**
  * A hex colour, trimmed and validated, or NULL.
  */
 function _icon_hex(string $value): ?string {
@@ -100,12 +136,8 @@ function _icon_hex(string $value): ?string {
  *   colour of its own; NULL when the page opens on the site theme.
  */
 function _icon_canvas_page_opening(): ?array {
-  $route = \Drupal::routeMatch();
-  if ($route->getRouteName() !== 'entity.canvas_page.canonical') {
-    return NULL;
-  }
-  $page = $route->getParameter('canvas_page');
-  if (!$page instanceof EntityInterface || !$page->hasField('components')) {
+  $page = _icon_route_canvas_page();
+  if (!$page || !$page->hasField('components')) {
     return NULL;
   }
   foreach ($page->get('components') as $item) {
@@ -163,14 +195,17 @@ function icon_preprocess_page(array &$variables): void {
   $variables['main_attributes'] = new Attribute(['id' => 'main']);
   // The homepage's shell class (templates/homeC.html <main class="page-home">):
   // the uncapped fluid container + the page system in src/utilities/home-c.css.
-  if (\Drupal::service('path.matcher')->isFrontPage()) {
+  // In the Canvas editor's preview as on the page itself
+  // (_icon_route_canvas_page()), so what an editor sees is what publishes.
+  $page = _icon_route_canvas_page();
+  if (\Drupal::service('path.matcher')->isFrontPage() || ($page && _icon_canvas_page_is_front($page))) {
     $variables['main_attributes']->addClass('page-home');
   }
   // A page built in Canvas is a flat stack of components with no frame
   // composing it, so it gets one: src/utilities/canvas-page.css spaces the
   // blocks. The homepage is a Canvas page too and keeps .page-home, which
   // is its own system.
-  elseif (\Drupal::routeMatch()->getRouteName() === 'entity.canvas_page.canonical') {
+  elseif ($page) {
     $variables['main_attributes']->addClass('page-canvas');
   }
   // The route title, for page templates that draw their own h1 (the auth
