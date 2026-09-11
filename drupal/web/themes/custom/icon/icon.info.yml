@@ -29,3 +29,8 @@ libraries:
 regions:
   highlighted: Highlighted
   content: Content
+
+# CKEditor's content and its Styles previews in the site's voices
+# (src/editor.css → css/editor.css, see the build).
+ckeditor5-stylesheets:
+  - css/editor.css

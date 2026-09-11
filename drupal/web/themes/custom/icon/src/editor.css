@@ -1,0 +1,56 @@
+/* editor.css — CKEditor's content and its Styles previews in the site's
+ * own voices (user call, Sep 2026: "can they inherit the actual font
+ * style?"). The editor renders inside Canvas's panel, on a page the site
+ * theme does not dress, so this carries the two families, the tokens and
+ * the prose rules; scripts/editor-css.mjs re-scopes the prose from
+ * .content-page to .ck-content after the build. Declared in icon.info.yml
+ * as the theme's ckeditor5-stylesheets.
+ *
+ * Build: `npm run build:theme` → css/editor.css (minified, committed). */
+
+@import url("https://fonts.googleapis.com/css2?family=Kumbh+Sans:wght@400..900&display=swap");
+@import url("https://use.typekit.net/bhv7yrj.css");
+
+@import "../../../../../../src/theme/colors.css";
+@import "../../../../../../src/theme/typography.css";
+@import "../../../../../../src/theme/spacing.css";
+@import "../../../../../../src/theme/radius.css";
+@import "../../../../../../src/theme/motion.css";
+@import "../../../../../../src/theme/breakpoints.css";
+@import "../../../../../../src/base/prose.css";
+
+/* The editing area and each preview: the body voice as the page sets it.
+   CKEditor's own .ck.ck-content sets Helvetica on the editing root, so
+   the site's sans is stated at a specificity above it; the prose rules
+   then set the serif where it belongs. */
+.ck.ck-content,
+.ck.ck-content.ck-editor__editable,
+.ck-style-grid .ck-content {
+  font-family: var(--font-sans);
+  color: var(--icon-black);
+}
+
+/* The panel is a third of a page wide: the page's sizes, scaled down to
+   read as a document rather than as a poster (the ratios hold). The
+   previews scale further — each is a small tile. */
+.ck.ck-content.ck-editor__editable {
+  zoom: 0.62;
+}
+
+.ck-style-grid .ck-content,
+.ck-style-grid__button__preview {
+  zoom: 0.5;
+}
+
+/* CKEditor sets its UI face on the preview tile itself; the tile and its
+   sample take the site's sans, and the two serif styles their serif. */
+.ck.ck-style-grid__button__preview,
+.ck.ck-style-grid__button__preview > * {
+  font-family: var(--font-sans) !important;
+}
+
+.ck.ck-style-grid__button__preview > h2.is-serif,
+.ck.ck-style-grid__button__preview > blockquote,
+.ck.ck-style-grid__button__preview > blockquote * {
+  font-family: var(--font-serif) !important;
+}
