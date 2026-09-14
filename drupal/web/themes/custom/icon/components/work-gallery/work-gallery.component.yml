@@ -1,6 +1,6 @@
 $schema: https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json
-name: Gallery (strip)
-group: Pictures
+name: Gallery row (strip)
+group: Gallery
 status: stable
 description: |
   A row of the work article's media (src/components/work-gallery.css): one
@@ -16,5 +16,5 @@ props:
   properties: {}
 slots:
   figures:
-    title: Figures
+    title: Pictures
     description: One or two. Two sit side by side from 768; on a phone they stack.

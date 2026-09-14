@@ -155,7 +155,7 @@ versioned_properties:
             string_shape: {  }
     fallback_metadata:
       slot_definitions: {  }
-label: 'Gallery figure (item)'
+label: 'Gallery row picture (item)'
 id: sdc.icon.work-gallery-figure
 provider: icon
 source: sdc

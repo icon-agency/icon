@@ -33,7 +33,7 @@ versioned_properties:
           derived_schema_metadata: {  }
     fallback_metadata:
       slot_definitions: {  }
-label: Image
+label: Picture
 id: sdc.icon.news-article-figure
 provider: icon
 source: sdc

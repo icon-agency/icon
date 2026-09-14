@@ -39,9 +39,11 @@ $plan = [
   ],
   'Pictures' => [
     'sdc.icon.news-article-figure',
+    'sdc.icon.work-scroller',
+  ],
+  'Gallery' => [
     'sdc.icon.work-gallery',
     'sdc.icon.work-gallery-figure',
-    'sdc.icon.work-scroller',
   ],
   'Filmstrip' => [
     'sdc.icon.filmstrip',

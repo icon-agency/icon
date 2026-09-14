@@ -1,6 +1,6 @@
 $schema: https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json
-name: Gallery figure (item)
-group: Pictures
+name: Gallery row picture (item)
+group: Gallery
 status: stable
 description: |
   One figure in a gallery row (src/components/work-gallery.css): a picture,

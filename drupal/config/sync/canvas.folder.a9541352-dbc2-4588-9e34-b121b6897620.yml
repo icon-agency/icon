@@ -1,0 +1,13 @@
+uuid: a9541352-dbc2-4588-9e34-b121b6897620
+langcode: en
+status: true
+dependencies:
+  config:
+    - canvas.component.sdc.icon.work-gallery
+    - canvas.component.sdc.icon.work-gallery-figure
+name: Gallery
+configEntityTypeId: component
+weight: 3
+items:
+  - sdc.icon.work-gallery
+  - sdc.icon.work-gallery-figure

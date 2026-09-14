@@ -95,7 +95,7 @@ versioned_properties:
             string_shape: {  }
     fallback_metadata:
       slot_definitions: {  }
-label: 'Gallery scroller'
+label: 'Picture scroller'
 id: sdc.icon.work-scroller
 provider: icon
 source: sdc
