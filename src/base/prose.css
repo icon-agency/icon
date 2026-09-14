@@ -294,8 +294,43 @@
     line-height: 1.6;
   }
 
+  /* THE BULLET IS A SLASH (user call, Sep 2026: "for bullet points, try a
+     slash, in relation to the font size, for all paragraphs; align to the
+     edge of the text box"): the slash list's glyph — the page ink, bold,
+     the item's own size so a Small item gets a smaller slash — on every
+     plain list, and the list flush with the copy's left edge, the slash
+     on the edge and the words indented past it. The disc is gone; the
+     slash list below keeps its hairlines as the ruled option. */
   .content-page ul {
-    list-style-type: disc;
+    list-style: none;
+    padding-left: 0;
+  }
+
+  .content-page ul > li {
+    position: relative;
+    padding-left: 1.2em;
+  }
+
+  .content-page ul > li::before {
+    content: "/";
+    position: absolute;
+    left: 0;
+    color: var(--icon-black);
+    font-weight: var(--font-weight-bold);
+  }
+
+  /* an item carrying a paragraph style sizes its slash to that style */
+  .content-page ul > li:has(> p.is-small) {
+    font-size: 1.0625rem;
+  }
+
+  /* the Caps list is no bullets, one item a line, by design */
+  .content-page ul.list-caps > li {
+    padding-left: 0;
+  }
+
+  .content-page ul.list-caps > li::before {
+    content: none;
   }
 
   .content-page ol {
