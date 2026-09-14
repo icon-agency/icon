@@ -1,5 +1,5 @@
 $schema: https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json
-name: Result stats (item)
+name: Result stats number (item)
 group: Results
 status: stable
 description: One cell of the results band — the figure over what it counts (src/components/work-stats.css). Sits in a Results band's slot.

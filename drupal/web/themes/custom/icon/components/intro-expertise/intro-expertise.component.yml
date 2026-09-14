@@ -1,5 +1,5 @@
 $schema: https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json
-name: Expertise link (intro item)
+name: Intro expertise link (item)
 group: Homepage
 status: stable
 description: One service in the intro's expertise list.
