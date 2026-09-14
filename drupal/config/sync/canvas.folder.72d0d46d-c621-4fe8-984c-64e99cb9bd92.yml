@@ -7,6 +7,7 @@ dependencies:
     - canvas.component.block.icon_contact_form
     - canvas.component.block.icon_office
     - canvas.component.block.icon_team_profiles
+    - canvas.component.sdc.icon.venn
 name: ICON
 configEntityTypeId: component
 weight: 8
@@ -15,3 +16,4 @@ items:
   - block.icon_contact_form
   - block.icon_office
   - block.icon_team_profiles
+  - sdc.icon.venn

@@ -1,0 +1,80 @@
+uuid: 7264dd7f-6497-49c1-9ac8-4f1842646737
+langcode: en
+status: true
+dependencies:
+  theme:
+    - icon
+active_version: cbef56aa539b10a6
+versioned_properties:
+  active:
+    settings:
+      prop_field_definitions:
+        centre:
+          required: true
+          field_type: string
+          field_storage_settings: {  }
+          field_instance_settings: {  }
+          field_widget: string_textfield
+          default_value:
+            -
+              value: |-
+                Interdisciplinary
+                services
+          expression: ℹ︎string␟value
+          derived_schema_metadata:
+            string_shape: {  }
+        top:
+          required: true
+          field_type: string
+          field_storage_settings: {  }
+          field_instance_settings: {  }
+          field_widget: string_textfield
+          default_value:
+            -
+              value: Strategy
+          expression: ℹ︎string␟value
+          derived_schema_metadata:
+            string_shape: {  }
+        right:
+          required: true
+          field_type: string
+          field_storage_settings: {  }
+          field_instance_settings: {  }
+          field_widget: string_textfield
+          default_value:
+            -
+              value: Digital
+          expression: ℹ︎string␟value
+          derived_schema_metadata:
+            string_shape: {  }
+        bottom:
+          required: true
+          field_type: string
+          field_storage_settings: {  }
+          field_instance_settings: {  }
+          field_widget: string_textfield
+          default_value:
+            -
+              value: Communications
+          expression: ℹ︎string␟value
+          derived_schema_metadata:
+            string_shape: {  }
+        left:
+          required: true
+          field_type: string
+          field_storage_settings: {  }
+          field_instance_settings: {  }
+          field_widget: string_textfield
+          default_value:
+            -
+              value: Creative
+          expression: ℹ︎string␟value
+          derived_schema_metadata:
+            string_shape: {  }
+    fallback_metadata:
+      slot_definitions: {  }
+label: 'Venn diagram'
+id: sdc.icon.venn
+provider: icon
+source: sdc
+source_local_id: 'icon:venn'
