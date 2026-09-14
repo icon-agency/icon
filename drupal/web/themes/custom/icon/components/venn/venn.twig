@@ -30,9 +30,9 @@
     </g>
     <circle class="venn__core" cx="220" cy="220" r="86" />
     <text class="venn__core-label" x="220" y="220" text-anchor="middle">{% for line in centre|split("\n") %}<tspan x="220" dy="{{ loop.first ? "-0.35em" : "1.15em" }}">{{ line }}</tspan>{% endfor %}</text>
-    <text class="venn__label" style="--i: 0" x="220" y="68" text-anchor="middle">{{ top }}</text>
+    <text class="venn__label" style="--i: 0" x="220" y="90" text-anchor="middle">{{ top }}</text>
     <text class="venn__label" style="--i: 1" x="360" y="220" text-anchor="middle">{{ right }}</text>
-    <text class="venn__label" style="--i: 2" x="220" y="380" text-anchor="middle">{{ bottom }}</text>
+    <text class="venn__label" style="--i: 2" x="220" y="356" text-anchor="middle">{{ bottom }}</text>
     <text class="venn__label" style="--i: 3" x="80" y="220" text-anchor="middle">{{ left }}</text>
   </svg>
 </figure>
