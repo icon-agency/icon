@@ -16,6 +16,8 @@ props:
   type: object
   required:
     - columns
+    - gap
+    - box
   properties:
     columns:
       type: integer
