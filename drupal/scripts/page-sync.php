@@ -85,6 +85,7 @@ if ($mode === 'export') {
     'alias' => $alias,
     'title' => $page->label(),
     'description' => (string) ($page->get('description')->value ?? ''),
+    'published' => $page->isPublished(),
     'components' => $components,
     'refs' => $refs,
   ], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . "\n";
@@ -158,9 +159,11 @@ $page->set('title', $data['title']);
 $page->set('description', $data['description']);
 $page->set('components', $tree);
 $page->set('path', ['alias' => $alias]);
-$page->setPublished(TRUE);
+// The page's own state travels with it: an unpublished draft stays one.
+$published = $data['published'] ?? TRUE;
+$page->setPublished($published);
 if ($page->hasField('moderation_state')) {
-  $page->set('moderation_state', 'published');
+  $page->set('moderation_state', $published ? 'published' : 'draft');
 }
 $page->setNewRevision(TRUE);
 $page->setRevisionLogMessage("Synced from another environment (scripts/page-sync.php).");
