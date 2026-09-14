@@ -9,9 +9,12 @@
  * Behaviour: Drupal.behaviors.iconHeader (icon/header) — scroll state,
  * mobile menu, drawer offset. The SERVICES drawer is CSS-driven.
  *
- * Still static (follow-ups): the nav items and the drawer/mobile service
- * lists are hardcoded copies of the prototype — a menu-driven version is
- * a later slice; aria-current on the active item likewise.
+ * The links are the Main navigation menu (`nav`, icon_preprocess_page() via
+ * icon_site_primary_nav(); Structure → Menus → Main navigation): the pill
+ * prints the top level in caps, the first link with children opens the
+ * drawer of them, and the mobile menu prints the same two lists (user
+ * ask, Sep 2026: "Where do I manage this?"). Still static: aria-current
+ * on the active item.
  */
 #}
 {% set front = path('<front>') %}
@@ -47,21 +50,25 @@
           </svg>
         </a>
         <ul class="site-nav__list">
-          <li class="site-nav__item"><a class="site-nav__link" href="/work">WORK</a></li>
-          <li class="site-nav__item site-nav__item--has-submenu" data-submenu-item>
-            <a
-              class="site-nav__link"
-              href="/services"
-              data-submenu-trigger
-              aria-haspopup="true"
-              aria-expanded="false"
-              aria-controls="nav-services"
-              >EXPERTISE</a
-            >
-          </li>
-          <li class="site-nav__item"><a class="site-nav__link" href="/about">ABOUT</a></li>
-          <li class="site-nav__item"><a class="site-nav__link" href="/news">NEWS</a></li>
-          <li class="site-nav__item"><a class="site-nav__link" href="/contact">CONTACT</a></li>
+          {% set drawer = null %}
+          {% for item in nav %}
+            {% if item.children and not drawer %}
+              {% set drawer = item %}
+              <li class="site-nav__item site-nav__item--has-submenu" data-submenu-item>
+                <a
+                  class="site-nav__link"
+                  href="{{ item.url }}"
+                  data-submenu-trigger
+                  aria-haspopup="true"
+                  aria-expanded="false"
+                  aria-controls="nav-services"
+                  >{{ item.title|upper }}</a
+                >
+              </li>
+            {% else %}
+              <li class="site-nav__item"><a class="site-nav__link" href="{{ item.url }}">{{ item.title|upper }}</a></li>
+            {% endif %}
+          {% endfor %}
           <li class="site-nav__item site-nav__item--search">
             <button class="site-nav__search-trigger" type="button" aria-label="{{ 'Open search'|t }}" aria-expanded="false" aria-controls="nav-search" data-search-open>
               <svg class="site-nav__glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="8.5" /><path d="m21.5 21.5-5-5" /></svg>
@@ -70,21 +77,18 @@
         </ul>
       </div>
 
-      <!-- Drawer: grows the pill downward; items align under SERVICES -->
+      <!-- Drawer: grows the pill downward; items align under the trigger -->
+      {% if drawer %}
       <div class="site-nav__drawer" id="nav-services" data-submenu-drawer>
         <div class="site-nav__drawer-inner">
           <ul class="site-nav__submenu-list">
-            <!-- Interdisciplinary = the /services landing (all services / how they work together) -->
-            <li><a class="site-nav__submenu-link" href="/services">Interdisciplinary</a></li>
-            <li><a class="site-nav__submenu-link" href="/services#creative">Creative</a></li>
-            <li><a class="site-nav__submenu-link" href="/services#communications">Communications</a></li>
-            <li><a class="site-nav__submenu-link" href="/services/digital">Digital</a></li>
-            <li><a class="site-nav__submenu-link" href="/services#reputation">Reputation</a></li>
-            <li><a class="site-nav__submenu-link" href="/services#behaviour-change">Behaviour change</a></li>
-            <li><a class="site-nav__submenu-link" href="/services#production">Production</a></li>
+            {% for child in drawer.children %}
+              <li><a class="site-nav__submenu-link" href="{{ child.url }}">{{ child.title }}</a></li>
+            {% endfor %}
           </ul>
         </div>
       </div>
+      {% endif %}
     </nav>
     <!-- Search face: rolls in when the pill flips (site-header.css, "Search flip") -->
     <form class="site-nav__pill site-nav__pill--search" id="nav-search" role="search" action="{{ path('search.view_node_search') }}" method="get" data-search-face inert>
@@ -144,20 +148,17 @@
       </a>
       <div class="mobile-menu__cols">
         <nav class="mobile-menu__nav" aria-label="{{ 'Mobile primary'|t }}">
-          <a class="mobile-menu__link" href="/about">About</a>
-          <a class="mobile-menu__link" href="/services">Services</a>
-          <a class="mobile-menu__link" href="/work">Work</a>
-          <a class="mobile-menu__link" href="/news">News</a>
-          <a class="mobile-menu__link" href="/contact">Contact</a>
+          {% for item in nav %}
+            <a class="mobile-menu__link" href="{{ item.url }}">{{ item.title }}</a>
+          {% endfor %}
         </nav>
-        <nav class="mobile-menu__services" aria-label="{{ 'Services'|t }}">
-          <a class="mobile-menu__service" href="/services/creative">CREATIVE</a>
-          <a class="mobile-menu__service" href="/services/communications">COMMUNICATIONS</a>
-          <a class="mobile-menu__service" href="/services/digital">DIGITAL</a>
-          <a class="mobile-menu__service" href="/services/reputation">REPUTATION</a>
-          <a class="mobile-menu__service" href="/services/behaviour-change">BEHAVIOUR CHANGE</a>
-          <a class="mobile-menu__service" href="/services/production">PRODUCTION</a>
+        {% if drawer %}
+        <nav class="mobile-menu__services" aria-label="{{ drawer.title }}">
+          {% for child in drawer.children %}
+            <a class="mobile-menu__service" href="{{ child.url }}">{{ child.title|upper }}</a>
+          {% endfor %}
         </nav>
+        {% endif %}
       </div>
       <div class="mobile-menu__social">
         <button class="mobile-menu__social-link" type="button" data-subscribe>Subscribe</button>

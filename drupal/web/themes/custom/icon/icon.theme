@@ -357,6 +357,12 @@ function icon_preprocess_page(array &$variables): void {
   $offices = icon_site_offices();
   $variables['footer'] = $footer;
   $variables['offices'] = $offices['offices'];
+  // The primary navigation (includes/site-header.html.twig): the Main
+  // navigation menu, read by icon_site — the pill's links and the drawer
+  // of the one with children, and the mobile menu's two lists.
+  $nav = icon_site_primary_nav();
+  $variables['nav'] = $nav['items'];
+  $chrome->addCacheTags($nav['tags']);
   // The contact page's footer (templates/contact.html, user calls, Sep
   // 2026): its CTA is "Join our newsletter" with the Subscribe bar beneath,
   // not LET'S TALK — which would invite the reader to the page they are on
