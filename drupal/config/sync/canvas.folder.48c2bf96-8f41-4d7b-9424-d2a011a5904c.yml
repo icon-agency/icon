@@ -7,7 +7,7 @@ dependencies:
     - canvas.component.sdc.icon.work-video
 name: Video
 configEntityTypeId: component
-weight: 6
+weight: 7
 items:
   - sdc.icon.news-article-video
   - sdc.icon.work-video

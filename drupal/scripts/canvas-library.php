@@ -38,6 +38,10 @@ $plan = [
     'sdc.icon.pull-quote',
     'sdc.icon.divider',
   ],
+  'Results' => [
+    'sdc.icon.work-stats',
+    'sdc.icon.work-stat',
+  ],
   'Pictures' => [
     'sdc.icon.news-article-figure',
     'sdc.icon.work-scroller',
@@ -54,10 +58,6 @@ $plan = [
   'Video' => [
     'sdc.icon.news-article-video',
     'sdc.icon.work-video',
-  ],
-  'Results' => [
-    'sdc.icon.work-stats',
-    'sdc.icon.work-stat',
   ],
   'Listings' => [
     'block.views_block.news-landing',
