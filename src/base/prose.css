@@ -268,6 +268,32 @@
     margin-bottom: 0.5rem;
   }
 
+  /* A PARAGRAPH STYLE ON A LIST ITEM (user catch, Sep 2026: the partners
+     list in Paragraph — Small stood twice as open as the plain list beside
+     it). The editor puts the style on a <p> inside the <li>, and that <p>
+     brought the paragraph's 2rem bottom margin into the list. Inside an
+     item a paragraph has no margin of its own — the item's gap is the
+     list's — and a second paragraph in the same item stands half a line
+     off the first. A Small item's gap is the list's, scaled to the Small
+     size (0.5rem at the list's ~1.25rem is 0.4rem at 1.0625rem), so the
+     two lists keep one rhythm at two sizes. */
+  .content-page li > p {
+    margin-bottom: 0;
+  }
+
+  .content-page li > p + p {
+    margin-top: 0.5em;
+  }
+
+  .content-page ul li:has(> p.is-small):not(:last-child),
+  .content-page ol li:has(> p.is-small):not(:last-child) {
+    margin-bottom: 0.4rem;
+  }
+
+  .content-page li:has(> p.is-small) {
+    line-height: 1.6;
+  }
+
   .content-page ul {
     list-style-type: disc;
   }
