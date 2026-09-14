@@ -7,7 +7,7 @@ dependencies:
     - canvas.component.sdc.icon.work-gallery-figure
 name: Gallery
 configEntityTypeId: component
-weight: 3
+weight: 4
 items:
   - sdc.icon.work-gallery
   - sdc.icon.work-gallery-figure

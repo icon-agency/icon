@@ -23,19 +23,20 @@ use Drupal\canvas\Entity\Folder;
 // by page (user call, Sep 2026: About, Digital and the Work article all
 // draw on one set, so page folders made editors guess).
 $plan = [
-  'Text' => [
-    'sdc.icon.prose',
-    'sdc.icon.pull-quote',
-    'sdc.icon.columns',
-    'sdc.icon.divider',
-  ],
-  // A strip and its items sit together (user call, Sep 2026: "grouped as
-  // its own section, that way a user will know they are connected"), named
-  // "(strip)" and "(item)" throughout.
+  // The masthead first — a page starts with one — then the layout pieces
+  // (Columns, room for more), then the copy (user call, Sep 2026).
   'Mastheads' => [
     'sdc.icon.page-header',
     'sdc.icon.work-masthead',
     'sdc.icon.subscribe-bar',
+  ],
+  'Layout' => [
+    'sdc.icon.columns',
+  ],
+  'Text' => [
+    'sdc.icon.prose',
+    'sdc.icon.pull-quote',
+    'sdc.icon.divider',
   ],
   'Pictures' => [
     'sdc.icon.news-article-figure',

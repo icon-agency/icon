@@ -1,0 +1,11 @@
+uuid: ffd2c3f5-9a24-4f60-9f81-c75bc20823a0
+langcode: en
+status: true
+dependencies:
+  config:
+    - canvas.component.sdc.icon.columns
+name: Layout
+configEntityTypeId: component
+weight: 1
+items:
+  - sdc.icon.columns
