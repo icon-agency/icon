@@ -4,8 +4,10 @@ status: true
 dependencies:
   config:
     - canvas.component.sdc.icon.columns
+    - canvas.component.sdc.icon.divider
 name: Layout
 configEntityTypeId: component
 weight: 1
 items:
   - sdc.icon.columns
+  - sdc.icon.divider

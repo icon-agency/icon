@@ -3,13 +3,11 @@ langcode: en
 status: true
 dependencies:
   config:
-    - canvas.component.sdc.icon.divider
     - canvas.component.sdc.icon.prose
     - canvas.component.sdc.icon.pull-quote
 name: Text
 configEntityTypeId: component
 weight: 2
 items:
-  - sdc.icon.divider
   - sdc.icon.prose
   - sdc.icon.pull-quote

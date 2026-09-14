@@ -32,11 +32,11 @@ $plan = [
   ],
   'Layout' => [
     'sdc.icon.columns',
+    'sdc.icon.divider',
   ],
   'Text' => [
     'sdc.icon.prose',
     'sdc.icon.pull-quote',
-    'sdc.icon.divider',
   ],
   'Results' => [
     'sdc.icon.work-stats',
