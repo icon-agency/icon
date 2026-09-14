@@ -11,5 +11,3 @@ props:
       x-icon-media: picture-or-film
       title: Picture or film
       description: One pick from the media library — a picture, or a short film that loops, muted (Sep 2026; it was two fields).
-      examples:
-        - 52

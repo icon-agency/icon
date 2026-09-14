@@ -64,8 +64,7 @@ $cards = static function (array $settings, ?string $parent, ?string $slot) use (
     if (!$media) {
       continue;
     }
-    $key = $media->bundle() === 'video' ? 'film' : 'image';
-    $out[] = $item('sdc.icon.intro-photo', [$key => ['target_id' => (int) $media->id()]], $strip['uuid'], 'cards');
+    $out[] = $item('sdc.icon.intro-photo', ['media' => ['target_id' => (int) $media->id()]], $strip['uuid'], 'cards');
     if (++$n % $every === 0 && isset($facts[$fact])) {
       $f = $facts[$fact++];
       $out[] = $item('sdc.icon.intro-fact', array_filter([

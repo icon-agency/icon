@@ -120,7 +120,8 @@ $hide = [
   // "what is this?").
   'block.views_block.news-next_up',
   'block.views_block.work-next_up',
-  // rendered by their blocks (Contact form, Offices), which read the site
+  // The SDCs the Contact form and Offices blocks render — the blocks are
+  // the library entries; these read nothing on their own.
   'sdc.icon.contact-form',
   'sdc.icon.office-list',
 ];

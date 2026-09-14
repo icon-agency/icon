@@ -154,7 +154,7 @@ function _icon_canvas_page_is_front(EntityInterface $page): bool {
  */
 function _icon_hex(string $value): ?string {
   $value = trim($value);
-  return preg_match('/^#[0-9a-f]{3,8}$/i', $value) ? $value : NULL;
+  return preg_match('/^#(?:[0-9a-f]{3,4}|[0-9a-f]{6}|[0-9a-f]{8})$/i', $value) ? $value : NULL;
 }
 
 /**
@@ -847,7 +847,7 @@ function _icon_work_paragraph_props(ParagraphInterface $p, ?CacheableMetadata $c
       $film = _icon_media_source($p->get('field_work_video_media')->entity, 'work_media', $cache);
       $cover = _icon_media_image($p->get('field_work_video_cover')->entity, 'work_media', $cache);
       return ($film && $cover) ? [
-        'video_src' => $film['src'],
+        'film' => $film,
         'cover' => $cover,
         'title' => $p->get('field_work_video_title')->value ?? '',
       ] : [];

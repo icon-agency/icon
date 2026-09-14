@@ -126,7 +126,7 @@ $facts = [
 ];
 foreach (range(1, 6) as $n) {
   if ($mid = $mediaId('image', "team-$n.jpg")) {
-    $add('sdc.icon.intro-photo', ['image' => ['target_id' => $mid]], $strip, 'cards');
+    $add('sdc.icon.intro-photo', ['media' => ['target_id' => $mid]], $strip, 'cards');
   }
   if ($n % 2 === 0 && ($fact = array_shift($facts))) {
     $add('sdc.icon.intro-fact', [

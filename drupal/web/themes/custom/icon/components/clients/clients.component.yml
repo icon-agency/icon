@@ -1,6 +1,6 @@
 $schema: https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json
-name: Clients marquee
-group: Homepage
+name: Clients scroller
+group: ICON
 status: stable
 description: >
   The logo card marquee (templates/homeC.html, src/utilities/home-c.css):

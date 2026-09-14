@@ -14,9 +14,33 @@ dependencies:
     - media_library
   theme:
     - icon
-active_version: badb307d75ccd8fc
+active_version: 80b31c54347a8727
 versioned_properties:
   active:
+    settings:
+      prop_field_definitions:
+        media:
+          required: false
+          field_type: entity_reference
+          field_storage_settings:
+            target_type: media
+          field_instance_settings:
+            handler: 'default:media'
+            handler_settings:
+              target_bundles:
+                image: image
+                video: video
+              sort:
+                field: _none
+                direction: ASC
+              auto_create: false
+          field_widget: media_library_widget
+          default_value: null
+          expression: ℹ︎entity_reference␟target_id
+          derived_schema_metadata: {  }
+    fallback_metadata:
+      slot_definitions: {  }
+  badb307d75ccd8fc:
     settings:
       prop_field_definitions:
         media:

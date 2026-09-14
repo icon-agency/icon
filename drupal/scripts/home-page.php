@@ -99,7 +99,7 @@ $intro = $item('sdc.icon.intro', [
 $in = fn(string $slot) => fn(string $id, array $inputs) => $item($id, $inputs, TRUE, $intro['uuid'], $slot);
 $strip = $in('strip');
 $link = $in('expertise');
-$photo = fn(int $n, string $alt) => $strip('sdc.icon.intro-photo', ['image' => ['target_id' => $media("team-$n.jpg", $alt)->id()]]);
+$photo = fn(int $n, string $alt) => $strip('sdc.icon.intro-photo', ['media' => ['target_id' => $media("team-$n.jpg", $alt)->id()]]);
 $icon_names = ['trophy' => 'Trophy', 'world' => 'World', 'peace' => 'Peace sign', 'flame' => 'Flame'];
 $fact = fn(string $icon_key, string $title, string $label) => $strip('sdc.icon.intro-fact', ['icon' => ['target_id' => (int) $icon("$icon_key.svg", $icon_names[$icon_key])->id()], 'title' => $title, 'label' => $label]);
 

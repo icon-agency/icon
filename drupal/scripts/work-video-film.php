@@ -8,7 +8,10 @@
  * the media library, so its panel offers the same picker every other film
  * on the site does (user call, Sep 2026). An instance placed before still
  * renders through the old path; this rewrites it — the Video media whose
- * file is that path — onto the current component version. Idempotent.
+ * file is that path — onto the current component version, and drops the
+ * article's open draft so the editor opens on the rewritten tree (unlike
+ * scripts/photo-media.php, which leaves a draft as it is: a draft here
+ * would still hold the retired path). Idempotent.
  *
  * Run: ICON_SEED=1 drush php:script scripts/work-video-film.php
  */

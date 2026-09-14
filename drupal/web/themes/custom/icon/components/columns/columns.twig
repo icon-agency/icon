@@ -17,7 +17,7 @@
 #}
 {% set count = columns|default(2) %}
 {% set box = box|default('none') %}
-{% set hex = '/^#[0-9a-f]{3,8}$/i' %}
+{% set hex = '/^#(?:[0-9a-f]{3,4}|[0-9a-f]{6}|[0-9a-f]{8})$/i' %}
 {% set box_class = attribute({ white: 'theme-work-article', 'light-grey': 'theme-work-article', black: 'dark', blue: 'theme-blue', custom: 'theme-work-article' }, box)|default('') %}
 {% set pair = {
   white: ['var(--color-white)', 'var(--black)'],

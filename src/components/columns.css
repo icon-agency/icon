@@ -58,7 +58,7 @@
 
 /* a boxed Columns inside a column is already on the gutter — and keeps
    its padding, which the nested rule below would otherwise take */
-.columns .columns--box {
+.columns .columns.columns--box {
   margin-inline: 0;
   padding: var(--box-pad);
 }

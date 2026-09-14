@@ -26,7 +26,7 @@ if (!getenv('ICON_SEED')) {
 \Drupal::service('account_switcher')->switchTo(User::load(1));
 $version = (string) Component::load('sdc.icon.intro-photo')->get('active_version');
 
-$convert = static function (array $items, string $label) use ($version): ?array {
+$convert = static function (array $items) use ($version): ?array {
   $changed = FALSE;
   foreach ($items as &$item) {
     if ($item['component_id'] !== 'sdc.icon.intro-photo') {
@@ -46,7 +46,7 @@ $convert = static function (array $items, string $label) use ($version): ?array 
 };
 
 foreach (Page::loadMultiple() as $page) {
-  if ($items = $convert($page->get('components')->getValue(), $page->label())) {
+  if ($items = $convert($page->get('components')->getValue())) {
     $page->set('components', $items)->setNewRevision(TRUE);
     $page->setRevisionLogMessage('Filmstrip photo: one media pick (scripts/photo-media.php).');
     $page->save();
@@ -55,7 +55,7 @@ foreach (Page::loadMultiple() as $page) {
 }
 $nids = \Drupal::entityQuery('node')->accessCheck(FALSE)->condition('type', 'work')->execute();
 foreach (Node::loadMultiple($nids) as $node) {
-  if ($node->hasField('field_work_canvas') && ($items = $convert($node->get('field_work_canvas')->getValue(), $node->label()))) {
+  if ($node->hasField('field_work_canvas') && ($items = $convert($node->get('field_work_canvas')->getValue()))) {
     $node->set('field_work_canvas', $items)->setNewRevision(TRUE);
     $node->save();
     print "Node {$node->id()}: photos moved to the one pick.\n";
