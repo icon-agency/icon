@@ -18,6 +18,13 @@
   "use strict";
 
   if (!window.ICON || !window.ICON.stripDrift) return;
+  // In the Canvas editor's frame (js-theme/opening.js reads the same mark)
+  // the strip holds still: a drifting card is not where the editor thinks
+  // it is when the click lands, so selecting one fell through to the group
+  // (user report, Sep 2026: "I can't seem to edit this one"). Without the
+  // engine the strip is the native scroller of tilted cards.
+  var frame = window.frameElement;
+  if (frame && frame.hasAttribute("data-canvas-preview")) return;
   var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   var LEAN_MAX = 10;   // deg, the lean at a hard fling
   var LEAN_AT = 1200;  // px/s that reaches the full lean
