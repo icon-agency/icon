@@ -6,9 +6,86 @@ dependencies:
     - options
   theme:
     - icon
-active_version: 2b1a5d5607635d27
+active_version: d5114945dc2e0fac
 versioned_properties:
   active:
+    settings:
+      prop_field_definitions:
+        columns:
+          required: true
+          field_type: list_integer
+          field_storage_settings:
+            allowed_values_function: canvas_load_allowed_values_for_component_prop
+          field_instance_settings: {  }
+          field_widget: options_select
+          default_value:
+            -
+              value: 2
+          expression: ℹ︎list_integer␟value
+          derived_schema_metadata: {  }
+        gap:
+          required: false
+          field_type: list_string
+          field_storage_settings:
+            allowed_values_function: canvas_load_allowed_values_for_component_prop
+          field_instance_settings: {  }
+          field_widget: options_select
+          default_value:
+            -
+              value: normal
+          expression: ℹ︎list_string␟value
+          derived_schema_metadata: {  }
+        box:
+          required: false
+          field_type: list_string
+          field_storage_settings:
+            allowed_values_function: canvas_load_allowed_values_for_component_prop
+          field_instance_settings: {  }
+          field_widget: options_select
+          default_value:
+            -
+              value: none
+          expression: ℹ︎list_string␟value
+          derived_schema_metadata: {  }
+        bg:
+          required: false
+          field_type: string
+          field_storage_settings: {  }
+          field_instance_settings: {  }
+          field_widget: string_textfield
+          default_value:
+            -
+              value: '#f0f4f9'
+          expression: ℹ︎string␟value
+          derived_schema_metadata:
+            string_shape: {  }
+        ink:
+          required: false
+          field_type: string
+          field_storage_settings: {  }
+          field_instance_settings: {  }
+          field_widget: string_textfield
+          default_value:
+            -
+              value: '#0d0d0d'
+          expression: ℹ︎string␟value
+          derived_schema_metadata:
+            string_shape: {  }
+    fallback_metadata:
+      slot_definitions:
+        column_1:
+          title: 'Column 1'
+          description: "The first column's blocks."
+        column_2:
+          title: 'Column 2'
+          description: "The second column's blocks."
+        column_3:
+          title: 'Column 3'
+          description: "The third column's blocks — with three or four columns."
+        column_4:
+          title: 'Column 4'
+          description: "The fourth column's blocks — with four columns."
+  2b1a5d5607635d27:
     settings:
       prop_field_definitions:
         columns:
@@ -167,7 +244,7 @@ versioned_properties:
         column_4:
           title: 'Column 4'
           description: "The fourth column's blocks — with four columns."
-label: Columns
+label: 'Columns and boxes'
 id: sdc.icon.columns
 provider: icon
 source: sdc

@@ -1,12 +1,14 @@
 $schema: https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json
-name: Columns
+name: Columns and boxes
 group: Layout
 status: stable
 description: >
-  Two, three or four columns side by side, each a drop slot that takes any
-  block — Content, an Image, a Pull quote, a Fact card. Equal widths; they
-  stack on a phone, pair from 768px and take the chosen count from 1024px.
-  Change the count and the columns you have filled stay. Optionally in a
+  One, two, three or four columns side by side, each a drop slot that takes
+  any block — Content, an Image, a Pull quote, a Fact card. Equal widths;
+  they stack on a phone, pair from 768px and take the chosen count from
+  1024px. One column is a single slot, the page's width — the way to put
+  one block in a box. Change the count and the columns you have filled
+  stay. Optionally in a
   BOX: padded, on the site's corner, on a ground of its own — white, light
   grey, black, ICON blue or a custom pair — whose ink everything inside
   takes, the way a page opening on that colour would.
@@ -18,8 +20,9 @@ props:
     columns:
       type: integer
       title: Columns
-      description: How many, side by side.
+      description: How many, side by side — one is a single slot, for one block in a box.
       enum:
+        - 1
         - 2
         - 3
         - 4

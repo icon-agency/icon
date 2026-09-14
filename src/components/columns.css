@@ -1,9 +1,11 @@
-/* columns.css — two, three or four blocks side by side, on the page grid.
+/* columns.css — one, two, three or four blocks side by side, on the page grid.
  * A LAYOUT component (Sep 2026, user call): each column is a drop slot in
  * Canvas that takes any block, so the columns are made of the site's own
  * pieces — Content, an Image, a Pull quote, a Fact card — not a text field
  * per column. Equal widths; one column on a phone, two from 768px, the
- * chosen count from 1024px. Self-padded on the page gutter like every
+ * chosen count from 1024px. ONE column (user ask, Sep 2026: "so we can add
+ * a single column box") is a single slot at the page's width — the way to
+ * put one block in a box. Self-padded on the page gutter like every
  * block a Canvas page places.
  *
  * A block inside a column drops its own page-wide framing: the prose
@@ -22,7 +24,7 @@
  * takes the ground's ink (a registered alias resolves where it is
  * declared, LESSONS.md; re-declared here it resolves against the box).
  *
- * Drupal: SDC `columns` — `columns` 2/3/4, `gap` normal/wide/tight, `box`
+ * Drupal: SDC `columns` — `columns` 1/2/3/4, `gap` normal/wide/tight, `box`
  * none/white/light-grey/black/blue/custom (+ `bg`, `ink`), slots
  * column_1…column_4. */
 
@@ -91,6 +93,10 @@
 @media (min-width: 768px) {
   .columns {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .columns--1 {
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 
