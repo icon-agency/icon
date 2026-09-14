@@ -95,6 +95,19 @@
   text-transform: uppercase;
 }
 
+/* On the dark theme (a black box, a dark page) the core is the blue box's:
+   a WHITE disc with the words in ICON blue — not the theme's 80%-white
+   "blue" with black words, which read as a grey disc (user call, Sep
+   2026: "the dark should be the same as the blue venn"). The raw --blue,
+   which no theme flips. */
+.dark .venn__core {
+  fill: var(--color-white);
+}
+
+.dark .venn__core-label {
+  fill: var(--blue);
+}
+
 .venn__label {
   fill: currentColor;
   font-size: 15px;
