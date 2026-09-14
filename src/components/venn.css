@@ -2,7 +2,10 @@
  * Creative as four thin rings on a cross, hatched where neighbours overlap
  * (dots, diagonals one way, cross-hatch, diagonals the other) and the blue
  * core, INTERDISCIPLINARY SERVICES, where all four meet (design: the
- * agency's own diagram, Sep 2026). An inline SVG on a 440 viewBox; every
+ * agency's own diagram, Sep 2026). Each ring's radius equals its offset
+ * from the centre, so all four pass through one point and meet there
+ * exactly (user call) — the core, a touch larger than the lenses' inner
+ * tips, sits over it. An inline SVG on a 440 viewBox; every
  * size is a fraction of it, so the figure scales with its column.
  *
  * THE DRAW. The homepage lockup draws its frame and letters as strokes
@@ -18,7 +21,7 @@
  */
 
 .venn {
-  --venn-circ: 678.6;                  /* one ring's circumference (r 108), the dash it draws along */
+  --venn-circ: 640.9;                  /* one ring's circumference (r 102), the dash it draws along */
   --venn-draw: 1.1s;
   --venn-step: 0.14s;
   display: block;
@@ -81,7 +84,7 @@
 
 .venn__core-label {
   fill: var(--color-white);
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 900;
   letter-spacing: 0.02em;
   text-transform: uppercase;
