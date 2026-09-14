@@ -1540,7 +1540,13 @@ html:not(.js-animations) .intro__expertise-list li:first-child a {
   display: flex;
   align-items: center;
   justify-content: center;
-  --client-card-h: clamp(5rem, 7.7vw, 9.5rem);
+  /* THE STAGE and THE CARD (user call, Sep 2026: "keep the logos the size
+     they are and just add more padding", settled at a fifth more): the
+     stage is the height the logos were sized against and still are; the
+     card is 1.2× it each way, so every mark keeps its exact size and gains
+     the air around it. Both tracks scale together, so the loop holds. */
+  --client-stage-h: clamp(5rem, 7.7vw, 9.5rem);
+  --client-card-h: calc(var(--client-stage-h) * 1.2);
   height: var(--client-card-h);
   width: calc(var(--client-card-h) * 2.05);
   border-radius: var(--radius-icon);
@@ -1566,8 +1572,11 @@ html:not(.js-animations) .intro__expertise-list li:first-child a {
      square and portrait marks, which are the ones left small at equal
      bounds. Was 62%/46%, then 72%/52%; the height went up again with the
      card in Sep 2026 (user call) so the square marks fill their stage. */
-  width: 72%;
-  height: 58%;
+  /* against the STAGE, not the card (see .client): 72% of the stage's
+     2.05:1 width, 58% of its height — the sizes the marks had before the
+     card grew around them */
+  width: calc(var(--client-stage-h) * 2.05 * 0.72);
+  height: calc(var(--client-stage-h) * 0.58);
   object-fit: contain;
   filter: brightness(0); /* any brand colour -> ink (see the header note) */
   /* the strip is pointer-dragged; a native image ghost-drag would steal it */
