@@ -25,7 +25,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 #[Block(
   id: 'icon_clients_marquee',
-  admin_label: new TranslatableMarkup('Clients marquee'),
+  admin_label: new TranslatableMarkup('Clients scroller'),
   category: new TranslatableMarkup('ICON'),
 )]
 final class ClientsMarqueeBlock extends BlockBase implements ContainerFactoryPluginInterface {

@@ -201,7 +201,7 @@ versioned_properties:
             string_shape: {  }
     fallback_metadata:
       slot_definitions: {  }
-label: 'Fact card (item)'
+label: 'Filmstrip fact card (item)'
 id: sdc.icon.intro-fact
 provider: icon
 source: sdc

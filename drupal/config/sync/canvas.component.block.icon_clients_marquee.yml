@@ -4,9 +4,19 @@ status: true
 dependencies:
   module:
     - icon_site
-active_version: e0929416142d9d77
+active_version: 2f76db1228af0468
 versioned_properties:
   active:
+    settings:
+      default_settings:
+        id: icon_clients_marquee
+        label: 'Clients scroller'
+        label_display: '0'
+        provider: icon_site
+        heading: 'Selected clients'
+    fallback_metadata:
+      slot_definitions: null
+  e0929416142d9d77:
     settings:
       default_settings:
         id: icon_clients_marquee
@@ -25,7 +35,7 @@ versioned_properties:
         provider: icon_site
     fallback_metadata:
       slot_definitions: null
-label: 'Clients marquee'
+label: 'Clients scroller'
 id: block.icon_clients_marquee
 provider: icon_site
 source: block

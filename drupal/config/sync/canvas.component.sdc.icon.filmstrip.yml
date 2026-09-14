@@ -26,7 +26,7 @@ versioned_properties:
         cards:
           title: Cards
           description: 'Photo and Fact card components, in the order they drift past.'
-label: 'Filmstrip (strip)'
+label: 'Filmstrip (scroller strip)'
 id: sdc.icon.filmstrip
 provider: icon
 source: sdc

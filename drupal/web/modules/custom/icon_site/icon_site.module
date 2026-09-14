@@ -387,8 +387,8 @@ function icon_site_form_component_instance_form_alter(array &$form, FormStateInt
   $id = explode('@', (string) ($tree['type'] ?? ''))[0];
   $notes = [
     'sdc.icon.work-gallery' => t('A row of one or two figures. Pictures and films go in as <strong>Gallery figure (item)</strong> components: press + on the Figures slot, or drag one in from Pictures in the library. A Figure takes a picture, or a film in its place.'),
-    'sdc.icon.filmstrip' => t('The cards are <strong>Photo (item)</strong> and <strong>Fact card (item)</strong> components in the Cards slot: press + on the slot, or drag them in from the Filmstrip section of the library; reorder them in Layers. A Photo takes a picture or a film.'),
-    'sdc.icon.intro' => t('The strip’s cards are <strong>Photo (item)</strong> and <strong>Fact card (item)</strong> components (the library’s Filmstrip section) in the Filmstrip cards slot, and the links are <strong>Expertise link (intro item)</strong> components (Homepage) in the Expertise links slot — press + on a slot, or drag them in.'),
+    'sdc.icon.filmstrip' => t('The cards are <strong>Filmstrip photo (item)</strong> and <strong>Filmstrip fact card (item)</strong> components in the Cards slot: press + on the slot, or drag them in from the Filmstrip section of the library; reorder them in Layers. A Photo takes a picture or a film.'),
+    'sdc.icon.intro' => t('The strip’s cards are <strong>Filmstrip photo (item)</strong> and <strong>Filmstrip fact card (item)</strong> components (the library’s Filmstrip section) in the Filmstrip cards slot, and the links are <strong>Expertise link (intro item)</strong> components (Homepage) in the Expertise links slot — press + on a slot, or drag them in.'),
   ];
   if (isset($notes[$id])) {
     $form['icon_slot_note'] = [

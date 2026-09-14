@@ -68,7 +68,7 @@ versioned_properties:
           derived_schema_metadata: {  }
     fallback_metadata:
       slot_definitions: {  }
-label: 'Photo (item)'
+label: 'Filmstrip photo (item)'
 id: sdc.icon.intro-photo
 provider: icon
 source: sdc
