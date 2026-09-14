@@ -5,17 +5,13 @@ dependencies:
   config:
     - canvas.component.block.icon_news_latest
     - canvas.component.block.views_block.news-landing
-    - canvas.component.block.views_block.news-next_up
     - canvas.component.block.views_block.work-landing
     - canvas.component.block.views_block.work-latest
-    - canvas.component.block.views_block.work-next_up
 name: Listings
 configEntityTypeId: component
 weight: 9
 items:
   - block.icon_news_latest
   - block.views_block.news-landing
-  - block.views_block.news-next_up
   - block.views_block.work-landing
   - block.views_block.work-latest
-  - block.views_block.work-next_up

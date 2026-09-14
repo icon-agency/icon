@@ -71,8 +71,6 @@ $plan = [
     'block.views_block.news-landing',
     'block.views_block.work-landing',
     'block.views_block.work-latest',
-    'block.views_block.news-next_up',
-    'block.views_block.work-next_up',
     'block.icon_news_latest',
   ],
   'Homepage' => [
@@ -115,6 +113,12 @@ $hide = [
   // Offices: all — the contact page is being rebuilt from Offices: one in
   // Columns (user call, Sep 2026); the block stays for the page until then.
   'block.icon_office_list',
+  // The "Next up" rails: the article templates place them under the story
+  // they belong to (node--work--full, node--news--full); on a page an
+  // editor builds they would show two arbitrary items (user, Sep 2026:
+  // "what is this?").
+  'block.views_block.news-next_up',
+  'block.views_block.work-next_up',
   // rendered by their blocks (Contact form, Offices), which read the site
   'sdc.icon.contact-form',
   'sdc.icon.office-list',
