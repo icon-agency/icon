@@ -191,13 +191,13 @@ display:
       tags: {  }
   landing:
     id: landing
-    display_title: 'Work listing'
+    display_title: 'Work: listing'
     display_plugin: block
     position: 1
     display_options:
       display_description: 'The landing page listing: chips, rows, pager — on the Work Canvas page.'
       display_extenders: {  }
-      block_description: 'Work listing'
+      block_description: 'Work: listing'
     cache_metadata:
       max-age: -1
       contexts:
@@ -209,7 +209,7 @@ display:
       tags: {  }
   latest:
     id: latest
-    display_title: 'Latest work'
+    display_title: 'Work: latest'
     display_plugin: block
     position: 3
     display_options:
@@ -224,7 +224,7 @@ display:
         arguments: false
       display_description: 'The two newest work items as a rail, on any page.'
       display_extenders: {  }
-      block_description: 'Latest work'
+      block_description: 'Work: latest'
     cache_metadata:
       max-age: -1
       contexts:
@@ -284,7 +284,7 @@ display:
         arguments: false
       display_description: 'Two latest projects excluding the one being read; embedded by icon_preprocess_node() with the node ID.'
       display_extenders: {  }
-      block_description: 'Next up: work'
+      block_description: 'Work: next up'
       block_category: ICON
     cache_metadata:
       max-age: -1

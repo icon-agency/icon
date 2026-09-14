@@ -65,7 +65,6 @@ $plan = [
     'block.views_block.news-next_up',
     'block.views_block.work-next_up',
     'block.icon_news_latest',
-    'block.icon_featured_work',
     'block.icon_team_profiles',
     'block.icon_clients_marquee',
     'block.icon_contact_form',
@@ -73,6 +72,7 @@ $plan = [
   ],
   'Homepage' => [
     'block.icon_hero',
+    'block.icon_featured_work',
     'sdc.icon.intro',
     'sdc.icon.intro-expertise',
   ],

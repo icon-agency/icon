@@ -6,9 +6,20 @@ dependencies:
     - views.view.news
   module:
     - views
-active_version: 07d153954d6eafa6
+active_version: 1ddbd14b0b4cef98
 versioned_properties:
   active:
+    settings:
+      default_settings:
+        id: 'views_block:news-next_up'
+        label: 'News: next up'
+        label_display: '0'
+        provider: views
+        views_label: ''
+        items_per_page: null
+    fallback_metadata:
+      slot_definitions: null
+  07d153954d6eafa6:
     settings:
       default_settings:
         id: 'views_block:news-next_up'
@@ -30,7 +41,7 @@ versioned_properties:
         items_per_page: null
     fallback_metadata:
       slot_definitions: null
-label: 'Next up: news'
+label: 'News: next up'
 id: block.views_block.news-next_up
 provider: views
 source: block

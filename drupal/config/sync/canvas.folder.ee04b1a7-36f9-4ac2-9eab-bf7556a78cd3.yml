@@ -3,6 +3,7 @@ langcode: en
 status: true
 dependencies:
   config:
+    - canvas.component.block.icon_featured_work
     - canvas.component.block.icon_hero
     - canvas.component.sdc.icon.intro
     - canvas.component.sdc.icon.intro-expertise
@@ -10,6 +11,7 @@ name: Homepage
 configEntityTypeId: component
 weight: 8
 items:
+  - block.icon_featured_work
   - block.icon_hero
   - sdc.icon.intro
   - sdc.icon.intro-expertise

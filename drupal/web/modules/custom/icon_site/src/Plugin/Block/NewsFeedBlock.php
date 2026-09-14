@@ -25,7 +25,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 #[Block(
   id: 'icon_news_latest',
-  admin_label: new TranslatableMarkup('News feed'),
+  admin_label: new TranslatableMarkup('News: latest'),
   category: new TranslatableMarkup('ICON'),
 )]
 final class NewsFeedBlock extends BlockBase implements ContainerFactoryPluginInterface {

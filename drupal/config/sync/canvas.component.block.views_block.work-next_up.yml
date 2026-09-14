@@ -6,9 +6,20 @@ dependencies:
     - views.view.work
   module:
     - views
-active_version: 67271b35d77312db
+active_version: eeba972a81d68fcc
 versioned_properties:
   active:
+    settings:
+      default_settings:
+        id: 'views_block:work-next_up'
+        label: 'Work: next up'
+        label_display: '0'
+        provider: views
+        views_label: ''
+        items_per_page: null
+    fallback_metadata:
+      slot_definitions: null
+  67271b35d77312db:
     settings:
       default_settings:
         id: 'views_block:work-next_up'
@@ -30,7 +41,7 @@ versioned_properties:
         items_per_page: null
     fallback_metadata:
       slot_definitions: null
-label: 'Next up: work'
+label: 'Work: next up'
 id: block.views_block.work-next_up
 provider: views
 source: block
