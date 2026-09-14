@@ -322,6 +322,40 @@
               </div>
 
               <div class="ds-group">
+                <h4 class="ds-group__title">Copy links and lists</h4>
+                <p class="ds-group__note">
+                  A <strong>link in the copy</strong> (Sep 2026, user calls) keeps the copy&rsquo;s ink with a
+                  mid-grey line beneath it &mdash; the ink at 45%, one derivation for every ground. On hover
+                  two things happen in turn, not one swap: the grey line shrinks away to the right, and only
+                  then a blue line slides in from the left with the words turning ICON blue alongside it. The
+                  two lines move on two different properties (the grey&rsquo;s <code class="ds-code">background-size</code>,
+                  the blue&rsquo;s <code class="ds-code">background-position</code> on a half-blue gradient twice the
+                  link&rsquo;s width) so each keeps its own timing; a link that wraps is underlined on every
+                  line. The <strong>bullet is a slash</strong>: the page ink, bold, at the item&rsquo;s own
+                  size, flush with the copy&rsquo;s left edge with the words 0.9em past it. A list in
+                  <strong>Paragraph &mdash; Small</strong> keeps the list&rsquo;s rhythm at the small size &mdash;
+                  the editor wraps a styled item in a paragraph, which carries no margin inside a list &mdash;
+                  and gets the smaller slash. The ruled slash list and the bullet-less Caps list keep their
+                  own forms.
+                </p>
+                <div class="ds-demo">
+                  <div class="content-page">
+                    <p>ICON is a member of the <a href="#">Public Relations Organisation International</a>, which puts more than ninety agencies within reach of our clients.</p>
+                    <ul>
+                      <li><a href="#">2M Language Services</a></li>
+                      <li><a href="#">Polaron Language Services</a></li>
+                      <li>Island Spirit</li>
+                    </ul>
+                    <ul>
+                      <li><p class="is-small"><a href="#">Communication and Public Relations Australia (CPRA)</a></p></li>
+                      <li><p class="is-small"><a href="#">Atomic 212</a></p></li>
+                    </ul>
+                  </div>
+                  <p class="ds-demo__label">.content-page a · ul &gt; li::before "/" · li &gt; p.is-small</p>
+                </div>
+              </div>
+
+              <div class="ds-group">
                 <h4 class="ds-group__title">Wrapping &amp; the lockup rule</h4>
                 <p class="ds-group__note">
                   <p class="ds-group__note">Theme-aware component roles also live in <code class="ds-code">colors.css</code> and are overridden per theme: <code class="ds-code">--nav-bg-scrolled</code> (the frosted nav pill), <code class="ds-code">--pager-surface</code> / <code class="ds-code">--pager-surface-strong</code> (pager prev + status pill), and the work-article accent pair <code class="ds-code">--work-article-text</code> / <code class="ds-code">--work-article-bg</code> (per-route override in the v0 build).</p>
@@ -1332,7 +1366,10 @@
                   The results band (<code class="ds-code">src/components/work-stats.css</code>): two
                   columns of stacked, ruled cells, each a value in the display face, a caps unit word
                   beside it and a label above, as a definition list. The band tucks under a preceding
-                  prose heading by a page-layer margin (composition, not the component&rsquo;s). Drupal:
+                  prose heading by a page-layer margin (composition, not the component&rsquo;s). The
+                  label is Paragraph &mdash; Small on a 1.35 leading, and sits as far from its unit as the
+                  unit from its value, ink to ink &mdash; a measured margin, since the number&rsquo;s
+                  descender space is a headline-size quantity (Sep 2026). Drupal:
                   a <code class="ds-code">work_stats</code> paragraph of nested
                   <code class="ds-code">work_stat</code> Results (value / unit / label) &rarr; the
                   <code class="ds-code">work-stats</code> + <code class="ds-code">work-stat</code> SDCs.
@@ -1457,8 +1494,11 @@
                 loop: two identical <code class="ds-code">.clients__track</code> lists abut (the second
                 <code class="ds-code">aria-hidden</code>, empty alts), the track&rsquo;s right padding keeps
                 the card rhythm across the join, and the travel is exactly one track width, so the seam is
-                invisible. Cards size from one height &mdash; <code class="ds-code">--client-card-h:
-                clamp(4.5rem, 7vw, 8.5rem)</code>, width &times;2.05 &mdash; so a row can never rag; the
+                invisible. Cards size from one height &mdash; the logo STAGE, <code class="ds-code">--client-stage-h:
+                clamp(5rem, 7.7vw, 9.5rem)</code>, which every mark is sized against, and the card
+                <code class="ds-code">--client-card-h</code> at 1.2&times; it each way (Sep 2026, user call:
+                &ldquo;keep the logos the size they are and just add more padding&rdquo;), width &times;2.05
+                &mdash; so a row can never rag and the ground grows around a mark that never moves; the
                 pale ground is <code class="ds-code">color-mix</code> of 4% <code class="ds-code">--color-icon-black</code>
                 (halved from 8% &mdash; user call, Aug 2026: quieter cards, more page), so the dark and blue
                 themes get the same fraction of their own light ink instead of a hole. The rows stack on the
