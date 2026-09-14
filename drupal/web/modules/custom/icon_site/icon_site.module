@@ -951,6 +951,23 @@ function icon_site_canvas_storable_prop_shape_alter(CandidateStorablePropShape $
   }
   $storable_prop_shape->fieldTypeProp = new FieldTypePropExpression('entity_reference', 'target_id');
   $storable_prop_shape->fieldStorageSettings = ['target_type' => 'media'];
+  // A PICTURE OR A FILM in one pick (`x-icon-media: picture-or-film`, user
+  // call, Sep 2026: "a single Add, and on the overlay choose the tab,
+  // upload, filter" — the media library, Image and Video tabs, as every
+  // other picker on the site). The prop evaluates to the media ID; the
+  // component hands it to icon_media() for the source.
+  if ($schema['x-icon-media'] === 'picture-or-film') {
+    $storable_prop_shape->fieldInstanceSettings = [
+      'handler' => 'default:media',
+      'handler_settings' => [
+        'target_bundles' => ['image' => 'image', 'video' => 'video'],
+        'sort' => ['field' => '_none', 'direction' => 'ASC'],
+        'auto_create' => FALSE,
+      ],
+    ];
+    $storable_prop_shape->fieldWidget = 'media_library_widget';
+    return;
+  }
   $storable_prop_shape->fieldInstanceSettings = [
     'handler' => 'default:media',
     'handler_settings' => [

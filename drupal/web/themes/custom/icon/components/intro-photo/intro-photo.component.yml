@@ -2,22 +2,14 @@ $schema: https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schema
 name: Filmstrip photo (item)
 group: Filmstrip
 status: stable
-description: One photo card in a filmstrip. Alt text comes from the media item.
+description: One card in a filmstrip — a picture, or a film that loops, muted. Alt text comes from the media item.
 props:
   type: object
   properties:
-    image:
-      $ref: json-schema-definitions://canvas.module/image
-      type: object
-      title: Photo
-      description: A picture — or set a film below instead.
+    media:
+      type: integer
+      x-icon-media: picture-or-film
+      title: Picture or film
+      description: One pick from the media library — a picture, or a short film that loops, muted (Sep 2026; it was two fields).
       examples:
-        - src: https://placehold.co/800x1000
-          alt: The ICON team
-          width: 800
-          height: 1000
-    film:
-      $ref: json-schema-definitions://canvas.module/video
-      type: object
-      title: Film
-      description: A short film that loops, muted, in the picture's place (Sep 2026).
+        - 52

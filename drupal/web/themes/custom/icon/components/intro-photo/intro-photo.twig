@@ -1,4 +1,8 @@
 {# intro-photo — a filmstrip card (components/filmstrip.css .filmstrip__card): a picture, or a film that loops, muted (Sep 2026). #}
+{# `media` is the pick (Sep 2026: one field, picture or film); `image` and
+   `film` are what an instance placed before carries, still honoured. #}
+{% set m = media is defined and media ? icon_media(media, 'filmstrip_card') : {} %}
+{% if m.type is defined and m.type == 'video' %}{% set film = m %}{% elseif m.src is defined %}{% set image = m %}{% endif %}
 <figure class="filmstrip__card">
   {% if film.src is defined and film.src %}
     <video autoplay muted loop playsinline preload="metadata" src="{{ film.src }}"{% if film.poster is defined and film.poster %} poster="{{ film.poster }}"{% endif %} aria-hidden="true"></video>

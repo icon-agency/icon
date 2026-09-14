@@ -8,6 +8,7 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\StreamWrapper\StreamWrapperManagerInterface;
 use enshrined\svgSanitize\Sanitizer;
 use Twig\Extension\AbstractExtension;
+use Drupal\media\MediaInterface;
 use Twig\TwigFunction;
 
 /**
@@ -26,7 +27,28 @@ final class IconSiteExtension extends AbstractExtension {
   public function getFunctions(): array {
     return [
       new TwigFunction('icon_inline_svg', [$this, 'inlineSvg'], ['is_safe' => ['html']]),
+      new TwigFunction('icon_media', [$this, 'media']),
     ];
+  }
+
+  /**
+   * A media item (picture or film) as {type, src, alt, width, height}.
+   *
+   * For a component's picture-or-film prop (icon_site's
+   * hook_canvas_storable_prop_shape_alter()), which evaluates to a media ID:
+   * an Image through the given image style, a Video as its file (and its
+   * poster, when it has one). Nothing when the item is missing or not
+   * viewable — icon_site_media_source()'s rule.
+   *
+   * @return array<string, mixed>
+   *   The source, or [].
+   */
+  public function media(string|int|null $id, string $style = 'work_media'): array {
+    if (!$id || !ctype_digit((string) $id)) {
+      return [];
+    }
+    $media = $this->entityTypeManager->getStorage('media')->load((int) $id);
+    return $media instanceof MediaInterface ? icon_site_media_source($media, $style) : [];
   }
 
   /**
