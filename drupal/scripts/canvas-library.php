@@ -59,6 +59,14 @@ $plan = [
     'sdc.icon.news-article-video',
     'sdc.icon.work-video',
   ],
+  // The agency's own pieces — the people, the offices, the clients, the
+  // form — after the media, before the listings (user call, Sep 2026).
+  'ICON' => [
+    'block.icon_contact_form',
+    'block.icon_team_profiles',
+    'block.icon_office',
+    'block.icon_clients_marquee',
+  ],
   'Listings' => [
     'block.views_block.news-landing',
     'block.views_block.work-landing',
@@ -66,11 +74,6 @@ $plan = [
     'block.views_block.news-next_up',
     'block.views_block.work-next_up',
     'block.icon_news_latest',
-    'block.icon_team_profiles',
-    'block.icon_clients_marquee',
-    'block.icon_contact_form',
-    'block.icon_office_list',
-    'block.icon_office',
   ],
   'Homepage' => [
     'block.icon_hero',
@@ -109,6 +112,9 @@ $hide = [
   // component with Photo and Fact card components in its slot, as the
   // homepage intro has always been (scripts/filmstrip-components.php).
   'block.icon_filmstrip',
+  // Offices: all — the contact page is being rebuilt from Offices: one in
+  // Columns (user call, Sep 2026); the block stays for the page until then.
+  'block.icon_office_list',
   // rendered by their blocks (Contact form, Offices), which read the site
   'sdc.icon.contact-form',
   'sdc.icon.office-list',
