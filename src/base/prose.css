@@ -331,42 +331,60 @@
   /* Animated underline-grow link (brand blue → ink). */
   /* A LINK IN THE COPY (user call, Sep 2026): the ink of the copy around
      it, not blue, with a mid-grey line beneath; on hover the grey line
-     leaves to the right and a blue one draws in from the left. Two
-     background layers rather than a border and a pseudo-element, because
-     a link that wraps ("Communication and Public Relations Australia
-     (CPRA)") needs the line under every line box, which a gradient with
-     box-decoration-break: clone gives and an absolute pseudo-element does
-     not. The grey is the ink at 45% — mid grey on white, mid grey on the
-     dark ground, one derivation. */
+     leaves to the right and THEN a blue one draws in from the left — two
+     movements in turn, not one swap. Two background layers rather than a
+     border and a pseudo-element, because a link that wraps ("Communication
+     and Public Relations Australia (CPRA)") needs the line under every line
+     box, which a gradient with box-decoration-break: clone gives and an
+     absolute pseudo-element does not. The two layers move on two DIFFERENT
+     properties so each can have its own timing (one property's transition
+     moves every layer at once): the grey is a plain line whose SIZE shrinks
+     to the right; the blue is a half-blue, half-clear gradient twice the
+     link's width whose POSITION slides from the clear half to the blue —
+     a 100% offset on a 200% image is exactly one link-width. The grey is
+     the ink at 45% — mid grey on white, mid grey on the dark ground, one
+     derivation. */
   .content-page a {
     --link-rule: color-mix(in srgb, var(--icon-black) 45%, transparent);
     color: var(--icon-black);
     text-decoration: none;
     background-image:
-      linear-gradient(var(--icon-blue), var(--icon-blue)),
+      linear-gradient(to right, var(--icon-blue) 50%, transparent 50%),
       linear-gradient(var(--link-rule), var(--link-rule));
     background-repeat: no-repeat;
-    background-position:
-      left bottom,
-      right bottom;
     background-size:
-      0% 1px,
+      200% 1px,
       100% 1px;
+    background-position:
+      100% 100%,
+      right bottom;
     padding-bottom: 0.08em;
     -webkit-box-decoration-break: clone;
     box-decoration-break: clone;
-    transition: background-size var(--duration-normal) var(--ease-standard);
+    /* leaving: the blue slides back out first, the words with it, the grey
+       returns after */
+    transition:
+      background-position var(--duration-normal) var(--ease-standard),
+      color var(--duration-normal) var(--ease-standard),
+      background-size var(--duration-normal) var(--ease-standard) var(--duration-normal);
   }
 
   .content-page a:hover,
   .content-page a:focus-visible {
+    /* the words turn ICON blue with the line (user call) */
+    color: var(--icon-blue);
     background-size:
-      100% 1px,
+      200% 1px,
       0% 1px;
-    /* the blue arrives a beat after the grey has started to go */
+    background-position:
+      0% 100%,
+      right bottom;
+    /* arriving: the grey leaves first, the blue draws in once it has gone,
+       the words turning with it */
     transition:
       background-size var(--duration-normal) var(--ease-standard),
-      background-size var(--duration-normal) var(--ease-standard) var(--duration-fast);
+      background-position var(--duration-normal) var(--ease-decelerate) var(--duration-normal),
+      color var(--duration-normal) var(--ease-standard) var(--duration-normal);
   }
 
   .content-page strong {
