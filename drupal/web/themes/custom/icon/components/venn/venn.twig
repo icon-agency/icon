@@ -1,0 +1,38 @@
+{#
+/**
+ * @file
+ * venn — the four-practice Venn (src/components/venn.css), drawn in when
+ * scrolled into view on the shared [data-animate] host (js/reveal.js,
+ * icon/reveal). The pattern ids carry a per-instance id so two on a page
+ * do not share (and steal) each other's hatches.
+ */
+#}
+{% set id = random() %}
+<figure class="venn" data-animate aria-label="{{ centre|replace({"\n": ' '}) }}: {{ top }}, {{ right }}, {{ bottom }}, {{ left }}">
+  <svg class="venn__svg" viewBox="0 0 440 440" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <pattern id="venn-{{ id }}-dots" width="6" height="6" patternUnits="userSpaceOnUse"><circle cx="3" cy="3" r="0.9" class="venn__ink" /></pattern>
+      <pattern id="venn-{{ id }}-lines" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><path d="M0,3 H6" class="venn__ink venn__ink--line" /></pattern>
+      <pattern id="venn-{{ id }}-lines-back" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(-45)"><path d="M0,3 H6" class="venn__ink venn__ink--line" /></pattern>
+      <pattern id="venn-{{ id }}-cross" width="6" height="6" patternUnits="userSpaceOnUse"><path d="M0,3 H6 M3,0 V6" class="venn__ink venn__ink--line" /></pattern>
+    </defs>
+    <g class="venn__lenses">
+      <path class="venn__lens" style="--i: 0" d="M222.0,222.0 A108,108 0 0 1 112.0,112.0 A108,108 0 0 1 222.0,222.0 Z" fill="url(#venn-{{ id }}-dots)" />
+      <path class="venn__lens" style="--i: 1" d="M218.0,222.0 A108,108 0 0 1 328.0,112.0 A108,108 0 0 1 218.0,222.0 Z" fill="url(#venn-{{ id }}-lines)" />
+      <path class="venn__lens" style="--i: 2" d="M218.0,218.0 A108,108 0 0 1 328.0,328.0 A108,108 0 0 1 218.0,218.0 Z" fill="url(#venn-{{ id }}-cross)" />
+      <path class="venn__lens" style="--i: 3" d="M222.0,218.0 A108,108 0 0 1 112.0,328.0 A108,108 0 0 1 222.0,218.0 Z" fill="url(#venn-{{ id }}-lines-back)" />
+    </g>
+    <g class="venn__rings">
+      <circle class="venn__ring" style="--i: 0" cx="220" cy="114" r="108" />
+      <circle class="venn__ring" style="--i: 1" cx="326" cy="220" r="108" />
+      <circle class="venn__ring" style="--i: 2" cx="220" cy="326" r="108" />
+      <circle class="venn__ring" style="--i: 3" cx="114" cy="220" r="108" />
+    </g>
+    <circle class="venn__core" cx="220" cy="220" r="70" />
+    <text class="venn__core-label" x="220" y="220" text-anchor="middle">{% for line in centre|split("\n") %}<tspan x="220" dy="{{ loop.first ? "-0.35em" : "1.15em" }}">{{ line }}</tspan>{% endfor %}</text>
+    <text class="venn__label" style="--i: 0" x="220" y="62" text-anchor="middle">{{ top }}</text>
+    <text class="venn__label" style="--i: 1" x="366" y="220" text-anchor="middle">{{ right }}</text>
+    <text class="venn__label" style="--i: 2" x="220" y="388" text-anchor="middle">{{ bottom }}</text>
+    <text class="venn__label" style="--i: 3" x="74" y="220" text-anchor="middle">{{ left }}</text>
+  </svg>
+</figure>

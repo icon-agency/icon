@@ -1,0 +1,47 @@
+$schema: https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json
+name: Venn diagram
+group: ICON
+status: stable
+libraryOverrides:
+  dependencies:
+    - icon/reveal
+description: |
+  The four-practice Venn (src/components/venn.css): four thin rings on a
+  cross, hatched where neighbours overlap, the blue core where all four
+  meet. It draws itself when scrolled into view — rings, hatches, core,
+  words — the homepage lockup's gesture. Five words to change.
+props:
+  type: object
+  required:
+    - centre
+    - top
+    - right
+    - bottom
+    - left
+  properties:
+    centre:
+      type: string
+      title: Centre
+      description: The blue core. A line break in the text breaks the line.
+      examples:
+        - "Interdisciplinary\nservices"
+    top:
+      type: string
+      title: Top
+      examples:
+        - Strategy
+    right:
+      type: string
+      title: Right
+      examples:
+        - Digital
+    bottom:
+      type: string
+      title: Bottom
+      examples:
+        - Communications
+    left:
+      type: string
+      title: Left
+      examples:
+        - Creative

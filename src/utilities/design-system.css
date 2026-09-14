@@ -619,3 +619,9 @@
     .ds-sidebar { transition: none; }
   }
 }
+
+/* a demo's own control (the Venn's "Draw it again"): the quiet link at the
+   note's size, not the page's mid voice */
+.ds-demo .quiet-link {
+  font-size: var(--voice-meta);
+}

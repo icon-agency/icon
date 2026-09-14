@@ -62,6 +62,7 @@ $plan = [
   // The agency's own pieces — the people, the offices, the clients, the
   // form — after the media, before the listings (user call, Sep 2026).
   'ICON' => [
+    'sdc.icon.venn',
     'block.icon_contact_form',
     'block.icon_team_profiles',
     'block.icon_office',

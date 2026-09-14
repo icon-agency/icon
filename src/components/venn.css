@@ -1,0 +1,151 @@
+/* venn.css — the four-practice Venn: Strategy, Digital, Communications and
+ * Creative as four thin rings on a cross, hatched where neighbours overlap
+ * (dots, diagonals one way, cross-hatch, diagonals the other) and the blue
+ * core, INTERDISCIPLINARY SERVICES, where all four meet (design: the
+ * agency's own diagram, Sep 2026). An inline SVG on a 440 viewBox; every
+ * size is a fraction of it, so the figure scales with its column.
+ *
+ * THE DRAW. The homepage lockup draws its frame and letters as strokes
+ * before their fills arrive (home-c.js, DrawSVG); this is the same gesture
+ * in CSS: each ring travels round from its top on stroke-dashoffset, a
+ * beat apart; the hatches surface once the rings have closed; the core
+ * grows from its centre; the words rise last. Rides the shared
+ * [data-animate] host (js/reveal.js) for its trigger, so it draws when
+ * scrolled into view, once; the host's own fade is switched off here — the
+ * figure's parts stage themselves. No JS and reduced motion: present.
+ *
+ * Drupal: SDC `venn` (ICON), five words as props.
+ */
+
+.venn {
+  --venn-circ: 678.6;                  /* one ring's circumference (r 108), the dash it draws along */
+  --venn-draw: 1.1s;
+  --venn-step: 0.14s;
+  display: block;
+  max-width: 30rem;
+  margin-inline: auto;
+  color: var(--color-icon-black);
+}
+
+.js-animations .venn[data-animate] {
+  /* the host's fade-and-rise is not this figure's entrance */
+  opacity: 1;
+  transform: none;
+  transition: none;
+}
+
+.venn__svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+  font-family: var(--font-sans);
+}
+
+/* the rings: one hairline weight, the ink, drawn from twelve o'clock. The
+   dash is the circumference in viewBox units, so the stroke has to scale
+   with the box too — a non-scaling stroke measures its dash in screen
+   pixels and left a gap at the top of every ring (user catch, Sep 2026). */
+.venn__ring {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1;
+  stroke-dasharray: var(--venn-circ);
+  stroke-dashoffset: 0;
+  transform: rotate(-90deg);
+  transform-origin: center;
+  transform-box: fill-box;
+}
+
+/* the hatches: the ink, fine */
+.venn__ink {
+  fill: currentColor;
+  stroke: none;
+}
+
+.venn__ink--line {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 0.6;
+}
+
+.venn__lens {
+  stroke: none;
+}
+
+.venn__core {
+  fill: var(--color-icon-blue);
+  transform-origin: center;
+  transform-box: fill-box;
+}
+
+.venn__core-label {
+  fill: var(--color-white);
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.venn__label {
+  fill: currentColor;
+  font-size: 15px;
+  font-weight: 900;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  dominant-baseline: middle;
+}
+
+/* ---- the draw, on the reveal host ---------------------------------------- */
+.js-animations .venn[data-animate] .venn__ring {
+  stroke-dashoffset: var(--venn-circ);
+}
+
+.js-animations .venn[data-animate] .venn__lens,
+.js-animations .venn[data-animate] .venn__label {
+  opacity: 0;
+}
+
+.js-animations .venn[data-animate] .venn__label {
+  translate: 0 0.5em;
+}
+
+.js-animations .venn[data-animate] .venn__core,
+.js-animations .venn[data-animate] .venn__core-label {
+  scale: 0;
+  transform-origin: center;
+  transform-box: fill-box;
+}
+
+.js-animations .venn[data-animate].is-visible .venn__ring {
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset var(--venn-draw) var(--ease-decelerate) calc(var(--i) * var(--venn-step));
+}
+
+.js-animations .venn[data-animate].is-visible .venn__lens {
+  opacity: 1;
+  transition: opacity 0.5s var(--ease-standard) calc(var(--venn-draw) + var(--i) * 0.08s);
+}
+
+.js-animations .venn[data-animate].is-visible .venn__core,
+.js-animations .venn[data-animate].is-visible .venn__core-label {
+  scale: 1;
+  transition: scale 0.55s var(--ease-decelerate) calc(var(--venn-draw) + 0.25s);
+}
+
+.js-animations .venn[data-animate].is-visible .venn__label {
+  opacity: 1;
+  translate: 0 0;
+  transition:
+    opacity 0.45s var(--ease-standard) calc(var(--venn-draw) + 0.45s + var(--i) * 0.08s),
+    translate 0.45s var(--ease-decelerate) calc(var(--venn-draw) + 0.45s + var(--i) * 0.08s);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .js-animations .venn[data-animate] .venn__ring { stroke-dashoffset: 0; }
+  .js-animations .venn[data-animate] .venn__lens,
+  .js-animations .venn[data-animate] .venn__label { opacity: 1; translate: none; }
+  .js-animations .venn[data-animate] .venn__core,
+  .js-animations .venn[data-animate] .venn__core-label { scale: 1; }
+  .js-animations .venn[data-animate].is-visible * { transition: none; }
+}

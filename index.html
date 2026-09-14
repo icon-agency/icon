@@ -11,6 +11,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Kumbh+Sans:wght@400..900&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://use.typekit.net/bhv7yrj.css" />
     <link rel="stylesheet" href="css/main.css" />
+    <!-- must run before first paint: [data-animate] hosts start hidden only when JS is present -->
+    <script>
+      document.documentElement.classList.add("js-animations");
+    </script>
 
   </head>
   <body>
@@ -102,6 +106,7 @@
                 <li><a class="ds-nav__link" href="#clients">Clients marquee</a></li>
                 <li><a class="ds-nav__link" href="#news-stack">News — cards &amp; stack</a></li>
                 <li><a class="ds-nav__link" href="#team">Team profiles</a></li>
+                <li><a class="ds-nav__link" href="#venn">Venn diagram</a></li>
                 <li><a class="ds-nav__link" href="#invitations">Invitations &amp; links</a></li>
                 <li><a class="ds-nav__link" href="#subscribe">Subscribe bar</a></li>
                 <li><a class="ds-nav__link" href="#primitives">Reveal primitives</a></li>
@@ -2106,6 +2111,66 @@
               </div>
             </section>
 
+            <section class="ds-section" id="venn">
+              <h3 class="ds-section__title">Venn diagram</h3>
+              <p class="ds-section__intro">
+                <code class="ds-code">.venn</code> (<code class="ds-code">src/components/venn.css</code>) &mdash;
+                the four-practice Venn (design: the agency&rsquo;s own diagram, Sep 2026): Strategy,
+                Digital, Communications and Creative as four hairline rings on a cross, hatched where
+                neighbours overlap &mdash; dots, diagonals one way, cross-hatch, diagonals the other,
+                each an SVG pattern in the ink &mdash; and the ICON-blue core where all four meet. An
+                inline SVG on a 440 viewBox, so it scales with its column. <strong>It draws itself</strong>
+                when scrolled into view, the homepage lockup&rsquo;s gesture in CSS: each ring travels
+                round from twelve o&rsquo;clock on <code class="ds-code">stroke-dashoffset</code>, a beat
+                apart; the hatches surface once the rings have closed; the core grows from its centre;
+                the words rise last. Triggered by the shared <code class="ds-code">[data-animate]</code>
+                host (js/reveal.js), once; no JS and reduced motion see it whole.
+              </p>
+              <div class="ds-group">
+                <h4 class="ds-group__title">Live &mdash; scroll it into view</h4>
+                <div class="ds-demo">
+                  <figure class="venn" data-animate aria-label="Interdisciplinary services: Strategy, Digital, Communications, Creative">
+                    <svg class="venn__svg" viewBox="0 0 440 440" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <pattern id="ds-venn-dots" width="6" height="6" patternUnits="userSpaceOnUse"><circle cx="3" cy="3" r="0.9" class="venn__ink" /></pattern>
+      <pattern id="ds-venn-lines" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><path d="M0,3 H6" class="venn__ink venn__ink--line" /></pattern>
+      <pattern id="ds-venn-lines-back" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(-45)"><path d="M0,3 H6" class="venn__ink venn__ink--line" /></pattern>
+      <pattern id="ds-venn-cross" width="6" height="6" patternUnits="userSpaceOnUse"><path d="M0,3 H6 M3,0 V6" class="venn__ink venn__ink--line" /></pattern>
+    </defs>
+    <g class="venn__lenses">
+      <path class="venn__lens" style="--i: 0" d="M222.0,222.0 A108,108 0 0 1 112.0,112.0 A108,108 0 0 1 222.0,222.0 Z" fill="url(#ds-venn-dots)" />
+      <path class="venn__lens" style="--i: 1" d="M218.0,222.0 A108,108 0 0 1 328.0,112.0 A108,108 0 0 1 218.0,222.0 Z" fill="url(#ds-venn-lines)" />
+      <path class="venn__lens" style="--i: 2" d="M218.0,218.0 A108,108 0 0 1 328.0,328.0 A108,108 0 0 1 218.0,218.0 Z" fill="url(#ds-venn-cross)" />
+      <path class="venn__lens" style="--i: 3" d="M222.0,218.0 A108,108 0 0 1 112.0,328.0 A108,108 0 0 1 222.0,218.0 Z" fill="url(#ds-venn-lines-back)" />
+    </g>
+    <g class="venn__rings">
+      <circle class="venn__ring" style="--i: 0" cx="220" cy="114" r="108" />
+      <circle class="venn__ring" style="--i: 1" cx="326" cy="220" r="108" />
+      <circle class="venn__ring" style="--i: 2" cx="220" cy="326" r="108" />
+      <circle class="venn__ring" style="--i: 3" cx="114" cy="220" r="108" />
+    </g>
+    <circle class="venn__core" cx="220" cy="220" r="70" />
+    <text class="venn__core-label" x="220" y="220" text-anchor="middle"><tspan x="220" dy="-0.35em">Interdisciplinary</tspan><tspan x="220" dy="1.15em">services</tspan></text>
+    <text class="venn__label" style="--i: 0" x="220" y="62" text-anchor="middle">Strategy</text>
+    <text class="venn__label" style="--i: 1" x="366" y="220" text-anchor="middle">Digital</text>
+    <text class="venn__label" style="--i: 2" x="220" y="388" text-anchor="middle">Communications</text>
+    <text class="venn__label" style="--i: 3" x="74" y="220" text-anchor="middle">Creative</text>
+                    </svg>
+                  </figure>
+                  <p class="ds-demo__label">figure.venn[data-animate] &gt; svg.venn__svg</p>
+                  <p class="ds-group__note"><button class="quiet-link invite-arrow" type="button" data-venn-replay>Draw it again</button></p>
+                </div>
+              </div>
+              <div class="ds-group">
+                <h4 class="ds-group__title">Drupal (Canvas / SDC)</h4>
+                <p class="ds-group__note">
+                  The <strong>Venn diagram</strong> component (ICON section): five words &mdash; the centre,
+                  which takes a line break, and the four practices &mdash; nothing else to set. The
+                  pattern ids carry a per-instance id, so two on a page keep their own hatches.
+                </p>
+              </div>
+            </section>
+
             <section class="ds-section" id="invitations">
               <h3 class="ds-section__title">Invitations and links</h3>
               <p class="ds-section__intro">
@@ -2828,6 +2893,19 @@
         if (document.fonts && document.fonts.ready) document.fonts.ready.then(measure);
         measure();
       })();
+    </script>
+    <!-- The reveal host (js/reveal.js) drives the Venn's draw; "Draw it
+         again" takes the host back to its resting state for a frame. -->
+    <script src="js/reveal.js"></script>
+    <script>
+      document.querySelectorAll("[data-venn-replay]").forEach(function (b) {
+        b.addEventListener("click", function () {
+          var v = b.closest(".ds-demo").querySelector(".venn");
+          v.classList.remove("is-visible");
+          v.querySelectorAll("*").forEach(function (el) { void el.offsetWidth; });
+          requestAnimationFrame(function () { requestAnimationFrame(function () { v.classList.add("is-visible"); }); });
+        });
+      });
     </script>
   </body>
 </html>
