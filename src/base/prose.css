@@ -329,34 +329,44 @@
   }
 
   /* Animated underline-grow link (brand blue → ink). */
+  /* A LINK IN THE COPY (user call, Sep 2026): the ink of the copy around
+     it, not blue, with a mid-grey line beneath; on hover the grey line
+     leaves to the right and a blue one draws in from the left. Two
+     background layers rather than a border and a pseudo-element, because
+     a link that wraps ("Communication and Public Relations Australia
+     (CPRA)") needs the line under every line box, which a gradient with
+     box-decoration-break: clone gives and an absolute pseudo-element does
+     not. The grey is the ink at 45% — mid grey on white, mid grey on the
+     dark ground, one derivation. */
   .content-page a {
-    position: relative;
-    text-decoration: none;
-    transition: color var(--duration-normal);
-    color: var(--icon-blue);
-    border-bottom: 1px solid var(--icon-blue);
-  }
-
-  .content-page a::after {
-    content: "";
-    position: absolute;
-    width: 100%;
-    height: 1px;
-    bottom: -1px;
-    left: 0;
-    background-color: var(--icon-black);
-    transform: scaleX(0);
-    transform-origin: bottom right;
-    transition: transform 0.3s ease-out;
-  }
-
-  .content-page a:hover::after {
-    transform: scaleX(1);
-    transform-origin: bottom left;
-  }
-
-  .content-page a:hover {
+    --link-rule: color-mix(in srgb, var(--icon-black) 45%, transparent);
     color: var(--icon-black);
+    text-decoration: none;
+    background-image:
+      linear-gradient(var(--icon-blue), var(--icon-blue)),
+      linear-gradient(var(--link-rule), var(--link-rule));
+    background-repeat: no-repeat;
+    background-position:
+      left bottom,
+      right bottom;
+    background-size:
+      0% 1px,
+      100% 1px;
+    padding-bottom: 0.08em;
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+    transition: background-size var(--duration-normal) var(--ease-standard);
+  }
+
+  .content-page a:hover,
+  .content-page a:focus-visible {
+    background-size:
+      100% 1px,
+      0% 1px;
+    /* the blue arrives a beat after the grey has started to go */
+    transition:
+      background-size var(--duration-normal) var(--ease-standard),
+      background-size var(--duration-normal) var(--ease-standard) var(--duration-fast);
   }
 
   .content-page strong {
@@ -421,8 +431,7 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .content-page a,
-    .content-page a::after {
+    .content-page a {
       transition: none;
     }
   }
