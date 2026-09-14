@@ -70,6 +70,7 @@ $plan = [
     'block.icon_clients_marquee',
     'block.icon_contact_form',
     'block.icon_office_list',
+    'block.icon_office',
   ],
   'Homepage' => [
     'block.icon_hero',

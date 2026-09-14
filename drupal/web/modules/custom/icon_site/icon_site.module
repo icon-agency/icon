@@ -829,7 +829,7 @@ function icon_site_footer(): array {
  * Published Office content in list order (Content → Offices), as the footer
  * template reads them.
  *
- * @return array{offices: array<int, array{city: string, place: string, lines: string[], phone: string, phone_href: string, email: string, icon: int|null}>, tags: string[]}
+ * @return array{offices: array<int, array{nid: int, city: string, place: string, lines: string[], phone: string, phone_href: string, email: string, icon: int|null}>, tags: string[]}
  *   One row per office (city, place, address lines, phone and its tel: href,
  *   email, icon media ID) and the cache tags of everything read.
  */
@@ -847,6 +847,7 @@ function icon_site_offices(): array {
     $phone = trim((string) $office->get('field_office_phone')->value);
     $digits = preg_replace('/\D+/', '', $phone);
     $out['offices'][] = [
+      'nid' => (int) $office->id(),
       'city' => (string) $office->label(),
       'place' => (string) $office->get('field_office_place')->value,
       'lines' => array_values(array_filter(array_map('trim', preg_split('/\r\n|\r|\n/', (string) $office->get('field_office_address')->value)))),

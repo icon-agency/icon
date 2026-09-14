@@ -10,14 +10,16 @@ use Drupal\Core\Cache\CacheableMetadata;
 use Drupal\Core\StringTranslation\TranslatableMarkup;
 
 /**
- * The offices, open (templates/contact.html), on any page.
+ * All the offices, open (templates/contact.html), on any page.
+ *
+ * One at a time is the Offices: one block (OfficeBlock).
  *
  * The same rows the footer folds into its accordion — Content → Offices,
  * through icon_site_offices() — laid out open by the office-list SDC.
  */
 #[Block(
   id: 'icon_office_list',
-  admin_label: new TranslatableMarkup('Offices'),
+  admin_label: new TranslatableMarkup('Offices: all'),
   category: new TranslatableMarkup('ICON'),
 )]
 final class OfficeListBlock extends BlockBase {
