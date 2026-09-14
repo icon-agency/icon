@@ -6,16 +6,17 @@ description: The click-to-play film with an art-directed cover — the sound-on 
 props:
   type: object
   required:
-    - video_src
+    - film
     - cover
     - title
   properties:
-    video_src:
-      type: string
-      format: uri-reference
+    film:
+      $ref: json-schema-definitions://canvas.module/video
+      type: object
       title: Film
+      description: A Video from the media library — the same picker every other film on the site uses (Sep 2026; it was a file path).
       examples:
-        - /sites/default/files/work/film.mp4
+        - src: /sites/default/files/work/film.mp4
     cover:
       $ref: json-schema-definitions://canvas.module/image
       type: object

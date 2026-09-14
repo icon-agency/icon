@@ -32,9 +32,6 @@ $version = static function (string $id): string {
   }
   return (string) $c->get('active_version');
 };
-// A media item's file URL through the article's image style, for the
-// hosted film's src (icon_site_media_source(), the theme's own helper).
-$source = static fn($media): array => $media ? icon_site_media_source($media, 'work_media') : [];
 // Optional props are left out when empty rather than sent as ''.
 $clean = static fn(array $inputs): array => array_filter($inputs, static fn($v) => $v !== '' && $v !== NULL && $v !== []);
 
@@ -101,14 +98,14 @@ foreach (Node::loadMultiple($nids) as $node) {
         break;
 
       case 'work_video':
-        $film = $source($p->get('field_work_video_media')->entity);
+        $film = $p->get('field_work_video_media')->entity;
         $cover = $p->get('field_work_video_cover')->entity;
         if (!$film || !$cover) {
           $skipped[] = "$bundle {$p->id()} (no film or cover)";
           break;
         }
         $add('sdc.icon.work-video', [
-          'video_src' => ['uri' => 'internal:' . $film['src']],
+          'film' => ['target_id' => $film->id()],
           'cover' => ['target_id' => $cover->id()],
           'title' => $p->get('field_work_video_title')->value ?: $node->label(),
         ], $parent, $slot);
