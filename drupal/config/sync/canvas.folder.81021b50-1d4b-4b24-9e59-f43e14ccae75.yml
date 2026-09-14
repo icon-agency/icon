@@ -1,0 +1,13 @@
+uuid: 81021b50-1d4b-4b24-9e59-f43e14ccae75
+langcode: en
+status: true
+dependencies:
+  config:
+    - canvas.component.sdc.icon.work-stat
+    - canvas.component.sdc.icon.work-stats
+name: Results
+configEntityTypeId: component
+weight: 5
+items:
+  - sdc.icon.work-stat
+  - sdc.icon.work-stats

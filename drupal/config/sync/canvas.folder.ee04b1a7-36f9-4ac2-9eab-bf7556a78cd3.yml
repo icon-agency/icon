@@ -5,9 +5,11 @@ dependencies:
   config:
     - canvas.component.block.icon_hero
     - canvas.component.sdc.icon.intro
+    - canvas.component.sdc.icon.intro-expertise
 name: Homepage
 configEntityTypeId: component
-weight: 4
+weight: 7
 items:
   - block.icon_hero
   - sdc.icon.intro
+  - sdc.icon.intro-expertise

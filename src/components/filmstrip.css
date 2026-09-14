@@ -40,6 +40,16 @@
   will-change: transform;
 }
 
+/* THE EMPTY STRIP IN THE EDITOR: Canvas marks an empty Cards slot with a
+   placeholder; it stands a card's size so there is a target to drop the
+   first card onto (the engine leaves an empty strip alone — filmstrip.js). */
+.filmstrip__track > .canvas--slot-empty-placeholder {
+  flex: 0 0 auto;
+  width: var(--filmstrip-card-w, clamp(10.5rem, 17vw, 26rem));
+  aspect-ratio: 4 / 5;
+  min-height: 0;
+}
+
 /* No JS: the track is a native scroller instead of a marquee. */
 .filmstrip:not(.is-ready) {
   overflow-x: auto;

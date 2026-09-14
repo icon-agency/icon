@@ -11,7 +11,7 @@ versioned_properties:
       prop_field_definitions: {  }
     fallback_metadata:
       slot_definitions: {  }
-label: 'Subscribe bar (masthead)'
+label: 'Subscribe bar (masthead item)'
 id: sdc.icon.subscribe-bar
 provider: icon
 source: sdc

@@ -24,7 +24,10 @@
 
   document.querySelectorAll("[data-filmstrip]").forEach(function (viewport) {
     var track = viewport.querySelector(".filmstrip__track");
-    if (!track || track.children.length === 0) return;
+    // Cards, not children: in the Canvas editor an empty slot holds a
+    // placeholder child, and the engine drifting THAT left nothing to drop
+    // a card onto (user report, Sep 2026: "I can't add items to the strip").
+    if (!track || track.querySelectorAll(".filmstrip__card").length === 0) return;
 
     // Duplicate the set once for a seamless wrap. Each clone carries ITS
     // ORIGINAL'S tilt, written inline: the CSS tilts by position in the row

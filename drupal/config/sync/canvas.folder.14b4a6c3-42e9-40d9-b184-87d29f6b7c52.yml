@@ -1,0 +1,15 @@
+uuid: 14b4a6c3-42e9-40d9-b184-87d29f6b7c52
+langcode: en
+status: true
+dependencies:
+  config:
+    - canvas.component.sdc.icon.filmstrip
+    - canvas.component.sdc.icon.intro-fact
+    - canvas.component.sdc.icon.intro-photo
+name: Filmstrip
+configEntityTypeId: component
+weight: 3
+items:
+  - sdc.icon.filmstrip
+  - sdc.icon.intro-fact
+  - sdc.icon.intro-photo

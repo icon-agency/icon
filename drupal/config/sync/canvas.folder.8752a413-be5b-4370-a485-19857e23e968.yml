@@ -3,15 +3,15 @@ langcode: en
 status: true
 dependencies:
   config:
-    - canvas.component.sdc.icon.filmstrip
     - canvas.component.sdc.icon.news-article-figure
     - canvas.component.sdc.icon.work-gallery
+    - canvas.component.sdc.icon.work-gallery-figure
     - canvas.component.sdc.icon.work-scroller
 name: Pictures
 configEntityTypeId: component
-weight: 1
+weight: 2
 items:
-  - sdc.icon.filmstrip
   - sdc.icon.news-article-figure
   - sdc.icon.work-gallery
+  - sdc.icon.work-gallery-figure
   - sdc.icon.work-scroller

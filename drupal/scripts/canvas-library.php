@@ -24,23 +24,37 @@ use Drupal\canvas\Entity\Folder;
 // draw on one set, so page folders made editors guess).
 $plan = [
   'Text' => [
-    'sdc.icon.page-header',
-    'sdc.icon.work-masthead',
     'sdc.icon.prose',
     'sdc.icon.pull-quote',
     'sdc.icon.columns',
-    'sdc.icon.work-stats',
     'sdc.icon.divider',
+  ],
+  // A strip and its items sit together (user call, Sep 2026: "grouped as
+  // its own section, that way a user will know they are connected"), named
+  // "(strip)" and "(item)" throughout.
+  'Mastheads' => [
+    'sdc.icon.page-header',
+    'sdc.icon.work-masthead',
+    'sdc.icon.subscribe-bar',
   ],
   'Pictures' => [
     'sdc.icon.news-article-figure',
     'sdc.icon.work-gallery',
+    'sdc.icon.work-gallery-figure',
     'sdc.icon.work-scroller',
+  ],
+  'Filmstrip' => [
     'sdc.icon.filmstrip',
+    'sdc.icon.intro-photo',
+    'sdc.icon.intro-fact',
   ],
   'Video' => [
     'sdc.icon.news-article-video',
     'sdc.icon.work-video',
+  ],
+  'Results' => [
+    'sdc.icon.work-stats',
+    'sdc.icon.work-stat',
   ],
   'Listings' => [
     'block.views_block.news-landing',
@@ -58,14 +72,7 @@ $plan = [
   'Homepage' => [
     'block.icon_hero',
     'sdc.icon.intro',
-  ],
-  'Parts (go inside a block above)' => [
-    'sdc.icon.work-gallery-figure',
-    'sdc.icon.work-stat',
-    'sdc.icon.intro-photo',
-    'sdc.icon.intro-fact',
     'sdc.icon.intro-expertise',
-    'sdc.icon.subscribe-bar',
   ],
 ];
 

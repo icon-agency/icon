@@ -1,0 +1,15 @@
+uuid: 10eaa526-30de-47ef-931e-462bbd0dc305
+langcode: en
+status: true
+dependencies:
+  config:
+    - canvas.component.sdc.icon.page-header
+    - canvas.component.sdc.icon.subscribe-bar
+    - canvas.component.sdc.icon.work-masthead
+name: Mastheads
+configEntityTypeId: component
+weight: 1
+items:
+  - sdc.icon.page-header
+  - sdc.icon.subscribe-bar
+  - sdc.icon.work-masthead

@@ -1,6 +1,6 @@
 $schema: https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json
-name: Subscribe bar (masthead)
-group: Parts (go inside a block above)
+name: Subscribe bar (masthead item)
+group: Mastheads
 status: stable
 description: >
   The newsletter Subscribe pill — the header search face's twin. Goes in
