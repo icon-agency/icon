@@ -1,0 +1,23 @@
+uuid: af0859ba-56a3-4219-a1fa-cd278d1d24cb
+langcode: en
+status: true
+dependencies:
+  module:
+    - icon_site
+active_version: 775e1576dc376681
+versioned_properties:
+  active:
+    settings:
+      default_settings:
+        id: icon_office
+        label: 'Offices: one'
+        label_display: '0'
+        provider: icon_site
+        office: 0
+    fallback_metadata:
+      slot_definitions: null
+label: 'Offices: one'
+id: block.icon_office
+provider: icon_site
+source: block
+source_local_id: icon_office

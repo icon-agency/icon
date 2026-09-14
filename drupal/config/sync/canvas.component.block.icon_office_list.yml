@@ -4,9 +4,18 @@ status: true
 dependencies:
   module:
     - icon_site
-active_version: 91191ce79c48ed48
+active_version: f163c05033f4dbde
 versioned_properties:
   active:
+    settings:
+      default_settings:
+        id: icon_office_list
+        label: 'Offices: all'
+        label_display: '0'
+        provider: icon_site
+    fallback_metadata:
+      slot_definitions: null
+  91191ce79c48ed48:
     settings:
       default_settings:
         id: icon_office_list
@@ -15,7 +24,7 @@ versioned_properties:
         provider: icon_site
     fallback_metadata:
       slot_definitions: null
-label: Offices
+label: 'Offices: all'
 id: block.icon_office_list
 provider: icon_site
 source: block
