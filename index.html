@@ -1459,7 +1459,11 @@
                 own pieces rather than a text field per column, which is the pattern Canvas ships as
                 its own Columns example. Equal widths; one column on a phone, two from 768px, the chosen
                 count from 1024px; <code class="ds-code">--gap-tight</code> closes the gutter to the
-                gallery&rsquo;s 16px. A block inside a column drops its page-wide framing (the prose
+                gallery&rsquo;s 16px. <code class="ds-code">--box</code> puts the columns in a padded box on
+                the brand corner, on a ground of its own &mdash; the theme class (<code class="ds-code">dark</code>,
+                <code class="ds-code">theme-blue</code>, the chameleon <code class="ds-code">theme-work-article</code>
+                with its pair) rides on the box, which re-declares the registered <code class="ds-code">--color-*</code>
+                aliases so everything inside re-themes. A block inside a column drops its page-wide framing (the prose
                 measure and gutter, a pull quote&rsquo;s gutter) &mdash; the column is the measure now,
                 the same rule the article frames and the masthead apply to what they hold.
               </p>
@@ -1475,12 +1479,37 @@
                 </div>
               </div>
               <div class="ds-group">
+                <h4 class="ds-group__title">Live &mdash; in a box, on a ground (the theme class rides on the box)</h4>
+                <div class="ds-demo">
+                  <div class="columns columns--2 columns--gap-normal columns--box dark">
+                    <div class="columns__col"><div class="content-page"><h3>Interdisciplinary services</h3><p>We assemble teams based on your specific needs, scaling quickly to align our expertise with your priorities. <a href="#">Talk to us about your project</a></p></div></div>
+                    <div class="columns__col"><div class="content-page"><p>Our approach ensures you receive the most cost-effective solution for complex interdisciplinary projects &mdash; one strategy, one delivery team.</p></div></div>
+                  </div>
+                  <p class="ds-demo__label">div.columns.columns--box.dark · .theme-blue · .theme-work-article + style="--work-article-bg; --work-article-text" (white, light grey, custom)</p>
+                </div>
+                <div class="ds-demo">
+                  <div class="columns columns--2 columns--gap-normal columns--box theme-blue">
+                    <div class="columns__col"><div class="content-page"><h3>On ICON blue</h3><p>The blue theme&rsquo;s ink: white text, white rules, the blue accents flipped to white.</p></div></div>
+                    <div class="columns__col"><div class="content-page"><p>Every hairline inside is <code class="ds-code">var(--rule)</code> &mdash; 25% of the ink around it &mdash; so it takes the ground for free.</p></div></div>
+                  </div>
+                </div>
+                <div class="ds-demo">
+                  <div class="columns columns--2 columns--gap-normal columns--box theme-work-article" style="--work-article-bg: var(--light-grey); --work-article-text: var(--black)">
+                    <div class="columns__col"><div class="content-page"><h3>On light grey</h3><p>The third ICON colour, with the light theme&rsquo;s black ink through the chameleon.</p></div></div>
+                    <div class="columns__col"><div class="content-page"><p>A custom pair goes the same way: the two hex values as the chameleon&rsquo;s custom properties on the box.</p></div></div>
+                  </div>
+                </div>
+              </div>
+              <div class="ds-group">
                 <h4 class="ds-group__title">Drupal (Canvas / SDC)</h4>
                 <p class="ds-group__note">
-                  The <code class="ds-code">columns</code> SDC (Page folder): <strong>Columns</strong> 2 / 3 / 4
-                  and <strong>Gap</strong> normal / tight, with slots Column 1&ndash;4. Only as many slots
-                  render as the count says; a filled slot beyond the count is kept, not lost, and comes
-                  back when the count grows.
+                  The <code class="ds-code">columns</code> SDC (Layout folder): <strong>Columns</strong> 2 / 3 / 4,
+                  <strong>Gap</strong> normal / wide / tight and <strong>Box</strong> none / white / light grey /
+                  black / ICON blue / custom (with the custom background and foreground hex fields), with
+                  slots Column 1&ndash;4. Only as many slots render as the count says; a filled slot beyond
+                  the count is kept, not lost, and comes back when the count grows. A box pads the columns
+                  on the site&rsquo;s corner, standing on the page gutter, and what is inside takes the
+                  ground&rsquo;s ink &mdash; the same grounds a page can open on.
                 </p>
               </div>
             </section>
@@ -2119,7 +2148,8 @@
                 Digital, Communications and Creative as four hairline rings on a cross, hatched where
                 neighbours overlap &mdash; dots, diagonals one way, cross-hatch, diagonals the other,
                 each an SVG pattern in the ink &mdash; and the ICON-blue core where all four meet. An
-                inline SVG on a 440 viewBox, so it scales with its column. <strong>It draws itself</strong>
+                inline SVG on a 440 viewBox with no width of its own, so it fills whatever column
+                holds it &mdash; in Drupal, a Columns cell sizes it. <strong>It draws itself</strong>
                 when scrolled into view, the homepage lockup&rsquo;s gesture in CSS: each ring travels
                 round from twelve o&rsquo;clock on <code class="ds-code">stroke-dashoffset</code>, a beat
                 apart; the hatches surface once the rings have closed; the core grows from its centre;
@@ -2127,8 +2157,8 @@
                 host (js/reveal.js), once; no JS and reduced motion see it whole.
               </p>
               <div class="ds-group">
-                <h4 class="ds-group__title">Live &mdash; scroll it into view</h4>
-                <div class="ds-demo">
+                <h4 class="ds-group__title">Live &mdash; scroll it into view (shown in a half-width column)</h4>
+                <div class="ds-demo ds-demo--half">
                   <figure class="venn" data-animate aria-label="Interdisciplinary services: Strategy, Digital, Communications, Creative">
                     <svg class="venn__svg" viewBox="0 0 440 440" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
     <defs>

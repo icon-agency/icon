@@ -11,7 +11,19 @@
  * column is the measure now. (The same rule the article frames and the
  * masthead apply to what they hold.)
  *
- * Drupal: SDC `columns` — `columns` 2/3/4, `gap` normal/tight, slots
+ * THE BOX (user ask, Sep 2026: "make them inside a box … with the ability
+ * to change background and foreground colours"): `.columns--box` pads the
+ * columns inside a ground on the site's corner, standing on the page
+ * gutter instead of padding on it. The ground is one of the openings a
+ * page can wear (the masthead's "Opens on"): the theme class travels on
+ * the box itself — `dark`, `theme-blue`, or `theme-work-article` with its
+ * pair as custom properties — and the box re-declares the registered
+ * --color-* aliases so everything inside, prose and components alike,
+ * takes the ground's ink (a registered alias resolves where it is
+ * declared, LESSONS.md; re-declared here it resolves against the box).
+ *
+ * Drupal: SDC `columns` — `columns` 2/3/4, `gap` normal/wide/tight, `box`
+ * none/white/light-grey/black/blue/custom (+ `bg`, `ink`), slots
  * column_1…column_4. */
 
 .columns {
@@ -23,6 +35,32 @@
 
 .columns--gap-tight {
   gap: var(--spacing-md);
+}
+
+/* The box: the ground's own colour and ink, padded, on the brand corner.
+   Background and colour read the RAW role tokens, which the theme class
+   on this same element rebinds; the aliases below carry the rebind to
+   everything inside that reads var(--color-*). */
+.columns--box {
+  --box-pad: clamp(1.5rem, 2.8vw, 3.25rem);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-border: var(--border);
+  --color-icon-black: var(--icon-black);
+  --color-icon-grey: var(--icon-grey);
+  --color-icon-blue: var(--icon-blue);
+  margin-inline: var(--gutter-page);
+  padding: var(--box-pad);
+  border-radius: var(--radius-icon);
+  background-color: var(--background);
+  color: var(--foreground);
+}
+
+/* a boxed Columns inside a column is already on the gutter — and keeps
+   its padding, which the nested rule below would otherwise take */
+.columns .columns--box {
+  margin-inline: 0;
+  padding: var(--box-pad);
 }
 
 /* Wide (user ask, Sep 2026: "I thought we had a bigger padding option"):

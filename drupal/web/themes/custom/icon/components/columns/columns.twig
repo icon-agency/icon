@@ -6,10 +6,26 @@
  * says, so the editor sees the columns it asked for; a filled slot beyond
  * the count is kept, not lost, and comes back when the count grows —
  * Canvas's own Columns example, with the site's grid and gutters.
+ *
+ * The BOX: the same grounds a page can open on (page-header.twig), scoped
+ * to this element — black is the dark theme's class, blue the blue
+ * theme's, white / light grey / custom the chameleon with its pair as
+ * custom properties (the only thing an inline style carries here).
+ * columns.css re-declares the --color-* aliases on the box so what is
+ * inside re-themes (LESSONS.md: the aliases resolve where declared).
  */
 #}
 {% set count = columns|default(2) %}
-<div class="columns columns--{{ count }} columns--gap-{{ gap|default('normal') }}">
+{% set box = box|default('none') %}
+{% set hex = '/^#[0-9a-f]{3,8}$/i' %}
+{% set box_class = attribute({ white: 'theme-work-article', 'light-grey': 'theme-work-article', black: 'dark', blue: 'theme-blue', custom: 'theme-work-article' }, box)|default('') %}
+{% set pair = {
+  white: ['var(--color-white)', 'var(--black)'],
+  'light-grey': ['var(--light-grey)', 'var(--black)'],
+  custom: [(bg|default('') matches hex ? bg : 'var(--light-grey)'), (ink|default('') matches hex ? ink : 'var(--black)')],
+} %}
+{% set box_style = pair[box] is defined ? '--work-article-bg: ' ~ pair[box][0] ~ '; --work-article-text: ' ~ pair[box][1] : '' %}
+<div class="columns columns--{{ count }} columns--gap-{{ gap|default('normal') }}{% if box_class %} columns--box {{ box_class }}{% endif %}"{% if box_style %} style="{{ box_style }}"{% endif %}>
   <div class="columns__col">{% block column_1 %}{{ column_1 }}{% endblock %}</div>
   <div class="columns__col">{% block column_2 %}{{ column_2 }}{% endblock %}</div>
   {% if count >= 3 %}<div class="columns__col">{% block column_3 %}{{ column_3 }}{% endblock %}</div>{% endif %}

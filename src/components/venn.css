@@ -6,7 +6,8 @@
  * from the centre, so all four pass through one point and meet there
  * exactly (user call) — the core, a touch larger than the lenses' inner
  * tips, sits over it. An inline SVG on a 440 viewBox; every
- * size is a fraction of it, so the figure scales with its column.
+ * size is a fraction of it, so the figure scales with its column — it
+ * fills whatever column holds it, so a Columns cell is the way to size it.
  *
  * THE DRAW. The homepage lockup draws its frame and letters as strokes
  * before their fills arrive (home-c.js, DrawSVG); this is the same gesture
@@ -25,8 +26,8 @@
   --venn-draw: 1.1s;
   --venn-step: 0.14s;
   display: block;
-  max-width: 30rem;
-  margin-inline: auto;
+  width: 100%;                         /* the column's width is the figure's — no cap of its own (user call, Sep 2026) */
+  margin: 0;
   color: var(--color-icon-black);
 }
 
@@ -83,7 +84,11 @@
 }
 
 .venn__core-label {
-  fill: var(--color-white);
+  /* the GROUND's colour, not white: the core is the accent (blue on the
+     page, white on a dark or blue box, the ink on a chameleon ground), so
+     the words on it are the ground it sits on — white on the page, blue
+     on a blue box, black on a dark one (found Sep 2026, boxed Columns). */
+  fill: var(--color-background);
   font-size: 14px;
   font-weight: 900;
   letter-spacing: 0.02em;

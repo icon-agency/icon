@@ -302,6 +302,12 @@
 /* Home-page context for demos: components authored for the homepage read
    page-layer tokens (.page-home). --grid-gutter used to be supplied here;
    it is a FOUNDATION now (theme/spacing.css), so the stage inherits it. */
+.ds-demo--half {
+  /* a stand-in for one cell of a two-column layout: the width-less figures
+     (the Venn) take the cell's width, so the demo shows them at that size */
+  max-width: 50%;
+}
+
 .ds-demo--home-context {
   /* the stage inherits the foundation; nothing to set */
 }

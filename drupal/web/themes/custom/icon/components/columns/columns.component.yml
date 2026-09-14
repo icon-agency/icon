@@ -6,7 +6,10 @@ description: >
   Two, three or four columns side by side, each a drop slot that takes any
   block — Content, an Image, a Pull quote, a Fact card. Equal widths; they
   stack on a phone, pair from 768px and take the chosen count from 1024px.
-  Change the count and the columns you have filled stay.
+  Change the count and the columns you have filled stay. Optionally in a
+  BOX: padded, on the site's corner, on a ground of its own — white, light
+  grey, black, ICON blue or a custom pair — whose ink everything inside
+  takes, the way a page opening on that colour would.
 props:
   type: object
   required:
@@ -36,6 +39,42 @@ props:
         tight: Tight (the gallery's 16px)
       examples:
         - normal
+    box:
+      type: string
+      title: Box
+      description: >
+        Put the columns in a box — padded, on the site's corner — on a
+        ground of its own. What is inside takes that ground's ink: black is
+        the dark theme, ICON blue and light grey their own, Custom the two
+        hex values below.
+      enum:
+        - none
+        - white
+        - light-grey
+        - black
+        - blue
+        - custom
+      meta:enum:
+        none: No box (on the page)
+        white: White
+        light-grey: Light grey
+        black: Black (the dark theme)
+        blue: ICON blue
+        custom: Custom colours (below)
+      examples:
+        - none
+    bg:
+      type: string
+      title: Custom background
+      description: 'A hex colour, e.g. #f0f4f9. Used when Box is Custom.'
+      examples:
+        - '#f0f4f9'
+    ink:
+      type: string
+      title: Custom foreground
+      description: 'The text and line colour on it, a hex value, e.g. #0d0d0d.'
+      examples:
+        - '#0d0d0d'
 slots:
   column_1:
     title: Column 1
