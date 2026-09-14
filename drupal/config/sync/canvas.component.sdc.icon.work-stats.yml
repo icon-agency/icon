@@ -14,7 +14,7 @@ versioned_properties:
         results:
           title: Results
           description: 'One Result per figure. Two to the row.'
-label: 'Result stats (strip)'
+label: 'Result stats (group)'
 id: sdc.icon.work-stats
 provider: icon
 source: sdc

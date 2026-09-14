@@ -164,7 +164,7 @@ versioned_properties:
             string_shape: {  }
     fallback_metadata:
       slot_definitions: {  }
-label: 'Intro (strip)'
+label: 'Intro (group)'
 id: sdc.icon.intro
 provider: icon
 source: sdc
