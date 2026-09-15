@@ -60,6 +60,14 @@
   text-align: start;
 }
 
+/* Inside a Columns under the heading, the Columns has taken the air: the
+   blocks it holds start flush, or a Content block sat a section lower
+   than the Expertise links beside it (user catch, Sep 2026: "Why isnt this
+   aligning like it should?"). */
+.page-header__inner .columns :is(.content-page, .work-stats, .pull-quote) {
+  margin-top: 0;
+}
+
 .page-header__inner {
   text-align: center;
   margin-bottom: var(--spacing-3xl);
