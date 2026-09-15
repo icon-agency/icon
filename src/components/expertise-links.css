@@ -67,6 +67,16 @@ html:not(.js-animations) .expertise-links__list li:first-child a {
   color: var(--color-icon-black);
 }
 
+/* In the editor an empty list is a drop zone: the placeholder Canvas puts
+   in the slot takes a link-list's size, so the first Expertise link has
+   somewhere to land — a hairline-thin slot lost every drop to the column
+   around it (user report, Sep 2026: "I cant add expertise items to the
+   group?"; the Filmstrip's fix). */
+.expertise-links__list > .canvas--slot-empty-placeholder {
+  min-width: 14rem;
+  min-height: 8rem;
+}
+
 /* On a page the component stands on the page gutter, like every block a
    Canvas page places; in the intro's band the grid already pads. */
 .expertise-links--page {
