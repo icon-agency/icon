@@ -123,11 +123,14 @@ foreach (Node::loadMultiple($nids) as $node) {
         break;
 
       case 'work_gallery_row':
-        $row = $add('sdc.icon.work-gallery', []);
-        foreach ($p->get('field_work_gallery_figures')->referencedEntities() as $figure) {
-          $media = $figure->get('field_work_figure_media')->referencedEntities();
+        // A row is a Columns and boxes on the Tight gap, a Picture per
+        // figure (Sep 2026: one Picture everywhere).
+        $figures = $p->get('field_work_gallery_figures')->referencedEntities();
+        $row = $add('sdc.icon.columns', ['columns' => max(1, min(4, count($figures))), 'gap' => 'tight', 'box' => 'none']);
+        foreach (array_values($figures) as $i => $figure) {
+          $media = array_values($figure->get('field_work_figure_media')->referencedEntities());
           $style = $figure->get('field_work_figure_style')->value ?: 'plain';
-          // Editors list the foreground first; the component wants the
+          // Editors list the foreground first; the Picture wants the
           // ground first (icon.theme, the same reversal).
           if (str_starts_with($style, 'layered')) {
             $media = array_reverse($media);
@@ -136,34 +139,32 @@ foreach (Node::loadMultiple($nids) as $node) {
             $skipped[] = "figure {$figure->id()} (no media)";
             continue;
           }
-          // One pick per layer, ground first — a picture or a film each.
-          $media = array_values($media);
-          $add('sdc.icon.work-gallery-figure', $clean([
-            'picture' => ['target_id' => $media[0]->id()],
-            'float' => isset($media[1]) ? ['target_id' => $media[1]->id()] : NULL,
-            'style' => $style,
+          $shape = ['plain' => 'natural', 'portrait' => 'portrait', 'layered' => 'landscape', 'layered_square' => 'square'][$style] ?? 'natural';
+          $ground = $media[0];
+          $float = $media[1] ?? NULL;
+          if (str_starts_with($style, 'layered') && !$float) {
+            // the only pick is the cut-out, riding the colour ground
+            [$ground, $float] = [NULL, $ground];
+          }
+          $add('sdc.icon.news-article-figure', $clean([
+            'shape' => $shape,
+            'picture' => $ground ? ['target_id' => $ground->id()] : NULL,
+            'float' => $float ? ['target_id' => $float->id()] : NULL,
             'ground' => $figure->get('field_work_figure_ground')->value ?? '',
             'pad' => $figure->get('field_work_figure_inset')->value ?? '',
-          ]), $row, 'figures');
+          ]), $row, 'column_' . min($i + 1, 4));
         }
         break;
 
       case 'work_scroller':
-        $items = [];
-        $films = [];
-        foreach ($p->get('field_work_scroller_media')->referencedEntities() as $m) {
-          if ($m->bundle() === 'video') {
-            $films[] = ['target_id' => $m->id()];
-          }
-          else {
-            $items[] = ['target_id' => $m->id()];
-          }
-        }
-        $add('sdc.icon.work-scroller', $clean([
-          'items' => $items,
-          'films' => $films,
+        // The strip holds Pictures in its slot (Sep 2026) — a picture or a
+        // film each, in the paragraph's order.
+        $strip = $add('sdc.icon.work-scroller', $clean([
           'ground' => $p->get('field_work_scroller_ground')->value ?? '',
         ]));
+        foreach ($p->get('field_work_scroller_media')->referencedEntities() as $m) {
+          $add('sdc.icon.news-article-figure', ['shape' => 'natural', 'picture' => ['target_id' => $m->id()]], $strip, 'pictures');
+        }
         break;
 
       default:

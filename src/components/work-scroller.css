@@ -5,8 +5,11 @@
  * utilities/work-article.css (Sep 2026). Shares the layered figure's
  * --overlay-ground / --overlay-pad tokens for its optional colour ground.
  *
- * Drupal: SDC `work-scroller` — a work_scroller paragraph: media items +
- * optional ground colour.
+ * Drupal: SDC `work-scroller` (Picture scroller (group)) — Picture
+ * components in its slot + optional ground colour (Sep 2026; the article's
+ * scroller paragraph still passes media items). A .picture in the track is
+ * a card: same sizing, its own crop off (the card is the strip's height, the
+ * media at its ratio).
  */
 
 /* A drifting strip for a SERIES, carded at the gallery width — posters, clippings (born on
@@ -49,7 +52,8 @@
   will-change: transform;
 }
 
-.work-scroller__card {
+.work-scroller__card,
+.work-scroller__track > .picture {
   margin: 0;
   padding: 0;
   border: 0;
@@ -67,7 +71,9 @@
 }
 
 .work-scroller__card img,
-.work-scroller__card video {
+.work-scroller__card video,
+.work-scroller__track > .picture img,
+.work-scroller__track > .picture video {
   display: block;
   max-height: 100%;
   width: auto;
@@ -77,8 +83,32 @@
 }
 
 /* the centred card: a step larger over its neighbours while the drift holds */
-.work-scroller__card.is-focused {
+.work-scroller__card.is-focused,
+.work-scroller__track > .picture.is-focused {
   position: relative;
   z-index: 2;
   scale: 1.05;
+}
+
+/* A Picture in the track is a card: the strip's height, the media at its own
+   ratio — the Picture's crops and width rule step aside. */
+.work-scroller__track > .picture {
+  overflow: visible;
+  border-radius: 0;
+  aspect-ratio: auto;
+}
+
+.work-scroller__track > .picture img,
+.work-scroller__track > .picture video {
+  width: auto;
+  height: auto;
+  object-fit: contain;
+}
+
+/* In the editor an empty strip is a drop zone: the placeholder takes a
+   card's size, so the first Picture has somewhere to land. */
+.work-scroller__track > .canvas--slot-empty-placeholder {
+  flex: none;
+  min-width: 14rem;
+  min-height: 12rem;
 }

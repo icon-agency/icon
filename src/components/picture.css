@@ -1,0 +1,96 @@
+/* picture.css — THE picture: one pick at its own shape or a crop, on the
+ * site's corner, revealed on scroll (.media-reveal, js/reveal.js); with a
+ * cut-out, LAYERED — the cut-out floating over the first pick or a ground
+ * colour. One recipe for what were three (user call, Sep 2026: "a single
+ * image/video, foreground/background, optional colour, square, landscape,
+ * portrait — and I can use the columns for layout"): the article figure,
+ * the gallery figure (components/work-gallery.css, kept for the articles
+ * still composed from paragraphs) and the scroller's cards
+ * (components/work-scroller.css scopes the card sizing onto a .picture in
+ * its track). Layout is Columns and boxes' — two, three or four across on
+ * the Tight gap, the gallery's 16px.
+ *
+ * The layered anatomy is the article banner's (utilities/work-article.css)
+ * keyed on this class: the ground fills the frame under the cut-out, the
+ * cut-out fills the pad frame at its own ratio; an only child IS the
+ * cut-out, riding the colour ground. --overlay-ground and --overlay-pad are
+ * the component's own custom properties (set inline by the twig).
+ *
+ * Drupal: SDC `news-article-figure` (Picture) — `picture`, `float`,
+ * `shape` natural/landscape/square/portrait, `ground`, `pad`. */
+
+.picture {
+  margin: 0;
+  position: relative;
+  border-radius: var(--radius-icon);
+  overflow: hidden;
+}
+
+.picture img,
+.picture video {
+  display: block;
+  width: 100%;
+}
+
+/* The crops fill the frame. Doubled class on purpose (0,2,0): the article
+   layer imported after this file keys other aspects on the same elements
+   (the gallery's --portrait did the same). */
+.picture.picture--landscape {
+  aspect-ratio: 16 / 9;
+}
+
+.picture.picture--square {
+  aspect-ratio: 1 / 1;
+}
+
+.picture.picture--portrait {
+  aspect-ratio: 7 / 10;
+}
+
+.picture--landscape img,
+.picture--landscape video,
+.picture--square img,
+.picture--square video,
+.picture--portrait img,
+.picture--portrait video {
+  height: 100%;
+  object-fit: cover;
+}
+
+/* LAYERED: a cut-out over a ground. Natural takes landscape — a float needs
+   a frame. */
+.picture--layered {
+  background: var(--overlay-ground, none);
+}
+
+.picture.picture--layered.picture--natural {
+  aspect-ratio: 16 / 9;
+}
+
+/* the media ground — only when a float follows it (an only child IS the
+   float, riding the colour ground) */
+.picture--layered > :first-child:not(:only-child) {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+}
+
+/* the float FILLS the pad frame — height to the frame, width following the
+   media's own ratio, capped a side; object-fit keeps a wider-than-frame
+   float honest (letterboxed, never stretched) — the banner's recipe,
+   utilities/work-article.css */
+.picture--layered > :last-child {
+  position: absolute;
+  z-index: 1;
+  --_pad: min(var(--overlay-pad, 5vw), 40%);
+  inset: var(--_pad);
+  margin: auto;
+  height: calc(100% - var(--_pad) * 2);
+  width: auto;
+  max-width: calc(100% - var(--_pad) * 2);
+  object-fit: contain;
+  border-radius: var(--radius-icon);
+}

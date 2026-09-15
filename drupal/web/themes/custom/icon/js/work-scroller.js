@@ -41,7 +41,12 @@
         var scrollers = document.querySelectorAll("[data-work-scroller]");
         scrollers.forEach(function (viewport) {
           var track = viewport.querySelector(".work-scroller__track");
-          if (!track || track.children.length === 0) return;
+          // Cards, not children: in the Canvas editor an empty slot holds a
+          // placeholder child (the Filmstrip's lesson), and the strip holds still
+          // in the editor's frame so a card is where the editor thinks it is.
+          var frame = window.frameElement;
+          if (frame && frame.hasAttribute("data-canvas-preview")) return;
+          if (!track || track.querySelectorAll(":scope > .work-scroller__card, :scope > .picture").length === 0) return;
 
           // Duplicate the set once for a seamless wrap.
           var originals = Array.prototype.slice.call(track.children);
@@ -117,7 +122,7 @@
             },
             // a real drag restarts the drift; a tap acts on the pressed card
             onDragEnd: function (el, tapped) { if (!tapped) unfocus(); },
-            onTap: function (target) { tap(target && target.closest ? target.closest(".work-scroller__card") : null); }
+            onTap: function (target) { tap(target && target.closest ? target.closest(".work-scroller__track > *") : null); }
           });
           var state = drift.state;
 

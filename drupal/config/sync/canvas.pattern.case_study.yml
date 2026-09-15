@@ -3,8 +3,9 @@ langcode: en
 status: true
 dependencies:
   config:
+    - canvas.component.sdc.icon.columns
+    - canvas.component.sdc.icon.news-article-figure
     - canvas.component.sdc.icon.prose
-    - canvas.component.sdc.icon.work-gallery
     - canvas.component.sdc.icon.work-stat
     - canvas.component.sdc.icon.work-stats
     - filter.format.canvas_html_block
@@ -28,9 +29,21 @@ component_tree:
     parent_uuid: null
     slot: null
     uuid: e5d53c6c-ec9e-4e27-ba44-f80e610a6587
-    component_id: sdc.icon.work-gallery
-    component_version: 6cc3a72cc1075162
-    inputs: {  }
+    component_id: sdc.icon.columns
+    component_version: f9abd023c61b5669
+    inputs:
+      columns: 1
+      gap: tight
+      box: none
+    label: null
+  '1:5e5c3f5b-60de-4fae-8415-72981d0e8675':
+    parent_uuid: e5d53c6c-ec9e-4e27-ba44-f80e610a6587
+    slot: column_1
+    uuid: 5e5c3f5b-60de-4fae-8415-72981d0e8675
+    component_id: sdc.icon.news-article-figure
+    component_version: e76719234ed60dbc
+    inputs:
+      shape: natural
     label: null
   '2:c14edf2c-c1fa-4688-9ebd-afc9daf9c649':
     parent_uuid: null

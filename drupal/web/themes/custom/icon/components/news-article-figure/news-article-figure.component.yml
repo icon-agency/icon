@@ -3,19 +3,56 @@ name: Picture
 group: Pictures
 status: stable
 description: >
-  A wide image breaking out of the article's prose measure, revealed on
-  scroll (src/utilities/news-article.css, .news-article__figure).
+  THE picture (src/components/picture.css): one pick from the media library
+  — a picture, or a film that loops, muted — at its own shape or cropped
+  landscape, square or portrait, on the site's corner, revealed on scroll.
+  Optionally LAYERED: a cut-out that floats over the first pick, or over a
+  ground colour when the first pick is left empty. For layout, put Pictures
+  in Columns and boxes — two, three or four across — or in a Picture
+  scroller (user call, Sep 2026: one picture component everywhere; it was
+  Picture, Gallery row picture and the scroller's list).
 props:
   type: object
   required:
-    - image
+    - shape
   properties:
-    image:
-      $ref: json-schema-definitions://canvas.module/image
-      type: object
-      title: Image
+    picture:
+      type: integer
+      x-icon-media: picture-or-film
+      title: Picture
+      description: >
+        One pick from the media library — a picture, or a film that loops,
+        muted. With a cut-out below, this is the ground it floats over; leave
+        it empty for the ground colour.
+    float:
+      type: integer
+      x-icon-media: picture-or-film
+      title: Cut-out
+      description: >
+        Optional: a second pick that floats over the first — a cut-out
+        picture with a transparent background, or a film. Sets the figure
+        layered.
+    shape:
+      type: string
+      title: Shape
+      description: Natural runs at the picture's own shape. The crops fill the frame; a layered figure with Natural takes Landscape.
+      enum:
+        - natural
+        - landscape
+        - square
+        - portrait
+      meta:enum:
+        natural: Natural (the picture's own shape)
+        landscape: Landscape (16:9)
+        square: Square
+        portrait: Portrait (7:10)
       examples:
-        - src: https://placehold.co/1600x900
-          alt: Collage of the campaign across social and on-site media
-          width: 1600
-          height: 900
+        - natural
+    ground:
+      type: string
+      title: Ground colour
+      description: For a layered figure — the colour behind the cut-out, when there is no ground picture. A hex value, e.g. #2e2e2e.
+    pad:
+      type: string
+      title: Cut-out inset
+      description: How far in from each edge the floating cut-out sits, e.g. 22% (50% would leave nothing; over 40% is capped). Leave empty for the default.

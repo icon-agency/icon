@@ -49,13 +49,12 @@ $plan = [
     'sdc.icon.work-stats',
     'sdc.icon.work-stat',
   ],
+  // One Picture everywhere (user call, Sep 2026): the article figure, the
+  // gallery figure and the scroller's cards are the one component, laid
+  // out by Columns and boxes; the scroller holds Pictures in its slot.
   'Pictures' => [
     'sdc.icon.news-article-figure',
     'sdc.icon.work-scroller',
-  ],
-  'Gallery' => [
-    'sdc.icon.work-gallery',
-    'sdc.icon.work-gallery-figure',
   ],
   'Filmstrip' => [
     'sdc.icon.filmstrip',
@@ -120,6 +119,11 @@ $hide = [
   // Offices: all — the contact page is being rebuilt from Offices: one in
   // Columns (user call, Sep 2026); the block stays for the page until then.
   'block.icon_office_list',
+  // The Gallery row and its figure: Columns and boxes holds Pictures now
+  // (scripts/pictures.php moved every placed row); the components stay for
+  // the articles still composed from paragraphs.
+  'sdc.icon.work-gallery',
+  'sdc.icon.work-gallery-figure',
   // The "Next up" rails: the article templates place them under the story
   // they belong to (node--work--full, node--news--full); on a page an
   // editor builds they would show two arbitrary items (user, Sep 2026:

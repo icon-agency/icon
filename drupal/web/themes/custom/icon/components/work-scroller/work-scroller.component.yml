@@ -1,36 +1,23 @@
 $schema: https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json
-name: Picture scroller
+name: Picture scroller (group)
 group: Pictures
 status: stable
-description: The drifting gallery strip for a series — posters, clippings, looping films — on an optional colour ground (src/components/work-scroller.css, js/work-scroller.js).
+description: >
+  The drifting strip for a series — posters, clippings, looping films — on
+  an optional colour ground (src/components/work-scroller.css,
+  js/work-scroller.js). Its pictures are Picture components in the slot
+  (Sep 2026; it was a list of images and a list of films).
+libraryOverrides:
+  dependencies:
+    - icon/work-scroller
 props:
   type: object
-  required:
-    - items
   properties:
-    items:
-      type: array
-      title: Images
-      description: The strip, in order. Portraits and landscapes mix freely; the strip drifts and can be dragged.
-      # Required and multiple: Canvas asks for the floor as well as the shape.
-      minItems: 1
-      items:
-        $ref: json-schema-definitions://canvas.module/image
-      examples:
-        - - src: https://placehold.co/800x1100
-            alt: Poster
-            width: 800
-            height: 1100
-    films:
-      type: array
-      title: Films (looping)
-      description: Short films that loop, muted, after the images. Pick Video media or upload an MP4.
-      items:
-        $ref: json-schema-definitions://canvas.module/video
-      examples:
-        - - src: https://example.com/loop.mp4
     ground:
       type: string
       title: Ground colour
-      examples:
-        - '#2e2e2e'
+      description: The colour behind the strip, a hex value, e.g. #2e2e2e. Leave empty for none.
+slots:
+  pictures:
+    title: Pictures
+    description: Picture components, in the order they drift past. Portraits and landscapes mix freely; a film loops.

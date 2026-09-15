@@ -9,7 +9,7 @@ dependencies:
     - canvas.component.block.views_block.work-latest
 name: Listings
 configEntityTypeId: component
-weight: 10
+weight: 9
 items:
   - block.icon_news_latest
   - block.views_block.news-landing

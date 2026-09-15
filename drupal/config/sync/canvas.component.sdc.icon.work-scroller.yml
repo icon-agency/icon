@@ -14,9 +14,27 @@ dependencies:
     - media_library
   theme:
     - icon
-active_version: 3e2d34e9c3743450
+active_version: e62ad227466cc357
 versioned_properties:
   active:
+    settings:
+      prop_field_definitions:
+        ground:
+          required: false
+          field_type: string
+          field_storage_settings: {  }
+          field_instance_settings: {  }
+          field_widget: string_textfield
+          default_value: null
+          expression: ℹ︎string␟value
+          derived_schema_metadata:
+            string_shape: {  }
+    fallback_metadata:
+      slot_definitions:
+        pictures:
+          title: Pictures
+          description: 'Picture components, in the order they drift past. Portraits and landscapes mix freely; a film loops.'
+  3e2d34e9c3743450:
     settings:
       prop_field_definitions:
         items:
@@ -95,7 +113,7 @@ versioned_properties:
             string_shape: {  }
     fallback_metadata:
       slot_definitions: {  }
-label: 'Picture scroller'
+label: 'Picture scroller (group)'
 id: sdc.icon.work-scroller
 provider: icon
 source: sdc

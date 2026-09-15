@@ -3,21 +3,24 @@
  * @file
  * work-scroller — thin copy of the scroller in templates/work-article-master.html
  * (Drupal.behaviors.iconWorkScroller drives drift, drag and click-to-focus).
+ *
+ * The cards are Picture components in the `pictures` slot (Sep 2026); the
+ * `items` and `films` lists are what an instance placed before carries —
+ * and what the article's scroller paragraph passes — still honoured.
  */
 #}
 <div class="work-scroller" data-work-scroller{% if ground %} style="--overlay-ground: {{ ground }}"{% endif %}>
   <div class="work-scroller__track">
-    {% for item in items %}
+    {% block pictures %}{{ pictures }}{% endblock %}
+    {% for item in items|default([]) %}
       <button class="work-scroller__card" type="button">
         <img loading="lazy" src="{{ item.src }}" alt="{{ item.alt }}"{% if item.width %} width="{{ item.width }}"{% endif %}{% if item.height %} height="{{ item.height }}"{% endif %} />
       </button>
     {% endfor %}
-    {# Films loop muted, after the images (user call, Sep 2026); decorative,
-       like every looping film on the site — the card is the control. #}
     {% for film in films|default([]) %}
-      {% if film.src %}
+      {% if film.src is defined and film.src %}
         <button class="work-scroller__card" type="button">
-          <video autoplay muted loop playsinline preload="metadata" src="{{ film.src }}"{% if film.poster %} poster="{{ film.poster }}"{% endif %}></video>
+          <video autoplay muted loop playsinline preload="metadata" src="{{ film.src }}"{% if film.poster is defined and film.poster %} poster="{{ film.poster }}"{% endif %}></video>
         </button>
       {% endif %}
     {% endfor %}

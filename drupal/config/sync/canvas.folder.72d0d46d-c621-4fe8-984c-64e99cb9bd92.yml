@@ -10,7 +10,7 @@ dependencies:
     - canvas.component.sdc.icon.venn
 name: ICON
 configEntityTypeId: component
-weight: 9
+weight: 8
 items:
   - block.icon_clients_marquee
   - block.icon_contact_form

@@ -1,13 +1,42 @@
 {#
 /**
  * @file
- * news-article-figure — an image figure between prose chunks
- * (templates/news-article.html). On a news article the figure is the image
- * at its own height, with the prose's fade-up and nothing else: no band
- * crop, no mask entrance, no drift (src/utilities/news-article.css
- * .news-article__figure--natural). The film figure keeps the band.
+ * news-article-figure — THE picture (components/picture.css): one pick at
+ * its own shape or a crop, on the site's corner, revealed on scroll; with a
+ * cut-out, layered — the cut-out floating over the first pick or a ground
+ * colour. One component for the article figure, the gallery figure and the
+ * scroller's cards (Sep 2026).
+ *
+ * `picture` and `float` are the picks — a media id from Canvas, or the
+ * resolved media from a theme path; `image` is what a figure placed before
+ * carries (the news article's figure paragraph passes it too), still
+ * honoured.
  */
 #}
-<figure class="news-article__figure news-article__figure--natural" data-animate>
-  <img src="{{ image.src }}" alt="{{ image.alt }}"{% if image.width %} width="{{ image.width }}"{% endif %}{% if image.height %} height="{{ image.height }}"{% endif %} loading="lazy" />
+{% set ground_m = picture is defined and picture ? (picture is iterable ? picture : icon_media(picture, 'work_media')) : {} %}
+{% set float_m = float is defined and float ? (float is iterable ? float : icon_media(float, 'work_media')) : {} %}
+{% if ground_m.src is not defined and image.src is defined and image.src %}{% set ground_m = image|merge({ type: 'image' }) %}{% endif %}
+{% set layered = float_m.src is defined and float_m.src %}
+{% set shape = shape|default('natural') %}
+{% set layers = (layered ? [ground_m, float_m] : [ground_m])|filter(m => m.src is defined and m.src) %}
+{% set classes = [
+  'picture',
+  'picture--' ~ shape,
+  layered ? 'picture--layered',
+  'media-reveal',
+]|filter(v => v) %}
+{% set styles = [
+  layered and ground ? '--overlay-ground: ' ~ ground,
+  layered and pad ? '--overlay-pad: ' ~ pad,
+]|filter(v => v) %}
+<figure class="{{ classes|join(' ') }}" data-reveal-img{% if styles %} style="{{ styles|join('; ') }}"{% endif %}>
+  {% for m in layers %}
+    {% if m.type is defined and m.type == 'video' %}
+      {# decorative — the article names the work; preload="metadata", not
+         "auto": a row of films fetched every body at once #}
+      <video autoplay muted loop playsinline preload="metadata" src="{{ m.src }}"{% if m.poster is defined and m.poster %} poster="{{ m.poster }}"{% endif %} aria-hidden="true"></video>
+    {% else %}
+      <img loading="lazy" src="{{ m.src }}" alt="{{ m.alt|default('') }}"{% if m.width is defined and m.width %} width="{{ m.width }}"{% endif %}{% if m.height is defined and m.height %} height="{{ m.height }}"{% endif %} />
+    {% endif %}
+  {% endfor %}
 </figure>

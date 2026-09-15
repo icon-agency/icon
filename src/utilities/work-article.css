@@ -110,6 +110,12 @@
   padding-inline: 0;
 }
 
+/* Columns and boxes holds the article's pictures now (Sep 2026): the frame
+   self-pads, so the Columns drops its own gutter here. */
+.work-article .columns {
+  padding-inline: 0;
+}
+
 /* Centred head: the project name in the display voice at its BRAND casing
    (no uppercase — "iCanQuit" is the client's mark, not our shout), the
    client's name under it in the serif accent voice (.masthead-accent
@@ -609,7 +615,8 @@ html[data-icon-editing].js-animations .media-reveal iframe {
 }
 
 .work-article__banner--layered > :last-child,
-.work-gallery__figure--layered > :last-child {
+.work-gallery__figure--layered > :last-child,
+.picture--layered > :last-child {
   /* ONE margin rule (user call): the float FILLS the pad frame — height is
      set to the frame and width follows the media's intrinsic ratio (the
      abs-pos replaced-element rule), so every float meets the pad top and
@@ -649,6 +656,7 @@ html[data-icon-editing].js-animations .media-reveal iframe {
    the card tilt is a landing-only behaviour — so `transform` is free here. */
 .work-article__banner,
 .work-gallery__figure,
+.work-article .picture,
 .work-article__chunk > .work-video,
 .work-article__chunk > .news-article__figure--video,
 .work-article__next .work__item {

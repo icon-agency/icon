@@ -103,6 +103,7 @@
                 <li><a class="ds-nav__link" href="#work-gallery">Work gallery</a></li>
                 <li><a class="ds-nav__link" href="#work-blocks">Work article blocks</a></li>
                 <li><a class="ds-nav__link" href="#columns">Columns</a></li>
+                <li><a class="ds-nav__link" href="#picture">Picture</a></li>
                 <li><a class="ds-nav__link" href="#expertise-links">Expertise links</a></li>
                 <li><a class="ds-nav__link" href="#clients">Clients scroller</a></li>
                 <li><a class="ds-nav__link" href="#news-stack">News — cards &amp; stack</a></li>
@@ -1235,6 +1236,42 @@
                   <code class="ds-code">@supports (animation-timeline: view())</code>); no-JS renders
                   media plainly &mdash; the hidden state exists only under
                   <code class="ds-code">.js-animations</code>.
+                </p>
+              </div>
+            </section>
+
+            <section class="ds-section" id="picture">
+              <h3 class="ds-section__title">Picture</h3>
+              <p class="ds-section__intro">
+                <code class="ds-code">.picture</code> (<code class="ds-code">src/components/picture.css</code>) &mdash;
+                THE picture (user call, Sep 2026: one picture component everywhere, laid out with Columns):
+                one pick at its own shape or a crop &mdash; <code class="ds-code">--natural</code>,
+                <code class="ds-code">--landscape</code> (16:9), <code class="ds-code">--square</code>,
+                <code class="ds-code">--portrait</code> (7:10) &mdash; on the brand corner, revealed on scroll
+                with the shared <code class="ds-code">.media-reveal</code>. With a cut-out, <strong>layered</strong>
+                (<code class="ds-code">--layered</code>): the cut-out floats over the first pick, or over a ground
+                colour (<code class="ds-code">--overlay-ground</code>) when there is none, inset by
+                <code class="ds-code">--overlay-pad</code> &mdash; the article banner&rsquo;s anatomy, shared. It
+                replaced three: the article figure, the gallery figure and the scroller&rsquo;s cards.
+              </p>
+              <div class="ds-group">
+                <h4 class="ds-group__title">Live &mdash; three shapes and a layered one, in Columns on the tight gap</h4>
+                <div class="ds-demo">
+                  <div class="columns columns--4 columns--gap-tight">
+                    <div class="columns__col"><figure class="picture picture--landscape"><img src="https://placehold.co/1600x900/edeef5/0d0d0d?text=landscape" alt="" width="1600" height="900" /></figure></div>
+                    <div class="columns__col"><figure class="picture picture--square"><img src="https://placehold.co/900x900/edeef5/0d0d0d?text=square" alt="" width="900" height="900" /></figure></div>
+                    <div class="columns__col"><figure class="picture picture--portrait"><img src="https://placehold.co/700x1000/edeef5/0d0d0d?text=portrait" alt="" width="700" height="1000" /></figure></div>
+                    <div class="columns__col"><figure class="picture picture--square picture--layered" style="--overlay-ground: #2e2e2e; --overlay-pad: 22%"><img src="https://placehold.co/600x800/ffffff/0d0d0d?text=cut-out" alt="" width="600" height="800" /></figure></div>
+                  </div>
+                  <p class="ds-demo__label">figure.picture.picture--{natural|landscape|square|portrait}[.picture--layered][style="--overlay-ground; --overlay-pad"] &gt; img|video (the ground) + img|video (the cut-out)</p>
+                </div>
+              </div>
+              <div class="ds-group">
+                <h4 class="ds-group__title">Drupal (Canvas / SDC)</h4>
+                <p class="ds-group__note">
+                  <strong>Picture</strong> (Pictures folder): Picture and Cut-out picks, Shape, Ground colour,
+                  Cut-out inset. Lay them out with <strong>Columns and boxes</strong> on the Tight gap, or drop
+                  them into <strong>Picture scroller (group)</strong>. Gallery row and its figure left the library.
                 </p>
               </div>
             </section>
