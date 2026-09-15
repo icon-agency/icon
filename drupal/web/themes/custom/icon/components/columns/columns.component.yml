@@ -11,7 +11,8 @@ description: >
   stay. Optionally in a
   BOX: padded, on the site's corner, on a ground of its own — white, light
   grey, black, ICON blue or a custom pair — whose ink everything inside
-  takes, the way a page opening on that colour would.
+  takes, the way a page opening on that colour would. Optionally a LINK:
+  the whole box goes somewhere, and shows it on hover.
 props:
   type: object
   required:
@@ -80,6 +81,22 @@ props:
       description: 'The text and line colour on it, a hex value, e.g. #0d0d0d.'
       examples:
         - '#0d0d0d'
+    link:
+      type: string
+      format: uri-reference
+      title: Link
+      description: >
+        Optional: the whole box links here — a click anywhere on it goes
+        through, the links inside still work, and it lifts on hover. Leave
+        empty for no link.
+      examples:
+        - /creative
+    link_label:
+      type: string
+      title: Link name
+      description: What the link is called for screen readers, e.g. the box's heading. Used when Link is set.
+      examples:
+        - Creative
 slots:
   column_1:
     title: Column 1

@@ -24,9 +24,17 @@
  * takes the ground's ink (a registered alias resolves where it is
  * declared, LESSONS.md; re-declared here it resolves against the box).
  *
+ * THE LINK (user ask, Sep 2026: "an optional link to the full box … a
+ * hover state, inline with other parts of the site"): a box cannot be an
+ * <a> — the links inside it would nest — so a stretched anchor covers it
+ * and the columns rise above it, their own links still live. On hover the
+ * ground steps toward its ink, the way the pager's surfaces do, and the
+ * headings and links inside go ICON blue, the way every link on the site
+ * does; pointer devices only, as the cards' hovers are.
+ *
  * Drupal: SDC `columns` — `columns` 1/2/3/4, `gap` normal/wide/tight, `box`
- * none/white/light-grey/black/blue/custom (+ `bg`, `ink`), slots
- * column_1…column_4. */
+ * none/white/light-grey/black/blue/custom (+ `bg`, `ink`), `link` (+
+ * `link_label`), slots column_1…column_4. */
 
 .columns {
   display: grid;
@@ -56,6 +64,54 @@
   border-radius: var(--radius-icon);
   background-color: var(--background);
   color: var(--foreground);
+}
+
+/* The stretched link: the anchor fills the box; the columns sit above it
+   letting the pointer through to it, except where they hold something to
+   click. */
+.columns--linked {
+  position: relative;
+  transition: background-color var(--duration-fast) var(--ease-standard);
+}
+
+.columns__link {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+}
+
+.columns__link:focus-visible {
+  outline: 2px solid var(--color-icon-blue);
+  outline-offset: 2px;
+}
+
+.columns--linked .columns__col {
+  position: relative;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.columns--linked .columns__col :is(a, button, input, select, textarea, video, [tabindex]) {
+  pointer-events: auto;
+}
+
+@media (hover: hover) {
+  .columns--linked:hover {
+    background-color: color-mix(in srgb, var(--foreground) 6%, var(--background));
+  }
+
+  .columns--linked:hover :is(h2, h3, h4, .content-page a, .quiet-link) {
+    color: var(--color-icon-blue);
+  }
+
+  /* On a chameleon ground (white, light grey, a custom pair) the theme's
+     "blue" IS the ink — the chameleon keeps a client's folio to one ink —
+     so the words would not move; they take the raw ICON blue there, the
+     colour the user reads as the site's hover. */
+  .columns--linked.theme-work-article:hover :is(h2, h3, h4, .content-page a, .quiet-link) {
+    color: var(--blue);
+  }
 }
 
 /* a boxed Columns inside a column is already on the gutter — and keeps

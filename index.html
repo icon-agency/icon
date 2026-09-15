@@ -1495,6 +1495,13 @@
                   </div>
                 </div>
                 <div class="ds-demo">
+                  <div class="columns columns--1 columns--gap-normal columns--box columns--linked theme-work-article" style="--work-article-bg: var(--light-grey); --work-article-text: var(--black)">
+                    <a class="columns__link" href="#columns" aria-label="Creative"></a>
+                    <div class="columns__col"><div class="content-page"><h3>Creative</h3><p class="is-small">A one-column box with a link on the whole of it &mdash; hover anywhere. The link inside still works: <a href="#columns">Find out more</a></p></div></div>
+                  </div>
+                  <p class="ds-demo__label">div.columns.columns--1.columns--box.columns--linked &gt; a.columns__link[aria-label] + div.columns__col</p>
+                </div>
+                <div class="ds-demo">
                   <div class="columns columns--2 columns--gap-normal columns--box theme-work-article" style="--work-article-bg: var(--light-grey); --work-article-text: var(--black)">
                     <div class="columns__col"><div class="content-page"><h3>On light grey</h3><p>The third ICON colour, with the light theme&rsquo;s black ink through the chameleon.</p></div></div>
                     <div class="columns__col"><div class="content-page"><p>A custom pair goes the same way: the two hex values as the chameleon&rsquo;s custom properties on the box.</p></div></div>
@@ -1511,7 +1518,10 @@
                   slots Column 1&ndash;4. Only as many slots render as the count says; a filled slot beyond
                   the count is kept, not lost, and comes back when the count grows. A box pads the columns
                   on the site&rsquo;s corner, standing on the page gutter, and what is inside takes the
-                  ground&rsquo;s ink &mdash; the same grounds a page can open on.
+                  ground&rsquo;s ink &mdash; the same grounds a page can open on. <strong>Link</strong> (+
+                  <strong>Link name</strong>) makes the whole box go somewhere: a stretched anchor under the
+                  columns, the links inside still live, the ground stepping toward its ink and the words
+                  going ICON blue on hover.
                 </p>
               </div>
             </section>

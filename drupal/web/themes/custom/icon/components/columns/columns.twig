@@ -13,6 +13,10 @@
  * custom properties (the only thing an inline style carries here).
  * columns.css re-declares the --color-* aliases on the box so what is
  * inside re-themes (LESSONS.md: the aliases resolve where declared).
+ *
+ * THE LINK: a box cannot be an <a> (the links inside it would nest), so
+ * a stretched anchor covers it (.columns__link) and the columns rise
+ * above with their own links clickable — columns.css.
  */
 #}
 {% set count = columns|default(2) %}
@@ -25,7 +29,9 @@
   custom: [(bg|default('') matches hex ? bg : 'var(--light-grey)'), (ink|default('') matches hex ? ink : 'var(--black)')],
 } %}
 {% set box_style = pair[box] is defined ? '--work-article-bg: ' ~ pair[box][0] ~ '; --work-article-text: ' ~ pair[box][1] : '' %}
-<div class="columns columns--{{ count }} columns--gap-{{ gap|default('normal') }}{% if box_class %} columns--box {{ box_class }}{% endif %}"{% if box_style %} style="{{ box_style }}"{% endif %}>
+{% set linked = link is not empty %}
+<div class="columns columns--{{ count }} columns--gap-{{ gap|default('normal') }}{% if box_class %} columns--box {{ box_class }}{% endif %}{% if linked %} columns--linked{% endif %}"{% if box_style %} style="{{ box_style }}"{% endif %}>
+  {% if linked %}<a class="columns__link" href="{{ link }}" aria-label="{{ link_label|default('Read more'|t) }}"></a>{% endif %}
   <div class="columns__col">{% block column_1 %}{{ column_1 }}{% endblock %}</div>
   {% if count >= 2 %}<div class="columns__col">{% block column_2 %}{{ column_2 }}{% endblock %}</div>{% endif %}
   {% if count >= 3 %}<div class="columns__col">{% block column_3 %}{{ column_3 }}{% endblock %}</div>{% endif %}
