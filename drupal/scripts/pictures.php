@@ -11,10 +11,13 @@
  * pick was its cut-out riding the colour ground, so it moves to `float`.
  * A Picture scroller keeps its uuid and ground and takes its pictures as
  * Picture children in its slot; its `films` list only ever held the
- * schema's example and is dropped. Saved pages and articles only — an open
- * draft keeps what it holds and still renders. Idempotent.
+ * schema's example and is dropped. Saved pages and articles; with
+ * ICON_DRAFTS=1 the open editor drafts too — a draft that still held the
+ * old rows would have put them back on publish (user question, Sep 2026:
+ * "what do I need to update in the CMS?"). Idempotent.
  *
  * Run: ICON_SEED=1 drush php:script scripts/pictures.php
+ *      ICON_SEED=1 ICON_DRAFTS=1 drush php:script scripts/pictures.php
  */
 
 declare(strict_types=1);
@@ -141,6 +144,17 @@ foreach (Node::loadMultiple($nids) as $node) {
     $node->setNewRevision(TRUE);
     $node->save();
     print "Node {$node->id()} ({$node->label()}): rows and scrollers moved to Pictures.\n";
+  }
+}
+if (getenv('ICON_DRAFTS')) {
+  $store = \Drupal::keyValue('canvas.auto_save');
+  foreach ($store->getAll() as $key => $draft) {
+    $field = isset($draft['data']['components']) ? 'components' : (isset($draft['data']['field_work_canvas']) ? 'field_work_canvas' : NULL);
+    if ($field && is_array($draft['data'][$field]) && ($items = $convert($draft['data'][$field]))) {
+      $draft['data'][$field] = $items;
+      $store->set($key, $draft);
+      print "Draft $key (" . ($draft['label'] ?? '') . "): rows and scrollers moved to Pictures.\n";
+    }
   }
 }
 \Drupal::service('account_switcher')->switchBack();
