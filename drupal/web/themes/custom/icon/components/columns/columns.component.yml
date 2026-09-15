@@ -73,14 +73,10 @@ props:
       type: string
       title: Custom background
       description: 'A hex colour, e.g. #edeef5. Used when Box is Custom.'
-      examples:
-        - '#edeef5'
     ink:
       type: string
       title: Custom foreground
       description: 'The text and line colour on it, a hex value, e.g. #0d0d0d.'
-      examples:
-        - '#0d0d0d'
     link:
       type: string
       format: uri-reference
@@ -89,14 +85,10 @@ props:
         Optional: the whole box links here — a click anywhere on it goes
         through, the links inside still work, and it lifts on hover. Leave
         empty for no link.
-      examples:
-        - /creative
     link_label:
       type: string
       title: Link name
       description: What the link is called for screen readers, e.g. the box's heading. Used when Link is set.
-      examples:
-        - Creative
 slots:
   column_1:
     title: Column 1

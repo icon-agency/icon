@@ -63,14 +63,10 @@ props:
       type: string
       title: Custom background
       description: 'A hex colour, e.g. #edeef5. Used when Opens on is Custom.'
-      examples:
-        - '#edeef5'
     ink:
       type: string
       title: Custom foreground
       description: 'The text and line colour on it, a hex value, e.g. #0d0d0d.'
-      examples:
-        - '#0d0d0d'
 slots:
   extras:
     title: Under the heading
