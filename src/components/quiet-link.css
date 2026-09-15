@@ -16,7 +16,7 @@
   font-size: var(--voice-mid);
   font-weight: var(--font-weight-medium);
   letter-spacing: -0.01em;
-  line-height: 1.32;
+  line-height: 1.26; /* met halfway with the large paragraph's 1.2 → 1.26, so the expertise list and the statement beside it share a leading (user call, Sep 2026) */
   /* 60%, not the 32% it wore until Sep 2026: at 32% the resting link
      measured 2.12:1 on white and failed WCAG AA — the intro's expertise
      list and "About us" are the ones people read (found in review). 60% is

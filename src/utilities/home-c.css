@@ -878,7 +878,7 @@ html:not(.js-animations) .hero__count { display: none; }
 .intro__statement {
   margin: 0;
   font-size: var(--voice-mid);
-  line-height: 1.2;
+  line-height: 1.26; /* the large paragraph\'s, met halfway with the expertise list\'s 1.32 (user call, Sep 2026) */
   font-weight: var(--font-weight-medium);
   letter-spacing: -0.01em;
   color: var(--color-icon-black);

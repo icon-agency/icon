@@ -113,7 +113,7 @@
      can open a page on the same line the home page does. */
   .content-page p.is-large {
     font-size: var(--voice-mid);
-    line-height: 1.2;
+    line-height: 1.26; /* was 1.2; met halfway with the quiet links\' 1.32 so a large paragraph beside the expertise list shares its leading (user call, Sep 2026) */
     font-weight: var(--font-weight-medium);
     letter-spacing: -0.01em;
     color: var(--icon-black);
