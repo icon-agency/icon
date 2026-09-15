@@ -61,25 +61,25 @@ settings:
     ckeditor5_style:
       styles:
         -
-          label: 'Heading 2 — Sentence'
+          label: 'Sentence case'
           element: '<h2 class="is-sentence">'
         -
-          label: 'Heading 2 — Miller'
+          label: 'Miller (serif)'
           element: '<h2 class="is-serif">'
         -
-          label: 'Paragraph — Large'
+          label: Large
           element: '<p class="is-large">'
         -
-          label: 'Paragraph — Small'
+          label: Small
           element: '<p class="is-small">'
         -
-          label: 'Heading 4 — Caps label'
+          label: 'Caps label'
           element: '<h4 class="is-caps-label">'
         -
-          label: 'Paragraph — Caps'
+          label: Caps
           element: '<p class="is-caps">'
         -
-          label: 'Slash list'
+          label: 'Slash bullets'
           element: '<ul class="list-slash">'
         -
           label: 'Caps list'

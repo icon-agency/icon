@@ -1,0 +1,13 @@
+# One style per element: Paragraph — Large, Small and Caps are alternatives,
+# not layers, and CKEditor's Style menu stacks them (user catch, 15 Sep 2026:
+# `<p class="is-large is-small">`). Applying a style takes the others on the
+# same element off. Rides along wherever the Style plugin is on.
+icon_site_exclusive_styles:
+  ckeditor5:
+    plugins: [iconExclusiveStyles.IconExclusiveStyles]
+  drupal:
+    label: Exclusive styles
+    library: icon_site/ckeditor5.exclusive_styles
+    elements: false
+    conditions:
+      plugins: [ckeditor5_style]

@@ -68,19 +68,19 @@ settings:
     ckeditor5_style:
       styles:
         -
-          label: 'Paragraph — Large'
+          label: Large
           element: '<p class="is-large">'
         -
-          label: 'Paragraph — Small'
+          label: Small
           element: '<p class="is-small">'
         -
-          label: 'Heading 4 — Caps label'
+          label: 'Caps label'
           element: '<h4 class="is-caps-label">'
         -
-          label: 'Paragraph — Caps'
+          label: Caps
           element: '<p class="is-caps">'
         -
-          label: 'Slash list'
+          label: 'Slash bullets'
           element: '<ul class="list-slash">'
         -
           label: 'Caps list'

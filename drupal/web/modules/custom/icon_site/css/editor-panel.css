@@ -47,3 +47,12 @@
   /* the selector out-ranks CKEditor's own grid rule, which sets display */
   display: none;
 }
+
+/* The tile's name wraps rather than trails off: "Paragraph …" told the
+   editor nothing (user catch, Sep 2026). The names are short now anyway —
+   the menu shows only the block's own styles, so the element goes unsaid. */
+.ck.ck-dropdown__panel .ck-style-panel .ck-style-grid__button__label {
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
+}

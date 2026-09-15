@@ -52,3 +52,12 @@ editor_panel:
   css:
     component:
       css/editor-panel.css: {}
+
+# One style per element in CKEditor's Style menu (exclusive-styles.js);
+# the ckeditor5 plugin icon_site_exclusive_styles attaches it wherever
+# the Style plugin is on.
+ckeditor5.exclusive_styles:
+  js:
+    js/ckeditor5/exclusive-styles.js: { preprocess: false }
+  dependencies:
+    - core/ckeditor5
