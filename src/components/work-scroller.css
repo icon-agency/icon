@@ -105,6 +105,29 @@
   object-fit: contain;
 }
 
+/* IN THE EDITOR (js/work-scroller.js marks the strip .is-editing inside
+   Canvas's frame): no drift, and the track wraps into a grid of small cards
+   so every picture is in view to select and drag into order — a strip
+   seven cards long showed three (user ask, Sep 2026). The live page keeps
+   the drift. */
+.work-scroller.is-editing {
+  overflow: visible;
+  cursor: default;
+}
+
+.work-scroller.is-editing .work-scroller__track {
+  flex-wrap: wrap;
+  width: auto;
+  gap: 1rem;
+  padding-inline: 1rem;
+  transform: none;
+}
+
+.work-scroller.is-editing .work-scroller__card,
+.work-scroller.is-editing .work-scroller__track > .picture {
+  height: 12rem;
+}
+
 /* In the editor an empty strip is a drop zone: the placeholder takes a
    card's size, so the first Picture has somewhere to land. */
 .work-scroller__track > .canvas--slot-empty-placeholder {

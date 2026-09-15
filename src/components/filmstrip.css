@@ -171,3 +171,26 @@
     transition: none;
   }
 }
+
+/* IN THE EDITOR (js/filmstrip.js marks the strip .is-editing inside
+   Canvas's frame): the track wraps into a grid of small, level cards so
+   every photo and fact card is in view to select and drag into order (the
+   Picture scroller's rule, Sep 2026). */
+[data-filmstrip].is-editing {
+  overflow: visible;
+}
+
+[data-filmstrip].is-editing .filmstrip__track {
+  flex-wrap: wrap;
+  width: auto;
+  gap: 1rem;
+  padding: 1rem;
+  transform: none;
+}
+
+[data-filmstrip].is-editing .filmstrip__track > .filmstrip__card {
+  --filmstrip-card-w: 12rem;
+  --r: 0deg;
+  rotate: 0deg;
+  transition: none;
+}

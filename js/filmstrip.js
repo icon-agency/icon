@@ -24,7 +24,13 @@
   // (user report, Sep 2026: "I can't seem to edit this one"). Without the
   // engine the strip is the native scroller of tilted cards.
   var frame = window.frameElement;
-  if (frame && frame.hasAttribute("data-canvas-preview")) return;
+  if (frame && frame.hasAttribute("data-canvas-preview")) {
+    // …and lays its cards out as a wrapped grid, every card in view to
+    // select and reorder (user ask, Sep 2026: "I can see 3, I can't see
+    // the rest") — filmstrip.css .is-editing.
+    document.querySelectorAll("[data-filmstrip]").forEach(function (v) { v.classList.add("is-editing"); });
+    return;
+  }
   var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   var LEAN_MAX = 10;   // deg, the lean at a hard fling
   var LEAN_AT = 1200;  // px/s that reaches the full lean

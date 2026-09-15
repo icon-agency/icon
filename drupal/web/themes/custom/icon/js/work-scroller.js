@@ -45,7 +45,13 @@
           // placeholder child (the Filmstrip's lesson), and the strip holds still
           // in the editor's frame so a card is where the editor thinks it is.
           var frame = window.frameElement;
-          if (frame && frame.hasAttribute("data-canvas-preview")) return;
+          if (frame && frame.hasAttribute("data-canvas-preview")) {
+            // …and lays its cards out as a wrapped grid, every card in view to
+            // select and reorder (user ask, Sep 2026: "I can see 3, I can't see
+            // the rest") — work-scroller.css .is-editing.
+            viewport.classList.add("is-editing");
+            return;
+          }
           if (!track || track.querySelectorAll(":scope > .work-scroller__card, :scope > .picture").length === 0) return;
 
           // Duplicate the set once for a seamless wrap.
