@@ -150,7 +150,7 @@
 .filmstrip__fact-title {
   margin: calc(var(--filmstrip-card-w) * 0.082) 0 0;
   font-size: calc(var(--filmstrip-card-w) * 0.105);
-  line-height: 1.16;
+  line-height: 1; /* every uppercase heading's — the lockup caps, the masthead, the result stats (user call, Sep 2026) */
   font-weight: 900;
   text-transform: uppercase;
   letter-spacing: var(--tracking-caps);

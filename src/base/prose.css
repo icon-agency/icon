@@ -206,7 +206,7 @@
 
   .content-page p {
     font-size: var(--voice-paragraph);
-    line-height: 1.75;
+    line-height: 1.5; /* was 1.75, which read airy at the Paragraph voice's size (user call, Sep 2026) */
     margin-bottom: 2rem;
     text-wrap: pretty;
     color: var(--icon-grey);

@@ -34,3 +34,16 @@
   line-height: 1.45;
   color: #1c2024;
 }
+
+/* The Style menu shows only what fits the block the cursor is in. CKEditor
+   lists every style and greys out the ones that cannot apply to the current
+   block; here the greyed tiles do not render, so a paragraph offers its
+   paragraph styles and a heading its heading variants (user call, 15 Sep
+   2026: "can the styles only show options for that selection?"). Our CSS
+   over CKEditor's UI, not a setting it has — the trade is that an editor
+   in a paragraph no longer sees the heading styles until the block is a
+   heading. Delete this rule to have the full list back. */
+.ck.ck-dropdown__panel .ck-style-panel .ck-style-grid .ck-style-grid__button.ck-disabled {
+  /* the selector out-ranks CKEditor's own grid rule, which sets display */
+  display: none;
+}
