@@ -15,9 +15,88 @@ dependencies:
     - options
   theme:
     - icon
-active_version: '0136809007e88800'
+active_version: c4c9ae6b5872d7ae
 versioned_properties:
   active:
+    settings:
+      prop_field_definitions:
+        picture:
+          required: false
+          field_type: entity_reference
+          field_storage_settings:
+            target_type: media
+          field_instance_settings:
+            handler: 'default:media'
+            handler_settings:
+              target_bundles:
+                image: image
+                video: video
+              sort:
+                field: _none
+                direction: ASC
+              auto_create: false
+          field_widget: media_library_widget
+          default_value: null
+          expression: ℹ︎entity_reference␟target_id
+          derived_schema_metadata: {  }
+        float:
+          required: false
+          field_type: entity_reference
+          field_storage_settings:
+            target_type: media
+          field_instance_settings:
+            handler: 'default:media'
+            handler_settings:
+              target_bundles:
+                image: image
+                video: video
+              sort:
+                field: _none
+                direction: ASC
+              auto_create: false
+          field_widget: media_library_widget
+          default_value: null
+          expression: ℹ︎entity_reference␟target_id
+          derived_schema_metadata: {  }
+        style:
+          required: false
+          field_type: list_string
+          field_storage_settings:
+            allowed_values_function: canvas_load_allowed_values_for_component_prop
+          field_instance_settings: {  }
+          field_widget: options_select
+          default_value:
+            -
+              value: plain
+          expression: ℹ︎list_string␟value
+          derived_schema_metadata: {  }
+        ground:
+          required: false
+          field_type: string
+          field_storage_settings: {  }
+          field_instance_settings: {  }
+          field_widget: string_textfield
+          default_value:
+            -
+              value: '#0000ff'
+          expression: ℹ︎string␟value
+          derived_schema_metadata:
+            string_shape: {  }
+        pad:
+          required: false
+          field_type: string
+          field_storage_settings: {  }
+          field_instance_settings: {  }
+          field_widget: string_textfield
+          default_value:
+            -
+              value: 22%
+          expression: ℹ︎string␟value
+          derived_schema_metadata:
+            string_shape: {  }
+    fallback_metadata:
+      slot_definitions: {  }
+  '0136809007e88800':
     settings:
       prop_field_definitions:
         media:

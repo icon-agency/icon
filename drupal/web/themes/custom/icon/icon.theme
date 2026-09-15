@@ -817,16 +817,15 @@ function _icon_work_paragraph_props(ParagraphInterface $p, ?CacheableMetadata $c
           $media = array_reverse($media);
         }
         if ($media) {
-          // The component takes pictures and, apart, one film with the
-          // layer it is (work-gallery-figure.component.yml, Sep 2026).
-          $film_at = array_search('video', array_column($media, 'type'), TRUE);
+          // The component takes one pick per layer — the ground first, the
+          // cut-out over it — each a picture or a film
+          // (work-gallery-figure.component.yml, Sep 2026).
           $figures[] = array_filter([
             'style' => $style,
             'ground' => $figure->get('field_work_figure_ground')->value ?? '',
             'pad' => $figure->get('field_work_figure_inset')->value ?? '',
-            'media' => array_values(array_filter($media, static fn(array $m): bool => $m['type'] !== 'video')),
-            'film' => $film_at !== FALSE ? $media[$film_at] : NULL,
-            'film_layer' => $film_at !== FALSE && $film_at > 0 ? 'float' : 'ground',
+            'picture' => $media[0],
+            'float' => $media[1] ?? NULL,
           ], static fn($v): bool => $v !== NULL && $v !== '');
         }
       }

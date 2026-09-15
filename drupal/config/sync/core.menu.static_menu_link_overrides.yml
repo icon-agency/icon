@@ -25,3 +25,9 @@ definitions:
     weight: 5
     expanded: false
     enabled: true
+  standard__front_page:
+    menu_name: main
+    parent: ''
+    weight: -49
+    expanded: false
+    enabled: true

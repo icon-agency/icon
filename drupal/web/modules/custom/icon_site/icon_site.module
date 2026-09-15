@@ -230,7 +230,8 @@ function _icon_site_work_masthead_inputs(NodeInterface $node): array {
   ];
   $banner = $node->get('field_work_banner')->entity;
   if ($banner instanceof MediaInterface) {
-    $inputs[$banner->bundle() === 'video' ? 'banner_film' : 'banner'] = ['target_id' => (int) $banner->id()];
+    // One pick, picture or film (Sep 2026; it was two fields).
+    $inputs['banner'] = ['target_id' => (int) $banner->id()];
   }
   return array_filter($inputs, static fn($v) => $v !== '' && $v !== [] && $v !== NULL);
 }
@@ -259,7 +260,8 @@ function _icon_site_work_fields_from_masthead(NodeInterface $node, array $inputs
   if ($string('ink') !== '') {
     $node->set('field_work_ink', $string('ink'));
   }
-  $banner = _icon_site_prop_id($inputs, 'banner_film') ?? _icon_site_prop_id($inputs, 'banner');
+  // `banner_film` is what a masthead placed before the one pick carries.
+  $banner = _icon_site_prop_id($inputs, 'banner') ?? _icon_site_prop_id($inputs, 'banner_film');
   $node->set('field_work_banner', $banner ? ['target_id' => $banner] : NULL);
 }
 

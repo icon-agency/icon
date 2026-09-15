@@ -3,48 +3,29 @@ name: Gallery row picture (item)
 group: Gallery
 status: stable
 description: |
-  One figure in a gallery row (src/components/work-gallery.css): a picture,
-  or a layered pair — a cut-out floating over a ground, wide or square. Sits
-  in a Gallery row's slot.
+  One figure in a gallery row (src/components/work-gallery.css): a picture
+  or film, or a layered pair — a cut-out floating over a ground, wide or
+  square. Each is one pick from the media library (Sep 2026: it was
+  pictures and a film apart). Sits in a Gallery row's slot.
 props:
   type: object
   properties:
-    media:
-      type: array
-      title: Pictures
+    picture:
+      type: integer
+      x-icon-media: picture-or-film
+      title: Picture
       description: >
-        One picture for a plain or portrait figure. For a layered one, two —
-        the background first, then the cut-out that floats over it. With a
-        ground colour set, one is enough: the colour is the background. A
-        film (below) takes one of the places.
-      maxItems: 2
-      items:
-        $ref: json-schema-definitions://canvas.module/image
-      examples:
-        - - src: https://placehold.co/1600x900
-            alt: Campaign creative
-            width: 1600
-            height: 900
-    film:
-      type: object
-      title: Film
+        One pick from the media library — a picture, or a film that loops,
+        muted. The whole of a plain or portrait figure; on a layered one,
+        the ground the cut-out floats over (or leave it for the ground
+        colour below).
+    float:
+      type: integer
+      x-icon-media: picture-or-film
+      title: Cut-out
       description: >
-        A looping film in place of a picture: the whole figure when plain or
-        portrait; on a layered figure, the ground under the cut-out — or,
-        with Film layer set to Float, the layer over the ground.
-      $ref: json-schema-definitions://canvas.module/video
-    film_layer:
-      type: string
-      title: Film layer
-      description: On a layered figure, which layer the film is.
-      enum:
-        - ground
-        - float
-      meta:enum:
-        ground: Ground (under the cut-out)
-        float: Float (over the ground)
-      examples:
-        - ground
+        For a layered figure: what floats over the ground — a cut-out
+        picture with a transparent background, or a film.
     style:
       type: string
       title: Style
@@ -63,11 +44,7 @@ props:
       type: string
       title: Ground colour
       description: For a layered figure — the colour behind the float, when there is no background picture. A hex value.
-      examples:
-        - '#0000ff'
     pad:
       type: string
       title: Float inset
       description: How far in from each edge the floating cut-out sits, so 22% leaves it 56% of the figure wide (50% would leave nothing; over 40% is capped). Leave empty for the default.
-      examples:
-        - 22%

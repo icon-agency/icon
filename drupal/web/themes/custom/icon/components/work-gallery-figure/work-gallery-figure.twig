@@ -2,8 +2,14 @@
 /**
  * @file
  * work-gallery-figure — one figure of a gallery row. A plain figure is one
- * picture; portrait crops it to 7:10; a layered figure floats its LAST media
- * over its first (or over --overlay-ground), wide or square.
+ * picture or film; portrait crops it to 7:10; a layered figure floats its
+ * cut-out over its ground (a picture, a film, or --overlay-ground), wide or
+ * square.
+ *
+ * `picture` and `float` are the picks (Sep 2026: one field each, picture or
+ * film) — a media id from Canvas, or the resolved media from the theme's
+ * paragraph path (icon.theme). `media`, `film` and `film_layer` are what an
+ * instance placed before carries, still honoured below.
  *
  * The classes are self-sufficient: the styles used to hang off a
  * `.work-gallery` ancestor, which is why a figure could not be placed on its
@@ -11,21 +17,26 @@
  */
 #}
 {% set layered = style starts with 'layered' %}
-{# The layers, ground first: the pictures, with the film — when there is
-   one — taking the ground (or the float, by film_layer) on a layered
-   figure and the whole of a plain one (Sep 2026: a film was one of the
-   `media` before; Canvas's image prop cannot carry a film). #}
-{% set pictures = (media|default([]))|map(m => m|merge({ kind: 'image' })) %}
-{% set clip = film.src is defined and film.src ? { kind: 'video', src: film.src, poster: film.poster|default('') } : null %}
-{% if not layered %}
-  {% set layers = clip ? [clip] : pictures|slice(0, 1) %}
-{% elseif clip and film_layer|default('ground') == 'float' %}
-  {% set layers = pictures|slice(0, 1)|merge([clip]) %}
-{% elseif clip %}
-  {% set layers = [clip]|merge(pictures|slice(0, 1)) %}
+{% set ground_m = picture is defined and picture ? (picture is iterable ? picture : icon_media(picture, 'work_media')) : {} %}
+{% set float_m = float is defined and float ? (float is iterable ? float : icon_media(float, 'work_media')) : {} %}
+{% if ground_m.src is defined or float_m.src is defined %}
+  {% set layers = layered ? [ground_m, float_m] : [ground_m.src is defined ? ground_m : float_m] %}
 {% else %}
-  {% set layers = pictures %}
+  {# an instance placed before: pictures and the film apart, the film taking
+     the ground (or the float, by film_layer) #}
+  {% set pictures = (media|default([]))|map(m => m|merge({ type: 'image' })) %}
+  {% set clip = film.src is defined and film.src ? { type: 'video', src: film.src, poster: film.poster|default('') } : null %}
+  {% if not layered %}
+    {% set layers = clip ? [clip] : pictures|slice(0, 1) %}
+  {% elseif clip and film_layer|default('ground') == 'float' %}
+    {% set layers = pictures|slice(0, 1)|merge([clip]) %}
+  {% elseif clip %}
+    {% set layers = [clip]|merge(pictures|slice(0, 1)) %}
+  {% else %}
+    {% set layers = pictures %}
+  {% endif %}
 {% endif %}
+{% set layers = layers|filter(m => m.src is defined and m.src) %}
 {% set classes = [
   'work-gallery__figure',
   layered ? 'work-gallery__figure--layered',
@@ -39,13 +50,13 @@
 ]|filter(v => v) %}
 <figure class="{{ classes|join(' ') }}" data-reveal-img{% if styles %} style="{{ styles|join('; ') }}"{% endif %}>
   {% for m in layers %}
-    {% if m.kind == 'video' %}
+    {% if m.type is defined and m.type == 'video' %}
       {# preload="metadata", not "auto": a gallery of films fetched every body
          at once. Decorative — the figure's own caption and the article name
          the work (found in review, Sep 2026). #}
-      <video autoplay muted loop playsinline preload="metadata" src="{{ m.src }}"{% if m.poster %} poster="{{ m.poster }}"{% endif %} aria-hidden="true"></video>
+      <video autoplay muted loop playsinline preload="metadata" src="{{ m.src }}"{% if m.poster is defined and m.poster %} poster="{{ m.poster }}"{% endif %} aria-hidden="true"></video>
     {% else %}
-      <img loading="lazy" src="{{ m.src }}" alt="{{ m.alt }}"{% if m.width %} width="{{ m.width }}"{% endif %}{% if m.height %} height="{{ m.height }}"{% endif %} />
+      <img loading="lazy" src="{{ m.src }}" alt="{{ m.alt|default('') }}"{% if m.width is defined and m.width %} width="{{ m.width }}"{% endif %}{% if m.height is defined and m.height %} height="{{ m.height }}"{% endif %} />
     {% endif %}
   {% endfor %}
 </figure>

@@ -66,15 +66,10 @@ props:
         - - Creative strategy
           - Production
     banner:
-      type: object
-      title: Banner picture
-      description: The wide hero under the title, 16:9. A film below takes its place when set.
-      $ref: json-schema-definitions://canvas.module/image
-    banner_film:
-      type: object
-      title: Banner film
-      description: A looping film as the banner, in place of the picture.
-      $ref: json-schema-definitions://canvas.module/video
+      type: integer
+      x-icon-media: picture-or-film
+      title: Banner
+      description: The wide hero under the title, 16:9 — one pick from the media library, a picture or a film that loops (Sep 2026; it was two fields).
     bg:
       type: string
       title: Page colour

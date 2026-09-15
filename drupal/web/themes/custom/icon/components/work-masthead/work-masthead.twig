@@ -28,13 +28,18 @@
     {% endif %}
   </header>
 
-  {% if banner_film.src is defined and banner_film.src %}
+  {# `banner` is the pick (Sep 2026: one field, picture or film) — a media id
+     from Canvas, or the resolved media from the node path; `banner_film` is
+     what an instance placed before carries, still honoured. #}
+  {% set b = banner is defined and banner ? (banner is iterable ? banner : icon_media(banner, 'work_media')) : {} %}
+  {% if banner_film.src is defined and banner_film.src %}{% set b = banner_film|merge({ type: 'video' }) %}{% endif %}
+  {% if b.src is defined and b.src and b.type is defined and b.type == 'video' %}
     <figure class="work-article__banner media-reveal" data-reveal-img data-theme-handover="gone" data-theme-handover-class="theme-work-article">
-      <video autoplay muted loop playsinline preload="auto" src="{{ banner_film.src }}"{% if banner_film.poster is defined and banner_film.poster %} poster="{{ banner_film.poster }}"{% endif %} aria-label="{{ title ~ ' — banner film' }}"></video>
+      <video autoplay muted loop playsinline preload="auto" src="{{ b.src }}"{% if b.poster is defined and b.poster %} poster="{{ b.poster }}"{% endif %} aria-label="{{ title ~ ' — banner film' }}"></video>
     </figure>
-  {% elseif banner.src is defined and banner.src %}
+  {% elseif b.src is defined and b.src %}
     <figure class="work-article__banner media-reveal" data-reveal-img data-theme-handover="gone" data-theme-handover-class="theme-work-article">
-      <img src="{{ banner.src }}" alt="{{ banner.alt|default('') }}"{% if banner.width is defined and banner.width %} width="{{ banner.width }}"{% endif %}{% if banner.height is defined and banner.height %} height="{{ banner.height }}"{% endif %} />
+      <img src="{{ b.src }}" alt="{{ b.alt|default('') }}"{% if b.width is defined and b.width %} width="{{ b.width }}"{% endif %}{% if b.height is defined and b.height %} height="{{ b.height }}"{% endif %} />
     </figure>
   {% endif %}
 

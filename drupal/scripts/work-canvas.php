@@ -136,23 +136,11 @@ foreach (Node::loadMultiple($nids) as $node) {
             $skipped[] = "figure {$figure->id()} (no media)";
             continue;
           }
-          // A film is its own prop, with the layer it takes (ground first).
-          $film = NULL;
-          $film_layer = 'ground';
-          $pictures = [];
-          foreach (array_values($media) as $i => $m) {
-            if ($m->bundle() === 'video') {
-              $film = ['target_id' => $m->id()];
-              $film_layer = $i > 0 ? 'float' : 'ground';
-            }
-            else {
-              $pictures[] = ['target_id' => $m->id()];
-            }
-          }
+          // One pick per layer, ground first — a picture or a film each.
+          $media = array_values($media);
           $add('sdc.icon.work-gallery-figure', $clean([
-            'media' => $pictures,
-            'film' => $film,
-            'film_layer' => $film ? $film_layer : '',
+            'picture' => ['target_id' => $media[0]->id()],
+            'float' => isset($media[1]) ? ['target_id' => $media[1]->id()] : NULL,
             'style' => $style,
             'ground' => $figure->get('field_work_figure_ground')->value ?? '',
             'pad' => $figure->get('field_work_figure_inset')->value ?? '',
