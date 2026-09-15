@@ -322,7 +322,7 @@
 }
 /* The sticky expertise label would crawl against the DS page's own scroller;
    in the stage it just rests beside the first item. */
-.ds-demo .intro__expertise-label {
+.ds-demo .expertise-links__label {
   position: static;
 }
 

@@ -38,6 +38,13 @@ $plan = [
     'sdc.icon.prose',
     'sdc.icon.pull-quote',
   ],
+  // The "Our expertise" list, lifted out of the intro so it can stand on
+  // the Expertise landing page (user ask, Sep 2026); the intro's slot takes
+  // the same items.
+  'Expertise' => [
+    'sdc.icon.expertise-links',
+    'sdc.icon.intro-expertise',
+  ],
   'Results' => [
     'sdc.icon.work-stats',
     'sdc.icon.work-stat',
@@ -78,7 +85,6 @@ $plan = [
     'block.icon_hero',
     'block.icon_featured_work',
     'sdc.icon.intro',
-    'sdc.icon.intro-expertise',
   ],
 ];
 

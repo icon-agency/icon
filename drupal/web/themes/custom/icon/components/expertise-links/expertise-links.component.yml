@@ -1,0 +1,27 @@
+$schema: https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json
+name: Expertise links (group)
+group: Expertise
+status: stable
+description: >
+  The "Our expertise" list (src/components/expertise-links.css): a label
+  that locks mid-viewport while the links scroll up past it, the link
+  beside it inked. The homepage intro's list, on any page — fill its slot
+  with Expertise link items.
+libraryOverrides:
+  dependencies:
+    - icon/expertise-links
+props:
+  type: object
+  required:
+    - label
+  properties:
+    label:
+      type: string
+      title: Label
+      description: The words that lock beside the list.
+      examples:
+        - Our expertise
+slots:
+  links:
+    title: Links
+    description: Expertise link items, in order.

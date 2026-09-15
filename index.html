@@ -103,6 +103,7 @@
                 <li><a class="ds-nav__link" href="#work-gallery">Work gallery</a></li>
                 <li><a class="ds-nav__link" href="#work-blocks">Work article blocks</a></li>
                 <li><a class="ds-nav__link" href="#columns">Columns</a></li>
+                <li><a class="ds-nav__link" href="#expertise-links">Expertise links</a></li>
                 <li><a class="ds-nav__link" href="#clients">Clients scroller</a></li>
                 <li><a class="ds-nav__link" href="#news-stack">News — cards &amp; stack</a></li>
                 <li><a class="ds-nav__link" href="#team">Team profiles</a></li>
@@ -1511,6 +1512,46 @@
                   the count is kept, not lost, and comes back when the count grows. A box pads the columns
                   on the site&rsquo;s corner, standing on the page gutter, and what is inside takes the
                   ground&rsquo;s ink &mdash; the same grounds a page can open on.
+                </p>
+              </div>
+            </section>
+
+            <section class="ds-section" id="expertise-links">
+              <h3 class="ds-section__title">Expertise links</h3>
+              <p class="ds-section__intro">
+                <code class="ds-code">.expertise-links</code> (<code class="ds-code">src/components/expertise-links.css</code>,
+                <code class="ds-code">js/expertise-links.js</code>) &mdash; the &ldquo;Our expertise&rdquo; list: a label
+                in the mid voice that <strong>locks</strong> mid-viewport (sticky, 50vh) while the links scroll
+                up past it, and whichever link sits beside the locked label is inked; the rest read in the
+                quiet link&rsquo;s muted grey, blue with the slash on hover. Born as the homepage intro&rsquo;s
+                band and lifted out when it was asked onto the Expertise landing page (user call, Sep 2026):
+                the intro embeds the same row in its band, so the two are one recipe. Reveals with the
+                shared <code class="ds-code">[data-animate]</code> host.
+              </p>
+              <div class="ds-group">
+                <h4 class="ds-group__title">Live (the label rests in the stage; on a page it locks)</h4>
+                <div class="ds-demo">
+                  <div class="expertise-links" data-expertise-links>
+                    <span class="expertise-links__label">Our expertise</span>
+                    <ul class="expertise-links__list" aria-label="Our expertise">
+                      <li><a href="/services#creative" class="quiet-link">Creative</a></li>
+                      <li><a href="/services#communications" class="quiet-link">Communications</a></li>
+                      <li><a href="/services/digital" class="quiet-link">Digital</a></li>
+                      <li><a href="/services#reputation" class="quiet-link">Reputation</a></li>
+                      <li><a href="/services#production" class="quiet-link">Production</a></li>
+                    </ul>
+                  </div>
+                  <p class="ds-demo__label">div.expertise-links[data-expertise-links] &gt; span.expertise-links__label + ul.expertise-links__list &gt; li &gt; a.quiet-link · --page adds the page gutter</p>
+                </div>
+              </div>
+              <div class="ds-group">
+                <h4 class="ds-group__title">Drupal (Canvas / SDC)</h4>
+                <p class="ds-group__note">
+                  The <code class="ds-code">expertise-links</code> SDC, <strong>Expertise links (group)</strong> in the
+                  Expertise folder: a <strong>Label</strong> and a <strong>Links</strong> slot of
+                  <strong>Expertise link (item)</strong> components (label + link) &mdash; the same item the
+                  Intro&rsquo;s expertise slot takes. On a page it stands on the page gutter; inside Columns and
+                  boxes the column is the measure.
                 </p>
               </div>
             </section>

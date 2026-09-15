@@ -47,6 +47,7 @@ export const BEHAVIOURS = {
   "subscribe-reveal": "iconSubscribeReveal",
   "team-profiles": "iconTeamProfiles",
   "filmstrip": "iconFilmstrip",
+  "expertise-links": "iconExpertiseLinks",
   "work-landing": "iconWorkLanding",
   "work-article": "iconWorkArticle",
   "work-scroller": "iconWorkScroller",

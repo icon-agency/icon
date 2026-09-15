@@ -10,6 +10,7 @@ description: >
 libraryOverrides:
   dependencies:
     - icon/home-c
+    - icon/expertise-links
 props:
   type: object
   required:

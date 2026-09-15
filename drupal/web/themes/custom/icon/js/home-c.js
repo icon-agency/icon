@@ -770,9 +770,8 @@
         // momentum, the cards leaning with the gesture, a fling re-pointing the
         // drift — the clients marquee's rule, 3g) is js/filmstrip.js since Sep
         // 2026, a component of its own so it can go on other pages; the same
-        // gestures, vanilla, with the rotation in CSS. In the band below, the
-        // sticky "Our expertise" label locks in the viewport while the list scrolls
-        // past it, and whichever item sits beside it is inked.
+        // gestures, vanilla, with the rotation in CSS. The band's expertise list —
+        // the sticky label, the inked item beside it — is js/expertise-links.js.
         (function () {
           // Autoplay resilience for the logo-mark video: browsers leave muted videos
           // paused when they load below the fold or while the tab is hidden — kick
@@ -794,32 +793,8 @@
           // The filmstrip's drift, drag and lean live in js/filmstrip.js now
           // (Sep 2026) — the strip is a component of its own, embedded by the intro.
 
-          // Expertise scroll-highlight: the "Our expertise" label is CSS-sticky, so
-          // it locks in the viewport while the list scrolls up past it; here we ink
-          // whichever item sits beside the locked label (nearest row centre). Works
-          // in every phase — before the label sticks it sits level with the first
-          // item, after its travel it rests beside the last. rAF-coalesced.
-          var exLinks = Array.prototype.slice.call(document.querySelectorAll(".intro__expertise-list a"));
-          var exLabel = document.querySelector(".intro__expertise-label");
-          if (exLinks.length && exLabel) {
-            var exRaf = 0;
-            var exUpdate = function () {
-              exRaf = 0;
-              var lr = exLabel.getBoundingClientRect();
-              var labelMid = lr.top + lr.height / 2;
-              var best = 0, bestDist = Infinity;
-              exLinks.forEach(function (a, i) {
-                var r = a.getBoundingClientRect();
-                var d = Math.abs(r.top + r.height / 2 - labelMid);
-                if (d < bestDist) { bestDist = d; best = i; }
-              });
-              exLinks.forEach(function (a, i) { a.classList.toggle("is-active", i === best); });
-            };
-            var exSchedule = function () { if (!exRaf) exRaf = requestAnimationFrame(exUpdate); };
-            window.addEventListener("scroll", exSchedule, { passive: true });
-            window.addEventListener("resize", exSchedule, { passive: true });
-            exUpdate();
-          }
+          // The expertise list's scroll highlight is js/expertise-links.js since
+          // Sep 2026 — the list is a component of its own, embedded by the intro.
         })();
 
         // ---- 3e. Scroll-velocity card SKEW ------------------------------------

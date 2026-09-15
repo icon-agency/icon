@@ -27,9 +27,11 @@
   {% endembed %}
 
 <div class="intro__band">
-    <div class="intro__expertise" data-animate style="--animate-delay: 120ms">
-      <span class="intro__expertise-label">{{ expertise_label|default('Our expertise'|t) }}</span>
-      <ul class="intro__expertise-list" aria-label="{{ 'Our expertise'|t }}">
+    {# The Expertise links component's row (expertise-links.twig), in the
+       band's left tracks — the same classes, so its css and js apply. #}
+    <div class="intro__expertise expertise-links" data-expertise-links data-animate style="--animate-delay: 120ms">
+      <span class="expertise-links__label">{{ expertise_label|default('Our expertise'|t) }}</span>
+      <ul class="expertise-links__list" aria-label="{{ 'Our expertise'|t }}">
 {# SLOT expertise: Expertise link components. #}
 {{ expertise }}
 </ul>

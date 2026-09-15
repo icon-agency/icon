@@ -1,0 +1,78 @@
+/* expertise-links.css — the "Our expertise" list: a label that locks
+ * mid-viewport while the links scroll up past it, js inking whichever link
+ * sits beside it. Born as the homepage intro's band (utilities/home-c.css)
+ * and made a component of its own when it was asked to go on the Expertise
+ * landing page (user call, Sep 2026): the intro embeds it now, and the
+ * band's grid placement is the only thing the intro still owns.
+ *
+ * Voice, muted ink, the hover slash and the nudge are .quiet-link's
+ * (components/quiet-link.css) — shared with the intro's About link and
+ * /news's Subscribe, not copied. Reduced motion changes nothing here; the
+ * highlight is a colour, the label's lock is CSS.
+ *
+ * Drupal: SDC `expertise-links` (Expertise) — `label`, slot `links` of
+ * `intro-expertise` items; js/expertise-links.js over [data-expertise-links]. */
+
+.expertise-links {
+  display: flex;
+  /* Tighter on small screens: the label and the list share one narrow column
+     there, and --space-md's 2rem left the links stranded mid-width with the
+     label marooned to their left. The wider gap only earns its keep once
+     there is room for the two to read as separate columns. */
+  gap: var(--space-sm);
+  /* top-aligned: the label starts level with the first link */
+  align-items: flex-start;
+}
+
+@media (min-width: 768px) {
+  .expertise-links {
+    gap: var(--space-md);
+  }
+}
+
+/* The label LOCKS while everything else scrolls naturally: sticky against the
+   viewport, it holds at the screen's midpoint (50vh — was 60, user call,
+   Sep 2026: "a little higher") while the list slides up past it, and js
+   inks whichever item sits beside it (it reads the label's own box, so it
+   follows this value). Its containing block is the row (list height), so it
+   starts beside the first item, rides to the last, then releases. */
+.expertise-links__label {
+  flex: none;
+  position: sticky;
+  top: 50vh;
+  font-size: var(--voice-mid);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: -0.01em;
+  line-height: 1.32;
+  color: var(--color-icon-black);
+}
+
+.expertise-links__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* Scroll highlight inks the active item. Hover goes accent blue and plays in
+   sequence: the name slides right FIRST, then a "/" fades in just before it
+   (a word-space away — the transition-delay waits out the slide). The
+   delay lives only on the hover state, so on exit the slash vanishes
+   instantly while the name slides back. */
+.expertise-links__list a.is-active {
+  color: var(--color-icon-black);
+}
+
+/* no-JS: the first item reads inked */
+html:not(.js-animations) .expertise-links__list li:first-child a {
+  color: var(--color-icon-black);
+}
+
+/* On a page the component stands on the page gutter, like every block a
+   Canvas page places; in the intro's band the grid already pads. */
+.expertise-links--page {
+  padding-inline: var(--gutter-page);
+}
+
+.columns .expertise-links--page {
+  padding-inline: 0;
+}

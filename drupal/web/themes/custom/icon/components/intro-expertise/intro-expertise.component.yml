@@ -1,8 +1,8 @@
 $schema: https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json
-name: Intro expertise link (item)
-group: Homepage
+name: Expertise link (item)
+group: Expertise
 status: stable
-description: One service in the intro's expertise list.
+description: One service in an Expertise links list — the intro's, or one standing on a page.
 props:
   type: object
   required:

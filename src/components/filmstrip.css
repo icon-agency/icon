@@ -163,6 +163,7 @@
   font-size: calc(var(--filmstrip-card-w) * 0.059);
   font-weight: var(--font-weight-medium);
   letter-spacing: -0.01em;
+  line-height: 1.2; /* the intro statement's; the body's 1.5 opened the two-line label (user call, Sep 2026) */
 }
 
 @media (prefers-reduced-motion: reduce) {

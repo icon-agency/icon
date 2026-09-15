@@ -7,7 +7,7 @@ dependencies:
     - canvas.component.sdc.icon.work-stats
 name: Results
 configEntityTypeId: component
-weight: 3
+weight: 4
 items:
   - sdc.icon.work-stat
   - sdc.icon.work-stats

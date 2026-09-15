@@ -65,6 +65,13 @@ filmstrip:
     - core/drupal
     - core/once
     - icon/strip-drift
+# The Expertise links row (the `expertise-links` SDC attaches it; the intro embeds that).
+expertise-links:
+  js:
+    js/expertise-links.js: {}
+  dependencies:
+    - core/drupal
+    - core/once
 team-profiles:
   js:
     js/team-profiles.js: {}

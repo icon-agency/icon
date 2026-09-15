@@ -1,0 +1,14 @@
+{#
+/**
+ * @file
+ * expertise-links — the "Our expertise" list, standing on a page
+ * (components/expertise-links.css, js/expertise-links.js). The intro
+ * renders the same row in its band (intro.twig) without the page gutter.
+ */
+#}
+<div class="expertise-links expertise-links--page" data-expertise-links data-animate>
+  <span class="expertise-links__label">{{ label|default('Our expertise'|t) }}</span>
+  <ul class="expertise-links__list" aria-label="{{ label|default('Our expertise'|t) }}">
+    {% block links %}{{ links }}{% endblock %}
+  </ul>
+</div>

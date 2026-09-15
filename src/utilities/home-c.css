@@ -915,96 +915,12 @@ html:not(.js-animations) .hero__count { display: none; }
 }
 
 
-/* ---- Expertise list (scroll-highlighted, sticky label) ------------------- */
+/* ---- Expertise list ----------------------------------------------------- */
 
-.intro__expertise {
-  display: flex;
-  /* Tighter on small screens: the label and the list share one narrow column
-     there, and --space-md's 2rem left the links stranded mid-width with the
-     label marooned to their left. The wider gap only earns its keep once
-     there is room for the two to read as separate columns. */
-  gap: var(--space-sm);
-  /* top-aligned: the label starts level with the statement's opening line */
-  align-items: flex-start;
-}
-
-@media (min-width: 768px) {
-  .intro__expertise { gap: var(--space-md); }
-}
-
-/* Tablet: the band still stacks, but the prose lines up with the LIST rather
-   than with the container edge — so "Our expertise" is the only thing hanging
-   out in the left margin, and the links, the statement and About us all share
-   one left edge.
- *
- * Two tracks (label, then everything else) with the expertise row adopting them
- * via `subgrid`, which is what lets the LABEL's own width define track 1 while
- * the prose — a sibling, not a descendant — lands on track 2.
- *
- * Placed AFTER .intro__expertise's own `display: flex`, deliberately. A media
- * query adds no specificity, so the later plain-class rule beat this one when it
- * sat above — the band grew its two tracks but the expertise row stayed flex,
- * nothing landed in track 1, and it measured 0px wide.
- *
- * NOT `display: contents` on .intro__expertise, which would be shorter and
- * would silently break the reveal: that element is a [data-animate] target, and
- * an element generating no box has nothing to fade or translate. The wrapper
- * has to survive, so the grid reaches through it instead. */
-@media (min-width: 768px) and (max-width: 899.98px) {
-  .intro__band {
-    grid-template-columns: auto minmax(0, 1fr);
-    column-gap: var(--space-md);
-  }
-  .intro__expertise {
-    grid-column: 1 / -1;
-    display: grid;
-    grid-template-columns: subgrid;
-  }
-  .intro__prose {
-    grid-column: 2;
-  }
-}
-
-
-/* The label LOCKS while everything else scrolls naturally: sticky against the
-   viewport, it holds at the screen's midpoint (50vh — was 60, user call,
-   Sep 2026: "a little higher") while the list slides up past it, and js
-   inks whichever item sits beside it (it reads the label's own box, so it
-   follows this value). Its containing block is the
-   expertise row (list height), so it starts beside the first item, rides to
-   the last, then releases with the section. */
-.intro__expertise-label {
-  flex: none;
-  position: sticky;
-  top: 50vh;
-  font-size: var(--voice-mid);
-  font-weight: var(--font-weight-medium);
-  letter-spacing: -0.01em;
-  line-height: 1.32;
-  color: var(--color-icon-black);
-}
-
-.intro__expertise-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-/* Voice, muted ink, the hover slash and the nudge all come from
-   .quiet-link (components/quiet-link.css) — these two and /news's Subscribe
-   are the same link, so the recipe is shared rather than copied. */
-
-/* Scroll highlight inks the active item. Hover goes accent blue and plays in
-   sequence: the name slides right FIRST, then a "/" fades in just before it
-   (a word-space away — the transition-delay below waits out the slide). The
-   delay lives only on the hover state, so on exit the slash vanishes
-   instantly while the name slides back. */
-.intro__expertise-list a.is-active { color: var(--color-icon-black); }
-
-/* no-JS: the first item reads inked */
-html:not(.js-animations) .intro__expertise-list li:first-child a {
-  color: var(--color-icon-black);
-}
+/* The row, its sticky label, the list and the scroll highlight are the
+   Expertise links component's since Sep 2026 (components/expertise-links.css,
+   js/expertise-links.js) — the intro embeds it. What stays here is the
+   band's grid placement of .intro__expertise, the wrapper it rides in. */
 
 /* The word-cascade reveal primitive ([data-reveal-words]) lives in
    utilities/animations.css since the page H1s took it (Sep 2026). */
