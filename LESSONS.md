@@ -612,3 +612,17 @@ columns.css lifted a block's wrapper AND its first inner div with `display: cont
 ## A Canvas block plugin with settings needs a FullyValidatable schema (11 Sep 2026)
 
 Canvas registers a block plugin as a component only if its `block.settings.<id>` config schema carries `constraints: FullyValidatable: ~` (and no required contexts). Without it the block simply never appears — no error in the log, and a seed script that places `block.<id>` fails with "not registered". The Offices block, which has no settings, registered at once; the Contact form block, with a lead and an intro, did not until the schema entry existed.
+
+- **`drush cex` writes inside the container; the host checkout catches up a
+  few seconds later — commit only after it has.** DDEV runs with no bind
+  mounts here (Docker's grpcFUSE hang), so the project is synced by Mutagen.
+  A `git add` straight after `ddev exec drush cex` committed the PREVIOUS
+  export of `canvas.component.sdc.icon.work-gallery-figure.yml` (15 Sep
+  2026): the host imported a component whose active version was not the one
+  the placed figures had been migrated to, every Work folio answered 500,
+  and the fix was a repoint script on the host plus the real file in a
+  second commit. Rule: after `cex`, `sleep` a few seconds, then `git status`
+  / `git diff` the config and read the value you expect (here
+  `active_version`) before committing. The same lag makes `git status`
+  right after `cex` show a hundred deleted config files for a moment — a
+  snapshot mid-sync, not a real deletion.
