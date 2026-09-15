@@ -1,0 +1,13 @@
+uuid: e8a075b4-b30f-404a-89a2-6b649789786e
+langcode: en
+status: true
+dependencies:
+  config:
+    - canvas.component.sdc.icon.expertise-links
+    - canvas.component.sdc.icon.intro-expertise
+name: Expertise
+configEntityTypeId: component
+weight: 3
+items:
+  - sdc.icon.expertise-links
+  - sdc.icon.intro-expertise
