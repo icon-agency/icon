@@ -43,6 +43,22 @@ $picture = static function (array $in) use ($id): array {
   $style = (string) ($in['style'] ?? 'plain');
   $ground = $id($in['picture'] ?? NULL);
   $float = $id($in['float'] ?? NULL);
+  // A figure from before the one pick (a draft the single-picks move did
+  // not reach): pictures and the film apart, the film taking the ground or
+  // the float by film_layer — the old twig's order.
+  if (!$ground && !$float && (isset($in['media']) || isset($in['film']))) {
+    $pictures = array_values(array_filter(array_map($id, $in['media'] ?? [])));
+    $film = $id($in['film'] ?? NULL);
+    if ($film && ($in['film_layer'] ?? 'ground') === 'float') {
+      [$ground, $float] = [$pictures[0] ?? NULL, $film];
+    }
+    elseif ($film) {
+      [$ground, $float] = [$film, $pictures[0] ?? NULL];
+    }
+    else {
+      [$ground, $float] = [$pictures[0] ?? NULL, $pictures[1] ?? NULL];
+    }
+  }
   $shape = ['plain' => 'natural', 'portrait' => 'portrait', 'layered' => 'landscape', 'layered_square' => 'square'][$style] ?? 'natural';
   if (str_starts_with($style, 'layered') && $ground && !$float) {
     // the only pick was the cut-out, riding the colour ground
