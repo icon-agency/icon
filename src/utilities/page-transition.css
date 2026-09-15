@@ -5,15 +5,13 @@
  * navigates. Both pages must opt in, so an admin page (Claro, no main.css)
  * never transitions.
  *
- * THE MOVE IS A FADE, in every case (user call, Sep 2026 — a corner wipe
- * and a card-to-banner morph were built and taken out again; the new page's
- * own reveals do the arriving):
- *   - grounds alike → a CROSSFADE: the old page fades out on the standard
- *     ease, the new fades in on the decelerate ease;
- *   - a ground that changes → a FADE THROUGH: the old page fades out to the
- *     new page's ground first, and the new content fades in after it, so
- *     the two never mix into a third colour. js/page-transition.js compares
- *     the two grounds and sets the `fade-through` type.
+ * THE MOVE IS A WIPE (user call, Sep 2026, after leoparpeix.com; it was a
+ * fade, and before that a corner wipe was tried and taken out): a blue
+ * square grows from the bottom-left corner over the old page, the "Make
+ * what matters" lockup shows white at its centre at the hero's size, and
+ * the square shrinks away to the top-left corner to uncover the new page —
+ * see "The page" below. js/page-transition.js plants the square and the
+ * mark; the new page's own reveals do the arriving.
  * The chrome — the wordmark and the pill — carries its own transition names,
  * so it holds its place across pages, one fixed anchor outside the fade.
  *
@@ -33,46 +31,119 @@
   }
 }
 
-/* ---- The page ------------------------------------------------------------ */
+/* ---- The page: THE WIPE ------------------------------------------------ */
+/* The move is a WIPE (user call, Sep 2026, after leoparpeix.com; the fade it
+   replaced — a crossfade, or a fade through the new ground — is in git):
+     1. the old page's last frame holds while a blue square GROWS from the
+        bottom-left corner over it — the homepage loader's own move, the same
+        scale, origin and decelerate ease (components/text-box.css --pop);
+     2. covered, the "Make what matters" lockup shows at the centre, white,
+        at the hero's size (--hero-square-size, home-c.css);
+     3. the square SHRINKS away to the top-left corner, uncovering the new
+        page, whose reveals then begin (--animate-hold waits the whole move).
+   js/page-transition.js plants the square (both pages) and the mark (the
+   new page) as named elements, last in the body so they stack over the
+   chrome; everything else is these rules. */
 
-/* The UA's plus-lighter blend is switched off so the pair never add up to a
-   flash. */
+.page-wipe {
+  position: fixed;
+  inset: 0;
+  /* over the chrome — the snapshots stack in paint order, and the header's
+     own layer is high */
+  z-index: 100000;
+  background: var(--color-shader-blue);
+  view-transition-name: page-wipe;
+}
+
+.page-wipe__mark {
+  position: fixed;
+  inset: 0;
+  z-index: 100001;
+  display: grid;
+  place-items: center;
+  /* the lockup's own rule (home-c.css .hero__lockup-svg) reads --hero-square,
+     which only the hero sets — here it is the root's size token */
+  --hero-square: var(--hero-square-size);
+  view-transition-name: page-mark;
+}
+
+.page-wipe__lockup {
+  width: var(--hero-square);
+  height: auto;
+}
+
+/* The pages under the square: the old holds its last frame until the
+   square has landed, the new is not shown until then — a step, not a fade,
+   the square being the move. (The UA's plus-lighter blend is off so the
+   pair could never add up to a flash.) */
 ::view-transition-old(root),
 ::view-transition-new(root) {
   mix-blend-mode: normal;
 }
 
-/* SCOPED TO THE PAGE MOVE, on purpose. `.is-page-entering` is set by
-   js/page-transition.js for the length of the transition, and these
-   selectors out-specify the bare pseudos below — so the listing filters'
-   same-document transitions can never pick the page's fade up, whichever
-   file the cascade reaches first. (They did, for a while: two files wrote
-   the same universal pseudos and every filter click faded the whole page.
-   Found in review, Sep 2026.) */
 html.is-page-entering::view-transition-old(root) {
-  animation: 300ms var(--ease-standard) both page-fade-out;
+  animation: 650ms step-end both page-under-out;
 }
 
 html.is-page-entering::view-transition-new(root) {
-  animation: 450ms var(--ease-decelerate) both page-fade-in;
+  animation: 650ms step-end both page-under-in;
 }
 
-/* A ground that changes: the new content waits for the old page to fade to
-   the new ground — the canvas, which is that ground. */
-html.is-page-entering:active-view-transition-type(fade-through)::view-transition-new(root) {
-  animation-delay: 300ms;
+@keyframes page-under-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
 }
 
-@keyframes page-fade-out {
-  to {
-    opacity: 0;
-  }
+@keyframes page-under-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
-@keyframes page-fade-in {
-  from {
-    opacity: 0;
-  }
+/* The square: no group morph or crossfade of its own — the old snapshot
+   grows in, the new one shrinks out. */
+html.is-page-entering::view-transition-group(page-wipe),
+html.is-page-entering::view-transition-group(page-mark) {
+  animation: none;
+}
+
+html.is-page-entering::view-transition-old(page-wipe) {
+  transform-origin: 0 100%;
+  animation: 650ms var(--ease-decelerate) both page-wipe-grow;
+}
+
+html.is-page-entering::view-transition-new(page-wipe) {
+  transform-origin: 0 0;
+  animation: 600ms var(--ease-standard) 800ms both page-wipe-shrink;
+}
+
+@keyframes page-wipe-grow {
+  from { scale: 0.12 0.18; }
+  to { scale: 1 1; }
+}
+
+@keyframes page-wipe-shrink {
+  from { scale: 1 1; }
+  to { scale: 0 0; }
+}
+
+/* The mark: on the landed square, off before it leaves. New page only —
+   nothing on the old side to pair with. */
+@keyframes page-mark-show {
+  0% { opacity: 0; }
+  60% { opacity: 0; }   /* 450ms: the square has all but landed */
+  80% { opacity: 1; }   /* 600ms */
+  100% { opacity: 1; }
+}
+
+html.is-page-entering::view-transition-new(page-mark) {
+  animation:
+    750ms linear both page-mark-show,
+    150ms linear 800ms both page-mark-hide;
+}
+
+@keyframes page-mark-hide {
+  from { opacity: 1; }
+  to { opacity: 0; }
 }
 
 /* ---- The chrome ---------------------------------------------------------- */

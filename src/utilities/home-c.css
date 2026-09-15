@@ -1,3 +1,9 @@
+:root {
+  /* the hero's square — the lockup's size — at the root so the page wipe's
+     mark (utilities/page-transition.css) can be the same size on any page */
+  --hero-square-size: clamp(16rem, min(30vw, 52svh), 36rem);
+}
+
 /* home-c.css — PAGE layer for the CANONICAL homepage (templates/homeC.html).
  * Editorial homepage: full-bleed hero, intro statement, asymmetric work grid,
  * tri-row client marquee, news editorial stack. Imported LAST.
@@ -191,7 +197,7 @@
      Bounded on BOTH axes: a 1:1 card is far taller than the old 16/10 at the
      same width, so the height arm (svh) keeps the pile inside short viewports
      instead of overflowing the stage. */
-  --hero-square: clamp(16rem, min(30vw, 52svh), 36rem);
+  --hero-square: var(--hero-square-size);
 
   /* CURTAIN: the hero pins under the page (sticky at its own top) while every
      later section rides up OVER it — and a scroll-driven scale recedes it as
