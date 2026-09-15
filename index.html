@@ -491,10 +491,10 @@
                   bottom-left corner over the old page &mdash; the homepage loader&rsquo;s own move, same scale, origin
                   and decelerate ease, 650ms &mdash; then the <strong>Make what matters</strong> lockup shows white at the
                   centre, at the hero&rsquo;s size (<code class="ds-code">--hero-square-size</code>), and the square
-                  shrinks away to the top-left corner (600ms, standard ease) to uncover the new page, whose own reveals
-                  then do the arriving (<code class="ds-code">--animate-hold</code> waits the whole 1.4s). The
+                  shrinks back into the bottom-left corner (600ms, standard ease) to uncover the new page, whose own
+                  reveals then do the arriving (<code class="ds-code">--animate-hold</code> waits the whole 1.4s). The
                   <strong>chrome</strong> &mdash; the wordmark and the pill &mdash; carries its own names and holds its place
-                  under the square. <code class="ds-code">js/page-transition.js</code>, a plain IIFE in
+                  on top of the square. <code class="ds-code">js/page-transition.js</code>, a plain IIFE in
                   <code class="ds-code">&lt;head&gt;</code>, plants the square in the old page&rsquo;s last frame and the
                   square and the mark in the new page&rsquo;s first, as named elements; the CSS animates the snapshots.
                   Reduced motion switches it off; Firefox simply navigates. This index carries it too, so a click through

@@ -9,7 +9,7 @@
  * fade, and before that a corner wipe was tried and taken out): a blue
  * square grows from the bottom-left corner over the old page, the "Make
  * what matters" lockup shows white at its centre at the hero's size, and
- * the square shrinks away to the top-left corner to uncover the new page —
+ * the square shrinks back into the bottom-left corner to uncover the new page —
  * see "The page" below. js/page-transition.js plants the square and the
  * mark; the new page's own reveals do the arriving.
  * The chrome — the wordmark and the pill — carries its own transition names,
@@ -39,18 +39,19 @@
         scale, origin and decelerate ease (components/text-box.css --pop);
      2. covered, the "Make what matters" lockup shows at the centre, white,
         at the hero's size (--hero-square-size, home-c.css);
-     3. the square SHRINKS away to the top-left corner, uncovering the new
-        page, whose reveals then begin (--animate-hold waits the whole move).
+     3. the square SHRINKS back into the bottom-left corner, uncovering the
+        new page, whose reveals then begin (--animate-hold waits the whole
+        move). The wordmark and the pill stay on top throughout.
    js/page-transition.js plants the square (both pages) and the mark (the
-   new page) as named elements, last in the body so they stack over the
-   chrome; everything else is these rules. */
+   new page) as named elements; everything else is these rules. */
 
 .page-wipe {
   position: fixed;
   inset: 0;
-  /* over the chrome — the snapshots stack in paint order, and the header's
-     own layer is high */
-  z-index: 100000;
+  /* UNDER the chrome (user call): the wordmark and the pill stay on top of
+     the blue — the snapshots stack in paint order, and the header's own
+     layer sits at 10000 */
+  z-index: 9000;
   background: var(--color-shader-blue);
   view-transition-name: page-wipe;
 }
@@ -58,7 +59,7 @@
 .page-wipe__mark {
   position: fixed;
   inset: 0;
-  z-index: 100001;
+  z-index: 9001;
   display: grid;
   place-items: center;
   /* the lockup's own rule (home-c.css .hero__lockup-svg) reads --hero-square,
@@ -112,7 +113,8 @@ html.is-page-entering::view-transition-old(page-wipe) {
 }
 
 html.is-page-entering::view-transition-new(page-wipe) {
-  transform-origin: 0 0;
+  /* back into the corner it came from (user call) */
+  transform-origin: 0 100%;
   animation: 600ms var(--ease-standard) 800ms both page-wipe-shrink;
 }
 

@@ -7,7 +7,7 @@
  *      white, at the hero's size (.page-wipe__mark), before its first
  *      render. The CSS does the rest: the old square grows from the
  *      bottom-left corner (the homepage loader's own move), the lockup
- *      shows at the centre, the new square shrinks away to the top-left
+ *      shows at the centre, the new square shrinks back into the same
  *      corner, and the new page's reveals begin (user call, Sep 2026,
  *      after leoparpeix.com). Both are torn out when the transition ends.
  *   2. THE HOLD — the scroll reveals wait for the wipe
@@ -41,8 +41,9 @@
     if (vt.finished) vt.finished.catch(function () {});
   }
 
-  /** The blue square, planted last in the body so its group stacks above the
-   *  chrome; the mark after it, so it rides above the square. */
+  /** The blue square, planted last in the body so the mark can follow in the
+   *  same paint order; the mark after it, so it rides above the square — both
+ *  under the wordmark and the pill (page-transition.css). */
   function plant(withMark) {
     var wipe = document.createElement("div");
     wipe.className = "page-wipe";
