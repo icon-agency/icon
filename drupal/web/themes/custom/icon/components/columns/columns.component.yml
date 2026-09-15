@@ -71,9 +71,9 @@ props:
     bg:
       type: string
       title: Custom background
-      description: 'A hex colour, e.g. #f0f4f9. Used when Box is Custom.'
+      description: 'A hex colour, e.g. #edeef5. Used when Box is Custom.'
       examples:
-        - '#f0f4f9'
+        - '#edeef5'
     ink:
       type: string
       title: Custom foreground
