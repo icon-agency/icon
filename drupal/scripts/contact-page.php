@@ -67,12 +67,12 @@ $add('sdc.icon.page-header', [
 
 // ---- The form beside the offices -------------------------------------------
 $columns = $add('sdc.icon.columns', ['columns' => 2, 'gap' => 'normal']);
-$add('block.icon_contact_form', [
-  'label' => 'Contact form',
-  'label_display' => '0',
-  'lead' => 'Simply fill in the form below',
-  'intro' => 'Whether it’s a brand refresh, public relations push, new website or end-to-end behaviour change campaign — we’re interested and ready to talk solutions.',
-], $columns, 'column_1');
+// The words above the fields are Content, not the block's own settings.
+$add('sdc.icon.prose', ['text' => [
+  'value' => '<h2 class="is-sentence">Simply fill in the form below</h2><p>Whether it’s a brand refresh, public relations push, new website or end-to-end behaviour change campaign — we’re interested and ready to talk solutions.</p>',
+  'format' => 'canvas_html_block',
+]], $columns, 'column_1');
+$add('block.icon_contact_form', ['label' => 'Contact form', 'label_display' => '0'], $columns, 'column_1');
 $add('block.icon_office_list', ['label' => 'Offices', 'label_display' => '0'], $columns, 'column_2');
 
 // ---- Save -------------------------------------------------------------------

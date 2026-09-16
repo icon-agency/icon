@@ -1,0 +1,21 @@
+uuid: 12a166af-8712-410c-912b-26f6b039af73
+langcode: en
+status: true
+dependencies:
+  config:
+    - contact.form.careers
+    - field.storage.contact_message.field_contact_phone
+  module:
+    - telephone
+id: contact_message.careers.field_contact_phone
+field_name: field_contact_phone
+entity_type: contact_message
+bundle: careers
+label: 'Your phone'
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: telephone

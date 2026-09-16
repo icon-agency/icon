@@ -9,21 +9,24 @@ use Drupal\Core\Block\Attribute\Block;
 use Drupal\Core\Block\BlockBase;
 use Drupal\Core\Entity\EntityFormBuilderInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
-use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
+use Drupal\Component\Render\MarkupInterface;
 use Drupal\Core\Render\RendererInterface;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\StringTranslation\TranslatableMarkup;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * The enquiry form (templates/contact.html), on any page.
  *
- * The form is the core Contact module's "Contact" form — Content → Contact
- * forms sets who receives it and the reply the sender sees — built here
- * into the contact-form SDC's slot and dressed by
- * icon_site_form_contact_message_contact_form_alter(). The lead and the
- * intro above the fields are the block's own words.
+ * Two forms behind one question — "What is this about?", Business enquiry
+ * or Careers (user ask, Sep 2026, after the old site's careers modal): the
+ * core Contact module's "Contact" and "Careers" forms — Content → Contact
+ * forms sets who receives each and the reply the sender sees — built here
+ * into the contact-form SDC's two slots and dressed by
+ * _icon_site_contact_form_dress(). The block has no settings of its own:
+ * words above the question are a Content component placed before it.
  */
 #[Block(
   id: 'icon_contact_form',
@@ -33,9 +36,14 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 final class ContactFormBlock extends BlockBase implements ContainerFactoryPluginInterface {
 
   /**
-   * The contact form's id (contact.form.contact).
+   * The business enquiry form's id (contact.form.contact).
    */
   public const string FORM = 'contact';
+
+  /**
+   * The careers form's id (contact.form.careers).
+   */
+  public const string CAREERS = 'careers';
 
   public function __construct(
     array $configuration,
@@ -44,6 +52,7 @@ final class ContactFormBlock extends BlockBase implements ContainerFactoryPlugin
     protected readonly EntityTypeManagerInterface $entityTypeManager,
     protected readonly EntityFormBuilderInterface $entityFormBuilder,
     protected readonly RendererInterface $renderer,
+    protected readonly RequestStack $requestStack,
   ) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
   }
@@ -52,44 +61,7 @@ final class ContactFormBlock extends BlockBase implements ContainerFactoryPlugin
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition): static {
-    return new static($configuration, $plugin_id, $plugin_definition, $container->get('entity_type.manager'), $container->get('entity.form_builder'), $container->get('renderer'));
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function defaultConfiguration(): array {
-    return [
-      'lead' => 'Simply fill in the form below',
-      'intro' => 'Whether it’s a brand refresh, public relations push, new website or end-to-end behaviour change campaign — we’re interested and ready to talk solutions.',
-    ] + parent::defaultConfiguration();
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function blockForm($form, FormStateInterface $form_state): array {
-    $form['lead'] = [
-      '#type' => 'textfield',
-      '#title' => $this->t('Lead'),
-      '#default_value' => $this->configuration['lead'],
-    ];
-    $form['intro'] = [
-      '#type' => 'textarea',
-      '#title' => $this->t('Intro'),
-      '#default_value' => $this->configuration['intro'],
-      '#rows' => 3,
-      '#description' => $this->t('Who receives the message, and the reply the sender sees, are set at Content → Contact forms.'),
-    ];
-    return $form;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function blockSubmit($form, FormStateInterface $form_state): void {
-    $this->configuration['lead'] = trim((string) $form_state->getValue('lead'));
-    $this->configuration['intro'] = trim((string) $form_state->getValue('intro'));
+    return new static($configuration, $plugin_id, $plugin_definition, $container->get('entity_type.manager'), $container->get('entity.form_builder'), $container->get('renderer'), $container->get('request_stack'));
   }
 
   /**
@@ -103,25 +75,41 @@ final class ContactFormBlock extends BlockBase implements ContainerFactoryPlugin
    * {@inheritdoc}
    */
   public function build(): array {
-    $message = $this->entityTypeManager->getStorage('contact_message')->create(['contact_form' => self::FORM]);
-    $form = $this->entityFormBuilder->getForm($message);
+    // The answer ticked at render: Careers when that form has just come back
+    // with errors (the page re-renders on the POST), else the default —
+    // otherwise the errors would sit behind the Business enquiry form.
+    $posted = (string) ($this->requestStack->getCurrentRequest()?->request->get('form_id') ?? '');
     return [
       '#type' => 'component',
       '#component' => 'icon:contact-form',
-      '#props' => array_filter([
-        'lead' => (string) ($this->configuration['lead'] ?? ''),
-        'intro' => (string) ($this->configuration['intro'] ?? ''),
-      ]),
+      '#props' => [
+        'topic' => $posted === 'contact_message_' . self::CAREERS . '_form' ? 'careers' : 'business',
+      ],
       '#slots' => [
-        // Rendered here, not handed over as the form array: the component
+        // Rendered here, not handed over as the form arrays: the component
         // element insists a slot be a render array all the way down
         // (Element::isRenderArray()), and a built form carries empty
         // children it rejects. render(), not renderPlain(): the block is
-        // built inside the page's render, so the form's attachments and
-        // placeholders bubble to it as they would from the array.
-        'form' => ['#markup' => $this->renderer->render($form)],
+        // built inside the page's render, so the forms' attachments and
+        // placeholders bubble to it as they would from the arrays.
+        'form' => ['#markup' => $this->form(self::FORM)],
+        'careers' => ['#markup' => $this->form(self::CAREERS)],
       ],
     ];
+  }
+
+  /**
+   * One of the site's contact forms, built and rendered.
+   *
+   * A form whose config is not in yet (a host between code and config)
+   * renders as nothing rather than a crash.
+   */
+  private function form(string $id): MarkupInterface|string {
+    if (!$this->entityTypeManager->getStorage('contact_form')->load($id)) {
+      return '';
+    }
+    $message = $this->entityTypeManager->getStorage('contact_message')->create(['contact_form' => $id]);
+    return $this->renderer->render($this->entityFormBuilder->getForm($message));
   }
 
 }

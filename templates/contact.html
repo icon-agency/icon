@@ -210,9 +210,22 @@
           <!-- Drupal: the contact Webform block; the classes are its visual
                spec (components/contact-form.css). The captcha box is the
                widget's place. -->
-          <form class="contact-form" action="#" method="post" novalidate data-rule="top">
-            <h2 class="contact-form__lead">Simply fill in the form below</h2>
-            <p class="contact-form__intro">Whether it&rsquo;s a brand refresh, public relations push, new website or end-to-end behaviour change campaign &mdash; we&rsquo;re interested and ready to talk solutions.</p>
+          <!-- the words above the fields are a Content block (the prose), not the form's -->
+          <div class="content-page">
+            <h2 class="is-sentence">Simply fill in the form below</h2>
+            <p>Whether it&rsquo;s a brand refresh, public relations push, new website or end-to-end behaviour change campaign &mdash; we&rsquo;re interested and ready to talk solutions.</p>
+          </div>
+          <div class="contact-form">
+            <!-- the question first: a pair of radios outside either form; the CSS shows the form for the answer -->
+            <fieldset class="contact-form__topic">
+              <legend class="contact-form__label">What is this about?</legend>
+              <div class="contact-form__options">
+                <label class="contact-form__option"><input class="contact-form__radio" type="radio" name="contact-topic" value="business" checked /><span>Business enquiry</span></label>
+                <label class="contact-form__option"><input class="contact-form__radio" type="radio" name="contact-topic" value="careers" /><span>Careers</span></label>
+              </div>
+            </fieldset>
+            <div class="contact-form__panel" data-topic="business">
+            <form class="contact-form__form" action="#" method="post" novalidate>
             <fieldset class="contact-form__fields">
               <legend class="sr-only">Your details and message</legend>
               <div class="contact-form__field">
@@ -243,8 +256,39 @@
               </div>
             </fieldset>
             <div class="contact-form__captcha" aria-hidden="true">reCAPTCHA</div>
-            <button class="contact-form__submit quiet-link invite-arrow" type="submit">Send your message</button>
+            <button class="contact-form__submit" type="submit">Send your message</button>
           </form>
+            </div>
+            <div class="contact-form__panel" data-topic="careers">
+            <!-- the careers form: the old site's careers modal — names, email, phone, a message about the sender; no attachment -->
+            <form class="contact-form__form" action="#" method="post" novalidate>
+              <fieldset class="contact-form__fields">
+                <legend class="sr-only">Your details and message</legend>
+                <div class="contact-form__field">
+                  <label class="contact-form__label" for="contact-careers-first-name">First name<span class="contact-form__required" aria-hidden="true">*</span></label>
+                  <input class="contact-form__input" id="contact-careers-first-name" name="first_name" type="text" autocomplete="given-name" required />
+                </div>
+                <div class="contact-form__field">
+                  <label class="contact-form__label" for="contact-careers-last-name">Last name<span class="contact-form__required" aria-hidden="true">*</span></label>
+                  <input class="contact-form__input" id="contact-careers-last-name" name="last_name" type="text" autocomplete="family-name" required />
+                </div>
+                <div class="contact-form__field">
+                  <label class="contact-form__label" for="contact-careers-email">Your email<span class="contact-form__required" aria-hidden="true">*</span></label>
+                  <input class="contact-form__input" id="contact-careers-email" name="email" type="email" autocomplete="email" required />
+                </div>
+                <div class="contact-form__field">
+                  <label class="contact-form__label" for="contact-careers-phone">Your phone</label>
+                  <input class="contact-form__input" id="contact-careers-phone" name="phone" type="tel" autocomplete="tel" />
+                </div>
+                <div class="contact-form__field">
+                  <label class="contact-form__label" for="contact-careers-message">Tell us about yourself<span class="contact-form__required" aria-hidden="true">*</span></label>
+                  <textarea class="contact-form__textarea" id="contact-careers-message" name="message" rows="2" required></textarea>
+                </div>
+              </fieldset>
+              <button class="contact-form__submit" type="submit">Send your message</button>
+            </form>
+          </div>
+          </div>
         </div>
 
         <div class="contact-page__offices" data-animate style="--animate-delay: 80ms">

@@ -1,0 +1,55 @@
+uuid: 57df73ed-0f29-4aea-a003-c98de0c94fa7
+langcode: en
+status: true
+dependencies:
+  config:
+    - contact.form.careers
+    - field.field.contact_message.careers.field_contact_first_name
+    - field.field.contact_message.careers.field_contact_last_name
+    - field.field.contact_message.careers.field_contact_phone
+id: contact_message.careers.default
+targetEntityType: contact_message
+bundle: careers
+mode: default
+content:
+  field_contact_first_name:
+    type: string
+    label: inline
+    settings:
+      link_to_entity: false
+      link_rel: canonical
+    third_party_settings: {  }
+    weight: 0
+    region: content
+  field_contact_last_name:
+    type: string
+    label: inline
+    settings:
+      link_to_entity: false
+      link_rel: canonical
+    third_party_settings: {  }
+    weight: 1
+    region: content
+  field_contact_phone:
+    type: basic_string
+    label: inline
+    settings: {  }
+    third_party_settings: {  }
+    weight: 3
+    region: content
+  mail:
+    type: basic_string
+    label: inline
+    settings: {  }
+    third_party_settings: {  }
+    weight: 2
+    region: content
+  message:
+    type: basic_string
+    label: inline
+    settings: {  }
+    third_party_settings: {  }
+    weight: 4
+    region: content
+hidden:
+  field_contact_attachment: true

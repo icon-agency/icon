@@ -4,9 +4,18 @@ status: true
 dependencies:
   module:
     - icon_site
-active_version: 9e3ff8a7778744af
+active_version: e93eab3db9501656
 versioned_properties:
   active:
+    settings:
+      default_settings:
+        id: icon_contact_form
+        label: 'Contact form'
+        label_display: '0'
+        provider: icon_site
+    fallback_metadata:
+      slot_definitions: null
+  9e3ff8a7778744af:
     settings:
       default_settings:
         id: icon_contact_form

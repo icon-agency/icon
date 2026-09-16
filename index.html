@@ -796,12 +796,17 @@
                 (&ldquo;Contact&rdquo; over &ldquo;This is how / we finally meet&rdquo;) opening
                 <strong>dark and holding it</strong> &mdash; no handover, the footer is the same ground
                 &mdash; then two columns on the footer&rsquo;s own half-line (768): the enquiry form on
-                the left and the four offices, open, on the right. Both columns start on a drawn
-                hairline with the office row&rsquo;s air beneath it, so the form&rsquo;s lead and the
-                first city name sit level. Three pieces are new and reusable:
-                <code class="ds-code">.contact-form</code>
-                (<code class="ds-code">src/components/contact-form.css</code>) &mdash; the lead in the
-                mid voice, the intro a Paragraph, each field its label in the Paragraph voice
+                the left and the four offices, open, on the right. The offices start on a drawn
+                hairline; the form draws none, and the words above its fields are Content &mdash; the
+                prose &mdash; not the form&rsquo;s own (16 Sep 2026: &ldquo;Remove the top line of the form.
+                Also I dont need Lead and intro as I can use the Content component&rdquo;). Three pieces
+                are new and reusable: <code class="ds-code">.contact-form</code>
+                (<code class="ds-code">src/components/contact-form.css</code>) &mdash; it opens on a
+                question, &ldquo;What is this about?&rdquo;, Business enquiry or Careers, a field in the
+                same dress whose answers are the news checklist&rsquo;s squares, and shows the form
+                for the answer (the careers form is the old site&rsquo;s careers modal: the names,
+                email and phone, and &ldquo;Tell us about yourself&rdquo;; 16 Sep 2026); each field its
+                label in the Paragraph voice
                 (<code class="ds-code">--voice-paragraph</code>, the prose&rsquo;s own token) a weight up
                 over THE hairline with the answer beneath, focus filling the hairline, a paperclip file
                 input on the message, a captcha slot, and &ldquo;Send your message&rdquo; as the quiet
@@ -826,9 +831,20 @@
                 <div class="ds-demo">
                   <div class="contact-page">
                     <div class="contact-page__form">
-                      <form class="contact-form" action="#" method="post" novalidate data-rule="top">
-                        <h2 class="contact-form__lead">Simply fill in the form below</h2>
-                        <p class="contact-form__intro">Whether it&rsquo;s a brand refresh, public relations push, new website or end-to-end behaviour change campaign &mdash; we&rsquo;re interested and ready to talk solutions.</p>
+                      <div class="content-page">
+                        <h2 class="is-sentence">Simply fill in the form below</h2>
+                        <p>Whether it&rsquo;s a brand refresh, public relations push, new website or end-to-end behaviour change campaign &mdash; we&rsquo;re interested and ready to talk solutions.</p>
+                      </div>
+                      <div class="contact-form">
+                        <fieldset class="contact-form__topic">
+                          <legend class="contact-form__label">What is this about?</legend>
+                          <div class="contact-form__options">
+                            <label class="contact-form__option"><input class="contact-form__radio" type="radio" name="ds-contact-topic" value="business" checked /><span>Business enquiry</span></label>
+                            <label class="contact-form__option"><input class="contact-form__radio" type="radio" name="ds-contact-topic" value="careers" /><span>Careers</span></label>
+                          </div>
+                        </fieldset>
+                        <div class="contact-form__panel" data-topic="business">
+                        <form class="contact-form__form" action="#" method="post" novalidate>
                         <fieldset class="contact-form__fields">
                           <legend class="sr-only">Your details</legend>
                           <div class="contact-form__field">
@@ -849,8 +865,30 @@
                             </label>
                           </div>
                         </fieldset>
-                        <button class="contact-form__submit quiet-link invite-arrow" type="button">Send your message</button>
+                        <button class="contact-form__submit" type="button">Send your message</button>
                       </form>
+                        </div>
+                        <div class="contact-form__panel" data-topic="careers">
+                        <form class="contact-form__form" action="#" method="post" novalidate>
+                        <fieldset class="contact-form__fields">
+                          <legend class="sr-only">Your details</legend>
+                          <div class="contact-form__field">
+                            <label class="contact-form__label" for="ds-careers-first-name">First name<span class="contact-form__required" aria-hidden="true">*</span></label>
+                            <input class="contact-form__input" id="ds-careers-first-name" name="first_name" type="text" autocomplete="given-name" required />
+                          </div>
+                          <div class="contact-form__field">
+                            <label class="contact-form__label" for="ds-careers-email">Your email<span class="contact-form__required" aria-hidden="true">*</span></label>
+                            <input class="contact-form__input" id="ds-careers-email" name="email" type="email" autocomplete="email" required />
+                          </div>
+                          <div class="contact-form__field">
+                            <label class="contact-form__label" for="ds-careers-message">Tell us about yourself<span class="contact-form__required" aria-hidden="true">*</span></label>
+                            <textarea class="contact-form__textarea" id="ds-careers-message" name="message" rows="2" required></textarea>
+                          </div>
+                        </fieldset>
+                        <button class="contact-form__submit" type="button">Send your message</button>
+                      </form>
+                        </div>
+                      </div>
                     </div>
                     <div class="contact-page__offices">
                       <ul class="office-list" role="list">

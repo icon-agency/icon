@@ -1,0 +1,12 @@
+uuid: 868e05fc-ed4f-4d0a-9122-dbe830f989f5
+langcode: en
+status: true
+dependencies: {  }
+id: careers
+label: Careers
+recipients:
+  - melbourne@iconagency.com.au
+reply: 'Thanks for getting in touch — we’ll be back to you soon.'
+weight: 1
+message: 'Thanks — your message is on its way to us.'
+redirect: /contact

@@ -3,26 +3,32 @@ name: Contact form
 group: Listings
 status: stable
 description: |
-  The enquiry form (src/components/contact-form.css): a lead in the mid
-  voice, an intro Paragraph, then the fields — label over a hairline, the
-  answer beneath — and "Send your message" as the quiet invitation link.
+  The enquiry form (src/components/contact-form.css): it opens on a
+  question — "What is this about?", Business enquiry or Careers — and shows
+  the form for the answer: the fields, label over a hairline, the answer
+  beneath, and "Send your message" as the quiet invitation link. Words
+  above the question are a Content component placed before it.
   Rendered by the Contact form block (icon_site), which builds the site's
-  Contact form (the core Contact module's "Contact" form: Content →
-  Contact forms sets who receives it) into the slot; place the block.
+  two Contact forms (the core Contact module's "Contact" and "Careers"
+  forms: Content → Contact forms sets who receives each) into the slots;
+  place the block.
 props:
   type: object
   properties:
-    lead:
+    topic:
       type: string
-      title: Lead
-      examples:
-        - Simply fill in the form below
-    intro:
-      type: string
-      title: Intro
-      examples:
-        - Whether it’s a brand refresh, public relations push, new website or end-to-end behaviour change campaign — we’re interested and ready to talk solutions.
+      title: Topic shown
+      description: >
+        Which answer is ticked when the frame renders — the block ticks
+        Careers when that form came back with errors, so they are seen.
+      enum:
+        - business
+        - careers
+      default: business
 slots:
   form:
-    title: The form
+    title: The business enquiry form
     description: The Contact message form, built by the block.
+  careers:
+    title: The careers form
+    description: The Careers message form, built by the block.

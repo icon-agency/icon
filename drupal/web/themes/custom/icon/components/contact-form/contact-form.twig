@@ -2,14 +2,32 @@
 /**
  * @file
  * contact-form — the enquiry form's frame (src/components/contact-form.css):
- * the lead, the intro Paragraph, then the form the block built into the
- * slot. data-rule="top": the frame starts on a drawn hairline with the
- * office row's air beneath it, so beside the Offices block the lead and the
- * first city name sit level (templates/contact.html).
+ * the question first — "What is this about?", Business enquiry or Careers,
+ * a pair of radios outside either form — then the two forms the block built
+ * into the slots, the CSS showing the one for the answer ticked
+ * (:has(:checked); with neither supported, both show, stacked). topic is
+ * the answer ticked at render: the block passes careers when that form came
+ * back with errors, so they are not hidden behind the default. Words above
+ * the question — a lead, an intro — are a Content component placed before
+ * it (user call, Sep 2026), and the frame draws no rule of its own.
  */
 #}
-<div class="contact-form" data-rule="top">
-  {% if lead %}<h2 class="contact-form__lead">{{ lead }}</h2>{% endif %}
-  {% if intro %}<p class="contact-form__intro">{{ intro }}</p>{% endif %}
-  {% block form %}{{ form }}{% endblock %}
+{% set topic = topic|default('business') %}
+{% set name = 'contact-topic-' ~ random() %}
+<div class="contact-form">
+  <fieldset class="contact-form__topic">
+    <legend class="contact-form__label">{{ 'What is this about?'|t }}</legend>
+    <div class="contact-form__options">
+      <label class="contact-form__option">
+        <input class="contact-form__radio" type="radio" name="{{ name }}" value="business"{{ topic == 'careers' ? '' : ' checked' }}>
+        <span>{{ 'Business enquiry'|t }}</span>
+      </label>
+      <label class="contact-form__option">
+        <input class="contact-form__radio" type="radio" name="{{ name }}" value="careers"{{ topic == 'careers' ? ' checked' : '' }}>
+        <span>{{ 'Careers'|t }}</span>
+      </label>
+    </div>
+  </fieldset>
+  <div class="contact-form__panel" data-topic="business">{% block form %}{{ form }}{% endblock %}</div>
+  <div class="contact-form__panel" data-topic="careers">{% block careers %}{{ careers }}{% endblock %}</div>
 </div>

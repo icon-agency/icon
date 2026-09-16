@@ -2,11 +2,42 @@ uuid: 44f163f0-3cad-47a4-ac10-6ed976f6465d
 langcode: en
 status: false
 dependencies:
+  module:
+    - options
   theme:
     - icon
-active_version: 32a3fccc96040f20
+active_version: 9ee0924a7a7262f8
 versioned_properties:
   active:
+    settings:
+      prop_field_definitions:
+        topic:
+          required: false
+          field_type: list_string
+          field_storage_settings:
+            allowed_values_function: canvas_load_allowed_values_for_component_prop
+          field_instance_settings: {  }
+          field_widget: options_select
+          default_value: null
+          expression: ℹ︎list_string␟value
+          derived_schema_metadata: {  }
+    fallback_metadata:
+      slot_definitions:
+        form:
+          title: 'The business enquiry form'
+          description: 'The Contact message form, built by the block.'
+        careers:
+          title: 'The careers form'
+          description: 'The Careers message form, built by the block.'
+  cf2c44a6eb0a87a4:
+    settings:
+      prop_field_definitions: {  }
+    fallback_metadata:
+      slot_definitions:
+        form:
+          title: 'The form'
+          description: 'The Contact message form, built by the block.'
+  32a3fccc96040f20:
     settings:
       prop_field_definitions:
         lead:

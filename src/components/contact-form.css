@@ -1,13 +1,15 @@
 /* contact-form.css — the enquiry form (templates/contact.html) in the
- * site's own voices, not the old site's blue (user call, Sep 2026): the
- * lead is the mid voice at medium — the weight the footer's city names and
- * the quiet links carry — the intro is a Paragraph (the prose voice,
- * --voice-paragraph, in the prose grey), and a field is its label in the
- * same Paragraph voice, heavier, over THE hairline (rules.css: --rule,
+ * site's own voices, not the old site's blue (user call, Sep 2026): a
+ * field is its label in the Paragraph voice (the prose voice,
+ * --voice-paragraph), heavier, over THE hairline (rules.css: --rule,
  * --rule-weight) with the answer typed beneath it in the Paragraph voice
  * too (user call: "the Paragraph font and heavier font labels"); nothing
  * is boxed. Focus fills the hairline with the ink. The captcha's place is
- * a hairline box; "Send your message" is the quiet invitation link.
+ * a hairline box; "Send your message" is the quiet invitation link. The
+ * frame draws no rule of its own and holds no words above the fields — a
+ * lead or an intro is a Content component placed before it (user call,
+ * Sep 2026: "Remove the top line of the form. Also I dont need Lead and
+ * intro as I can use the Content component").
  *
  * Drupal: a Webform (contact) rendered with these classes on its elements
  * — the form is the site's, this markup is its visual spec; the captcha is
@@ -16,14 +18,6 @@
 
 .contact-form {
   color: var(--color-icon-black);
-}
-
-/* the frame starts on a drawn hairline (rules.css) with the office row's
-   air beneath it, so beside the offices the lead and the first city name
-   sit level (user annotation, Sep 2026) */
-.contact-form[data-rule] {
-  border-top: var(--rule-weight) solid var(--rule);
-  padding-top: var(--space-sm);
 }
 
 /* In the two-column arrangement the form stops short of its half-page
@@ -39,30 +33,89 @@
 }
 
 /* In a Columns cell the column is the measure (user call, Sep 2026: "make
-   this the full width of the space"): the form's own cap comes off, and the
-   intro runs the column too. */
+   this the full width of the space"): the form's own cap comes off. */
 .columns .contact-form {
   max-width: none;
 }
 
-.columns .contact-form__intro {
-  max-width: none;
+/* the question: a field like the others — the label over the hairline —
+   whose answer is a pair of radios, each a box, the ticked one filled */
+.contact-form__topic {
+  display: grid;
+  gap: var(--space-2xs);
+  margin: 0 0 var(--space-sm);
+  padding: 0 0 var(--space-2xs);
+  border: 0;
+  border-bottom: var(--rule-weight) solid var(--rule);
+  min-inline-size: 0;
 }
 
-.contact-form__lead {
-  margin: 0 0 var(--space-xs);
-  font-size: var(--voice-mid);
-  font-weight: var(--font-weight-medium);
-  letter-spacing: -0.01em;
-  line-height: 1.2;
+.contact-form__topic legend {
+  padding: 0;
+  float: left; /* a legend sits outside the fieldset's grid; floated it joins it */
+  width: 100%;
 }
 
-.contact-form__intro {
-  max-width: 44ch;
-  margin: 0 0 var(--space-md);
+.contact-form__options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2xs) var(--space-xs);
+  padding-block: var(--space-2xs);
+  clear: both;
+}
+
+/* each answer a box (user call, Sep 2026: "make these like boxes"): the
+   word in a hairline frame with the system's corner, the ticked one filled
+   with the brand blue and its word in the ground — the checklist's accent,
+   worn as a fill */
+.contact-form__option {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  padding: 0.5em 1em;
+  border: var(--rule-weight) solid var(--rule);
+  border-radius: var(--radius-icon);
   font-size: var(--voice-paragraph);
-  line-height: 1.75;
-  color: var(--icon-grey);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.4;
+  cursor: pointer;
+  transition:
+    color var(--duration-fast) var(--ease-standard),
+    background var(--duration-fast) var(--ease-standard),
+    border-color var(--duration-fast) var(--ease-standard);
+}
+
+.contact-form__option:hover {
+  color: var(--color-icon-blue);
+  border-color: var(--color-icon-blue);
+}
+
+.contact-form__option:has(.contact-form__radio:checked) {
+  color: var(--color-background);
+  background: var(--color-icon-blue);
+  border-color: var(--color-icon-blue);
+}
+
+.contact-form__option:has(.contact-form__radio:focus-visible) {
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
+}
+
+.contact-form__radio {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* the form for the answer: the other panel is gone, not merely hidden from
+   the eye — display none takes its fields out of the tab order too; where
+   :has() is unknown both show, stacked, and either can be sent */
+.contact-form:has(.contact-form__radio[value="careers"]:checked) .contact-form__panel[data-topic="business"],
+.contact-form:has(.contact-form__radio[value="business"]:checked) .contact-form__panel[data-topic="careers"] {
+  display: none;
 }
 
 .contact-form__fields {
@@ -180,15 +233,29 @@
   color: color-mix(in srgb, currentColor 60%, transparent);
 }
 
-/* Send: the quiet link (components/quiet-link.css) as a <button>, which
-   does not inherit the <a> defaults the class assumes */
+/* Send: a button that reads as one (user call, Sep 2026) — the ticked
+   answer's fill (the brand blue, the ground for its word; in a Columns box
+   the blue is the box's ink, as the box declares it) in the Paragraph
+   voice, the system's corner; hover deepens the fill a touch */
 .contact-form__submit {
-  margin-top: var(--space-sm);
-  padding: 0;
+  justify-self: start;
+  margin-top: var(--space-xs);
+  padding: 0.8em 1.5em;
   border: 0;
-  background: none;
+  border-radius: var(--radius-icon);
+  background: var(--color-icon-blue);
+  color: var(--color-background);
+  font: inherit;
+  font-size: var(--voice-paragraph);
+  font-weight: var(--font-weight-semibold);
+  line-height: 1.3;
   cursor: pointer;
-  font-family: inherit;
+  transition: background var(--duration-fast) var(--ease-standard);
+}
+
+.contact-form__submit:hover,
+.contact-form__submit:focus-visible {
+  background: color-mix(in srgb, var(--color-icon-blue) 88%, var(--color-icon-black));
 }
 
 /* ---- Drupal's own form (icon_site_form_contact_message_contact_form_alter)
@@ -199,8 +266,18 @@
   margin: 0;
 }
 
-.contact-form__form .contact-form__field + .contact-form__field {
-  margin-top: var(--space-sm);
+.contact-form__form {
+  /* the fields' rhythm as a gap, not sibling margins: Drupal's form has
+     hidden inputs and an empty language wrapper between the fields, so
+     "the next field" never followed the last one (user catch, Sep 2026:
+     "needs spacing between fields"). Hidden inputs make no box; the
+     language wrapper is hidden below so it makes none either. */
+  display: grid;
+  gap: var(--space-sm);
+}
+
+.contact-form__form .field--name-langcode {
+  display: none;
 }
 
 .contact-form__form label.form-required::after {
@@ -233,4 +310,12 @@
 
 .contact-form__form .form-actions {
   margin: 0;
+}
+
+/* the paperclip on Drupal's file field (user catch, Sep 2026: "Paperclip
+   icon is missing"): the template's glyph, a label for the file input, set
+   at the field's right end as the template sets it on the message
+   (_icon_site_contact_attachment_clip()) */
+.contact-form__form .form-managed-file {
+  padding-inline-end: 2em;
 }

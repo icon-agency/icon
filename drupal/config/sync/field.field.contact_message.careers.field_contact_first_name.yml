@@ -1,0 +1,19 @@
+uuid: 36705da4-e586-4915-a2b4-907e4905dbbd
+langcode: en
+status: true
+dependencies:
+  config:
+    - contact.form.careers
+    - field.storage.contact_message.field_contact_first_name
+id: contact_message.careers.field_contact_first_name
+field_name: field_contact_first_name
+entity_type: contact_message
+bundle: careers
+label: 'First name'
+description: ''
+required: true
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

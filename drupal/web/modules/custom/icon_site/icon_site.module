@@ -7,6 +7,7 @@
 
 declare(strict_types=1);
 
+use Drupal\Component\Utility\Html;
 use Drupal\Core\Render\Markup;
 use Drupal\icon_site\Twig\IconSiteExtension;
 use Drupal\Core\Menu\MenuTreeParameters;
@@ -30,6 +31,7 @@ use Drupal\image\Plugin\Field\FieldWidget\ImageWidget;
 use Drupal\media\MediaInterface;
 use Drupal\Core\Render\Element;
 use Drupal\contact\MessageInterface;
+use Drupal\Core\StringTranslation\TranslatableMarkup;
 use Drupal\media_library\MediaLibraryState;
 
 /**
@@ -405,15 +407,35 @@ function icon_site_form_component_instance_form_alter(array &$form, FormStateInt
 /**
  * Implements hook_form_FORM_ID_alter() for contact_message_contact_form.
  *
- * The site's Contact form (core contact module, contact.form.contact) in the
- * enquiry form's dress (templates/contact.html, components/contact-form.css):
- * First name, Last name, Your email, Your phone, Tell us about your project,
- * an attachment, then "Send your message" as the quiet invitation link. The
- * sender's name and the subject are not asked — the name is the two names,
- * the subject is written from it (_icon_site_contact_message_builder()) —
- * and Preview and "send yourself a copy" are not offered.
+ * The business enquiry form (core contact module, contact.form.contact).
  */
 function icon_site_form_contact_message_contact_form_alter(array &$form, FormStateInterface $form_state): void {
+  _icon_site_contact_form_dress($form, t('Tell us about your project'));
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter() for contact_message_careers_form.
+ *
+ * The careers form (contact.form.careers): the old site's careers modal —
+ * the same names, email and phone, and the message about the sender rather
+ * than a project; no attachment (user ask, Sep 2026).
+ */
+function icon_site_form_contact_message_careers_form_alter(array &$form, FormStateInterface $form_state): void {
+  _icon_site_contact_form_dress($form, t('Tell us about yourself'));
+}
+
+/**
+ * The site's contact forms in the enquiry form's dress.
+ *
+ * The dress is templates/contact.html and components/contact-form.css:
+ * First name, Last name, Your email, Your phone, the message under
+ * $message_label, an attachment where the form has one, then "Send your
+ * message" as the quiet invitation link. The sender's name and the subject
+ * are not asked — the name is the two names, the subject is written from
+ * it (_icon_site_contact_message_builder()) — and Preview and "send
+ * yourself a copy" are not offered.
+ */
+function _icon_site_contact_form_dress(array &$form, TranslatableMarkup $message_label): void {
   $form['#attributes']['class'][] = 'contact-form__form';
   $form['#attributes']['novalidate'] = 'novalidate';
   // Not asked: written by the entity builder from what is.
@@ -428,7 +450,7 @@ function icon_site_form_contact_message_contact_form_alter(array &$form, FormSta
     'field_contact_last_name' => [t('Last name'), 'contact-form__input'],
     'mail' => [t('Your email'), 'contact-form__input'],
     'field_contact_phone' => [t('Your phone'), 'contact-form__input'],
-    'message' => [t('Tell us about your project'), 'contact-form__textarea'],
+    'message' => [$message_label, 'contact-form__textarea'],
     'field_contact_attachment' => [t('Attach a file'), ''],
   ];
   $weight = 0;
@@ -466,6 +488,9 @@ function icon_site_form_contact_message_contact_form_alter(array &$form, FormSta
     if ($key === 'message') {
       $element['#rows'] = 2;
     }
+    if ($key === 'field_contact_attachment') {
+      $element['#after_build'][] = '_icon_site_contact_attachment_clip';
+    }
     unset($element['#description']);
     unset($element);
   }
@@ -474,7 +499,28 @@ function icon_site_form_contact_message_contact_form_alter(array &$form, FormSta
     $form['actions']['preview']['#access'] = FALSE;
   }
   $form['actions']['submit']['#value'] = t('Send your message');
-  $form['actions']['submit']['#attributes']['class'] = ['contact-form__submit', 'quiet-link', 'invite-arrow'];
+  $form['actions']['submit']['#attributes']['class'] = ['contact-form__submit'];
+}
+
+/**
+ * After build: the paperclip on the file field (templates/contact.html).
+ *
+ * The template's glyph as a second label for the file input, set at the
+ * field's right end (.contact-form__attach); after build because the
+ * input's id is settled by then.
+ */
+function _icon_site_contact_attachment_clip(array $element, FormStateInterface $form_state): array {
+  $id = $element['upload']['#id'] ?? NULL;
+  if ($id) {
+    $element['#field_suffix'] = Markup::create(
+      '<label class="contact-form__attach" for="' . Html::escape($id) . '" title="' . t('Attach a file') . '">'
+      . '<span class="sr-only">' . t('Attach a file') . '</span>'
+      . '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'
+      . '<path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48" /></svg>'
+      . '</label>'
+    );
+  }
+  return $element;
 }
 
 /**
@@ -485,7 +531,10 @@ function _icon_site_contact_message_builder(string $entity_type, MessageInterfac
   $last = trim((string) ($message->get('field_contact_last_name')->value ?? ''));
   $name = trim("$first $last") ?: (string) $message->getSenderMail();
   $message->setSenderName($name);
-  $message->setSubject((string) t('Website enquiry from @name', ['@name' => $name]));
+  $subject = $message->bundle() === 'careers'
+    ? t('Careers enquiry from @name', ['@name' => $name])
+    : t('Website enquiry from @name', ['@name' => $name]);
+  $message->setSubject((string) $subject);
 }
 
 /**
@@ -987,13 +1036,32 @@ function icon_site_canvas_storable_prop_shape_alter(CandidateStorablePropShape $
  * The Canvas editor is one React page; the side panel's forms are rendered
  * inside it, and a library attached by a block form's render array does not
  * reach it. So the panel lists' stylesheet rides on the editor page itself.
+ *
+ * A Canvas page's Description (Page data in the editor) is its meta
+ * description and og:description, its title the og:title — the head the
+ * old site's pages carried (user ask, Sep 2026: "Add all to the meta
+ * info"); Canvas stores the field but writes no tag for it.
  */
 function icon_site_page_attachments(array &$attachments): void {
-  if (str_starts_with((string) \Drupal::routeMatch()->getRouteName(), 'canvas.')) {
+  $route = \Drupal::routeMatch();
+  if (str_starts_with((string) $route->getRouteName(), 'canvas.')) {
     // Canvas 1.11's editor builds its own HtmlResponse, past this hook;
     // the panels' forms carry the library themselves (blockForm(),
     // icon_site_form_node_form_alter()). Kept for the other canvas.* pages.
     $attachments['#attached']['library'][] = 'icon_site/panel_lists';
+  }
+  $page = $route->getRouteName() === 'entity.canvas_page.canonical' ? $route->getParameter('canvas_page') : NULL;
+  if ($page instanceof EntityInterface) {
+    $description = trim((string) ($page->get('description')->value ?? ''));
+    $tags = ['og:title' => ['property' => 'og:title', 'content' => $page->label()]];
+    if ($description !== '') {
+      $tags['description'] = ['name' => 'description', 'content' => $description];
+      $tags['og:description'] = ['property' => 'og:description', 'content' => $description];
+    }
+    foreach ($tags as $key => $attributes) {
+      $attachments['#attached']['html_head'][] = [['#tag' => 'meta', '#attributes' => $attributes], 'icon_site_' . $key];
+    }
+    CacheableMetadata::createFromRenderArray($attachments)->addCacheableDependency($page)->applyTo($attachments);
   }
 }
 
