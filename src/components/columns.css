@@ -144,6 +144,32 @@
   .columns__col + .columns__col:not(:has(.content-page)) {
     margin-top: var(--space-md);
   }
+
+  /* OFFICES stacked: cells that hold only offices sit hairline to hairline
+     like offices stacked in one cell, so a row of two reads as the list it
+     is on a phone (user catch, Sep 2026: "the spacing is off when columns
+     stack"). */
+  .columns:has(.office-list) {
+    row-gap: 0;
+  }
+
+  .columns__col:has(.office-list) + .columns__col:has(.office-list) {
+    margin-top: 0;
+  }
+}
+
+/* Two Columns of offices in a row, one under the other: the space between
+   them closes too, so every office on the page sits one hairline from the
+   next at every width. In the masthead's slots that space is a margin
+   (under the heading) or nothing (the band), so none; as the canvas's own
+   flex items — its two lifted wrappers between them (canvas-page.css) —
+   it is the canvas's gap, so the gap's worth back. */
+.columns:has(.office-list) + .columns:has(.office-list) {
+  margin-top: 0;
+}
+
+.page-canvas > div > div > .columns:has(.office-list) + .columns:has(.office-list) {
+  margin-top: calc(-1 * var(--space-lg));
 }
 
 @media (min-width: 768px) {
