@@ -4,6 +4,7 @@ status: true
 dependencies:
   config:
     - canvas.component.sdc.icon.page-header
+    - canvas.component.sdc.icon.split-masthead
     - canvas.component.sdc.icon.subscribe-bar
     - canvas.component.sdc.icon.work-masthead
 name: Mastheads
@@ -11,5 +12,6 @@ configEntityTypeId: component
 weight: 0
 items:
   - sdc.icon.page-header
+  - sdc.icon.split-masthead
   - sdc.icon.subscribe-bar
   - sdc.icon.work-masthead
