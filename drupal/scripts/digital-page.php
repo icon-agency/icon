@@ -2,16 +2,26 @@
 
 /**
  * @file
- * Builds the Digital expertise page (/services/digital) as a Canvas page
- * from the live site's own words (https://iconagency.com.au/services/digital,
- * 11 Sep 2026): a dark Masthead, the intro, the eight service blocks two to
- * a row in Columns, and the work rail. Found by alias, created when there
- * is none; run it again to reset the page to this. Then edit in Canvas.
+ * Builds the Digital page (/digital) as a Canvas page from the live site's
+ * own words (https://iconagency.com.au/digital, 16 Sep 2026): a dark
+ * Masthead with the page's statement, the intro, who we are, the eight
+ * digital services four to a row in Columns (each a Content block: h3, a
+ * line, a slash list — user call: "add the listing in four column content
+ * rows then and so on"), and the work rail. Found by its alias — /digital,
+ * or the /services/digital it wore first — and created when there is none;
+ * run it again to reset the page to this. Then edit in Canvas. The pictures
+ * are the editor's to add (user call: "Dont worry about the images").
+ *
+ * Also points the Main navigation's Digital link at the page (it went to
+ * /services#digital) and keeps /services/digital as a second alias, so the
+ * homepage intro's Digital link and the header drawer still land here.
  *
  * Run: ddev exec "ICON_SEED=1 drush php:script scripts/digital-page.php"
  */
 
 require_once __DIR__ . '/_guard.php';
+
+use Drupal\path_alias\Entity\PathAlias;
 
 $uuid = \Drupal::service('uuid');
 $storage = \Drupal::entityTypeManager()->getStorage('canvas_page');
@@ -24,9 +34,13 @@ $version = static function (string $id): string {
 };
 
 $page = NULL;
-$path = \Drupal::service('path_alias.repository')->lookupByAlias('/services/digital', 'en');
-if ($path && preg_match('#^/page/(\d+)$#', $path['path'], $m)) {
-  $page = $storage->load($m[1]);
+$aliases = \Drupal::service('path_alias.repository');
+foreach (['/digital', '/services/digital'] as $alias) {
+  $path = $aliases->lookupByAlias($alias, 'en');
+  if ($path && preg_match('#^/page/(\d+)$#', $path['path'], $m)) {
+    $page = $storage->load($m[1]);
+    break;
+  }
 }
 if (!$page) {
   $page = $storage->create(['title' => 'Digital', 'owner' => 1]);
@@ -48,26 +62,38 @@ $add = static function (string $component, array $inputs, ?string $parent = NULL
   return $id;
 };
 $prose = static fn(string $html): array => ['text' => ['value' => $html, 'format' => 'canvas_html_block']];
+$e = static fn(string $s): string => htmlspecialchars($s, ENT_QUOTES);
 
-// ---- Masthead: opens dark, as the live page does ----------------------------
+// ---- Masthead: opens dark, as the live page does, on its statement ---------
 $add('sdc.icon.page-header', [
   'accent' => 'Digital',
-  'caps' => 'Better user experiences. Making it human.',
+  'caps' => "Transformation happens here.\nHuman first. Innovation always.",
   'heading_level' => 'h1',
   'opening' => 'dark',
 ]);
 
 // ---- Intro ------------------------------------------------------------------
 $add('sdc.icon.prose', $prose(
+  '<h2 class="is-sentence">Better user experiences. Making it human.</h2>' .
   '<p>ICON’s digital agency service team works at the intersection of technology, empathy and accessibility. With a deep belief in human-centred design and a passion for excellence, we craft digital experiences that are intuitive and inclusive.</p>' .
   '<p>If you’re ready to transform your government, B2B or B2C website or digital service, we can help you get there.</p>'
 ));
+
+// ---- Who we are -------------------------------------------------------------
 $add('sdc.icon.prose', $prose(
-  '<h2>Who we are and where you’ll find us</h2>' .
+  '<h2 class="is-sentence">Who we are and where you’ll find us</h2>' .
   '<p>We are user researchers, UX specialists, designers, full-stack developers, content strategists and writers in Melbourne, Sydney, Canberra and Brisbane.</p>'
 ));
+$add('sdc.icon.pull-quote', [
+  'text' => 'Drive customer engagement using interdisciplinary thinking and future-focused service design.',
+  'variant' => 'upright',
+]);
 
-// ---- The services, two to a row -------------------------------------------
+// ---- Digital services: four to a row ---------------------------------------
+$add('sdc.icon.prose', $prose(
+  '<h2 class="is-sentence">Digital services</h2>' .
+  '<p>Engage with us to deliver a single service or a fully realised product.</p>'
+));
 $services = [
   ['Research, data & user needs analysis', 'Understand your users’ motivations, needs and emotional states.', ['Stakeholder workshops', 'Data collection and analysis', 'Card sorting', 'Tree testing', 'Information architecture', 'Content mapping', 'Functional analysis']],
   ['CX, UX and UI design', 'Bring your digital brand to life through guides, systems and libraries.', ['Service design', 'Customer experience design', 'User experience design', 'User interface design', 'Conversational interface design', 'User journey mapping', 'User testing', 'Design systems', 'Component libraries', 'Digital brand and style guides']],
@@ -78,28 +104,47 @@ $services = [
   ['Digital content strategy', 'We have a dedicated team of content strategists, writers, editors, storytellers and graphic designers at your service.', ['Writing and editing for the web', 'Content strategy development', 'Content governance and publishing workflows', 'Tone of voice and writing guides', 'Graphic design and infographics', 'Storytelling', 'Video, photography and podcast production']],
   ['Ecommerce', 'Our best-in-class UX and development team craft exceptional user experiences for modern ecommerce businesses.', ['Magento, WooCommerce and Shopify development', 'Best-in-class UX design', 'A/B split testing', 'Sales funnel optimisation', 'Hosting and support packages', 'Integrated brand, PR and marketing services']],
 ];
-$service = static fn(array $s): string => '<h3>' . htmlspecialchars($s[0], ENT_QUOTES) . '</h3><p>' . htmlspecialchars($s[1], ENT_QUOTES) . '</p><ul class="list-slash">' . implode('', array_map(fn($i) => '<li>' . htmlspecialchars($i, ENT_QUOTES) . '</li>', $s[2])) . '</ul>';
-foreach (array_chunk($services, 2) as $pair) {
-  $row = $add('sdc.icon.columns', ['columns' => 2, 'gap' => 'normal']);
-  foreach ($pair as $i => $s) {
+$service = static fn(array $s): string => '<h3>' . $e($s[0]) . '</h3><p>' . $e($s[1]) . '</p><ul class="list-slash">' . implode('', array_map(fn($i) => '<li>' . $e($i) . '</li>', $s[2])) . '</ul>';
+foreach (array_chunk($services, 4) as $four) {
+  $row = $add('sdc.icon.columns', ['columns' => 4, 'gap' => 'normal', 'box' => 'none']);
+  foreach ($four as $i => $s) {
     $add('sdc.icon.prose', $prose($service($s)), $row, 'column_' . ($i + 1));
   }
 }
 
-// ---- Latest work --------------------------------------------------------
+// ---- Latest work from digital -----------------------------------------------
+$add('sdc.icon.prose', $prose('<h2 class="is-sentence">Latest work from digital</h2>'));
 $add('block.views_block.work-latest', ['label' => 'Latest work', 'label_display' => '0', 'views_label' => '', 'items_per_page' => NULL]);
 
-// ---- Save ---------------------------------------------------------------
+// ---- Save: the words the old page carried in its head -----------------------
 $page->set('title', 'Digital');
 $page->set('description', 'ICON is a full-service digital agency specialising in experience design and website development. We help you develop effective digital strategies for your business.');
 $page->set('components', $tree);
-$page->set('path', ['alias' => '/services/digital']);
+$page->set('path', ['alias' => '/digital']);
 $page->setPublished(TRUE);
 if ($page->hasField('moderation_state')) {
   $page->set('moderation_state', 'published');
 }
 $page->setNewRevision(TRUE);
-$page->setRevisionLogMessage('Digital page built from iconagency.com.au/services/digital.');
+$page->setRevisionLogMessage('Digital page built from iconagency.com.au/digital.');
 $page->save();
 \Drupal::service(\Drupal\canvas\AutoSave\AutoSaveManager::class)->delete($page);
-print "Saved canvas_page {$page->id()} with " . count($tree) . " components at /services/digital\n";
+print "Saved canvas_page {$page->id()} with " . count($tree) . " components at /digital\n";
+
+// ---- The second alias, and the menu -----------------------------------------
+$system = '/page/' . $page->id();
+$has = FALSE;
+foreach (\Drupal::entityTypeManager()->getStorage('path_alias')->loadByProperties(['alias' => '/services/digital']) as $old) {
+  $has = TRUE;
+  if ($old->getPath() !== $system) {
+    $old->setPath($system)->save();
+  }
+}
+if (!$has) {
+  PathAlias::create(['path' => $system, 'alias' => '/services/digital', 'langcode' => 'en'])->save();
+  print "Kept /services/digital as a second alias.\n";
+}
+foreach (\Drupal::entityTypeManager()->getStorage('menu_link_content')->loadByProperties(['menu_name' => 'main', 'title' => 'Digital']) as $link) {
+  $link->set('link', ['uri' => 'internal:/digital', 'options' => []])->save();
+  print "Main navigation: Digital → /digital\n";
+}
