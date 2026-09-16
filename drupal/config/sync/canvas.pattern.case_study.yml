@@ -25,6 +25,15 @@ component_tree:
         value: '<h2 class="is-sentence">The challenge</h2><p>What the client faced, in a paragraph or two. What was at stake, and why it was hard.</p>'
         format: canvas_html_block
     label: null
+  '1:column_1:0:5e5c3f5b-60de-4fae-8415-72981d0e8675':
+    parent_uuid: e5d53c6c-ec9e-4e27-ba44-f80e610a6587
+    slot: column_1
+    uuid: 5e5c3f5b-60de-4fae-8415-72981d0e8675
+    component_id: sdc.icon.news-article-figure
+    component_version: e76719234ed60dbc
+    inputs:
+      shape: natural
+    label: null
   '1:e5d53c6c-ec9e-4e27-ba44-f80e610a6587':
     parent_uuid: null
     slot: null
@@ -35,15 +44,6 @@ component_tree:
       columns: 1
       gap: tight
       box: none
-    label: null
-  '1:5e5c3f5b-60de-4fae-8415-72981d0e8675':
-    parent_uuid: e5d53c6c-ec9e-4e27-ba44-f80e610a6587
-    slot: column_1
-    uuid: 5e5c3f5b-60de-4fae-8415-72981d0e8675
-    component_id: sdc.icon.news-article-figure
-    component_version: e76719234ed60dbc
-    inputs:
-      shape: natural
     label: null
   '2:c14edf2c-c1fa-4688-9ebd-afc9daf9c649':
     parent_uuid: null
