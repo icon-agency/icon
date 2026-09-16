@@ -7,9 +7,9 @@
  *
  * THE MOVE IS A WIPE (user call, Sep 2026, after leoparpeix.com; it was a
  * fade, and before that a corner wipe was tried and taken out): a blue
- * square grows from the bottom-left corner over the old page, the "Make
- * what matters" lockup shows white at its centre at the hero's size, and
- * the square shrinks back into the bottom-left corner to uncover the new page —
+ * disc grows from the centre over the old page with the "Make what matters"
+ * lockup white at its centre at the hero's size, holds, and shrinks back to
+ * the centre to uncover the new page —
  * see "The page" below. js/page-transition.js plants the square and the
  * mark; the new page's own reveals do the arriving.
  * The chrome — the wordmark and the pill — carries its own transition names,
@@ -34,20 +34,28 @@
 /* ---- The page: THE WIPE ------------------------------------------------ */
 /* The move is a WIPE (user call, Sep 2026, after leoparpeix.com; the fade it
    replaced — a crossfade, or a fade through the new ground — is in git):
-     1. the old page's last frame holds while a blue square GROWS from the
-        bottom-left corner over it — the homepage loader's own move, the same
-        scale, origin and decelerate ease (components/text-box.css --pop);
-     2. covered, the "Make what matters" lockup shows at the centre, white,
-        at the hero's size (--hero-square-size, home-c.css);
-     3. the square SHRINKS back into the bottom-left corner, uncovering the
-        new page, whose reveals then begin (--animate-hold waits the whole
+     1. the old page's last frame holds while a blue DISC grows from the
+        centre over it (600ms, in and out), the "Make what matters" lockup
+        — white, at the hero's size (--hero-square-size, home-c.css) —
+        revealed inside it by the same circle;
+     2. covered, a hold;
+     3. the disc SHRINKS back to the centre (500ms), the lockup masked away
+        with it, uncovering the new page, whose reveals then begin (--animate-hold waits the whole
         move). The wordmark and the pill stay on top throughout.
-   js/page-transition.js plants the square (both pages) and the mark (the
-   new page) as named elements; everything else is these rules. */
+   js/page-transition.js plants the square and the mark in the new page as
+   named elements; everything else is these rules. */
 
 .page-wipe {
+  /* A CIRCLE from the centre (user call, Sep 2026, after leoparpeix.com's
+     disc): a disc wider than the viewport's diagonal, centred, so at full
+     scale it covers every corner. */
   position: fixed;
-  inset: 0;
+  top: 50%;
+  left: 50%;
+  translate: -50% -50%;
+  width: 150vmax;
+  height: 150vmax;
+  border-radius: 50%;
   /* UNDER the chrome (user call): the wordmark and the pill stay on top of
      the blue — the snapshots stack in paint order, and the header's own
      layer sits at 10000 */
@@ -83,11 +91,11 @@
 }
 
 html.is-page-entering::view-transition-old(root) {
-  animation: 650ms step-end both page-under-out;
+  animation: 600ms step-end both page-under-out;
 }
 
 html.is-page-entering::view-transition-new(root) {
-  animation: 650ms step-end both page-under-in;
+  animation: 600ms step-end both page-under-in;
 }
 
 @keyframes page-under-out {
@@ -100,52 +108,57 @@ html.is-page-entering::view-transition-new(root) {
   to { opacity: 1; }
 }
 
-/* The square: no group morph or crossfade of its own — the old snapshot
-   grows in, the new one shrinks out. */
+/* The disc: the NEW page's snapshot plays both halves — grows from the
+   centre over the old page's last frame, holds, shrinks back to the
+   centre. Nothing is planted in the leaving page: an element
+   added at pageswap painted once, live, before the snapshot (a flash of
+   blue — user catch, Sep 2026). The shrink fills forwards only, so its
+   first keyframe cannot pre-empt the grow during its delay; no group morph
+   or crossfade of its own. */
 html.is-page-entering::view-transition-group(page-wipe),
 html.is-page-entering::view-transition-group(page-mark) {
   animation: none;
 }
 
-html.is-page-entering::view-transition-old(page-wipe) {
-  transform-origin: 0 100%;
-  animation: 650ms var(--ease-decelerate) both page-wipe-grow;
-}
-
 html.is-page-entering::view-transition-new(page-wipe) {
-  /* back into the corner it came from (user call) */
-  transform-origin: 0 100%;
-  animation: 600ms var(--ease-standard) 800ms both page-wipe-shrink;
+  /* from the centre out, and back to the centre (user call; it grew from
+     the bottom-left corner first) */
+  transform-origin: 50% 50%;
+  animation:
+    600ms var(--ease-standard) forwards page-wipe-grow,
+    500ms var(--ease-standard) 850ms forwards page-wipe-shrink;
 }
 
 @keyframes page-wipe-grow {
-  from { scale: 0.12 0.18; }
-  to { scale: 1 1; }
+  from { scale: 0.02; }
+  to { scale: 1; }
 }
 
 @keyframes page-wipe-shrink {
-  from { scale: 1 1; }
-  to { scale: 0 0; }
+  from { scale: 1; }
+  to { scale: 0; }
 }
 
-/* The mark: on the landed square, off before it leaves. New page only —
-   nothing on the old side to pair with. */
-@keyframes page-mark-show {
-  0% { opacity: 0; }
-  60% { opacity: 0; }   /* 450ms: the square has all but landed */
-  80% { opacity: 1; }   /* 600ms */
-  100% { opacity: 1; }
-}
-
+/* The mark: MASKED by the disc (user call, Sep 2026: "masked by the
+   animated blue … make the intro and outro the same"). The mark's snapshot
+   is clipped to a circle that grows and shrinks on the disc's own timings
+   and ease, so it only ever exists inside the blue — the disc is a 150vmax
+   circle, so its radius at full scale is 75vmax, and the clip runs to the
+   same. New page only — nothing on the old side to pair with. */
 html.is-page-entering::view-transition-new(page-mark) {
   animation:
-    750ms linear both page-mark-show,
-    150ms linear 800ms both page-mark-hide;
+    600ms var(--ease-standard) forwards page-mark-in,
+    500ms var(--ease-standard) 850ms forwards page-mark-out;
 }
 
-@keyframes page-mark-hide {
-  from { opacity: 1; }
-  to { opacity: 0; }
+@keyframes page-mark-in {
+  from { clip-path: circle(0 at 50% 50%); }
+  to { clip-path: circle(75vmax at 50% 50%); }
+}
+
+@keyframes page-mark-out {
+  from { clip-path: circle(75vmax at 50% 50%); }
+  to { clip-path: circle(0 at 50% 50%); }
 }
 
 /* ---- The chrome ---------------------------------------------------------- */
@@ -167,7 +180,7 @@ html.is-page-entering::view-transition-new(page-mark) {
 /* ---- The reveal hold ----------------------------------------------------- */
 
 html.is-page-entering {
-  --animate-hold: 350ms;
+  --animate-hold: 1350ms;
 }
 
 /* ---- The team panel's step (same-document) ------------------------------- */

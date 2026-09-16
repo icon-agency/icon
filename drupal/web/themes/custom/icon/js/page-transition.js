@@ -5,15 +5,18 @@
 /* page-transition.js — the cross-document View Transition's scripted parts
  * (the move itself is CSS: src/utilities/page-transition.css).
  *
- *   1. THE WIPE — leaving, the old page plants a blue square in its last
- *      frame (.page-wipe, named for the transition); arriving, the new page
- *      plants the same square and the "Make what matters" lockup over it,
- *      white, at the hero's size (.page-wipe__mark), before its first
- *      render. The CSS does the rest: the old square grows from the
- *      bottom-left corner (the homepage loader's own move), the lockup
- *      shows at the centre, the new square shrinks back into the same
- *      corner, and the new page's reveals begin (user call, Sep 2026,
- *      after leoparpeix.com). Both are torn out when the transition ends.
+ *   1. THE WIPE — arriving, the new page plants a blue square (.page-wipe,
+ *      named for the transition) and the "Make what matters" lockup over
+ *      it, white, at the hero's size (.page-wipe__mark), before its first
+ *      render. The CSS does the rest: the disc's snapshot grows from the
+ *      centre over the old page's last frame with the lockup revealed
+ *      inside it, holds, shrinks back to the centre taking the lockup with
+ *      it, and the new page's reveals begin
+ *      (user call, Sep 2026, after leoparpeix.com). Both are torn out when
+ *      the transition ends. NOTHING is planted in the leaving page: an
+ *      element added at pageswap painted once, live, before the snapshot —
+ *      a split-second flash of blue (user catch) — and the new page's
+ *      snapshot can play both halves.
  *   2. THE HOLD — the scroll reveals wait for the wipe
  *      (html.is-page-entering → --animate-hold), so the page settles once.
  *   3. THE HOMEPAGE — its blue loading screen is full-size and unlit on the
@@ -45,21 +48,18 @@
     if (vt.finished) vt.finished.catch(function () {});
   }
 
-  /** The blue square, planted last in the body so the mark can follow in the
-   *  same paint order; the mark after it, so it rides above the square — both
- *  under the wordmark and the pill (page-transition.css). */
-  function plant(withMark) {
+  /** The blue square, then the mark after it so it rides above the square
+   *  — both under the wordmark and the pill (page-transition.css). */
+  function plant() {
     var wipe = document.createElement("div");
     wipe.className = "page-wipe";
     wipe.setAttribute("aria-hidden", "true");
     document.body.appendChild(wipe);
-    if (withMark) {
-      var mark = document.createElement("div");
-      mark.className = "page-wipe__mark";
-      mark.setAttribute("aria-hidden", "true");
-      mark.innerHTML = LOCKUP;
-      document.body.appendChild(mark);
-    }
+    var mark = document.createElement("div");
+    mark.className = "page-wipe__mark";
+    mark.setAttribute("aria-hidden", "true");
+    mark.innerHTML = LOCKUP;
+    document.body.appendChild(mark);
   }
 
   function clear() {
@@ -70,7 +70,6 @@
   window.addEventListener("pageswap", function (e) {
     if (!e.viewTransition) return;
     quiet(e.viewTransition);
-    plant(false);
   });
 
   window.addEventListener("pagereveal", function (e) {
@@ -81,7 +80,7 @@
     window.ICON = window.ICON || {};
     window.ICON.pageEntering = vt.finished.catch(function () {});
 
-    plant(true);
+    plant();
     var html = document.documentElement;
     html.classList.add("is-page-entering");
     var done = function () { html.classList.remove("is-page-entering"); clear(); };
