@@ -5,9 +5,10 @@
  * Builds the Digital page (/digital) as a Canvas page from the live site's
  * own words (https://iconagency.com.au/digital, 16 Sep 2026): a dark
  * Masthead with the page's statement, the intro, who we are, the eight
- * digital services four to a row in Columns (each a Content block: h3, a
- * line, a slash list — user call: "add the listing in four column content
- * rows then and so on"), and the work rail. Found by its alias — /digital,
+ * digital services three to a row in Columns (each a Content block: an h4,
+ * the line and a plain list in the Small style — as Matt styled the first
+ * in the editor; four to a row at first, then "3 column looks better"),
+ * and the work rail. Found by its alias — /digital,
  * or the /services/digital it wore first — and created when there is none;
  * run it again to reset the page to this. Then edit in Canvas. The pictures
  * are the editor's to add (user call: "Dont worry about the images").
@@ -104,10 +105,14 @@ $services = [
   ['Digital content strategy', 'We have a dedicated team of content strategists, writers, editors, storytellers and graphic designers at your service.', ['Writing and editing for the web', 'Content strategy development', 'Content governance and publishing workflows', 'Tone of voice and writing guides', 'Graphic design and infographics', 'Storytelling', 'Video, photography and podcast production']],
   ['Ecommerce', 'Our best-in-class UX and development team craft exceptional user experiences for modern ecommerce businesses.', ['Magento, WooCommerce and Shopify development', 'Best-in-class UX design', 'A/B split testing', 'Sales funnel optimisation', 'Hosting and support packages', 'Integrated brand, PR and marketing services']],
 ];
-$service = static fn(array $s): string => '<h3>' . $e($s[0]) . '</h3><p>' . $e($s[1]) . '</p><ul class="list-slash">' . implode('', array_map(fn($i) => '<li>' . $e($i) . '</li>', $s[2])) . '</ul>';
-foreach (array_chunk($services, 4) as $four) {
-  $row = $add('sdc.icon.columns', ['columns' => 4, 'gap' => 'normal', 'box' => 'none']);
-  foreach ($four as $i => $s) {
+// Each service as Matt styled the first in the editor (16 Sep 2026: "see
+// how Ive styled this column, can you style the others the same. And 3
+// column looks better"): an h4, the line and the items in the Small
+// paragraph style, a plain list — no slash rules.
+$service = static fn(array $s): string => '<h4>' . $e($s[0]) . '</h4><p class="is-small">' . $e($s[1]) . '</p><ul>' . implode('', array_map(fn($i) => '<li><p class="is-small">' . $e($i) . '</p></li>', $s[2])) . '</ul>';
+foreach (array_chunk($services, 3) as $three) {
+  $row = $add('sdc.icon.columns', ['columns' => 3, 'gap' => 'normal', 'box' => 'none']);
+  foreach ($three as $i => $s) {
     $add('sdc.icon.prose', $prose($service($s)), $row, 'column_' . ($i + 1));
   }
 }

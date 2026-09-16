@@ -1,0 +1,75 @@
+$schema: https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json
+name: Masthead split
+group: Mastheads
+status: stable
+description: |
+  The two-column masthead, the news article's head worn by any page
+  (src/components/page-header.css, `.page-header--split`): the heading on
+  the left in the article headline's serif, with a slot above it and a
+  slot below it for whatever the page wants there — a back link, a line
+  of meta, a Content block — and the right column a slot for anything: a
+  Picture, a Video, a Pull quote. Below the heading closes the column on
+  the right column's baseline. Opens on the same colours as the Masthead.
+props:
+  type: object
+  required:
+    - title
+  properties:
+    title:
+      type: string
+      title: Heading
+      description: The page's heading, in the article headline's serif. A line break in the text breaks the line.
+      examples:
+        - ICON helps eSafety expose the tactics behind sextortion scams
+    heading_level:
+      type: string
+      title: Heading level
+      description: h1 for a page's own masthead, h2 where the page already has one.
+      enum:
+        - h1
+        - h2
+      examples:
+        - h1
+    opening:
+      type: string
+      title: Opens on
+      description: >
+        The colour the page opens on — the whole page, wordmark and pill
+        included — handing over to the site's light theme as this masthead
+        scrolls away (js/theme-handover.js). Black is the dark theme; ICON
+        blue and light grey take their own ink; Custom takes the two hex
+        values below.
+      enum:
+        - none
+        - dark
+        - dark-hold
+        - blue
+        - light-grey
+        - custom
+      meta:enum:
+        none: The page theme (no handover)
+        dark: Black (the dark theme)
+        dark-hold: Black, all the way down (no handover)
+        blue: ICON blue
+        light-grey: Light grey
+        custom: Custom colours (below)
+      examples:
+        - none
+    bg:
+      type: string
+      title: Custom background
+      description: 'A hex colour, e.g. #edeef5. Used when Opens on is Custom.'
+    ink:
+      type: string
+      title: Custom foreground
+      description: 'The text and line colour on it, a hex value, e.g. #0d0d0d.'
+slots:
+  above:
+    title: Above the heading
+    description: Optional — what opens the left column over the heading; a Content block with a back link or a line of meta.
+  below:
+    title: Below the heading
+    description: Optional — what closes the left column under the heading, on the right column's baseline.
+  aside:
+    title: Right column
+    description: Whatever sits beside the heading — a Picture, a Video, a Pull quote, a Content block.

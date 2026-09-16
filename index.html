@@ -1538,6 +1538,44 @@
               </div>
             </section>
 
+            <section class="ds-section" id="split-masthead">
+              <h3 class="ds-section__title">Masthead split</h3>
+              <p class="ds-section__intro">
+                <code class="ds-code">.page-header--split</code> (<code class="ds-code">src/components/page-header.css</code>,
+                Drupal <code class="ds-code">components/split-masthead</code>; 16 Sep 2026, user ask:
+                &ldquo;a new masthead option, like the two column news, but with our H1 header on the
+                left and optional block above and below. Block on right to add whatever&rdquo;) &mdash;
+                the news article&rsquo;s head worn by any page: the same half-and-half grid from 768px,
+                the same air under the wordmark, the heading left in the article headline&rsquo;s serif
+                (<code class="ds-code">--voice-headline-article</code>, book weight, 24ch). In Canvas the
+                three slots take any block: above the heading (a back link, a line of meta), below it
+                (closing the column on the right column&rsquo;s baseline, as the article&rsquo;s date row
+                does) and the right column itself (a Picture, a Video, a Pull quote). Opens on the same
+                colours as the Masthead.
+              </p>
+              <div class="ds-group">
+                <h4 class="ds-group__title">Live &mdash; a back link, the heading, a date row, a picture</h4>
+                <div class="ds-demo">
+                  <div class="page-header page-header--split ds-demo__masthead">
+                    <div class="page-header__split">
+                      <div class="page-header__split-intro">
+                        <div class="page-header__split-above">
+                          <p class="news-article__meta news-article__meta--eyebrow news-article__meta--caps" data-rule="bottom"><a class="invite-arrow invite-arrow--back" href="#">News</a></p>
+                        </div>
+                        <h2 class="page-header__split-title">ICON helps eSafety expose the tactics behind sextortion scams</h2>
+                        <div class="page-header__split-below">
+                          <p class="news-article__meta news-article__meta--date news-article__meta--caps" data-rule="top">Our work / 29 Jun 2026</p>
+                        </div>
+                      </div>
+                      <div class="page-header__split-aside">
+                        <figure class="picture picture--square"><img src="assets/news-article/meta-scams.png" alt="" /></figure>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
             <section class="ds-section" id="columns">
               <h3 class="ds-section__title">Columns</h3>
               <p class="ds-section__intro">

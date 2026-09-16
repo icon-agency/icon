@@ -158,7 +158,9 @@ function _icon_hex(string $value): ?string {
 }
 
 /**
- * What the current Canvas page opens on, from its Masthead's "Opens on".
+ * What the current Canvas page opens on, from its masthead's "Opens on".
+ *
+ * Either masthead — the centred one or the split one — says it.
  *
  * @return array{class: string, bg?: string, ink?: string}|null
  *   The <html> class, with the chameleon's pair where the opening is a
@@ -171,7 +173,7 @@ function _icon_canvas_page_opening(): ?array {
   }
   foreach ($page->get('components') as $item) {
     $value = $item->getValue();
-    if (($value['component_id'] ?? '') !== 'sdc.icon.page-header') {
+    if (!in_array($value['component_id'] ?? '', ['sdc.icon.page-header', 'sdc.icon.split-masthead'], TRUE)) {
       continue;
     }
     $inputs = $value['inputs'] ?? [];

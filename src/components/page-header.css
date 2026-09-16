@@ -322,3 +322,111 @@
   border-radius: 9999px;
   padding: 0.5em 1.1em;
 }
+
+/* ==========================================================================
+ * --split: the two-column masthead (components/split-masthead, Sep 2026)
+ * ========================================================================
+ * The news article's head (utilities/news-article.css, .news-article__head)
+ * worn by any page: the heading left in the article headline's serif, a
+ * slot above it and a slot below it, and the right column a slot for
+ * whatever the page wants beside it (user ask: "like the two column news,
+ * but with our H1 header on the left and optional block above and below.
+ * Block on right to add whatever"). Same grid, same breakpoint, same air
+ * under the wordmark as the article; below the heading closes the left
+ * column on the right column's baseline, as the article's date row does.
+ */
+.page-header--split {
+  /* the article's own clearance, not the centred masthead's */
+  padding-top: calc(2rem + var(--logo-h) + var(--space-sm));
+}
+
+.page-header__split {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-md);
+  padding-top: calc(var(--space-sm) * 2);
+  margin-bottom: var(--spacing-3xl);
+}
+
+@media (min-width: 768px) {
+  .page-header__split {
+    grid-template-columns: 1fr 1fr;
+    align-items: stretch;
+  }
+}
+
+.page-header__split-intro {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.page-header__split-title {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-size: var(--voice-headline-article);
+  font-weight: var(--font-weight-normal);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  color: var(--color-icon-black);
+  max-width: 24ch;
+  text-wrap: balance;
+}
+
+/* what is placed above opens the column with the article's air under it;
+   what is placed below closes it on the right column's baseline */
+.page-header__split-above:not(:empty) {
+  margin-bottom: var(--space-sm);
+}
+
+.page-header__split-below {
+  margin-top: auto;
+}
+
+.page-header__split-below:not(:empty) {
+  padding-top: var(--space-sm);
+}
+
+/* the placed blocks are on the page gutter already: their own comes off,
+   and they start flush, as under the centred masthead's heading */
+.page-header--split :is(.content-page, .columns, .work-stats) {
+  margin: 0;
+  padding-inline: 0;
+  max-width: none;
+  text-align: start;
+}
+
+.page-header--split .pull-quote {
+  margin-inline: 0;
+}
+
+.page-header__split-aside {
+  min-width: 0;
+}
+
+.page-header__split-aside > .picture,
+.page-header__split-aside > .work-video {
+  margin: 0;
+}
+
+/* in the editor an empty slot still stands, so it has a body to drop on:
+   a line's worth above and below, a tile's worth beside */
+.page-header__split-above > .canvas--slot-empty-placeholder,
+.page-header__split-below > .canvas--slot-empty-placeholder {
+  min-height: 2.5rem;
+}
+
+.page-header__split-aside > .canvas--slot-empty-placeholder {
+  min-height: 16rem;
+  height: 100%;
+}
+
+/* the design-system demo shows the arrangement without the page's
+   wordmark clearance or the section's air below */
+.ds-demo__masthead.page-header--split {
+  padding-top: 0;
+}
+
+.ds-demo__masthead .page-header__split {
+  margin-bottom: 0;
+}

@@ -109,7 +109,9 @@ final class ContactFormBlock extends BlockBase implements ContainerFactoryPlugin
       return '';
     }
     $message = $this->entityTypeManager->getStorage('contact_message')->create(['contact_form' => $id]);
-    return $this->renderer->render($this->entityFormBuilder->getForm($message));
+    // A variable, not the call: render() takes its array by reference.
+    $form = $this->entityFormBuilder->getForm($message);
+    return $this->renderer->render($form);
   }
 
 }

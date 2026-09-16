@@ -1,0 +1,31 @@
+{#
+/**
+ * @file
+ * split-masthead — the two-column masthead (src/components/page-header.css,
+ * `.page-header--split`): the news article's head (templates/news-article.html)
+ * worn by any Canvas page. The heading sits left in the article headline's
+ * serif, with a slot above and a slot below it — the article puts its back
+ * link and its category / date row there — and the right column is a slot
+ * for whatever the page wants beside it (user ask, Sep 2026: "like the two
+ * column news, but with our H1 header on the left and optional block above
+ * and below. Block on right to add whatever").
+ *
+ * The opening (which <html> class hands over as the masthead scrolls away)
+ * is the Masthead's: the class is put on <html> by icon_preprocess_html()
+ * reading this component off the page; here the masthead only names it for
+ * js/theme-handover.js. dark-hold is not mapped on purpose: it opens dark
+ * and never hands over.
+ */
+#}
+{% set tag = heading_level|default('h1') %}
+{% set handover_class = attribute({ dark: 'dark', blue: 'theme-blue', 'light-grey': 'theme-work-article', custom: 'theme-work-article' }, opening|default('none'))|default('') %}
+<div class="page-header page-header--split"{% if handover_class %} data-theme-handover data-theme-handover-class="{{ handover_class }}"{% endif %}>
+  <div class="page-header__split">
+    <div class="page-header__split-intro">
+      <div class="page-header__split-above">{% block above %}{{ above }}{% endblock %}</div>
+      <{{ tag }} class="page-header__split-title" data-animate style="--animate-delay: 60ms">{{ title|nl2br }}</{{ tag }}>
+      <div class="page-header__split-below">{% block below %}{{ below }}{% endblock %}</div>
+    </div>
+    <div class="page-header__split-aside">{% block aside %}{{ aside }}{% endblock %}</div>
+  </div>
+</div>

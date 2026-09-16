@@ -27,6 +27,7 @@ $plan = [
   // (Columns, room for more), then the copy (user call, Sep 2026).
   'Mastheads' => [
     'sdc.icon.page-header',
+    'sdc.icon.split-masthead',
     'sdc.icon.work-masthead',
     'sdc.icon.subscribe-bar',
   ],
