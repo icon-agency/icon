@@ -186,6 +186,14 @@
   display: contents;
 }
 
+/* Offices stacked in a column sit hairline to hairline: the column's gap
+   between two Offices: one blocks closes, so each row's top rule is the
+   one line between them (user call, Sep 2026). The blocks' wrappers are
+   display: contents (below), so the list itself is the flex item. */
+.columns__col > div[id^="block-"]:has(.office-list) + div[id^="block-"]:has(.office-list) .office-list {
+  margin-top: calc(-1 * var(--space-md));
+}
+
 /* an empty column still stands, so the editor's drop zone has a body */
 .columns__col:empty,
 .columns__col > .canvas--slot-empty-placeholder {

@@ -4,12 +4,14 @@
  * office-list — the offices, open (src/components/office-list.css): the
  * footer accordion's row anatomy (includes/site-footer.html.twig) with the
  * address then Phone then email under the name and no fold. Each row draws
- * its hairline in (rules.css); the last closes with one too.
+ * its hairline in (rules.css); a list of several closes with one too, a
+ * single office (the Offices: one block) does not — stacked in a column
+ * they share the hairlines between them (user call, Sep 2026).
  */
 #}
 <ul class="office-list" role="list">
   {% for office in offices %}
-    <li class="office-list__item" data-rule="{{ loop.last ? 'both' : 'top' }}">
+    <li class="office-list__item" data-rule="{{ loop.last and offices|length > 1 ? 'both' : 'top' }}">
       {{ icon_inline_svg(office.icon, 'office-list__icon') }}
       <div class="office-list__head">
         <h3 class="office-list__city">{{ office.city }}</h3>

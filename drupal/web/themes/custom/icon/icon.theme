@@ -706,7 +706,11 @@ function _icon_paragraph_props(ParagraphInterface $paragraph, ?CacheableMetadata
       'variant' => $paragraph->get('field_pull_quote_variant')->value ?: 'italic',
       'cite' => $paragraph->get('field_pull_quote_cite')->value ?? '',
     ],
-    'news_article_figure' => ($image = _icon_media_image($paragraph->get('field_news_article_figure_image')->entity, 'news_hero', $cache)) ? ['image' => $image] : [],
+    // The one Picture (Sep 2026): the resolved image as its pick, at its own
+    // shape — the shape is the component's one required prop.
+    'news_article_figure' => ($image = _icon_media_image($paragraph->get('field_news_article_figure_image')->entity, 'news_hero', $cache))
+      ? ['picture' => $image, 'shape' => 'natural']
+      : [],
     'news_article_video' => [
       'embed_url' => $paragraph->get('field_news_article_video_url')->uri ?? '',
       'title' => $paragraph->get('field_news_article_video_title')->value ?? '',

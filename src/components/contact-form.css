@@ -38,6 +38,17 @@
   }
 }
 
+/* In a Columns cell the column is the measure (user call, Sep 2026: "make
+   this the full width of the space"): the form's own cap comes off, and the
+   intro runs the column too. */
+.columns .contact-form {
+  max-width: none;
+}
+
+.columns .contact-form__intro {
+  max-width: none;
+}
+
 .contact-form__lead {
   margin: 0 0 var(--space-xs);
   font-size: var(--voice-mid);

@@ -36,6 +36,8 @@
 }
 
 .office-list__item[data-rule="both"] {
+  /* the last of several; a single office carries no bottom rule, so a stack
+     of them shares one hairline between each pair (components/columns.css) */
   border-bottom: var(--rule-weight) solid var(--rule);
 }
 

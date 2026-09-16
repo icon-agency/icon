@@ -487,16 +487,18 @@
                   The move between pages is a cross-document View Transition
                   (<code class="ds-code">src/utilities/page-transition.css</code>, <code class="ds-code">@view-transition { navigation: auto }</code>) &mdash;
                   the browser snapshots the old page, the new one loads, CSS animates between. The move is a
-                  <strong>wipe</strong> (Sep 2026, after leoparpeix.com; it was a fade): a blue square grows from the
-                  bottom-left corner over the old page &mdash; the homepage loader&rsquo;s own move, same scale, origin
-                  and decelerate ease, 650ms &mdash; then the <strong>Make what matters</strong> lockup shows white at the
-                  centre, at the hero&rsquo;s size (<code class="ds-code">--hero-square-size</code>), and the square
-                  shrinks back into the bottom-left corner (600ms, standard ease) to uncover the new page, whose own
-                  reveals then do the arriving (<code class="ds-code">--animate-hold</code> waits the whole 1.4s). The
+                  <strong>wipe</strong> (Sep 2026, after leoparpeix.com; it was a fade): a blue disc grows from the
+                  centre over the old page (600ms, in and out) with the <strong>Make what matters</strong> lockup white at
+                  its centre, at the hero&rsquo;s size (<code class="ds-code">--hero-square-size</code>), masked by the
+                  same growing circle so it only exists inside the blue; holds; and shrinks back to the centre (500ms,
+                  from 850ms), the lockup masked away with it, to uncover the new page, whose own reveals then
+                  do the arriving (<code class="ds-code">--animate-hold</code> waits the whole 1.35s). The
                   <strong>chrome</strong> &mdash; the wordmark and the pill &mdash; carries its own names and holds its place
                   on top of the square. <code class="ds-code">js/page-transition.js</code>, a plain IIFE in
-                  <code class="ds-code">&lt;head&gt;</code>, plants the square in the old page&rsquo;s last frame and the
-                  square and the mark in the new page&rsquo;s first, as named elements; the CSS animates the snapshots.
+                  <code class="ds-code">&lt;head&gt;</code>, plants the square and the mark in the new page&rsquo;s first frame as named
+                  elements (nothing in the leaving page &mdash; a live element there painted once before the snapshot,
+                  a flash); the CSS animates the snapshots, the square&rsquo;s playing both halves over the old
+                  page&rsquo;s last frame.
                   Reduced motion switches it off; Firefox simply navigates. This index carries it too, so a click through
                   to a template wipes.
                 </p>
@@ -1255,7 +1257,9 @@
                 (<code class="ds-code">--layered</code>): the cut-out floats over the first pick, or over a ground
                 colour (<code class="ds-code">--overlay-ground</code>) when there is none, inset by
                 <code class="ds-code">--overlay-pad</code> &mdash; the article banner&rsquo;s anatomy, shared. It
-                replaced three: the article figure, the gallery figure and the scroller&rsquo;s cards.
+                replaced three: the article figure, the gallery figure and the scroller&rsquo;s cards. <code class="ds-code">--parallax</code> drifts the media &plusmn;2% on a named view-timeline, zoomed 6%
+                so no edge shows &mdash; on <code class="ds-code">transform</code> alone, since the reveal owns
+                clip-path, scale and opacity; the Work and News articles lean the frame with scroll velocity.
               </p>
               <div class="ds-group">
                 <h4 class="ds-group__title">Live &mdash; three shapes and a layered one, in Columns on the tight gap</h4>
@@ -1272,8 +1276,10 @@
               <div class="ds-group">
                 <h4 class="ds-group__title">Drupal (Canvas / SDC)</h4>
                 <p class="ds-group__note">
-                  <strong>Picture</strong> (Pictures folder): Picture and Cut-out picks, Shape, Ground colour,
-                  Cut-out inset. Lay them out with <strong>Columns and boxes</strong> on the Tight gap, or drop
+                  <strong>Picture</strong> (Pictures folder): Picture and Cut-out picks, Shape, Parallax (on by
+                  default; off for a picture that must show whole &mdash; the drift is zoomed 6% and crops), Ground
+                  colour, Cut-out inset. Every Picture reveals on scroll, drifts with the parallax, and leans with the
+                  page&rsquo;s scroll velocity on the Work and News articles. Lay them out with <strong>Columns and boxes</strong> on the Tight gap, or drop
                   them into <strong>Picture scroller (group)</strong>. Gallery row and its figure left the library.
                 </p>
               </div>

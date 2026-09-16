@@ -14,9 +14,95 @@ dependencies:
     - options
   theme:
     - icon
-active_version: e76719234ed60dbc
+active_version: 0efc7b80d4a0261f
 versioned_properties:
   active:
+    settings:
+      prop_field_definitions:
+        picture:
+          required: false
+          field_type: entity_reference
+          field_storage_settings:
+            target_type: media
+          field_instance_settings:
+            handler: 'default:media'
+            handler_settings:
+              target_bundles:
+                image: image
+                video: video
+              sort:
+                field: _none
+                direction: ASC
+              auto_create: false
+          field_widget: media_library_widget
+          default_value: null
+          expression: ℹ︎entity_reference␟target_id
+          derived_schema_metadata: {  }
+        float:
+          required: false
+          field_type: entity_reference
+          field_storage_settings:
+            target_type: media
+          field_instance_settings:
+            handler: 'default:media'
+            handler_settings:
+              target_bundles:
+                image: image
+                video: video
+              sort:
+                field: _none
+                direction: ASC
+              auto_create: false
+          field_widget: media_library_widget
+          default_value: null
+          expression: ℹ︎entity_reference␟target_id
+          derived_schema_metadata: {  }
+        shape:
+          required: true
+          field_type: list_string
+          field_storage_settings:
+            allowed_values_function: canvas_load_allowed_values_for_component_prop
+          field_instance_settings: {  }
+          field_widget: options_select
+          default_value:
+            -
+              value: natural
+          expression: ℹ︎list_string␟value
+          derived_schema_metadata: {  }
+        parallax:
+          required: false
+          field_type: boolean
+          field_storage_settings: {  }
+          field_instance_settings: {  }
+          field_widget: boolean_checkbox
+          default_value:
+            -
+              value: true
+          expression: ℹ︎boolean␟value
+          derived_schema_metadata: {  }
+        ground:
+          required: false
+          field_type: string
+          field_storage_settings: {  }
+          field_instance_settings: {  }
+          field_widget: string_textfield
+          default_value: null
+          expression: ℹ︎string␟value
+          derived_schema_metadata:
+            string_shape: {  }
+        pad:
+          required: false
+          field_type: string
+          field_storage_settings: {  }
+          field_instance_settings: {  }
+          field_widget: string_textfield
+          default_value: null
+          expression: ℹ︎string␟value
+          derived_schema_metadata:
+            string_shape: {  }
+    fallback_metadata:
+      slot_definitions: {  }
+  e76719234ed60dbc:
     settings:
       prop_field_definitions:
         picture:

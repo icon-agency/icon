@@ -94,3 +94,33 @@
   object-fit: contain;
   border-radius: var(--radius-icon);
 }
+
+/* PARALLAX (on by default, a Picture prop to turn off): the media drifts
+   ±2% as the page scrolls, zoomed 6% so the drift never shows an edge —
+   which is why it can be turned off for a picture that must show whole
+   (user call, Sep 2026). The homepage cards' and the news bands' recipe,
+   on `transform` alone: the reveal (.media-reveal, home-c.css) owns
+   clip-path, scale and opacity on the same element, and the lean sits on
+   the frame. A named view-timeline on the FRAME — never bare view() on the
+   media: the overflow:hidden frame is its nearest scroll container and the
+   drift would read 0 (LESSONS.md). */
+.picture--parallax {
+  view-timeline-name: --picture;
+  view-timeline-axis: block;
+}
+
+@keyframes picture-drift {
+  from { transform: scale(1.06) translateY(-2%); }
+  to { transform: scale(1.06) translateY(2%); }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .picture--parallax > img,
+    .picture--parallax > video {
+      animation: picture-drift linear both;
+      animation-timeline: --picture;
+      animation-range: cover 0% cover 100%;
+    }
+  }
+}

@@ -464,7 +464,8 @@
    drift rather than fighting it. */
 .news-article__related .news-card,
 .news-article__hero,
-.news-article__figure {
+.news-article__figure,
+.news-article .picture {
   transform: skewY(var(--nl-skew, 0deg));
   transform-origin: center center;
 }

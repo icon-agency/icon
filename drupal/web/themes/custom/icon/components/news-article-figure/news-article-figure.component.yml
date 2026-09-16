@@ -48,6 +48,15 @@ props:
         portrait: Portrait (7:10)
       examples:
         - natural
+    parallax:
+      type: boolean
+      title: Parallax
+      description: >
+        On, the picture drifts a little as the page scrolls, zoomed a touch
+        so the drift never shows an edge — which crops about 3% each side.
+        Off for a picture that has to show whole: a diagram, a screen.
+      examples:
+        - true
     ground:
       type: string
       title: Ground colour

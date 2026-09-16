@@ -18,11 +18,15 @@
 {% if ground_m.src is not defined and image.src is defined and image.src %}{% set ground_m = image|merge({ type: 'image' }) %}{% endif %}
 {% set layered = float_m.src is defined and float_m.src %}
 {% set shape = shape|default('natural') %}
+{# parallax is on unless the editor turned it off (an instance placed before
+   the prop carries none, and drifts) #}
+{% set drift = parallax is not defined or parallax is same as(null) or parallax %}
 {% set layers = (layered ? [ground_m, float_m] : [ground_m])|filter(m => m.src is defined and m.src) %}
 {% set classes = [
   'picture',
   'picture--' ~ shape,
   layered ? 'picture--layered',
+  drift ? 'picture--parallax',
   'media-reveal',
 ]|filter(v => v) %}
 {% set styles = [
