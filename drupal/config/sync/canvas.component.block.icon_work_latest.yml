@@ -1,0 +1,26 @@
+uuid: b3d41fe6-1391-4430-b8fe-564e6ebf53d5
+langcode: en
+status: true
+dependencies:
+  module:
+    - icon_site
+active_version: acde319c7f37c5b1
+versioned_properties:
+  active:
+    settings:
+      default_settings:
+        id: icon_work_latest
+        label: 'Work: latest'
+        label_display: '0'
+        provider: icon_site
+        accent: Latest
+        caps: Work
+        category: ''
+        count: 2
+    fallback_metadata:
+      slot_definitions: null
+label: 'Work: latest'
+id: block.icon_work_latest
+provider: icon_site
+source: block
+source_local_id: icon_work_latest

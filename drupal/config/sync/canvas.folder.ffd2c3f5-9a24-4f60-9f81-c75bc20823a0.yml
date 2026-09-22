@@ -5,9 +5,11 @@ dependencies:
   config:
     - canvas.component.sdc.icon.columns
     - canvas.component.sdc.icon.divider
+    - canvas.component.sdc.icon.spacer
 name: Layout
 configEntityTypeId: component
 weight: 1
 items:
   - sdc.icon.columns
   - sdc.icon.divider
+  - sdc.icon.spacer

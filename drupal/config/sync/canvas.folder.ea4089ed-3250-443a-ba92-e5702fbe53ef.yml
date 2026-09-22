@@ -1,0 +1,14 @@
+uuid: ea4089ed-3250-443a-ba92-e5702fbe53ef
+langcode: en
+status: true
+dependencies:
+  config:
+    - canvas.component.sdc.icon.testimonial
+    - canvas.component.sdc.icon.testimonials
+name: Testimonials
+configEntityTypeId: component
+weight: 3
+items:
+  - sdc.icon.testimonial
+  - sdc.icon.testimonials
+

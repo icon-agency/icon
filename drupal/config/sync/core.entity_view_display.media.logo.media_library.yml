@@ -1,0 +1,21 @@
+uuid: 06f2a6aa-4e14-4766-9137-af6390109404
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.media.media_library
+    - field.field.media.logo.field_logo_weight
+    - field.field.media.logo.field_media_file
+    - media.type.logo
+id: media.logo.media_library
+targetEntityType: media
+bundle: logo
+mode: media_library
+content: {  }
+hidden:
+  created: true
+  field_logo_weight: true
+  field_media_file: true
+  name: true
+  thumbnail: true
+  uid: true

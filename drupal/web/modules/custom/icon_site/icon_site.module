@@ -925,15 +925,24 @@ function icon_site_offices(): array {
 /**
  * Implements hook_preprocess_HOOK() for media.html.twig.
  *
- * An Icon in the media library's grid shows the SVG itself (its thumbnail
- * would be the generic file icon): inlined in the text colour on white.
+ * An Icon or a Logo in the media library's grid shows the file itself (its
+ * thumbnail would be the generic file icon): an SVG inlined in the text
+ * colour on white, a PNG as the image (user catch, Sep 2026, on the
+ * Testimonial's Logo pick: "the SVGs are not rendering in the Drupal
+ * select"). The Logo type also has a media_library display now, so the
+ * grid does not fall back to the default display's file link.
  */
 function icon_site_preprocess_media(array &$variables): void {
   $media = $variables['media'] ?? NULL;
-  if (!$media instanceof MediaInterface || $media->bundle() !== 'icon' || ($variables['view_mode'] ?? '') !== 'media_library') {
+  if (!$media instanceof MediaInterface || !in_array($media->bundle(), ['icon', 'logo'], TRUE) || ($variables['view_mode'] ?? '') !== 'media_library') {
     return;
   }
   $svg = (new IconSiteExtension(\Drupal::entityTypeManager(), \Drupal::service('stream_wrapper_manager')))->inlineSvg((string) $media->id(), '');
+  if ($svg === '') {
+    // Not an SVG (a PNG logo): the file as an image.
+    $file = $media->hasField('field_media_file') ? $media->get('field_media_file')->entity : NULL;
+    $svg = $file ? '<img src="' . Html::escape(icon_site_file_url($file->getFileUri())) . '" alt="" style="max-width:100%;max-height:100%">' : '';
+  }
   $variables['content']['icon_svg'] = [
     '#markup' => Markup::create('<div style="aspect-ratio:1;display:grid;place-items:center;padding:14%;box-sizing:border-box;color:#222;background:#fff">' . $svg . '</div>'),
     '#weight' => -10,

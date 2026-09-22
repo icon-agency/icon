@@ -1,0 +1,33 @@
+uuid: 93753556-111a-44bd-b655-862b96ea44eb
+langcode: en
+status: true
+dependencies:
+  theme:
+    - icon
+active_version: fa34f618af34d610
+versioned_properties:
+  active:
+    settings:
+      prop_field_definitions:
+        label:
+          required: false
+          field_type: string
+          field_storage_settings: {  }
+          field_instance_settings: {  }
+          field_widget: string_textfield
+          default_value:
+            -
+              value: 'What our clients say'
+          expression: ℹ︎string␟value
+          derived_schema_metadata:
+            string_shape: {  }
+    fallback_metadata:
+      slot_definitions:
+        quotes:
+          title: Quotes
+          description: 'Testimonial (item) components, in the order they are stepped through.'
+label: 'Testimonials (group)'
+id: sdc.icon.testimonials
+provider: icon
+source: sdc
+source_local_id: 'icon:testimonials'
