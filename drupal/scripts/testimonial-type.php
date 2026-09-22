@@ -39,12 +39,15 @@ $title = BaseFieldOverride::loadByName('node', 'testimonial', 'title')
 $title->setLabel('Name')->setDescription('Who said it.')->save();
 
 $fields = [
-  ['field_testimonial_company', 'string', ['max_length' => 255], 'Role and company', 'Their role and where, e.g. Marketing Director at IMG.', 'string_textfield', 1],
-  ['field_testimonial_quote', 'string_long', [], 'Quote', 'What they said, without quotation marks. A line break in the text breaks the line.', 'string_textarea', 2],
-  ['field_testimonial_logo', 'entity_reference', ['target_type' => 'media'], 'Logo', 'The company’s mark, from the media library — a client logo or a picture, shown in one colour. Optional.', 'media_library_widget', 3],
+  // Role and Company are two fields, one under the other (user call, Sep
+  // 2026: "Split this so 'Role: …' and next line add field 'Company: …'").
+  ['field_testimonial_role', 'string', ['max_length' => 255], 'Role', 'Their role, e.g. Marketing Director.', 'string_textfield', 1],
+  ['field_testimonial_company', 'string', ['max_length' => 255], 'Company', 'Where, e.g. IMG.', 'string_textfield', 2],
+  ['field_testimonial_quote', 'string_long', [], 'Quote', 'What they said, without quotation marks. A line break in the text breaks the line.', 'string_textarea', 3],
+  ['field_testimonial_logo', 'entity_reference', ['target_type' => 'media'], 'Logo', 'The company’s mark, from the media library — a client logo or a picture, shown in one colour. Optional.', 'media_library_widget', 4],
   // User ask, Sep 2026: "Sometimes the logo looks too small with the height
   // and width rules. can you add bump up logo size option or tickbox?"
-  ['field_testimonial_logo_large', 'boolean', [], 'Larger logo', 'Tick for a mark that sits small in the standard box — a tall or square one. Half again the size.', 'boolean_checkbox', 4],
+  ['field_testimonial_logo_large', 'boolean', [], 'Larger logo', 'Tick for a mark that sits small in the standard box — a tall or square one. Half again the size.', 'boolean_checkbox', 5],
 ];
 $form = EntityFormDisplay::load('node.testimonial.default')
   ?: EntityFormDisplay::create(['targetEntityType' => 'node', 'bundle' => 'testimonial', 'mode' => 'default', 'status' => TRUE]);
@@ -80,6 +83,11 @@ foreach ($fields as [$name, $type, $storage, $label, $description, $widget, $wei
   }
   if ($widget === 'boolean_checkbox') {
     $options['settings'] = ['display_label' => TRUE];
+  }
+  // An existing field keeps its label and description current.
+  $existing = FieldConfig::loadByName('node', 'testimonial', $name);
+  if ($existing && ($existing->getLabel() !== $label || $existing->getDescription() !== $description)) {
+    $existing->setLabel($label)->setDescription($description)->save();
   }
   $form->setComponent($name, $options);
   $view->setComponent($name, ['label' => 'above', 'weight' => $weight]);

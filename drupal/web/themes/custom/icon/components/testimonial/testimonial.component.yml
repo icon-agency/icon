@@ -30,12 +30,18 @@ props:
       description: Who said it.
       examples:
         - Allie Natoli
+    role:
+      type: string
+      title: Role
+      description: Their role, e.g. "Marketing Director".
+      examples:
+        - Marketing Director
     company:
       type: string
-      title: Role and company
-      description: Their role and where, e.g. "Marketing Director at IMG".
+      title: Company
+      description: Where, e.g. "IMG".
       examples:
-        - Marketing Director at IMG
+        - IMG
     logo:
       type: integer
       title: Logo

@@ -7,6 +7,7 @@ dependencies:
     - field.field.node.testimonial.field_testimonial_logo
     - field.field.node.testimonial.field_testimonial_logo_large
     - field.field.node.testimonial.field_testimonial_quote
+    - field.field.node.testimonial.field_testimonial_role
     - node.type.testimonial
   module:
     - user
@@ -22,7 +23,7 @@ content:
       link_to_entity: false
       link_rel: canonical
     third_party_settings: {  }
-    weight: 1
+    weight: 2
     region: content
   field_testimonial_logo:
     type: entity_reference_label
@@ -30,20 +31,30 @@ content:
     settings:
       link: true
     third_party_settings: {  }
-    weight: 3
+    weight: 4
     region: content
   field_testimonial_logo_large:
+    type: boolean
     label: above
-    settings: {  }
+    settings:
+      format: default
+      format_custom_false: ''
+      format_custom_true: ''
     third_party_settings: {  }
-    weight: 4
+    weight: 5
     region: content
   field_testimonial_quote:
     type: basic_string
     label: above
     settings: {  }
     third_party_settings: {  }
-    weight: 2
+    weight: 3
+    region: content
+  field_testimonial_role:
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    weight: 1
     region: content
   links:
     settings: {  }

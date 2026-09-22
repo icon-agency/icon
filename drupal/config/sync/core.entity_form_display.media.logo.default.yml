@@ -3,6 +3,7 @@ langcode: en
 status: true
 dependencies:
   config:
+    - field.field.media.logo.field_logo_large
     - field.field.media.logo.field_logo_weight
     - field.field.media.logo.field_media_file
     - media.type.logo
@@ -13,6 +14,13 @@ targetEntityType: media
 bundle: logo
 mode: default
 content:
+  field_logo_large:
+    type: boolean_checkbox
+    weight: 5
+    region: content
+    settings:
+      display_label: true
+    third_party_settings: {  }
   field_logo_weight:
     type: number
     weight: 2

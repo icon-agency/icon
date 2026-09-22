@@ -3,6 +3,7 @@ langcode: en
 status: true
 dependencies:
   config:
+    - field.field.media.logo.field_logo_large
     - field.field.media.logo.field_logo_weight
     - field.field.media.logo.field_media_file
     - media.type.logo
@@ -23,6 +24,7 @@ content:
     region: content
 hidden:
   created: true
+  field_logo_large: true
   field_logo_weight: true
   name: true
   thumbnail: true

@@ -1506,6 +1506,16 @@ html:not(.js-animations) .hero__count { display: none; }
   user-drag: none;
 }
 
+/* LARGER (user ask, Sep 2026: "add a Larger logo to this, without making
+   the bounding box bigger"): the logo's own tick in the Client logos
+   panel — the mark's box grows to 94% of the stage's width and 78% of its
+   height, still inside the card (the card is 1.2× the stage each way), so
+   a square or tall mark fills its card without the card moving */
+.client__logo--large {
+  width: calc(var(--client-stage-h) * 2.05 * 0.94);
+  height: calc(var(--client-stage-h) * 0.78);
+}
+
 .dark .client__logo,
 .theme-blue .client__logo {
   filter: brightness(0) invert(1); /* ink -> light on the dark grounds */

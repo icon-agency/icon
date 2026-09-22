@@ -17,12 +17,12 @@
     <div class="clients__scroller{{ loop.index == 2 ? ' clients__scroller--reverse' }}">
       <ul class="clients__track">
         {% for logo in row %}
-          <li class="client"><img class="client__logo" loading="lazy" src="{{ logo.src }}" alt="{{ logo.alt }}" /></li>
+          <li class="client"><img class="client__logo{% if logo.large %} client__logo--large{% endif %}" loading="lazy" src="{{ logo.src }}" alt="{{ logo.alt }}" /></li>
         {% endfor %}
       </ul>
       <ul class="clients__track" aria-hidden="true">
         {% for logo in row %}
-          <li class="client"><img class="client__logo" loading="lazy" src="{{ logo.src }}" alt="" /></li>
+          <li class="client"><img class="client__logo{% if logo.large %} client__logo--large{% endif %}" loading="lazy" src="{{ logo.src }}" alt="" /></li>
         {% endfor %}
       </ul>
     </div>

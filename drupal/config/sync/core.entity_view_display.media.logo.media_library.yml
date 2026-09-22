@@ -4,6 +4,7 @@ status: true
 dependencies:
   config:
     - core.entity_view_mode.media.media_library
+    - field.field.media.logo.field_logo_large
     - field.field.media.logo.field_logo_weight
     - field.field.media.logo.field_media_file
     - media.type.logo
@@ -14,6 +15,7 @@ mode: media_library
 content: {  }
 hidden:
   created: true
+  field_logo_large: true
   field_logo_weight: true
   field_media_file: true
   name: true

@@ -179,6 +179,9 @@
   font-weight: var(--font-weight-semibold);
 }
 
+/* the role and the company, a line each under the name (user call, Sep
+   2026: "Split this so 'Role: …' and next line add field 'Company: …'") */
+.testimonial__role,
 .testimonial__company {
   display: block;
   color: color-mix(in srgb, currentColor 72%, transparent);

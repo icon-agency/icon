@@ -157,6 +157,9 @@ final class ClientsMarqueeBlock extends BlockBase implements ContainerFactoryPlu
       $logos[] = [
         'src' => $this->fileUrlGenerator->generateString($file->getFileUri()),
         'alt' => $media->label(),
+        // The logo's own "Larger logo" tick (user ask, Sep 2026): the mark
+        // grows inside the card; the card does not.
+        'large' => $media->hasField('field_logo_large') && (bool) $media->get('field_logo_large')->value,
       ];
     }
     $build = $logos ? [

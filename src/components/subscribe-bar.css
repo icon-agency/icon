@@ -23,8 +23,16 @@
      its open width — the search face's 26rem, or whatever a consumer sets
      in --subscribe-bar-open — and it shrinks back when left empty.
      js/subscribe-reveal.js sets .is-open; a click anywhere on the pill
-     focuses the field. */
-  width: min(100%, 13rem);
+     focuses the field.
+     THE REST WIDTH IS THE HINT'S, not a fixed 13rem (user catch, Sep 2026:
+     "Subscrik", "Your em" — on a wide screen the hint's 1.35× label voice
+     outgrew the pill): the longer hint, "Your email", measures 4.9 of its
+     own em, 6.6 of the pill's; the envelope's and the arrow's boxes with
+     their padding measure 2.5em and 2.2em; then the input's side padding,
+     the two gaps and the pill's own padding — 12em of the pill's, with a
+     little to spare, plus the rem parts. 13rem stays as the floor at
+     small sizes; the open width is untouched. */
+  width: min(100%, max(13rem, calc(12em + 1.75rem + 2 * var(--spacing-2xs))));
   margin: 0;
   /* a tighter side inset than the search face's 1rem: the glyphs sit near
      the pill's edges (user call, Sep 2026), their own 0.5rem boxes making

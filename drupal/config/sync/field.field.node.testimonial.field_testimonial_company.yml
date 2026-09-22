@@ -9,8 +9,8 @@ id: node.testimonial.field_testimonial_company
 field_name: field_testimonial_company
 entity_type: node
 bundle: testimonial
-label: 'Role and company'
-description: 'Their role and where, e.g. Marketing Director at IMG.'
+label: Company
+description: 'Where, e.g. IMG.'
 required: false
 translatable: true
 default_value: {  }

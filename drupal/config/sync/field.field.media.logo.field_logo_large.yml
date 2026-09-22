@@ -1,0 +1,21 @@
+uuid: 2b232de7-e121-4728-8c00-e0198a24134e
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.media.field_logo_large
+    - media.type.logo
+id: media.logo.field_logo_large
+field_name: field_logo_large
+entity_type: media
+bundle: logo
+label: 'Larger logo'
+description: 'Tick for a mark that sits small in the card — a tall or square one. The mark grows; the card does not.'
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  on_label: 'On'
+  off_label: 'Off'
+field_type: boolean

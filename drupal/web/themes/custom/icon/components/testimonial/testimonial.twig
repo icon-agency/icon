@@ -2,7 +2,8 @@
 /**
  * @file
  * testimonial — one quote of the carousel (components/testimonials.css):
- * a two-column article, the person on the left with the mark at the foot
+ * a two-column article, the person on the left — name, then their role,
+ * then their company, a line each — with the mark at the foot
  * (margin-top: auto), the quote on the right. The mark is always one
  * colour (user call, Sep 2026: "the logo should never be colour"): a CSS
  * mask over the ink, so any logo — black on white, a full-colour PNG —
@@ -13,9 +14,10 @@
 {% set mark = logo ? icon_media(logo, 'work_media') : [] %}
 <article class="testimonial" data-testimonial>
   <div class="testimonial__who">
-    {% if name or company %}
+    {% if name or role or company %}
       <p class="testimonial__person">
         {% if name %}<span class="testimonial__name">{{ name }}</span>{% endif %}
+        {% if role %}<span class="testimonial__role">{{ role }}</span>{% endif %}
         {% if company %}<span class="testimonial__company">{{ company }}</span>{% endif %}
       </p>
     {% endif %}
