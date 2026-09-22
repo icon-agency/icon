@@ -1,0 +1,23 @@
+uuid: 60ce6629-3037-4d08-a84f-eac3a3191c19
+langcode: en
+status: true
+dependencies:
+  module:
+    - icon_site
+active_version: c3e37126ed9850a7
+versioned_properties:
+  active:
+    settings:
+      default_settings:
+        id: icon_testimonial
+        label: 'Testimonial (item)'
+        label_display: '0'
+        provider: icon_site
+        testimonial: 0
+    fallback_metadata:
+      slot_definitions: null
+label: 'Testimonial (item)'
+id: block.icon_testimonial
+provider: icon_site
+source: block
+source_local_id: icon_testimonial

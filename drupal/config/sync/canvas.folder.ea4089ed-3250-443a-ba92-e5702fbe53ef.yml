@@ -3,12 +3,11 @@ langcode: en
 status: true
 dependencies:
   config:
-    - canvas.component.sdc.icon.testimonial
+    - canvas.component.block.icon_testimonial
     - canvas.component.sdc.icon.testimonials
 name: Testimonials
 configEntityTypeId: component
 weight: 3
 items:
-  - sdc.icon.testimonial
+  - block.icon_testimonial
   - sdc.icon.testimonials
-
