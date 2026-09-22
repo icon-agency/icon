@@ -41,3 +41,7 @@ props:
       title: Logo
       description: The company's mark, from the media library — a client logo or a picture, shown in the box's ink. Optional.
       x-icon-media: logo
+    logo_large:
+      type: boolean
+      title: Larger logo
+      description: Half again the size, for a mark that sits small in the standard box — a tall or square one.

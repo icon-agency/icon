@@ -42,6 +42,9 @@ $fields = [
   ['field_testimonial_company', 'string', ['max_length' => 255], 'Role and company', 'Their role and where, e.g. Marketing Director at IMG.', 'string_textfield', 1],
   ['field_testimonial_quote', 'string_long', [], 'Quote', 'What they said, without quotation marks. A line break in the text breaks the line.', 'string_textarea', 2],
   ['field_testimonial_logo', 'entity_reference', ['target_type' => 'media'], 'Logo', 'The company’s mark, from the media library — a client logo or a picture, shown in one colour. Optional.', 'media_library_widget', 3],
+  // User ask, Sep 2026: "Sometimes the logo looks too small with the height
+  // and width rules. can you add bump up logo size option or tickbox?"
+  ['field_testimonial_logo_large', 'boolean', [], 'Larger logo', 'Tick for a mark that sits small in the standard box — a tall or square one. Half again the size.', 'boolean_checkbox', 4],
 ];
 $form = EntityFormDisplay::load('node.testimonial.default')
   ?: EntityFormDisplay::create(['targetEntityType' => 'node', 'bundle' => 'testimonial', 'mode' => 'default', 'status' => TRUE]);
@@ -74,6 +77,9 @@ foreach ($fields as [$name, $type, $storage, $label, $description, $widget, $wei
   $options = ['type' => $widget, 'weight' => $weight];
   if ($widget === 'media_library_widget') {
     $options['settings'] = ['media_types' => ['logo', 'image']];
+  }
+  if ($widget === 'boolean_checkbox') {
+    $options['settings'] = ['display_label' => TRUE];
   }
   $form->setComponent($name, $options);
   $view->setComponent($name, ['label' => 'above', 'weight' => $weight]);

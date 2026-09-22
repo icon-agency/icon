@@ -1,0 +1,21 @@
+uuid: 22b67456-14d9-436e-a2ec-e98004401920
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_testimonial_logo_large
+    - node.type.testimonial
+id: node.testimonial.field_testimonial_logo_large
+field_name: field_testimonial_logo_large
+entity_type: node
+bundle: testimonial
+label: 'Larger logo'
+description: 'Tick for a mark that sits small in the standard box — a tall or square one. Half again the size.'
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  on_label: 'On'
+  off_label: 'Off'
+field_type: boolean

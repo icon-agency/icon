@@ -20,6 +20,7 @@
  */
 #}
 {% set count = columns|default(2) %}
+{% set split = count == 2 and split|default('even') != 'even' ? split : '' %}
 {% set box = box|default('none') %}
 {% set hex = '/^#(?:[0-9a-f]{3,4}|[0-9a-f]{6}|[0-9a-f]{8})$/i' %}
 {% set box_class = attribute({ white: 'theme-work-article', 'light-grey': 'theme-work-article', black: 'dark', blue: 'theme-blue', custom: 'theme-work-article' }, box)|default('') %}
@@ -30,7 +31,7 @@
 } %}
 {% set box_style = pair[box] is defined ? '--work-article-bg: ' ~ pair[box][0] ~ '; --work-article-text: ' ~ pair[box][1] : '' %}
 {% set linked = link is not empty %}
-<div class="columns columns--{{ count }} columns--gap-{{ gap|default('normal') }}{% if box_class %} columns--box {{ box_class }}{% endif %}{% if linked %} columns--linked{% endif %}"{% if box_style %} style="{{ box_style }}"{% endif %}>
+<div class="columns columns--{{ count }}{% if split %} columns--split-{{ split }}{% endif %} columns--gap-{{ gap|default('normal') }}{% if box_class %} columns--box {{ box_class }}{% endif %}{% if linked %} columns--linked{% endif %}"{% if box_style %} style="{{ box_style }}"{% endif %}>
   {% if linked %}<a class="columns__link" href="{{ link }}" aria-label="{{ link_label|default('Read more'|t) }}"></a>{% endif %}
   <div class="columns__col">{% block column_1 %}{{ column_1 }}{% endblock %}</div>
   {% if count >= 2 %}<div class="columns__col">{% block column_2 %}{{ column_2 }}{% endblock %}</div>{% endif %}

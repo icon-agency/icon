@@ -180,6 +180,18 @@
   .columns--1 {
     grid-template-columns: minmax(0, 1fr);
   }
+
+  /* THE THIRDS (user ask, Sep 2026: "a new 2 column option with 1/3 first
+     column and 2/3 2nd. Plus a 2 column 2/3 + 1/3 version as well"): two
+     columns split a third and two thirds, either way round, wherever two
+     columns stand side by side — the same gutter between them */
+  .columns--2.columns--split-narrow-wide {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+  }
+
+  .columns--2.columns--split-wide-narrow {
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  }
 }
 
 @media (min-width: 1024px) {
@@ -244,6 +256,9 @@
   margin-inline: 0;
 }
 
+/* the results band's prose measure comes off too: the column is the
+   measure (user catch, Sep 2026: "this should be 100% of the column") */
 .columns .work-stats {
+  max-width: none;
   padding-inline: 0;
 }

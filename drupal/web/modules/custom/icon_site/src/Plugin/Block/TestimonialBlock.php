@@ -140,6 +140,7 @@ final class TestimonialBlock extends BlockBase implements ContainerFactoryPlugin
         'name' => (string) $node->label(),
         'company' => (string) $node->get('field_testimonial_company')->value,
         'logo' => $node->get('field_testimonial_logo')->target_id ? (int) $node->get('field_testimonial_logo')->target_id : NULL,
+        'logo_large' => $node->hasField('field_testimonial_logo_large') && (bool) $node->get('field_testimonial_logo_large')->value,
       ]),
     ];
     $cache->applyTo($build);

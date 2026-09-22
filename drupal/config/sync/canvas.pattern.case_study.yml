@@ -39,9 +39,10 @@ component_tree:
     slot: null
     uuid: e5d53c6c-ec9e-4e27-ba44-f80e610a6587
     component_id: sdc.icon.columns
-    component_version: f9abd023c61b5669
+    component_version: f907abacdd3f96a4
     inputs:
       columns: 1
+      split: even
       gap: tight
       box: none
     label: null

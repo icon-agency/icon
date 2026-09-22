@@ -120,8 +120,11 @@
 
 /* every quote in the one cell: the frame is the tallest, the current one
    on top; the others are out of the way for the eye and the keyboard
-   (aria-hidden + inert from the script) */
-.testimonials__track > .testimonial {
+   (aria-hidden + inert from the script). The track's children are the
+   quotes OR the block wrappers Drupal puts round a Testimonial (item)
+   block — either way the child takes the cell; the editor's placeholder
+   is the one child that does not. */
+.testimonials__track > :not(.canvas--slot-empty-placeholder) {
   grid-area: 1 / 1;
 }
 
@@ -185,7 +188,19 @@
   width: calc(var(--client-stage-h) * 2.05 * 0.72);
   height: calc(var(--client-stage-h) * 0.58);
   object-fit: contain;
-  object-position: left center;
+  /* the mark on the box's bottom-left corner, not its centre line (user
+     call, Sep 2026: "Make sure the logo sits bottom left always"): a wide
+     wordmark fitted to the box's width leaves air above and below, and
+     that air now sits above, so the mark's foot is the column's foot */
+  object-position: left bottom;
+}
+
+/* LARGER (user ask, Sep 2026: "Sometimes the logo looks too small with the
+   height and width rules. can you add bump up logo size option or
+   tickbox?"): the testimonial's own tick — half again the box each way,
+   for a tall or square mark that sits small in the wide box */
+.testimonial__logo--large {
+  --client-stage-h: calc(clamp(5rem, 7.7vw, 9.5rem) * 1.5);
 }
 
 /* one colour, always (user call, Sep 2026: "the logo should never be
@@ -194,8 +209,8 @@
    verify gate allows: a custom property). */
 .testimonial__logo--mono {
   background: currentColor;
-  -webkit-mask: var(--logo) left center / contain no-repeat;
-  mask: var(--logo) left center / contain no-repeat;
+  -webkit-mask: var(--logo) left bottom / contain no-repeat;
+  mask: var(--logo) left bottom / contain no-repeat;
 }
 
 /* the quote in Miller, the serif, at book weight (user call, Sep 2026:
@@ -211,7 +226,10 @@
 .testimonial__quote p {
   margin: 0;
   font-family: var(--font-serif);
-  font-size: var(--voice-mid);
+  /* a tad over the mid voice (user call, Sep 2026: "Can the Miller quote
+     font be a tad bigger"): Miller sets small on its body, so an eighth up
+     brings it level with the Kumbh mid voice to the eye */
+  font-size: calc(var(--voice-mid) * 1.125);
   font-weight: var(--font-weight-normal);
   line-height: 1.25;
   letter-spacing: -0.01em;
@@ -240,8 +258,11 @@
   gap: var(--space-lg);
 }
 
-.testimonials.is-editing .testimonials__track > .testimonial {
+.testimonials.is-editing .testimonials__track > :not(.canvas--slot-empty-placeholder) {
   grid-area: auto;
+}
+
+.testimonials.is-editing .testimonial {
   visibility: visible;
   opacity: 1;
   pointer-events: auto;

@@ -626,3 +626,7 @@ Canvas registers a block plugin as a component only if its `block.settings.<id>`
   `active_version`) before committing. The same lag makes `git status`
   right after `cex` show a hundred deleted config files for a moment — a
   snapshot mid-sync, not a real deletion.
+
+## A scripted page save conflicts with an open Canvas draft (22 Sep 2026)
+
+Canvas keeps, with each autosaved draft, a hash of the page as it was when the draft began. Save a new revision of that page by script — a fill-in of a new required prop, a repoint, a migration — and the next publish of the draft fails with "The content has either been modified by another user, or you have already submitted modifications" (Matt hit it on About). It is not data loss. The words are Drupal core's `EntityChanged` constraint: the draft carries the page's `changed` time from when it began, the script's save stamped a newer one, and publish compares the two. The repair keeps the draft: set the draft entity's changed time to the saved page's (`setChangedTime`) and save it back through `AutoSaveManager::saveEntity()`, then advance Canvas's own base with `getUnresolvedConflictForEntity()` / `resolveConflict()`. `scripts/columns-split.php` does both after its saves; any script that saves pages should, or should run when no draft is open.

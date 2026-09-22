@@ -5,6 +5,7 @@ dependencies:
   config:
     - field.field.node.testimonial.field_testimonial_company
     - field.field.node.testimonial.field_testimonial_logo
+    - field.field.node.testimonial.field_testimonial_logo_large
     - field.field.node.testimonial.field_testimonial_quote
     - node.type.testimonial
   module:
@@ -24,12 +25,21 @@ content:
     weight: 1
     region: content
   field_testimonial_logo:
+    type: entity_reference_label
     label: above
-    settings: {  }
+    settings:
+      link: true
     third_party_settings: {  }
     weight: 3
     region: content
+  field_testimonial_logo_large:
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    weight: 4
+    region: content
   field_testimonial_quote:
+    type: basic_string
     label: above
     settings: {  }
     third_party_settings: {  }

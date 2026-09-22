@@ -17,6 +17,7 @@ props:
   type: object
   required:
     - columns
+    - split
     - gap
     - box
   properties:
@@ -31,6 +32,20 @@ props:
         - 4
       examples:
         - 2
+    split:
+      type: string
+      title: Split
+      description: For two columns — even halves, or a third beside two thirds either way round. Three and four columns are always even.
+      enum:
+        - even
+        - narrow-wide
+        - wide-narrow
+      meta:enum:
+        even: Even
+        narrow-wide: One third + two thirds
+        wide-narrow: Two thirds + one third
+      examples:
+        - even
     gap:
       type: string
       title: Gap

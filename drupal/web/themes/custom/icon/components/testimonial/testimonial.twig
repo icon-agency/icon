@@ -20,7 +20,7 @@
       </p>
     {% endif %}
     {% if mark.src %}
-      <span class="testimonial__logo testimonial__logo--mono" style="--logo: url('{{ mark.src|e('css') }}')" role="img" aria-label="{{ mark.alt|default(company|default('')) }}"></span>
+      <span class="testimonial__logo testimonial__logo--mono{% if logo_large %} testimonial__logo--large{% endif %}" style="--logo: url('{{ mark.src|e('css') }}')" role="img" aria-label="{{ mark.alt|default(company|default('')) }}"></span>
     {% endif %}
   </div>
   <blockquote class="testimonial__quote">

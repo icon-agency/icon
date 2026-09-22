@@ -20,7 +20,11 @@
         function pad(n) { return (n < 10 ? "0" : "") + n; }
 
         document.querySelectorAll("[data-testimonials]").forEach(function (section) {
-          var items = Array.prototype.slice.call(section.querySelectorAll(".testimonials__track > .testimonial"));
+          // The quotes wherever they sit in the track: a Testimonial (item) block
+          // renders inside Drupal's block wrapper, so they are not the track's
+          // own children (user catch, Sep 2026: one quote, the bar still there).
+          var track = section.querySelector(".testimonials__track");
+          var items = Array.prototype.slice.call(track ? track.querySelectorAll(".testimonial") : []);
           var count = items.length;
           section.setAttribute("data-count", String(count));
           var frame = window.frameElement;
