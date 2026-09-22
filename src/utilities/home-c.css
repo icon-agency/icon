@@ -619,17 +619,18 @@
    in) — quieter than a masked rise at this size and position. */
 .hero__client {
   position: absolute;
-  /* Below md (user call, Sep 2026): centred, smaller, and lifted clear of the
-     bottom pill nav — --nav-clearance is the pill's room (site-header.css;
-     0 from md, where the name goes back to the bottom-left at the wordmark's
-     gutter in the intro statement's voice). */
+  /* Bottom-left at the wordmark's gutter, in the intro statement's voice —
+     the expertise links' — at every width (user call, 22 Sep 2026: "make
+     the client link left aligned, and same size font as the services
+     links"; below md it had been centred and smaller, lifted clear of the
+     bottom pill, whose room --nav-clearance is now 0). */
   left: var(--gutter-page);
   right: var(--gutter-page);
   bottom: calc(var(--space-sm) + var(--nav-clearance, 0px));
   z-index: 4;
   margin: 0;
-  text-align: center;
-  font-size: var(--voice-label);
+  text-align: center; /* centred below md, under the centred wordmark (user call, 22 Sep 2026); left from md */
+  font-size: var(--voice-mid);
   font-weight: var(--font-weight-medium);
   letter-spacing: -0.01em;
   line-height: 1.2;
@@ -644,8 +645,6 @@
   .hero__client {
     right: auto;
     text-align: left;
-    /* Same voice as the intro statement + "Our expertise" label. */
-    font-size: var(--voice-mid);
   }
 }
 
@@ -706,6 +705,8 @@
 .hero__count {
   position: absolute;
   left: var(--gutter-page); /* the client name's exact spot — same token */
+  right: var(--gutter-page);
+  text-align: center; /* the client name's alignment: centred below md, left from md */
   bottom: var(--space-sm);
   z-index: 4;
   margin: 0;
@@ -718,6 +719,12 @@
   transition:
     opacity 0.3s var(--ease-standard),
     color var(--duration-normal) var(--ease-standard);
+}
+@media (min-width: 768px) {
+  .hero__count {
+    right: auto;
+    text-align: left;
+  }
 }
 [data-hero].is-covered .hero__count { color: var(--color-white); }
 [data-hero].is-live .hero__count { opacity: 0; }

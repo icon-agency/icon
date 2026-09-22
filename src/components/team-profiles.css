@@ -339,9 +339,13 @@ html.is-team-open {
    2026: "make sure the 01 / 06 in both cases is the same font as Profile
    job title"); the total muted */
 .team-overlay__counter {
-  font-size: var(--voice-meta);
-  font-weight: var(--font-weight-normal);
+  /* the News article's date voice, exactly (user call, Sep 2026: "the
+     01 / 06 on testimonials and Profile should be exact same" as the
+     dates on News): the label voice at medium, in the meta grey */
+  font-size: var(--voice-label);
+  font-weight: var(--font-weight-medium);
   line-height: 1;
+  color: var(--color-icon-grey);
   font-variant-numeric: tabular-nums;
 }
 

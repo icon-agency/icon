@@ -17,18 +17,25 @@
   --icon-admin-left: var(--drupal-displace-offset-left, 0px);
 }
 
+/* below md the pill sits at the top and the wordmark under it (site-header.css,
+   22 Sep 2026): the same two tops, plus the admin UI's height */
 .site-logo {
-  top: calc(1rem + var(--icon-admin-top));
-  left: calc(var(--gutter-page) + var(--icon-admin-left));
+  top: calc(0.75rem + var(--nav-pill-h) + 0.75rem + var(--icon-admin-top));
+  left: calc(50% + var(--icon-admin-left) / 2); /* centred in what the admin sidebar leaves */
+}
+
+.site-nav {
+  top: calc(0.75rem + var(--icon-admin-top));
+  inset-inline: var(--icon-admin-left) 0;
 }
 
 @media (min-width: 768px) {
   .site-logo {
     top: calc(1.75rem + var(--voice-label) * 0.13 - var(--logo-h) * 0.184 + var(--icon-admin-top));
+    left: calc(var(--gutter-page) + var(--icon-admin-left));
   }
   .site-nav {
     top: calc(1rem + var(--icon-admin-top));
-    inset-inline: var(--icon-admin-left) 0;
   }
 }
 
@@ -56,6 +63,9 @@
 body:has(.admin-toolbar) .site-nav,
 body:has(.admin-toolbar) .site-header__mobile-home,
 body:has(.admin-toolbar) .site-header__mobile-actions { z-index: 480; }
-body:has(.admin-toolbar) .site-logo { z-index: 481; }
+body:has(.admin-toolbar) .site-logo { z-index: 479; } /* under the pill below md, as in site-header.css: the open drawer passes over the wordmark */
+@media (min-width: 768px) {
+  body:has(.admin-toolbar) .site-logo { z-index: 481; }
+}
 body:has(.admin-toolbar) .toast { z-index: 482; }
 body:has(.admin-toolbar) .mobile-menu { z-index: 479; }

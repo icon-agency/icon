@@ -17,7 +17,7 @@ props:
     quote:
       type: string
       title: Quote
-      description: What they said, without quotation marks. A line break in the text breaks the line.
+      description: What they said. The quotation marks are added for you — leave them out. A line break in the text breaks the line.
       # The pattern is Canvas's cue for LONG text: a multi-line box with no
       # 255-character cap (user catch, Sep 2026: a quote that hit the cap
       # "i think I cant type in this").

@@ -111,9 +111,17 @@
 }
 
 /* Columns and boxes holds the article's pictures now (Sep 2026): the frame
-   self-pads, so the Columns drops its own gutter here. */
-.work-article .columns {
+   self-pads, so the Columns drops its own gutter here. A BOX carries the
+   gutter as a margin and its padding is its own — so the box drops the
+   margin and keeps the padding (user catch, 22 Sep 2026: a Testimonials box
+   in a case study, "needs to be full width, currently cropped. And missing
+   all its padding?"). */
+.work-article .columns:not(.columns--box) {
   padding-inline: 0;
+}
+
+.work-article .columns--box {
+  margin-inline: 0;
 }
 
 /* Centred head: the project name in the display voice at its BRAND casing

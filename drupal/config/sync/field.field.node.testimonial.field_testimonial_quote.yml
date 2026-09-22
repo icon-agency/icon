@@ -10,7 +10,7 @@ field_name: field_testimonial_quote
 entity_type: node
 bundle: testimonial
 label: Quote
-description: 'What they said, without quotation marks. A line break in the text breaks the line.'
+description: 'What they said. The quotation marks are added for you — leave them out. A line break in the text breaks the line.'
 required: true
 translatable: true
 default_value: {  }

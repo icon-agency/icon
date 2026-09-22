@@ -25,7 +25,12 @@
       <span class="testimonial__logo testimonial__logo--mono{% if logo_large %} testimonial__logo--large{% endif %}" style="--logo: url('{{ mark.src|e('css') }}')" role="img" aria-label="{{ mark.alt|default(company|default('')) }}"></span>
     {% endif %}
   </div>
+  {# The quotation marks are the template's (user question, 22 Sep 2026:
+     "They need to add quotation marks? Or we automatically put them in?"):
+     typographic, round the words; any typed at the edges — straight or
+     curly — are shed first so an older quote is not doubled. #}
+  {% set said = quote|default('')|trim|trim('"\u{201C}\u{201D}')|trim %}
   <blockquote class="testimonial__quote">
-    <p>{{ quote|nl2br }}</p>
+    <p>&ldquo;{{ said|nl2br }}&rdquo;</p>
   </blockquote>
 </article>

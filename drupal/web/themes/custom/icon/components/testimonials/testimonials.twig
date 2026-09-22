@@ -18,7 +18,7 @@
  * chameleon's custom properties, as Columns does).
  */
 #}
-{% set box = box|default('light-grey') %}
+{% set box = box|default('black') %}
 {% set hex = '/^#(?:[0-9a-f]{3,4}|[0-9a-f]{6}|[0-9a-f]{8})$/i' %}
 {% set box_class = attribute({ white: 'theme-work-article', 'light-grey': 'theme-work-article', black: 'dark', blue: 'theme-blue', custom: 'theme-work-article' }, box)|default('') %}
 {% set pair = {
@@ -27,10 +27,19 @@
   custom: [(bg|default('') matches hex ? bg : 'var(--light-grey)'), (ink|default('') matches hex ? ink : 'var(--black)')],
 } %}
 {% set box_style = pair[box] is defined ? '--work-article-bg: ' ~ pair[box][0] ~ '; --work-article-text: ' ~ pair[box][1] : '' %}
-{% if box_class %}<div class="columns columns--1 columns--gap-normal columns--box {{ box_class }} testimonials__box"{% if box_style %} style="{{ box_style }}"{% endif %}><div class="columns__col">{% endif %}
-<section class="testimonials" data-testimonials{% if label %} aria-roledescription="carousel" aria-label="{{ label }}"{% endif %}>
+{# The site's scroll-in entrance (data-animate — the fade-up the pull quotes
+   and the stats band wear; js/reveal.js, utilities/animations.css) on the
+   outermost element: the box when there is one, else the carousel. No
+   velocity skew: in a case study only the media tilts, never the words
+   (user check, 22 Sep 2026: "the scroll skew and load animation is inline
+   with the rest of the site?"). #}
+{% if box_class %}<div class="columns columns--1 columns--gap-normal columns--box {{ box_class }} testimonials__box" data-animate{% if box_style %} style="{{ box_style }}"{% endif %}><div class="columns__col">{% endif %}
+<section class="testimonials" data-testimonials{% if not box_class %} data-animate{% endif %}{% if label %} aria-roledescription="carousel" aria-label="{{ label }}"{% endif %}>
   <div class="testimonials__bar">
     <div class="testimonials__steps">
+      {# one quote: a small quotation mark where the arrows would be (user
+         call, 22 Sep 2026); the CSS swaps them on data-count="1" #}
+      <span class="testimonials__quotemark" aria-hidden="true">&ldquo;</span>
       <button class="testimonials__arrow" type="button" data-testimonials-prev aria-label="{{ 'Previous quote'|t }}">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12H4"/><path d="m10 6-6 6 6 6"/></svg>
       </button>

@@ -12,8 +12,8 @@ field_name: field_work_tile
 entity_type: node
 bundle: work
 label: Square
-description: 'SQUARE, at least 1600px — an image or a looping film. Every frame but the wide feature shows it as is, the split pairs included; the feature uses the Wide tile when one is set, and crops this one otherwise.'
-required: true
+description: 'SQUARE, at least 1600px — an image or a looping film. Every frame but the wide feature shows it as is, the split pairs included; the feature uses the Wide tile when one is set, and crops this one otherwise. Required, unless the Legacy folio card below has layers — they stand in for the tile.'
+required: false
 translatable: false
 default_value: {  }
 default_value_callback: ''

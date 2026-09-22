@@ -27,21 +27,21 @@ props:
         The ground the carousel sits in — padded, on the site's corner — as
         the Columns box. What is inside takes that ground's ink.
       enum:
+        - black
         - light-grey
         - white
-        - black
         - blue
         - custom
         - none
       meta:enum:
+        black: Dark (the dark theme)
         light-grey: Light grey
         white: White
-        black: Black (the dark theme)
         blue: ICON blue
         custom: Custom colours (below)
         none: No box (on the page)
       examples:
-        - light-grey
+        - black
     bg:
       type: string
       title: Custom background

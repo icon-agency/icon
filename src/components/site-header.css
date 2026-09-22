@@ -17,6 +17,17 @@
    untouched: from md the buttons hide and the mark reads --logo-h. */
 .site-header {
   --header-control: 2.75rem;
+  /* The pill's voice, on the header rather than the pill (22 Sep 2026): the
+     wordmark reads it too, to sit under the pill below md. The pill is
+     --nav-row-em wide at rest WITH the home glyph showing (measured in the
+     browser; re-measure if the links change). The voice is whatever makes
+     that fit the width between the gutters, capped at the label voice so it
+     never grows past the desktop size. */
+  --nav-row-em: 31; /* 30.75em measured at 375px with the glyph showing (WORK EXPERTISE ABOUT NEWS CONTACT + search, 0.4em item padding, 1.5em glyph), plus a hair */
+  --nav-voice: min(var(--voice-label), calc((100vw - 1.5rem) / var(--nav-row-em)));
+  /* the pill's height below md: its padding (0.75em × 2) round the row (the
+     1.5em glyph, plus the links' padding), measured 3.64em; a hair over */
+  --nav-pill-h: calc(var(--nav-voice) * 3.7);
 }
 
 /* ---- Wordmark logo (fixed top-left) ------------------------------------- */
@@ -44,11 +55,17 @@
      (user report, Sep 2026: the logo could not be seen on a phone). It scrolls
      away with the page — the bottom pill carries the home glyph from 100px —
      so it can never sit on content or be left stranded behind its mask; the
-     masked slide-out below is desktop-only. From md it is fixed, as designed. */
+     masked slide-out below is desktop-only. From md it is fixed, as designed.
+     UNDER THE PILL (user call, 22 Sep 2026: "place the nav back up the top.
+     Move the logo under it"): the pill sits at the top again below md, and
+     the wordmark drops to the row beneath it, on the page's gutter. */
   position: absolute;
-  top: 1rem;
-  left: var(--gutter-page);
-  z-index: 10001;
+  top: calc(0.75rem + var(--nav-pill-h) + 0.75rem);
+  /* centred under the pill below md (user call, 22 Sep 2026: "centre the
+     logo and the client link on mobile"); from md, on the page's gutter */
+  left: 50%;
+  translate: -50% 0;
+  z-index: 9999; /* under the pill below md: the open EXPERTISE drawer drops over the wordmark's row */
   color: var(--color-foreground);
   display: inline-flex;
   /* Doubles as the MASK for the wordmark's slide reveal (see .is-faded below):
@@ -89,6 +106,9 @@
 @media (min-width: 768px) {
   .site-logo {
     position: fixed;
+    left: var(--gutter-page);
+    translate: none;
+    z-index: 10001; /* beside the pill, never under it */
     top: calc(1.75rem + var(--voice-label) * 0.13 - var(--logo-h) * 0.184);
   }
   .site-logo__mark { height: var(--logo-h); }
@@ -121,53 +141,45 @@
 /* ---- The pill nav ------------------------------------------------------- */
 
 /* ONE PILL AT EVERY WIDTH (user call, Sep 2026). Below md the same pill is
-   anchored at the BOTTOM of the viewport — a thumb-reach bar in place of the
-   hamburger and full-screen menu, which are parked (see "Parked mobile
-   chrome" below). Its type shrinks with the viewport so the whole row always
-   fits between the gutters (down to the smallest phones), and the EXPERTISE
-   drawer opens UPWARD. From md it moves to the top: right-aligned so it
-   clears the fixed wordmark, then centred once there's room.
+   centred at the TOP of the viewport (it was a thumb-reach bar at the bottom
+   for a fortnight; back up top by user call, 22 Sep 2026, the wordmark under
+   it) in place of the hamburger and full-screen menu, which are parked (see
+   "Parked mobile chrome" below). Its type shrinks with the viewport so the
+   whole row always fits between the gutters (down to the smallest phones),
+   and the EXPERTISE drawer opens downward as on the desktop. From md it is
+   right-aligned so it clears the fixed wordmark, then centred once there's
+   room.
 
    Everything inside the pill that has to scale is sized in em off the pill's
-   font-size (--nav-voice), so the fit is one number: the row's width in em.
-   From md the sizes go back to the rem values the desktop was tuned at. */
+   font-size (--nav-voice, set on .site-header so the wordmark can read it),
+   so the fit is one number: the row's width in em. From md the sizes go
+   back to the rem values the desktop was tuned at. */
 .site-nav {
   position: fixed;
   inset-inline: 0;
-  bottom: calc(0.75rem + env(safe-area-inset-bottom, 0px));
+  top: 0.75rem;
   z-index: 10000;
   display: flex;
   justify-content: center;
   padding-inline: 0.75rem;
   transition: opacity var(--duration-normal) var(--ease-standard);
-  /* The pill is --nav-row-em wide at rest WITH the home glyph showing
-     (measured in the browser; re-measure if the links change). The voice is
-     whatever makes that fit the width between the gutters, capped at the
-     label voice so it never grows past the desktop size. */
-  --nav-row-em: 31; /* 30.75em measured at 375px with the glyph showing (WORK EXPERTISE ABOUT NEWS CONTACT + search, 0.4em item padding, 1.5em glyph), plus a hair */
-  --nav-voice: min(var(--voice-label), calc((100vw - 1.5rem) / var(--nav-row-em)));
 }
 
 @media (min-width: 768px) {
   .site-nav {
     top: 1rem;
-    bottom: auto;
     justify-content: flex-end;
     padding-inline: 0 1rem;
     --nav-voice: var(--voice-label);
   }
 }
 
-/* Clearance for the bottom pill: the footer pads its last edge by this much
-   below md (site-footer.css reads it), so the pill never sits on the logo. */
+/* Clearance for a bottom pill: the footer's last edge and the hero's client
+   line read it (site-footer.css, home-c.css). Zero since the pill went back
+   to the top (22 Sep 2026); the token stays so a bottom bar can return with
+   one number. */
 :root {
-  --nav-clearance: calc(4rem + env(safe-area-inset-bottom, 0px));
-}
-
-@media (min-width: 768px) {
-  :root {
-    --nav-clearance: 0px;
-  }
+  --nav-clearance: 0px;
 }
 
 /* CENTRED IN THE 768–900 BAND TOO (user call, Aug 2026) — by making room
@@ -211,7 +223,7 @@
 
 .site-nav__pill {
   display: flex;
-  flex-direction: column-reverse; /* below md the drawer sits ABOVE the row: it drops up */
+  flex-direction: column; /* the drawer under the row at every width (it dropped up while the pill sat at the bottom) */
   align-items: stretch;
   padding: 0.75em 1em;
   border-radius: var(--radius-md);
@@ -396,7 +408,7 @@
   gap: 0.75em;
   margin: 0;
   /* top gap from the row; extra bottom room before the pill's rounded corner
-     (the same pair, mirrored, when the drawer drops up); left pad aligns
+     left pad aligns
      items under SERVICES (JS-set) */
   padding: 1em 0 1em var(--submenu-offset, 0.5em);
   list-style: none;

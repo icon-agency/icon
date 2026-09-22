@@ -56,8 +56,33 @@
   border-bottom: var(--rule-weight) solid var(--rule);
 }
 
-.testimonials[data-count="1"] .testimonials__bar {
+/* ONE QUOTE (user call, 22 Sep 2026: "replace the arrows with a little
+   quotation mark, and keep the 01, and keep the line"): the bar stays —
+   the hairline and the counter, which reads 01 alone — and a small
+   opening quotation mark in the serif stands where the arrows were, on
+   the column's edge like the first arrow's glyph. */
+.testimonials__quotemark {
   display: none;
+  place-items: center;
+  height: 2.75rem; /* the arrows' row */
+  margin-left: calc((2.75rem - 1.5rem) / 2); /* undo the steps' pull, back on the edge */
+  font-family: var(--font-serif);
+  /* THE QUOTE'S OWN MARK, exactly — the same size as the “ that opens the
+     words (user call, 22 Sep 2026) — without growing the row: the box
+     stays the arrows' 2.75rem and the glyph centres in it */
+  font-size: calc(var(--voice-mid) * 1.125); /* .testimonial__quote p */
+  font-weight: var(--font-weight-normal);
+  line-height: 0.6; /* the glyph's own height, so it centres on the row */
+  overflow: visible;
+}
+
+.testimonials[data-count="1"] .testimonials__arrow,
+.testimonials[data-count="1"] .testimonials__of {
+  display: none;
+}
+
+.testimonials[data-count="1"] .testimonials__quotemark {
+  display: grid;
 }
 
 .testimonials__steps {
@@ -103,9 +128,13 @@
    the testimonial)") */
 .testimonials__counter {
   margin: 0;
-  font-size: var(--voice-meta);
-  font-weight: var(--font-weight-normal);
+  /* the News article's date voice, exactly, the same as the team panel's
+     counter (user call, Sep 2026): the label voice at medium, in the
+     meta grey */
+  font-size: var(--voice-label);
+  font-weight: var(--font-weight-medium);
   line-height: 1;
+  color: var(--color-icon-grey);
   font-variant-numeric: tabular-nums;
 }
 
@@ -170,7 +199,10 @@
 
 .testimonial__person {
   margin: 0;
-  font-size: var(--voice-paragraph);
+  /* the Work card's meta voice, exactly (user call, Sep 2026: "See
+     'Cancer Institute NSW' font size. Testimonial details should be the
+     same font size") */
+  font-size: var(--voice-meta);
   line-height: 1.3;
 }
 
@@ -230,7 +262,10 @@
    mid voice's size, the words doing the talking */
 .testimonial__quote {
   margin: 0;
-  padding: 0;
+  /* a little air under the last line (user call, 22 Sep 2026: "add a
+     little padding below the testimonial Miller text") — Miller's
+     descenders sat on the box's floor */
+  padding: 0 0 var(--space-xs);
   border: 0;
   min-width: 0;
 }
