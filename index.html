@@ -216,6 +216,14 @@
               <p class="ds-section__intro">
                 Kumbh Sans (Google Fonts) carries the interface; <li class="ds-swatch"><div class="ds-swatch__chip ds-swatch__chip--footer"></div><div class="ds-swatch__meta"><span class="ds-swatch__name">Footer panel</span><span class="ds-swatch__token">--footer-bg</span><span class="ds-swatch__value">#0d0d0d — fixed in every theme; the SAME literal as light icon-black on purpose, but never an alias (aliasing it flipped the whole footer white in dark — caught live). --footer-ink #ffffff, --footer-muted white @ 55%.</span></div></li> Pixel readouts are measured live from the cascade, not typed in, so this
                 panel cannot drift from the real scale.
+               <strong>The editor&rsquo;s styles (22 Sep 2026)</strong>: the Content block&rsquo;s Style menu offers
+                three paragraph sizes &mdash; Large (<code class="ds-code">p.is-large</code>, the intro statement voice),
+                Normal (the plain paragraph, the way back once another style is on; <code class="ds-code">p.is-normal</code>
+                carries no rule) and Small (<code class="ds-code">p.is-small</code>, a step down at medium) &mdash; with body
+                copy itself at MEDIUM weight (user call: &ldquo;the same font weight as small&rdquo;); on a Heading 2,
+                Sentence case, Miller (serif) and Large (<code class="ds-code">h2.is-large</code>, the Masthead&rsquo;s
+                caps H1 to the token); Caps label on an H4; Slash bullets and Caps list on lists. One style per element:
+                picking one takes its rivals off.
               </p>
 
               <div class="ds-group">
@@ -817,6 +825,9 @@
                 masthead lockup&rsquo;s line height with the Subscribe bar centred beneath, and the
                 body&rsquo;s newsletter column and office accordion go, because LET&rsquo;S TALK would
                 invite the reader to the page they are on and the offices are open just above.
+               Since 16 Sep the form opens on a question &mdash; Business enquiry or Careers &mdash; and a required field left
+                empty says so under itself (Drupal&rsquo;s inline form errors, on site-wide; the form dresses
+                <code class="ds-code">.form-item--error-message</code> in the meta voice, the field&rsquo;s hairline filling to match).
               </p>
 
               <div class="ds-group">
@@ -1121,6 +1132,9 @@
                 (<code class="ds-code">hover: hover</code> &mdash; on touch, <code class="ds-code">:hover</code>
                 sticks after a tap): the mask draws in 1.6% (the frame closes on the image, the
                 image never moves), the media brightens 1.08, and the arrow fades + slides in.
+               <strong>Drupal, the Work: latest rail</strong> (22 Sep 2026): a block whose panel sets the two-line heading
+                (&ldquo;Latest&rdquo; over &ldquo;Work&rdquo; to start), the category the feed draws from and how many; the rail
+                draws nothing at all when the category has no work yet.
               </p>
 
               <div class="ds-group">
@@ -1590,6 +1604,11 @@
                 logo reads the same on any ground &mdash; or as uploaded. It sits in the Columns box by default
                 &mdash; light grey, or white, black, blue or none in the panel &mdash; and the quote is set in Miller,
                 the serif, at the mid voice.
+               Since then: the quotes are content (a Testimonial type: name, role and company &mdash; a line each under the name
+                &mdash; the quote and the mark), picked or added in the item&rsquo;s panel; the box takes two colours of its own
+                (Custom, a background and a foreground); the mark is always one colour, sits on the frame&rsquo;s bottom-left
+                corner, and a &ldquo;Larger logo&rdquo; tick gives a tall or square mark half again the box; the quote is an eighth
+                over the mid voice.
               </p>
               <div class="ds-group">
                 <h4 class="ds-group__title">Live &mdash; one of three</h4>
@@ -1707,6 +1726,33 @@
               </div>
             </section>
 
+            <section class="ds-section" id="spacer">
+              <h3 class="ds-section__title">Spacer</h3>
+              <p class="ds-section__intro">
+                <code class="ds-code">.spacer</code> (<code class="ds-code">src/components/spacer.css</code>; Drupal
+                <code class="ds-code">components/spacer</code>, the Layout section beside the Line; 16 Sep 2026, user ask:
+                &ldquo;you know how we have line, can you add a spacer to layout&rdquo;) &mdash; empty height between two blocks
+                on the page&rsquo;s own spacing scale, adding to the flow gap around it: Small (<code class="ds-code">--space-sm</code>),
+                Normal (<code class="ds-code">--space-md</code>, the default), Large (<code class="ds-code">--space-lg</code>) and
+                A section&rsquo;s air (<code class="ds-code">--space-section</code>). It draws nothing and reads as nothing
+                (<code class="ds-code">aria-hidden</code>); the Line is the rule.
+              </p>
+              <div class="ds-group">
+                <h4 class="ds-group__title">Live &mdash; the four heights</h4>
+                <div class="ds-demo">
+                  <p class="ds-demo__label">Small</p>
+                  <div class="spacer spacer--small" aria-hidden="true"></div>
+                  <p class="ds-demo__label">Normal</p>
+                  <div class="spacer spacer--normal" aria-hidden="true"></div>
+                  <p class="ds-demo__label">Large</p>
+                  <div class="spacer spacer--large" aria-hidden="true"></div>
+                  <p class="ds-demo__label">A section&rsquo;s air</p>
+                  <div class="spacer spacer--section" aria-hidden="true"></div>
+                  <p class="ds-demo__label">end</p>
+                </div>
+              </div>
+            </section>
+
             <section class="ds-section" id="expertise-links">
               <h3 class="ds-section__title">Expertise links</h3>
               <p class="ds-section__intro">
@@ -1773,6 +1819,9 @@
                 grid drifting in layers. Wrap constraint: a single track must stay <strong>wider than any
                 viewport</strong> or the loop shows a gap &mdash; nine cards a side clear 4xl (2560px) by
                 ~4%; re-check that margin if the split ever drops below nine or the cards shrink.
+               <strong>Larger logo</strong> (22 Sep 2026): a tick on the logo itself grows its box to 94% &times; 78% of the
+                stage (<code class="ds-code">.client__logo--large</code>, from 72% &times; 58%) inside the same card, for a
+                tall or square mark that sat small.
               </p>
 
               <div class="ds-group">
@@ -2223,6 +2272,10 @@
                 with the work gallery&rsquo;s 16px gap between the portraits. A card fills its row with the
                 role&rsquo;s track the one that grows, so the plus sits on one line across a row whatever
                 the role&rsquo;s length.
+               The panel&rsquo;s bar sits on the panel&rsquo;s own two columns from 1024px (22 Sep 2026): the arrows over the
+                portrait, the counter over the text column on the name&rsquo;s left edge with the close at that column&rsquo;s
+                end, and the counter in the profile card&rsquo;s job title font, &ldquo;01 / 06&rdquo; with the total muted,
+                the same as the Testimonials carousel&rsquo;s.
               </p>
 
               <div class="ds-group">
@@ -2592,6 +2645,9 @@
                 holds <code class="ds-code">.is-hinting</code> while the bar is under the pointer or the
                 field focused; a <code class="ds-code">&lt;div&gt;</code>, not a form, until the newsletter
                 slice gives it somewhere to submit.
+               Its resting width is the hint&rsquo;s own measure (22 Sep 2026: &ldquo;Subscrik&rdquo; and &ldquo;Your em&rdquo; on a
+                wide screen) &mdash; room for &ldquo;Your email&rdquo; at the hint&rsquo;s 1.35&times; label voice, the two glyph
+                boxes, the gaps and the padding &mdash; with 13rem as the floor; the open width is unchanged.
               </p>
               <div class="ds-group">
                 <h4 class="ds-group__title">At rest &mdash; hover the pill for the hint swap</h4>
