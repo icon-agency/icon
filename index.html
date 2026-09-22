@@ -487,20 +487,17 @@
                   The move between pages is a cross-document View Transition
                   (<code class="ds-code">src/utilities/page-transition.css</code>, <code class="ds-code">@view-transition { navigation: auto }</code>) &mdash;
                   the browser snapshots the old page, the new one loads, CSS animates between. The move is a
-                  <strong>wipe</strong> (Sep 2026, after leoparpeix.com; it was a fade): a blue disc grows from the
-                  centre over the old page (600ms, in and out) with the <strong>Make what matters</strong> lockup white at
-                  its centre, at the hero&rsquo;s size (<code class="ds-code">--hero-square-size</code>), masked by the
-                  same growing circle so it only exists inside the blue; holds; and shrinks back to the centre (500ms,
-                  from 850ms), the lockup masked away with it, to uncover the new page, whose own reveals then
-                  do the arriving (<code class="ds-code">--animate-hold</code> waits the whole 1.35s). The
-                  <strong>chrome</strong> &mdash; the wordmark and the pill &mdash; carries its own names and holds its place
-                  on top of the square. <code class="ds-code">js/page-transition.js</code>, a plain IIFE in
-                  <code class="ds-code">&lt;head&gt;</code>, plants the square and the mark in the new page&rsquo;s first frame as named
-                  elements (nothing in the leaving page &mdash; a live element there painted once before the snapshot,
-                  a flash); the CSS animates the snapshots, the square&rsquo;s playing both halves over the old
-                  page&rsquo;s last frame.
-                  Reduced motion switches it off; Firefox simply navigates. This index carries it too, so a click through
-                  to a template wipes.
+                  <strong>fade</strong>, in every case (22 Sep 2026, user call: &ldquo;put back the simple one with the background
+                  transition, text fade out and new page build in. locked logo/navigation as is&rdquo; &mdash; a corner wipe, a
+                  card-to-banner morph and a disc-and-lockup wipe were each built and taken out again): grounds alike, a
+                  crossfade (old out in 300ms on the standard ease, new in over 450ms on the decelerate ease); a ground that
+                  changes, a fade <strong>through</strong> the new ground first, so the two never mix into a third colour
+                  (<code class="ds-code">js/page-transition.js</code> compares the grounds and sets the
+                  <code class="ds-code">fade-through</code> type). The new page&rsquo;s own reveals do the arriving, held for the
+                  fade (<code class="ds-code">--animate-hold</code>). The <strong>chrome</strong> &mdash; the wordmark and the pill
+                  &mdash; carries its own names and holds its place across pages. Inside the editor&rsquo;s frames the script
+                  opts the document out, so the move never plays in a preview. Reduced motion switches it off; Firefox,
+                  without cross-document transitions, simply navigates.
                 </p>
               </div>
             </section>
