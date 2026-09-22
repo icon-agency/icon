@@ -126,6 +126,15 @@
    is the one child that does not. */
 .testimonials__track > :not(.canvas--slot-empty-placeholder) {
   grid-area: 1 / 1;
+  /* and the child fills the cell (a grid child stretches): the frame is
+     the tallest quote's height, so a shorter quote's columns run the whole
+     frame and its mark sits at the FRAME's foot, the box's bottom-left —
+     not the quote's (user call, Sep 2026: "I meant bottom left") */
+  display: grid;
+}
+
+.testimonials__track .testimonial {
+  min-height: 100%;
 }
 
 .testimonial {
@@ -260,6 +269,7 @@
 
 .testimonials.is-editing .testimonials__track > :not(.canvas--slot-empty-placeholder) {
   grid-area: auto;
+  display: block;
 }
 
 .testimonials.is-editing .testimonial {
