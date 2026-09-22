@@ -5,8 +5,10 @@ status: stable
 description: |
   One client quote for the Testimonials carousel: who said it and where they
   work on the left, their company's mark at the foot of that column, the
-  quote on the right. The mark can be shown in one colour — the page's ink —
-  so a row of logos reads as one set. Place it in a Testimonials (group).
+  quote on the right. The mark is always shown in one colour — the box's
+  ink — so every logo in the carousel reads as one set. Rendered by the
+  Testimonial (item) block from a Testimonial content item (icon_site); the
+  block is what the library offers, this SDC draws it.
 props:
   type: object
   required:
@@ -16,6 +18,10 @@ props:
       type: string
       title: Quote
       description: What they said, without quotation marks. A line break in the text breaks the line.
+      # The pattern is Canvas's cue for LONG text: a multi-line box with no
+      # 255-character cap (user catch, Sep 2026: a quote that hit the cap
+      # "i think I cant type in this").
+      pattern: '(.|\r?\n)*'
       examples:
         - ICON’s enthusiasm, fresh thinking, and understanding of our diverse audience made them the perfect fit as our agency partner.
     name:
@@ -33,11 +39,5 @@ props:
     logo:
       type: integer
       title: Logo
-      description: The company's mark, from the media library — a client logo or a picture. Optional.
+      description: The company's mark, from the media library — a client logo or a picture, shown in the box's ink. Optional.
       x-icon-media: logo
-    monochrome:
-      type: boolean
-      title: One colour
-      description: Show the mark in the page's ink, so every logo in the carousel reads the same. Off shows it as uploaded.
-      examples:
-        - true

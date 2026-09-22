@@ -45,7 +45,7 @@ $plan = [
   // the same items.
   'Testimonials' => [
     'sdc.icon.testimonials',
-    'sdc.icon.testimonial',
+    'block.icon_testimonial',
   ],
   'Expertise' => [
     'sdc.icon.expertise-links',
@@ -106,6 +106,9 @@ $hide = [
   // The bare Views block: Work: latest (icon_work_latest) embeds the same
   // display with its heading and feed chosen in the panel (Sep 2026).
   'block.views_block.work-latest',
+  // The testimonial SDC renders the Testimonial (item) block's pick; a
+  // quote is content now, not typed per page (Sep 2026).
+  'sdc.icon.testimonial',
   // The Run: the runs are inferred on the page since Sep 2026 (user call —
   // a Run could be missed); the older articles' Runs still render.
   'sdc.icon.run',

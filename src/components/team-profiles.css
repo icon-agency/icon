@@ -303,18 +303,45 @@ html.is-team-open {
   border-bottom: 1px solid var(--rule);
 }
 
-/* the arrows lead, the counter reads beside them (user call, Sep 2026) */
+/* the arrows lead; the counter and the close share the ledger beside
+   them — below the two-column panel the ledger runs the rest of the bar,
+   the counter reading after the arrows and the close at the far end */
 .team-overlay__steps {
   display: flex;
   align-items: center;
   gap: var(--space-2xs);
 }
 
+.team-overlay__ledger {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-sm);
+  min-width: 0;
+}
+
+/* the bar on the panel's own two columns from the two-column panel up:
+   the arrows over the portrait, the ledger over the text column — the
+   counter on the name's left edge, the close at that column's end (user
+   call, Sep 2026: "The 01 / 06 should left align with the content i.e.
+   the H2"). Stated after the bar's flex rule above, which it replaces. */
+@media (min-width: 1024px) {
+  .team-overlay__bar {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    column-gap: var(--space-lg);
+  }
+}
+
+/* the profile card's job title font (.team__role: the meta voice at book
+   weight), the same on the testimonials carousel's counter (user call, Sep
+   2026: "make sure the 01 / 06 in both cases is the same font as Profile
+   job title"); the total muted */
 .team-overlay__counter {
-  margin-left: var(--space-2xs);
-  font-size: var(--voice-label);
-  font-weight: var(--font-weight-medium);
-  letter-spacing: 0.05em;
+  font-size: var(--voice-meta);
+  font-weight: var(--font-weight-normal);
+  line-height: 1;
   font-variant-numeric: tabular-nums;
 }
 

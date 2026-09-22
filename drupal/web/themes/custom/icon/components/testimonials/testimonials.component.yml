@@ -7,15 +7,49 @@ description: |
   js/testimonials.js), the team panel's bar — the arrows, the counter, the
   hairline — over one quote at a time: the person and their company on the
   left with the company's mark at the foot, the quote on the right. The
-  quotes are Testimonial (item) components in the slot; add, reorder and
-  remove them there. With one quote the bar goes and it stands as a single
-  testimonial.
+  quotes are Testimonial (item) blocks in the slot, each picking a
+  Testimonial from the content — or adding one — in its panel; add, reorder
+  and remove them there. With one quote the bar goes and it stands as a single
+  testimonial. It sits in a box by default — light grey, the Columns box's
+  own — or on white, black, blue, two colours of your own, or none.
 libraryOverrides:
   dependencies:
     - icon/testimonials
 props:
   type: object
+  required:
+    - box
   properties:
+    box:
+      type: string
+      title: Box
+      description: >
+        The ground the carousel sits in — padded, on the site's corner — as
+        the Columns box. What is inside takes that ground's ink.
+      enum:
+        - light-grey
+        - white
+        - black
+        - blue
+        - custom
+        - none
+      meta:enum:
+        light-grey: Light grey
+        white: White
+        black: Black (the dark theme)
+        blue: ICON blue
+        custom: Custom colours (below)
+        none: No box (on the page)
+      examples:
+        - light-grey
+    bg:
+      type: string
+      title: Custom background
+      description: 'A hex colour, e.g. #edeef5. Used when Box is Custom.'
+    ink:
+      type: string
+      title: Custom foreground
+      description: 'The text, arrows, line and logo colour on it, a hex value, e.g. #0d0d0d. Used when Box is Custom.'
     label:
       type: string
       title: Accessible label

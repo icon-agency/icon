@@ -1,0 +1,19 @@
+uuid: e076b59c-322c-47ab-bd48-58c89d07b1fb
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_testimonial_company
+    - node.type.testimonial
+id: node.testimonial.field_testimonial_company
+field_name: field_testimonial_company
+entity_type: node
+bundle: testimonial
+label: 'Role and company'
+description: 'Their role and where, e.g. Marketing Director at IMG.'
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

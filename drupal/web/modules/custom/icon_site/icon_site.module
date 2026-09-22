@@ -1110,7 +1110,7 @@ function icon_site_page_attachments(array &$attachments): void {
  */
 function _icon_site_panel_node_form_alter(array &$form, FormStateInterface $form_state): void {
   $node = $form_state->getFormObject()->getEntity();
-  if (!in_array($node->bundle(), ['hero_slide', 'team_member'], TRUE) || !\Drupal::request()->query->get('panel')) {
+  if (!in_array($node->bundle(), ['hero_slide', 'team_member', 'testimonial'], TRUE) || !\Drupal::request()->query->get('panel')) {
     return;
   }
   $form['#prefix'] = '<div id="icon-panel-form">';

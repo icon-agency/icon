@@ -463,6 +463,21 @@
       var order = document.querySelector(".icon-panel--reel") ? document.querySelector("input.icon-panel__order") : null;
       var nid = saved && saved[0];
       var isNew = saved && saved[1];
+      // an item created from a PICK panel (a Testimonial) is picked at once:
+      // its option is added to the select and chosen (Canvas autosaves the
+      // setting) before the reload brings the real list
+      var pick = document.querySelector("select.icon-panel__pick");
+      if (pick && isNew && nid) {
+        if (!pick.querySelector('option[value="' + nid + '"]')) {
+          var option = document.createElement("option");
+          option.value = String(nid);
+          option.textContent = String(nid);
+          pick.appendChild(option);
+        }
+        setValue(pick, String(nid));
+        setTimeout(function () { window.location.reload(); }, 900);
+        return;
+      }
       if (order && isNew && nid && order.value.split(",").indexOf(String(nid)) === -1) {
         setValue(order, (order.value ? order.value + "," : "") + nid);
         setTimeout(function () { window.location.reload(); }, 900);

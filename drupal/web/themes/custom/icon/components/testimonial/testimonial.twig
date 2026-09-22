@@ -3,10 +3,11 @@
  * @file
  * testimonial — one quote of the carousel (components/testimonials.css):
  * a two-column article, the person on the left with the mark at the foot
- * (margin-top: auto), the quote on the right. In one colour the mark is a
- * CSS mask over the ink, so any logo — black on white, a full-colour PNG —
- * reads as the page's ink on any ground; as uploaded it is the image
- * itself. The mark's source is icon_media(): a Logo (file) or a picture.
+ * (margin-top: auto), the quote on the right. The mark is always one
+ * colour (user call, Sep 2026: "the logo should never be colour"): a CSS
+ * mask over the ink, so any logo — black on white, a full-colour PNG —
+ * reads as the box's ink on any ground. Its source is icon_media(): a
+ * Logo (file) or a picture.
  */
 #}
 {% set mark = logo ? icon_media(logo, 'work_media') : [] %}
@@ -19,11 +20,7 @@
       </p>
     {% endif %}
     {% if mark.src %}
-      {% if monochrome %}
-        <span class="testimonial__logo testimonial__logo--mono" style="--logo: url('{{ mark.src|e('css') }}')" role="img" aria-label="{{ mark.alt|default(company|default('')) }}"></span>
-      {% else %}
-        <img class="testimonial__logo" src="{{ mark.src }}" alt="{{ mark.alt|default(company|default('')) }}" loading="lazy">
-      {% endif %}
+      <span class="testimonial__logo testimonial__logo--mono" style="--logo: url('{{ mark.src|e('css') }}')" role="img" aria-label="{{ mark.alt|default(company|default('')) }}"></span>
     {% endif %}
   </div>
   <blockquote class="testimonial__quote">

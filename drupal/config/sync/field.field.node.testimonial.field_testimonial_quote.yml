@@ -1,0 +1,19 @@
+uuid: 04d08799-e55f-454f-b216-4c62ff6f1d92
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_testimonial_quote
+    - node.type.testimonial
+id: node.testimonial.field_testimonial_quote
+field_name: field_testimonial_quote
+entity_type: node
+bundle: testimonial
+label: Quote
+description: 'What they said, without quotation marks. A line break in the text breaks the line.'
+required: true
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string_long

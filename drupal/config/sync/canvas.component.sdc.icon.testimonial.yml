@@ -1,6 +1,6 @@
 uuid: a4afdfc0-24bb-4a61-99c2-6734be94f251
 langcode: en
-status: true
+status: false
 dependencies:
   config:
     - media.type.image
@@ -10,21 +10,142 @@ dependencies:
     - media_library
   theme:
     - icon
-active_version: f9cff7baae48e58c
+active_version: 4031499895d832b7
 versioned_properties:
   active:
     settings:
       prop_field_definitions:
         quote:
           required: true
+          field_type: string_long
+          field_storage_settings: {  }
+          field_instance_settings: {  }
+          field_widget: string_textarea
+          default_value:
+            -
+              value: 'ICON’s enthusiasm, fresh thinking, and understanding of our diverse audience made them the perfect fit as our agency partner.'
+          expression: ℹ︎string_long␟value
+          derived_schema_metadata:
+            string_shape:
+              pattern: '(.|\r?\n)*'
+        name:
+          required: false
           field_type: string
           field_storage_settings: {  }
           field_instance_settings: {  }
           field_widget: string_textfield
           default_value:
             -
-              value: 'ICON’s enthusiasm, fresh thinking, and understanding of our diverse audience made them the perfect fit as our agency partner.'
+              value: 'Allie Natoli'
           expression: ℹ︎string␟value
+          derived_schema_metadata:
+            string_shape: {  }
+        company:
+          required: false
+          field_type: string
+          field_storage_settings: {  }
+          field_instance_settings: {  }
+          field_widget: string_textfield
+          default_value:
+            -
+              value: 'Marketing Director at IMG'
+          expression: ℹ︎string␟value
+          derived_schema_metadata:
+            string_shape: {  }
+        logo:
+          required: false
+          field_type: entity_reference
+          field_storage_settings:
+            target_type: media
+          field_instance_settings:
+            handler: 'default:media'
+            handler_settings:
+              target_bundles:
+                logo: logo
+                image: image
+              sort:
+                field: _none
+                direction: ASC
+              auto_create: false
+          field_widget: media_library_widget
+          default_value: null
+          expression: ℹ︎entity_reference␟target_id
+          derived_schema_metadata: {  }
+    fallback_metadata:
+      slot_definitions: {  }
+  14d600b3c61ddbd6:
+    settings:
+      prop_field_definitions:
+        quote:
+          required: true
+          field_type: string_long
+          field_storage_settings: {  }
+          field_instance_settings: {  }
+          field_widget: string_textarea
+          default_value:
+            -
+              value: 'ICON’s enthusiasm, fresh thinking, and understanding of our diverse audience made them the perfect fit as our agency partner.'
+          expression: ℹ︎string_long␟value
+          derived_schema_metadata:
+            string_shape: {  }
+        name:
+          required: false
+          field_type: string
+          field_storage_settings: {  }
+          field_instance_settings: {  }
+          field_widget: string_textfield
+          default_value:
+            -
+              value: 'Allie Natoli'
+          expression: ℹ︎string␟value
+          derived_schema_metadata:
+            string_shape: {  }
+        company:
+          required: false
+          field_type: string
+          field_storage_settings: {  }
+          field_instance_settings: {  }
+          field_widget: string_textfield
+          default_value:
+            -
+              value: 'Marketing Director at IMG'
+          expression: ℹ︎string␟value
+          derived_schema_metadata:
+            string_shape: {  }
+        logo:
+          required: false
+          field_type: entity_reference
+          field_storage_settings:
+            target_type: media
+          field_instance_settings:
+            handler: 'default:media'
+            handler_settings:
+              target_bundles:
+                logo: logo
+                image: image
+              sort:
+                field: _none
+                direction: ASC
+              auto_create: false
+          field_widget: media_library_widget
+          default_value: null
+          expression: ℹ︎entity_reference␟target_id
+          derived_schema_metadata: {  }
+    fallback_metadata:
+      slot_definitions: {  }
+  f9cff7baae48e58c:
+    settings:
+      prop_field_definitions:
+        quote:
+          required: true
+          field_type: string_long
+          field_storage_settings: {  }
+          field_instance_settings: {  }
+          field_widget: string_textarea
+          default_value:
+            -
+              value: 'ICON’s enthusiasm, fresh thinking, and understanding of our diverse audience made them the perfect fit as our agency partner.'
+          expression: ℹ︎string_long␟value
           derived_schema_metadata:
             string_shape: {  }
         name:

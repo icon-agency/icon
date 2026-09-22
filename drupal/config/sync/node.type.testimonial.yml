@@ -1,0 +1,11 @@
+uuid: 3f926c94-9614-4698-9889-e7731f2f0f40
+langcode: en
+status: true
+dependencies: {  }
+name: Testimonial
+type: testimonial
+description: 'A client quote for the Testimonials carousel: who said it, their role and company, the company’s mark. Picked in the Testimonial (item) panel on any page.'
+help: null
+new_revision: true
+preview_mode: 0
+display_submitted: false

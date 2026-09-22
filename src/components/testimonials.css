@@ -24,6 +24,27 @@
   padding-inline: 0;
 }
 
+/* A BOX IN A BOX (user catch, Sep 2026: "can you remove the double
+   padding"): placed inside a Columns box, the carousel's own box gives way
+   — no padding, ground, corner or gutter of its own — and takes the outer
+   box's colours: the raw role tokens its theme class would rebind inherit
+   the outer's instead, and the aliases .columns--box re-declares read
+   those. The outer box is the box; the pick on the carousel is moot.
+   (Weighted past columns.css's own nested-box rule, .columns
+   .columns.columns--box, which keeps a nested box's padding.) */
+.columns--box .columns.columns--box.testimonials__box {
+  --background: inherit;
+  --foreground: inherit;
+  --border: inherit;
+  --icon-black: inherit;
+  --icon-grey: inherit;
+  --icon-blue: inherit;
+  margin-inline: 0;
+  padding: 0;
+  border-radius: 0;
+  background-color: transparent;
+}
+
 /* ---- the bar: the team panel's, on the quote's two columns ---------------- */
 .testimonials__bar {
   display: grid;
@@ -74,14 +95,16 @@
   outline-offset: 2px;
 }
 
-/* the counter in the Paragraph voice — bigger than the team panel's label
-   (user call: "make the 01 / 06 font bigger like the testimonial") — and
-   over the quote column, on its left edge (user call: "Align with the
-   Person's name below (Quote on the testimonial)") */
+/* the counter in the profile card's job title font (team-profiles.css
+   .team__role: the meta voice at book weight — user call, Sep 2026: "make
+   sure the 01 / 06 in both cases is the same font as Profile job title";
+   it was the Paragraph voice at first), over the quote column on its
+   left edge (user call: "Align with the Person's name below (Quote on
+   the testimonial)") */
 .testimonials__counter {
   margin: 0;
-  font-size: var(--voice-paragraph);
-  font-weight: var(--font-weight-medium);
+  font-size: var(--voice-meta);
+  font-weight: var(--font-weight-normal);
   line-height: 1;
   font-variant-numeric: tabular-nums;
 }
@@ -149,27 +172,35 @@
   color: color-mix(in srgb, currentColor 72%, transparent);
 }
 
+/* THE SCROLLER'S RULE (user call, Sep 2026: "can the logos be the
+   identical size rule to the logo scroller logos"): the same stage the
+   clients marquee sizes its marks against (home-c.css, .client) and the
+   same bounds on it — 72% of the stage's 2.05:1 width, 58% of its height,
+   the mark fitted inside at its own ratio — so a logo here is the size it
+   is in the scroller, only left-aligned in its box */
 .testimonial__logo {
+  --client-stage-h: clamp(5rem, 7.7vw, 9.5rem);
   display: block;
   margin-top: auto;
-  width: auto;
-  max-width: 12rem;
-  height: 3.5rem;
+  width: calc(var(--client-stage-h) * 2.05 * 0.72);
+  height: calc(var(--client-stage-h) * 0.58);
   object-fit: contain;
   object-position: left center;
 }
 
-/* one colour: the mark as a mask over the ink — any logo, any ground.
-   The source rides in as --logo on the element (the one inline value the
+/* one colour, always (user call, Sep 2026: "the logo should never be
+   colour"): the mark as a mask over the ink — any logo, any ground. The
+   source rides in as --logo on the element (the one inline value the
    verify gate allows: a custom property). */
 .testimonial__logo--mono {
-  width: 12rem;
   background: currentColor;
   -webkit-mask: var(--logo) left center / contain no-repeat;
   mask: var(--logo) left center / contain no-repeat;
 }
 
-/* the quote: the mid voice at book weight, the words doing the talking */
+/* the quote in Miller, the serif, at book weight (user call, Sep 2026:
+   "The quote can be in the Miller font") — the pull quote's face at the
+   mid voice's size, the words doing the talking */
 .testimonial__quote {
   margin: 0;
   padding: 0;
@@ -179,6 +210,7 @@
 
 .testimonial__quote p {
   margin: 0;
+  font-family: var(--font-serif);
   font-size: var(--voice-mid);
   font-weight: var(--font-weight-normal);
   line-height: 1.25;

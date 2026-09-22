@@ -1590,11 +1590,14 @@
                 of that column, and the quote on the right in the mid voice at book weight. The quotes stack in one
                 grid cell so the frame is the tallest quote&rsquo;s height; the current one fades and rises in. One
                 quote takes the bar away. The mark can be shown in one colour &mdash; a CSS mask over the ink, so any
-                logo reads the same on any ground &mdash; or as uploaded.
+                logo reads the same on any ground &mdash; or as uploaded. It sits in the Columns box by default
+                &mdash; light grey, or white, black, blue or none in the panel &mdash; and the quote is set in Miller,
+                the serif, at the mid voice.
               </p>
               <div class="ds-group">
                 <h4 class="ds-group__title">Live &mdash; one of three</h4>
                 <div class="ds-demo">
+                  <div class="columns columns--1 columns--gap-normal columns--box theme-work-article testimonials__box" style="--work-article-bg: var(--light-grey); --work-article-text: var(--black)"><div class="columns__col">
                   <section class="testimonials" data-testimonials data-count="3" aria-roledescription="carousel" aria-label="What our clients say">
                     <div class="testimonials__bar">
                       <div class="testimonials__steps">
@@ -1625,6 +1628,7 @@
                       </article>
                     </div>
                   </section>
+                  </div></div>
                 </div>
               </div>
             </section>
@@ -2328,11 +2332,13 @@
                         <button class="team-overlay__arrow" type="button" aria-label="Next">
                           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12h16" /><path d="m14 6 6 6-6 6" /></svg>
                         </button>
-                        <span class="team-overlay__counter"><span>02</span><span class="team-overlay__of">/06</span></span>
                       </div>
-                      <button class="team-overlay__close" type="button" aria-label="Close">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>
-                      </button>
+                      <div class="team-overlay__ledger">
+                        <span class="team-overlay__counter"><span>02</span><span class="team-overlay__of"> / 06</span></span>
+                        <button class="team-overlay__close" type="button" aria-label="Close">
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>
+                        </button>
+                      </div>
                     </div>
                     <article class="team-overlay__profile">
                       <figure class="team-overlay__portrait">

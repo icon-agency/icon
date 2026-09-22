@@ -43,11 +43,14 @@
           <button class="team-overlay__arrow" type="button" data-team-next aria-label="{{ 'Next'|t }}">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12h16" /><path d="m14 6 6 6-6 6" /></svg>
           </button>
-          <span class="team-overlay__counter" aria-live="polite"><span data-team-index>01</span><span class="team-overlay__of">/{{ '%02d'|format(n) }}</span></span>
         </div>
-        <button class="team-overlay__close" type="button" data-team-close aria-label="{{ 'Close'|t }}">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>
-        </button>
+        {# the counter over the text column, on the name's left edge, with the close at the column's end (user call, Sep 2026) #}
+        <div class="team-overlay__ledger">
+          <span class="team-overlay__counter" aria-live="polite"><span data-team-index>01</span><span class="team-overlay__of"> / {{ '%02d'|format(n) }}</span></span>
+          <button class="team-overlay__close" type="button" data-team-close aria-label="{{ 'Close'|t }}">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>
+          </button>
+        </div>
       </div>
       {% for m in members %}
         <article class="team-overlay__profile" data-team-profile="{{ m.slug }}" hidden>

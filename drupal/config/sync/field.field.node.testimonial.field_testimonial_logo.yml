@@ -1,0 +1,29 @@
+uuid: 6c077bf7-3344-4191-a242-d6dbe9d38235
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_testimonial_logo
+    - media.type.image
+    - media.type.logo
+    - node.type.testimonial
+id: node.testimonial.field_testimonial_logo
+field_name: field_testimonial_logo
+entity_type: node
+bundle: testimonial
+label: Logo
+description: 'The company’s mark, from the media library — a client logo or a picture, shown in one colour. Optional.'
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:media'
+  handler_settings:
+    target_bundles:
+      logo: logo
+      image: image
+    sort:
+      field: _none
+    auto_create: false
+field_type: entity_reference

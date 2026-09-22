@@ -98,6 +98,16 @@ block.settings.icon_contact_form:
   constraints:
     FullyValidatable: ~
 
+block.settings.icon_testimonial:
+  type: block_settings
+  label: 'Testimonial (item) block settings'
+  constraints:
+    FullyValidatable: ~
+  mapping:
+    testimonial:
+      type: integer
+      label: 'Testimonial'
+
 block.settings.icon_work_latest:
   type: block_settings
   label: 'Work: latest block settings'
