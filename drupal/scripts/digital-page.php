@@ -118,8 +118,11 @@ foreach (array_chunk($services, 3) as $three) {
 }
 
 // ---- Latest work from digital -----------------------------------------------
-$add('sdc.icon.prose', $prose('<h2 class="is-sentence">Latest work from digital</h2>'));
-$add('block.views_block.work-latest', ['label' => 'Latest work', 'label_display' => '0', 'views_label' => '', 'items_per_page' => NULL]);
+// The rail's own heading, and the feed narrowed (user call, Sep 2026: the
+// Content heading above it doubled the rail's lockup). The work category
+// list has no "Digital": Websites is the digital work, until the list says
+// otherwise — the panel offers the list.
+$add('block.icon_work_latest', ['label' => 'Work: latest', 'label_display' => '0', 'accent' => 'Latest', 'caps' => 'Digital work', 'category' => 'websites', 'count' => 2]);
 
 // ---- Save: the words the old page carried in its head -----------------------
 $page->set('title', 'Digital');

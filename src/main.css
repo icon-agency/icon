@@ -58,6 +58,8 @@
 @import "./components/pager.css";
 @import "./components/pull-quote.css";
 @import "./components/divider.css";
+@import "./components/spacer.css";
+@import "./components/testimonials.css";
 @import "./components/venn.css";
 @import "./components/site-footer.css";
 @import "./components/quiet-link.css";

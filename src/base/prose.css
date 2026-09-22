@@ -100,10 +100,21 @@
     text-transform: none;
   }
 
-  /* Paragraph — Small (user call, Sep 2026): a step down for asides and
-     captions, the team panel's bio size; the editor's Styles menu. */
+  /* THREE PARAGRAPH SIZES in the editor's Styles menu (user call, Sep
+     2026: "a large, Normal and Small paragraph option. Normal should be
+     the default. Currently there is no way to select normal once you
+     select another style"): Large (is-large, below), Normal and Small.
+     NORMAL IS THE PLAIN PARAGRAPH — p.is-normal has no rule on purpose;
+     the class exists because a CKEditor style must carry one, and picking
+     it takes Large, Small or Caps off (the one-style plugin), which is the
+     way back to the body text. A new paragraph is Normal without it.
+
+     Paragraph — Small: a step down for asides, captions and lists, the
+     team panel's bio size, a weight up — medium — so it holds its own at
+     the smaller size (user call: "up the font weight by one"). */
   .content-page p.is-small {
     font-size: 1.0625rem;
+    font-weight: var(--font-weight-medium);
     line-height: 1.6;
   }
 
@@ -168,6 +179,20 @@
     text-transform: none;
   }
 
+  /* Heading 2 — Large (user ask, Sep 2026: "a Large H2 option style that
+     is the exact size of the H1"): the Masthead's caps line to the token
+     (components/page-header.css, .page-header__lockup-caps) — the same
+     size, weight, leading and tracking, so a Content block's H2 can stand
+     where a masthead would. */
+  .content-page h2.is-large {
+    font-size: var(--voice-display);
+    font-weight: 900;
+    line-height: 1;
+    letter-spacing: var(--tracking-caps);
+    text-transform: uppercase;
+    text-wrap: balance;
+  }
+
   .content-page h3 {
     font-size: clamp(2rem, 2.5vw, 3rem);
     font-weight: 500;
@@ -206,6 +231,10 @@
 
   .content-page p {
     font-size: var(--voice-paragraph);
+    /* medium, the weight Small took the same day (user call, Sep 2026: "I
+       want the Normal to be the same font weight as small") — Normal IS
+       this paragraph, so the body copy everywhere steps up with it */
+    font-weight: var(--font-weight-medium);
     line-height: 1.5; /* was 1.75, which read airy at the Paragraph voice's size (user call, Sep 2026) */
     margin-bottom: 2rem;
     text-wrap: pretty;
@@ -254,6 +283,7 @@
     margin-bottom: 1.5rem;
     padding-left: 1.5rem;
     font-size: clamp(1.125rem, 1.75vw, 1.375rem);
+    font-weight: var(--font-weight-medium); /* the paragraph's weight, so a list reads as the copy around it */
     text-wrap: pretty;
     color: var(--icon-grey);
   }

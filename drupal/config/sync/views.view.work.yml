@@ -218,11 +218,9 @@ display:
         options:
           offset: 0
           items_per_page: 2
-      arguments: {  }
       defaults:
         pager: false
-        arguments: false
-      display_description: 'The two newest work items as a rail, on any page.'
+      display_description: 'The newest work items as a rail, on any page; the category argument narrows the feed.'
       display_extenders: {  }
       block_description: 'Work: latest'
     cache_metadata:

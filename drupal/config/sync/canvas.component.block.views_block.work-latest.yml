@@ -1,6 +1,6 @@
 uuid: a9b2c27c-b30a-4e95-8758-eabd8416cde2
 langcode: en
-status: true
+status: false
 dependencies:
   config:
     - views.view.work

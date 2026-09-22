@@ -103,10 +103,11 @@
 /* the label in the articles' BODY COPY register (user call) — the shared
    prose clamp at medium, a step tighter in leading for label duty */
 .work-stats__label {
-  /* Paragraph — Small's size (user call, Sep 2026: "can these be the
-     paragraph small font"), a step under the body it answers, on a
-     tighter leading for the three-line labels (user call: "tighten up the
-     line spacing") */
+  /* The Normal paragraph's font (user call, Sep 2026: "Can the label be
+     the Normal paragraph font" — it was Paragraph Small's size before, by
+     an earlier call): the Paragraph voice at medium, the body copy's own
+     size and weight, still on the tighter leading the three-line labels
+     asked for (user call: "tighten up the line spacing") */
   --stat-label-lh: 1.35;
   /* The SAME visible gap as value → unit (user call: "make sure unit and
      label space matches perfectly"). Measured, not derived: the value's
@@ -116,7 +117,7 @@
      laptop width where it was measured). 0.15em of the label makes the
      two gaps equal there and keeps them close as the value scales. */
   margin-top: calc(var(--stat-gap, 0.45rem) + 0.15em);
-  font-size: 1.0625rem;
+  font-size: var(--voice-paragraph);
   font-weight: var(--font-weight-medium);
   line-height: var(--stat-label-lh);
   text-wrap: balance; /* user call: multi-line labels break evenly */

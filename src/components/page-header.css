@@ -361,16 +361,77 @@
   min-width: 0;
 }
 
+/* the heading speaks one of the site's heading voices (user ask: "select
+   any of the H1s styles we have"): the article serif (news-article.css's
+   title), the masthead caps (.page-header__lockup-caps) or the display
+   sentence case (.page-header__heading--display) — the same tokens, so a
+   split page and the page it borrows from read as one */
 .page-header__split-title {
   margin: 0;
+  color: var(--color-icon-black);
+  text-wrap: balance;
+}
+
+.page-header__split-text {
+  display: block;
+}
+
+.page-header__split-title--serif .page-header__split-text {
   font-family: var(--font-serif);
   font-size: var(--voice-headline-article);
   font-weight: var(--font-weight-normal);
   line-height: 1.05;
   letter-spacing: -0.02em;
-  color: var(--color-icon-black);
   max-width: 24ch;
-  text-wrap: balance;
+}
+
+/* the caps a tad under the masthead's (user call, Sep 2026): the lockup
+   runs the page's width, this runs half of it, and at the full register a
+   long word ("TRANSFORMATION") ran past the column on a tablet. And capped
+   by the column itself — the intro is a size container — at 10% of its
+   width per em, which is what the widest word the page will carry needs
+   (measured: TRANSFORMATION runs 9.55em wide in Kumbh 900), so the caps
+   never leave their column at any width. */
+.page-header__split-intro {
+  container-type: inline-size;
+}
+
+.page-header__split-title--caps .page-header__split-text {
+  font-size: min(calc(var(--voice-display) * 0.85), 10cqw);
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+}
+
+/* the News masthead's 0.72 leading is cut for its two short lines; a
+   split heading runs to four or five, and at 0.72 they sat on each other
+   (user call, Sep 2026: "Increase the line height for this Display version
+   only") — then "a tad smaller and increase the line height a tad": the
+   article headline's size (0.9 of the large register) at 0.95, the
+   masthead itself untouched */
+.page-header__split-title--sentence .page-header__split-text {
+  font-size: var(--voice-headline-article);
+  font-weight: var(--font-weight-bold);
+  line-height: 0.95;
+  letter-spacing: var(--tracking-caps);
+}
+
+/* the eyebrow: the Masthead's accent line (.page-header__lockup-accent),
+   over the heading, in the heading */
+.page-header__split-eyebrow {
+  display: block;
+  margin-bottom: var(--space-2xs);
+  font-size: var(--voice-accent);
+  line-height: 1.3;
+  /* The Masthead's accent sets no tracking of its own: it INHERITS its
+     heading's, and an em tracking inherits as the pixels it computed to on
+     the heading — .page-header__heading's -0.025em at ITS size, the
+     clamp(3rem, 6vw, 4.5rem) above, which is a tighter -0.038em on the
+     accent's own smaller size. This heading sets none, so the same word
+     ran looser here (user catch, Sep 2026: "the same, how does that
+     happen?"). The same pixels, written out. */
+  letter-spacing: calc(clamp(3rem, 6vw, 4.5rem) * -0.025);
 }
 
 /* what is placed above opens the column with the article's air under it;

@@ -47,11 +47,15 @@
 }
 
 .listing-band .filter-bar__chip {
-  /* A step under the label voice (user call, Sep 2026: "these can be
-     smaller", both landings): 12px on a phone to 15px on a wide screen,
-     where the label voice ran to 18px. The em padding scales with it and
-     keeps the chip past the 24px tap floor at every size. */
-  font-size: clamp(0.75rem, 0.55rem + 0.35vw, 0.9375rem);
+  /* THE NAV'S VOICE, to the token (user call, Sep 2026: "Are the filter
+     fonts bigger than the nav fonts? They should be the same"): the header
+     pill's links speak --voice-label from md up (site-header.css,
+     --nav-voice), and the chips ran a clamp of their own that came out a
+     pixel and a half over it, with the base chip's 0.05em tracking on top.
+     Same size, same tracking now. The em padding scales with it and keeps
+     the chip past the 24px tap floor at every size. */
+  font-size: var(--voice-label);
+  letter-spacing: normal;
   border-radius: 9999px;
   padding: 0.5em 1.1em;
 }

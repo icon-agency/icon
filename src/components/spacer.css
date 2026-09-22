@@ -1,0 +1,24 @@
+/* spacer.css — the Spacer: empty height between two blocks on the page's
+ * own spacing scale (user ask, Sep 2026: "you know how we have line, can
+ * you add a spacer to layout"). Four steps, the tokens the page's gaps use
+ * (theme/spacing.css): a line's worth, a block's gap, large, a section's
+ * air. It adds to the flow gap around it, draws nothing and reads as
+ * nothing (aria-hidden in the markup).
+ *
+ * Drupal: SDC `spacer`, the Layout section beside the Line. */
+
+.spacer {
+  height: var(--space-md);
+}
+
+.spacer--small {
+  height: var(--space-sm);
+}
+
+.spacer--large {
+  height: var(--space-lg);
+}
+
+.spacer--section {
+  height: var(--space-section);
+}

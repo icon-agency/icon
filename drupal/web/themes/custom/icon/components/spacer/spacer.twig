@@ -1,0 +1,10 @@
+{#
+/**
+ * @file
+ * spacer — empty height on the spacing scale (src/components/spacer.css),
+ * the Line's quiet sibling in the library's Layout section (user ask, Sep
+ * 2026: "you know how we have line, can you add a spacer to layout").
+ * aria-hidden: there is nothing in it to read.
+ */
+#}
+<div class="spacer spacer--{{ size|default('normal') }}" aria-hidden="true"></div>

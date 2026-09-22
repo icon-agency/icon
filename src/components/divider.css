@@ -15,7 +15,11 @@
   height: 0;
 }
 
+/* the split masthead's slots too (user catch, Sep 2026: "The lines should
+   be 100%, currently padded in"): the masthead is on the page gutter
+   already, so a Line above or below its heading runs the column's width */
 .columns .divider,
-.page-header__inner .divider {
+.page-header__inner .divider,
+.page-header--split .divider {
   margin-inline: 0;
 }

@@ -7,7 +7,7 @@ dependencies:
     - canvas.component.sdc.icon.intro-expertise
 name: Expertise
 configEntityTypeId: component
-weight: 3
+weight: 4
 items:
   - sdc.icon.expertise-links
   - sdc.icon.intro-expertise

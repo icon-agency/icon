@@ -1,0 +1,43 @@
+$schema: https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json
+name: Testimonial (item)
+group: Testimonials
+status: stable
+description: |
+  One client quote for the Testimonials carousel: who said it and where they
+  work on the left, their company's mark at the foot of that column, the
+  quote on the right. The mark can be shown in one colour — the page's ink —
+  so a row of logos reads as one set. Place it in a Testimonials (group).
+props:
+  type: object
+  required:
+    - quote
+  properties:
+    quote:
+      type: string
+      title: Quote
+      description: What they said, without quotation marks. A line break in the text breaks the line.
+      examples:
+        - ICON’s enthusiasm, fresh thinking, and understanding of our diverse audience made them the perfect fit as our agency partner.
+    name:
+      type: string
+      title: Name
+      description: Who said it.
+      examples:
+        - Allie Natoli
+    company:
+      type: string
+      title: Role and company
+      description: Their role and where, e.g. "Marketing Director at IMG".
+      examples:
+        - Marketing Director at IMG
+    logo:
+      type: integer
+      title: Logo
+      description: The company's mark, from the media library — a client logo or a picture. Optional.
+      x-icon-media: logo
+    monochrome:
+      type: boolean
+      title: One colour
+      description: Show the mark in the page's ink, so every logo in the carousel reads the same. Off shows it as uploaded.
+      examples:
+        - true

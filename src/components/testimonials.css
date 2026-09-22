@@ -1,0 +1,221 @@
+/* testimonials.css — the client quotes carousel (user ask, Sep 2026: "a new
+ * testimonials component … reusable … Look at the profile left right and
+ * line etc to reuse components"). The team panel's bar, reused: the arrows
+ * lead on the left, the counter sits over the quote column in the quote's
+ * own voice, THE hairline under (rules.css). Then one quote at a time: the
+ * person and their company on the left with the company's mark at the
+ * foot, the quote on the right in the mid voice. The quotes stack in one
+ * grid cell, so the frame is the tallest quote's height and a step never
+ * moves the page; the current one fades and rises in (js/testimonials.js
+ * marks it; reduced motion cuts to it). With one quote the bar goes
+ * (data-count="1", set by the script). In the editor (.is-editing) every
+ * quote shows, stacked, to select and reorder.
+ *
+ * Drupal: SDC `testimonials` (the group) and `testimonial` (the item).
+ */
+
+.testimonials {
+  padding-inline: var(--gutter-page);
+  color: var(--color-icon-black);
+}
+
+/* inside a Columns cell or a box the column is the measure */
+.columns .testimonials {
+  padding-inline: 0;
+}
+
+/* ---- the bar: the team panel's, on the quote's two columns ---------------- */
+.testimonials__bar {
+  display: grid;
+  grid-template-columns: 1fr;
+  align-items: center;
+  gap: var(--space-sm);
+  padding-bottom: var(--space-sm);
+  margin-bottom: var(--space-md);
+  border-bottom: var(--rule-weight) solid var(--rule);
+}
+
+.testimonials[data-count="1"] .testimonials__bar {
+  display: none;
+}
+
+.testimonials__steps {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2xs);
+  margin-left: calc(-1 * (2.75rem - 1.5rem) / 2); /* the first glyph on the column's edge */
+}
+
+.testimonials__arrow {
+  display: inline-grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-icon);
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  transition: background var(--duration-fast) var(--ease-standard);
+}
+
+.testimonials__arrow svg {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.testimonials__arrow:hover {
+  background: color-mix(in srgb, currentColor 12%, transparent);
+}
+
+.testimonials__arrow:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+
+/* the counter in the Paragraph voice — bigger than the team panel's label
+   (user call: "make the 01 / 06 font bigger like the testimonial") — and
+   over the quote column, on its left edge (user call: "Align with the
+   Person's name below (Quote on the testimonial)") */
+.testimonials__counter {
+  margin: 0;
+  font-size: var(--voice-paragraph);
+  font-weight: var(--font-weight-medium);
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.testimonials__of {
+  color: color-mix(in srgb, currentColor 55%, transparent);
+}
+
+/* ---- the quotes ----------------------------------------------------------- */
+.testimonials__track {
+  display: grid;
+}
+
+/* every quote in the one cell: the frame is the tallest, the current one
+   on top; the others are out of the way for the eye and the keyboard
+   (aria-hidden + inert from the script) */
+.testimonials__track > .testimonial {
+  grid-area: 1 / 1;
+}
+
+.testimonial {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-md);
+  align-items: stretch;
+}
+
+.testimonial[aria-hidden="true"] {
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
+@media (min-width: 768px) {
+  .testimonials__bar,
+  .testimonial {
+    grid-template-columns: 1fr 1fr;
+    column-gap: var(--space-lg);
+  }
+}
+
+/* the person, and the mark at the foot of the column (user call: "Logo
+   bottom left") — the column stretches to the quote's height, the mark is
+   pushed to its end */
+.testimonial__who {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  min-width: 0;
+}
+
+.testimonial__person {
+  margin: 0;
+  font-size: var(--voice-paragraph);
+  line-height: 1.3;
+}
+
+.testimonial__name {
+  display: block;
+  font-weight: var(--font-weight-semibold);
+}
+
+.testimonial__company {
+  display: block;
+  color: color-mix(in srgb, currentColor 72%, transparent);
+}
+
+.testimonial__logo {
+  display: block;
+  margin-top: auto;
+  width: auto;
+  max-width: 12rem;
+  height: 3.5rem;
+  object-fit: contain;
+  object-position: left center;
+}
+
+/* one colour: the mark as a mask over the ink — any logo, any ground.
+   The source rides in as --logo on the element (the one inline value the
+   verify gate allows: a custom property). */
+.testimonial__logo--mono {
+  width: 12rem;
+  background: currentColor;
+  -webkit-mask: var(--logo) left center / contain no-repeat;
+  mask: var(--logo) left center / contain no-repeat;
+}
+
+/* the quote: the mid voice at book weight, the words doing the talking */
+.testimonial__quote {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+
+.testimonial__quote p {
+  margin: 0;
+  font-size: var(--voice-mid);
+  font-weight: var(--font-weight-normal);
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  text-wrap: pretty;
+}
+
+/* the step in: the current quote fades and rises (the script sets
+   .is-showing on the one it shows) */
+@keyframes testimonial-in {
+  from { opacity: 0; translate: 0 0.5rem; }
+  to { opacity: 1; translate: 0 0; }
+}
+
+.testimonial.is-showing {
+  animation: testimonial-in var(--duration-normal) var(--ease-decelerate) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .testimonial.is-showing { animation: none; }
+  .testimonials__arrow { transition: none; }
+}
+
+/* ---- the editor: every quote in view, stacked, to select and reorder ---- */
+.testimonials.is-editing .testimonials__track {
+  display: grid;
+  gap: var(--space-lg);
+}
+
+.testimonials.is-editing .testimonials__track > .testimonial {
+  grid-area: auto;
+  visibility: visible;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* an empty slot still stands, so the first quote has something to drop on */
+.testimonials__track > .canvas--slot-empty-placeholder {
+  min-height: 8rem;
+}

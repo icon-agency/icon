@@ -1546,9 +1546,10 @@
                 &ldquo;a new masthead option, like the two column news, but with our H1 header on the
                 left and optional block above and below. Block on right to add whatever&rdquo;) &mdash;
                 the news article&rsquo;s head worn by any page: the same half-and-half grid from 768px,
-                the same air under the wordmark, the heading left in the article headline&rsquo;s serif
-                (<code class="ds-code">--voice-headline-article</code>, book weight, 24ch). In Canvas the
-                three slots take any block: above the heading (a back link, a line of meta), below it
+                the same air under the wordmark, the heading left in one of the site&rsquo;s heading voices, chosen in the panel
+                &mdash; the article serif (<code class="ds-code">--voice-headline-article</code>, book, 24ch),
+                the masthead caps or the display sentence case &mdash; with an optional eyebrow over it
+                in the Masthead&rsquo;s accent voice. In Canvas the three slots take any block: above the heading (a back link, a line of meta), below it
                 (closing the column on the right column&rsquo;s baseline, as the article&rsquo;s date row
                 does) and the right column itself (a Picture, a Video, a Pull quote). Opens on the same
                 colours as the Masthead.
@@ -1562,7 +1563,7 @@
                         <div class="page-header__split-above">
                           <p class="news-article__meta news-article__meta--eyebrow news-article__meta--caps" data-rule="bottom"><a class="invite-arrow invite-arrow--back" href="#">News</a></p>
                         </div>
-                        <h2 class="page-header__split-title">ICON helps eSafety expose the tactics behind sextortion scams</h2>
+                        <h2 class="page-header__split-title page-header__split-title--serif"><span class="page-header__split-text">ICON helps eSafety expose the tactics behind sextortion scams</span></h2>
                         <div class="page-header__split-below">
                           <p class="news-article__meta news-article__meta--date news-article__meta--caps" data-rule="top">Our work / 29 Jun 2026</p>
                         </div>
@@ -1572,6 +1573,58 @@
                       </div>
                     </div>
                   </div>
+                </div>
+              </div>
+            </section>
+
+            <section class="ds-section" id="testimonials">
+              <h3 class="ds-section__title">Testimonials</h3>
+              <p class="ds-section__intro">
+                <code class="ds-code">.testimonials</code> (<code class="ds-code">src/components/testimonials.css</code>,
+                <code class="ds-code">js/testimonials.js</code>; Drupal <code class="ds-code">components/testimonials</code>
+                and <code class="ds-code">testimonial</code>, a group and its items; 22 Sep 2026, user ask: &ldquo;a new
+                testimonials component &hellip; reusable &hellip; Look at the profile left right and line etc to reuse
+                components. Logo bottom left&rdquo;) &mdash; the team panel&rsquo;s bar reused: the arrows leading, THE
+                hairline under, the counter in the Paragraph voice over the quote column&rsquo;s left edge. Then one quote
+                at a time: the person on the left, name semibold and company muted, the company&rsquo;s mark at the foot
+                of that column, and the quote on the right in the mid voice at book weight. The quotes stack in one
+                grid cell so the frame is the tallest quote&rsquo;s height; the current one fades and rises in. One
+                quote takes the bar away. The mark can be shown in one colour &mdash; a CSS mask over the ink, so any
+                logo reads the same on any ground &mdash; or as uploaded.
+              </p>
+              <div class="ds-group">
+                <h4 class="ds-group__title">Live &mdash; one of three</h4>
+                <div class="ds-demo">
+                  <section class="testimonials" data-testimonials data-count="3" aria-roledescription="carousel" aria-label="What our clients say">
+                    <div class="testimonials__bar">
+                      <div class="testimonials__steps">
+                        <button class="testimonials__arrow" type="button" data-testimonials-prev aria-label="Previous quote"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12H4"/><path d="m10 6-6 6 6 6"/></svg></button>
+                        <button class="testimonials__arrow" type="button" data-testimonials-next aria-label="Next quote"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12h16"/><path d="m14 6 6 6-6 6"/></svg></button>
+                      </div>
+                      <p class="testimonials__counter" aria-live="polite"><span data-testimonials-index>01</span><span class="testimonials__of"> / <span data-testimonials-count>03</span></span></p>
+                    </div>
+                    <div class="testimonials__track">
+                      <article class="testimonial" data-testimonial>
+                        <div class="testimonial__who">
+                          <p class="testimonial__person"><span class="testimonial__name">Allie Natoli</span><span class="testimonial__company">Marketing Director at IMG</span></p>
+                          <span class="testimonial__logo testimonial__logo--mono" style="--logo: url('assets/client-logos/meta.svg')" role="img" aria-label="Meta"></span>
+                        </div>
+                        <blockquote class="testimonial__quote"><p>ICON&rsquo;s enthusiasm, fresh thinking, and understanding of our diverse audience made them the perfect fit as our agency partner. Their vision for the Melbourne International Flower and Garden Show aligns with our goal to make 2025 the most inspiring and spectacular Show yet.</p></blockquote>
+                      </article>
+                      <article class="testimonial" data-testimonial>
+                        <div class="testimonial__who">
+                          <p class="testimonial__person"><span class="testimonial__name">Sam Lee</span><span class="testimonial__company">Head of Brand at Kathmandu</span></p>
+                        </div>
+                        <blockquote class="testimonial__quote"><p>A team that listens first and then makes something we could not have imagined.</p></blockquote>
+                      </article>
+                      <article class="testimonial" data-testimonial>
+                        <div class="testimonial__who">
+                          <p class="testimonial__person"><span class="testimonial__name">Priya Nair</span><span class="testimonial__company">Director of Communications, DVA</span></p>
+                        </div>
+                        <blockquote class="testimonial__quote"><p>Clear thinking, fast turnarounds and work that landed with our audience.</p></blockquote>
+                      </article>
+                    </div>
+                  </section>
                 </div>
               </div>
             </section>
@@ -3105,6 +3158,7 @@
     <!-- The reveal host (js/reveal.js) drives the Venn's draw; "Draw it
          again" takes the host back to its resting state for a frame. -->
     <script src="js/reveal.js"></script>
+    <script src="js/testimonials.js"></script>
     <script>
       document.querySelectorAll("[data-venn-replay]").forEach(function (b) {
         b.addEventListener("click", function () {

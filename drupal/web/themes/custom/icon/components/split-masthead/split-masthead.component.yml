@@ -5,8 +5,10 @@ status: stable
 description: |
   The two-column masthead, the news article's head worn by any page
   (src/components/page-header.css, `.page-header--split`): the heading on
-  the left in the article headline's serif, with a slot above it and a
-  slot below it for whatever the page wants there — a back link, a line
+  the left in one of the site's heading voices — the article serif, the
+  masthead caps or the display sentence case — with an optional eyebrow
+  over it, a slot above it and a slot below it for whatever the page wants
+  there — a back link, a line
   of meta, a Content block — and the right column a slot for anything: a
   Picture, a Video, a Pull quote. Below the heading closes the column on
   the right column's baseline. Opens on the same colours as the Masthead.
@@ -14,13 +16,32 @@ props:
   type: object
   required:
     - title
+    - style
   properties:
+    eyebrow:
+      type: string
+      title: Eyebrow
+      description: Optional — the short serif line over the heading, in sentence case, as the Masthead's eyebrow; the section's name.
     title:
       type: string
       title: Heading
-      description: The page's heading, in the article headline's serif. A line break in the text breaks the line.
+      description: The page's heading. A line break in the text breaks the line; for the caps style type it in sentence case, the CSS sets the capitals.
       examples:
-        - ICON helps eSafety expose the tactics behind sextortion scams
+        - The page's heading, in a line or two
+    style:
+      type: string
+      title: Heading style
+      description: Which of the site's heading voices the heading speaks.
+      enum:
+        - serif
+        - caps
+        - sentence
+      meta:enum:
+        serif: Article serif (the news article's headline)
+        caps: Masthead caps (the Work and News mastheads' caps line)
+        sentence: Display sentence case (the News masthead's title)
+      examples:
+        - serif
     heading_level:
       type: string
       title: Heading level

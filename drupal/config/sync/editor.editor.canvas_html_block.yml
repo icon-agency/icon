@@ -67,8 +67,14 @@ settings:
           label: 'Miller (serif)'
           element: '<h2 class="is-serif">'
         -
+          label: 'Large (the H1 size)'
+          element: '<h2 class="is-large">'
+        -
           label: Large
           element: '<p class="is-large">'
+        -
+          label: Normal
+          element: '<p class="is-normal">'
         -
           label: Small
           element: '<p class="is-small">'

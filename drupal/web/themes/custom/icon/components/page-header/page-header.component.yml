@@ -15,13 +15,13 @@ props:
   properties:
     accent:
       type: string
-      title: Accent line
-      description: The short serif line above, in sentence case. The section's name.
+      title: Eyebrow
+      description: The short serif line over the heading, in sentence case. The section's name.
       examples:
         - Work
     caps:
       type: string
-      title: Headline
+      title: Heading
       description: The large caps line. Type it in sentence case; the CSS sets the capitals. A line break in the text breaks the line.
       examples:
         - Selected work and case studies

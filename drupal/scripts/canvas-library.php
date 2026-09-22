@@ -34,6 +34,7 @@ $plan = [
   'Layout' => [
     'sdc.icon.columns',
     'sdc.icon.divider',
+    'sdc.icon.spacer',
   ],
   'Text' => [
     'sdc.icon.prose',
@@ -42,6 +43,10 @@ $plan = [
   // The "Our expertise" list, lifted out of the intro so it can stand on
   // the Expertise landing page (user ask, Sep 2026); the intro's slot takes
   // the same items.
+  'Testimonials' => [
+    'sdc.icon.testimonials',
+    'sdc.icon.testimonial',
+  ],
   'Expertise' => [
     'sdc.icon.expertise-links',
     'sdc.icon.intro-expertise',
@@ -78,7 +83,7 @@ $plan = [
   'Listings' => [
     'block.views_block.news-landing',
     'block.views_block.work-landing',
-    'block.views_block.work-latest',
+    'block.icon_work_latest',
     'block.icon_news_latest',
   ],
   'Homepage' => [
@@ -98,6 +103,9 @@ $plan = [
 $hide = [
   // Canvas 1.11's page-variant marker: the theme composes its own shell.
   'marker.page_content',
+  // The bare Views block: Work: latest (icon_work_latest) embeds the same
+  // display with its heading and feed chosen in the panel (Sep 2026).
+  'block.views_block.work-latest',
   // The Run: the runs are inferred on the page since Sep 2026 (user call —
   // a Run could be missed); the older articles' Runs still render.
   'sdc.icon.run',

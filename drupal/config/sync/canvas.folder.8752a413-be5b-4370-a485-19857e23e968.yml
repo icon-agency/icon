@@ -7,7 +7,7 @@ dependencies:
     - canvas.component.sdc.icon.work-scroller
 name: Pictures
 configEntityTypeId: component
-weight: 5
+weight: 6
 items:
   - sdc.icon.news-article-figure
   - sdc.icon.work-scroller

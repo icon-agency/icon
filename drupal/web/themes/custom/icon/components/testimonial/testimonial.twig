@@ -1,0 +1,32 @@
+{#
+/**
+ * @file
+ * testimonial — one quote of the carousel (components/testimonials.css):
+ * a two-column article, the person on the left with the mark at the foot
+ * (margin-top: auto), the quote on the right. In one colour the mark is a
+ * CSS mask over the ink, so any logo — black on white, a full-colour PNG —
+ * reads as the page's ink on any ground; as uploaded it is the image
+ * itself. The mark's source is icon_media(): a Logo (file) or a picture.
+ */
+#}
+{% set mark = logo ? icon_media(logo, 'work_media') : [] %}
+<article class="testimonial" data-testimonial>
+  <div class="testimonial__who">
+    {% if name or company %}
+      <p class="testimonial__person">
+        {% if name %}<span class="testimonial__name">{{ name }}</span>{% endif %}
+        {% if company %}<span class="testimonial__company">{{ company }}</span>{% endif %}
+      </p>
+    {% endif %}
+    {% if mark.src %}
+      {% if monochrome %}
+        <span class="testimonial__logo testimonial__logo--mono" style="--logo: url('{{ mark.src|e('css') }}')" role="img" aria-label="{{ mark.alt|default(company|default('')) }}"></span>
+      {% else %}
+        <img class="testimonial__logo" src="{{ mark.src }}" alt="{{ mark.alt|default(company|default('')) }}" loading="lazy">
+      {% endif %}
+    {% endif %}
+  </div>
+  <blockquote class="testimonial__quote">
+    <p>{{ quote|nl2br }}</p>
+  </blockquote>
+</article>

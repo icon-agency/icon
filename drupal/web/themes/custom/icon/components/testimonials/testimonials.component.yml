@@ -1,0 +1,28 @@
+$schema: https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json
+name: Testimonials (group)
+group: Testimonials
+status: stable
+description: |
+  A carousel of client quotes (src/components/testimonials.css,
+  js/testimonials.js), the team panel's bar — the arrows, the counter, the
+  hairline — over one quote at a time: the person and their company on the
+  left with the company's mark at the foot, the quote on the right. The
+  quotes are Testimonial (item) components in the slot; add, reorder and
+  remove them there. With one quote the bar goes and it stands as a single
+  testimonial.
+libraryOverrides:
+  dependencies:
+    - icon/testimonials
+props:
+  type: object
+  properties:
+    label:
+      type: string
+      title: Accessible label
+      description: What screen readers call the carousel, e.g. "What our clients say". Not shown.
+      examples:
+        - What our clients say
+slots:
+  quotes:
+    title: Quotes
+    description: Testimonial (item) components, in the order they are stepped through.

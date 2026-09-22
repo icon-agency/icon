@@ -32,6 +32,20 @@
   "use strict";
 
   if (!("onpagereveal" in window)) return;
+  // NOT IN A FRAME. The Canvas editor and its preview render the page in an
+  // iframe they re-fill on every change; each refill is a navigation between
+  // two documents that both opt in, so the whole move — the disc, the lockup
+  // — played inside the editor over and over (user report, Sep 2026: "Why is
+  // this page flashing?"). A framed document opts out before its first render
+  // (a later @view-transition rule wins) and plants nothing.
+  var framed = true;
+  try { framed = window.self !== window.top; } catch (err) { framed = true; }
+  if (framed || document.documentElement.hasAttribute("data-canvas-preview")) {
+    var off = document.createElement("style");
+    off.textContent = "@view-transition { navigation: none; }";
+    (document.head || document.documentElement).appendChild(off);
+    return;
+  }
 
   /** The lockup, verbatim from the theme's includes/lockup.html.twig — the
    *  hero's brand device, its classes home-c.css's: white fills, white

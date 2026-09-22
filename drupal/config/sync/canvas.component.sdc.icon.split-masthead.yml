@@ -6,9 +6,193 @@ dependencies:
     - options
   theme:
     - icon
-active_version: 701d06cd0f208039
+active_version: fb736e312dfa4cf1
 versioned_properties:
   active:
+    settings:
+      prop_field_definitions:
+        eyebrow:
+          required: false
+          field_type: string
+          field_storage_settings: {  }
+          field_instance_settings: {  }
+          field_widget: string_textfield
+          default_value: null
+          expression: ℹ︎string␟value
+          derived_schema_metadata:
+            string_shape: {  }
+        title:
+          required: true
+          field_type: string
+          field_storage_settings: {  }
+          field_instance_settings: {  }
+          field_widget: string_textfield
+          default_value:
+            -
+              value: "The page's heading, in a line or two"
+          expression: ℹ︎string␟value
+          derived_schema_metadata:
+            string_shape: {  }
+        style:
+          required: true
+          field_type: list_string
+          field_storage_settings:
+            allowed_values_function: canvas_load_allowed_values_for_component_prop
+          field_instance_settings: {  }
+          field_widget: options_select
+          default_value:
+            -
+              value: serif
+          expression: ℹ︎list_string␟value
+          derived_schema_metadata: {  }
+        heading_level:
+          required: false
+          field_type: list_string
+          field_storage_settings:
+            allowed_values_function: canvas_load_allowed_values_for_component_prop
+          field_instance_settings: {  }
+          field_widget: options_select
+          default_value:
+            -
+              value: h1
+          expression: ℹ︎list_string␟value
+          derived_schema_metadata: {  }
+        opening:
+          required: false
+          field_type: list_string
+          field_storage_settings:
+            allowed_values_function: canvas_load_allowed_values_for_component_prop
+          field_instance_settings: {  }
+          field_widget: options_select
+          default_value:
+            -
+              value: none
+          expression: ℹ︎list_string␟value
+          derived_schema_metadata: {  }
+        bg:
+          required: false
+          field_type: string
+          field_storage_settings: {  }
+          field_instance_settings: {  }
+          field_widget: string_textfield
+          default_value: null
+          expression: ℹ︎string␟value
+          derived_schema_metadata:
+            string_shape: {  }
+        ink:
+          required: false
+          field_type: string
+          field_storage_settings: {  }
+          field_instance_settings: {  }
+          field_widget: string_textfield
+          default_value: null
+          expression: ℹ︎string␟value
+          derived_schema_metadata:
+            string_shape: {  }
+    fallback_metadata:
+      slot_definitions:
+        above:
+          title: 'Above the heading'
+          description: 'Optional — what opens the left column over the heading; a Content block with a back link or a line of meta.'
+        below:
+          title: 'Below the heading'
+          description: "Optional — what closes the left column under the heading, on the right column's baseline."
+        aside:
+          title: 'Right column'
+          description: 'Whatever sits beside the heading — a Picture, a Video, a Pull quote, a Content block.'
+  1d2bda21abf8c104:
+    settings:
+      prop_field_definitions:
+        eyebrow:
+          required: false
+          field_type: string
+          field_storage_settings: {  }
+          field_instance_settings: {  }
+          field_widget: string_textfield
+          default_value: null
+          expression: ℹ︎string␟value
+          derived_schema_metadata:
+            string_shape: {  }
+        title:
+          required: true
+          field_type: string
+          field_storage_settings: {  }
+          field_instance_settings: {  }
+          field_widget: string_textfield
+          default_value:
+            -
+              value: "The page's heading, in a line or two"
+          expression: ℹ︎string␟value
+          derived_schema_metadata:
+            string_shape: {  }
+        style:
+          required: false
+          field_type: list_string
+          field_storage_settings:
+            allowed_values_function: canvas_load_allowed_values_for_component_prop
+          field_instance_settings: {  }
+          field_widget: options_select
+          default_value:
+            -
+              value: serif
+          expression: ℹ︎list_string␟value
+          derived_schema_metadata: {  }
+        heading_level:
+          required: false
+          field_type: list_string
+          field_storage_settings:
+            allowed_values_function: canvas_load_allowed_values_for_component_prop
+          field_instance_settings: {  }
+          field_widget: options_select
+          default_value:
+            -
+              value: h1
+          expression: ℹ︎list_string␟value
+          derived_schema_metadata: {  }
+        opening:
+          required: false
+          field_type: list_string
+          field_storage_settings:
+            allowed_values_function: canvas_load_allowed_values_for_component_prop
+          field_instance_settings: {  }
+          field_widget: options_select
+          default_value:
+            -
+              value: none
+          expression: ℹ︎list_string␟value
+          derived_schema_metadata: {  }
+        bg:
+          required: false
+          field_type: string
+          field_storage_settings: {  }
+          field_instance_settings: {  }
+          field_widget: string_textfield
+          default_value: null
+          expression: ℹ︎string␟value
+          derived_schema_metadata:
+            string_shape: {  }
+        ink:
+          required: false
+          field_type: string
+          field_storage_settings: {  }
+          field_instance_settings: {  }
+          field_widget: string_textfield
+          default_value: null
+          expression: ℹ︎string␟value
+          derived_schema_metadata:
+            string_shape: {  }
+    fallback_metadata:
+      slot_definitions:
+        above:
+          title: 'Above the heading'
+          description: 'Optional — what opens the left column over the heading; a Content block with a back link or a line of meta.'
+        below:
+          title: 'Below the heading'
+          description: "Optional — what closes the left column under the heading, on the right column's baseline."
+        aside:
+          title: 'Right column'
+          description: 'Whatever sits beside the heading — a Picture, a Video, a Pull quote, a Content block.'
+  701d06cd0f208039:
     settings:
       prop_field_definitions:
         title:

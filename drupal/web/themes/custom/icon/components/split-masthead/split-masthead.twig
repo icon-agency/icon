@@ -6,7 +6,10 @@
  * worn by any Canvas page. The heading sits left in the article headline's
  * serif, with a slot above and a slot below it — the article puts its back
  * link and its category / date row there — and the right column is a slot
- * for whatever the page wants beside it (user ask, Sep 2026: "like the two
+ * for whatever the page wants beside it. The heading speaks one of three
+ * voices (--serif, --caps, --sentence) with an optional eyebrow over it in
+ * the Masthead's accent voice (user ask, Sep 2026: "select any of the H1s
+ * styles we have … the eyebrow text (can that be an option above)") (user ask, Sep 2026: "like the two
  * column news, but with our H1 header on the left and optional block above
  * and below. Block on right to add whatever").
  *
@@ -18,12 +21,16 @@
  */
 #}
 {% set tag = heading_level|default('h1') %}
+{% set style = style|default('serif') %}
 {% set handover_class = attribute({ dark: 'dark', blue: 'theme-blue', 'light-grey': 'theme-work-article', custom: 'theme-work-article' }, opening|default('none'))|default('') %}
 <div class="page-header page-header--split"{% if handover_class %} data-theme-handover data-theme-handover-class="{{ handover_class }}"{% endif %}>
   <div class="page-header__split">
     <div class="page-header__split-intro">
       <div class="page-header__split-above">{% block above %}{{ above }}{% endblock %}</div>
-      <{{ tag }} class="page-header__split-title" data-animate style="--animate-delay: 60ms">{{ title|nl2br }}</{{ tag }}>
+      <{{ tag }} class="page-header__split-title page-header__split-title--{{ style }}" data-animate style="--animate-delay: 60ms">
+        {%- if eyebrow -%}<span class="page-header__split-eyebrow masthead-accent">{{ eyebrow }}</span>{%- endif -%}
+        <span class="page-header__split-text">{{ title|nl2br }}</span>
+      </{{ tag }}>
       <div class="page-header__split-below">{% block below %}{{ below }}{% endblock %}</div>
     </div>
     <div class="page-header__split-aside">{% block aside %}{{ aside }}{% endblock %}</div>

@@ -138,6 +138,13 @@ work-scroller:
     - core/drupal
     - core/once
     - icon/strip-drift
+# The quotes carousel (the Testimonials (group) SDC attaches it).
+testimonials:
+  js:
+    js/testimonials.js: {}
+  dependencies:
+    - core/drupal
+    - core/once
     - icon/velocity-lean
 work-video:
   js:

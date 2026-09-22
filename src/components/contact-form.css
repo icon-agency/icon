@@ -312,6 +312,21 @@
   margin: 0;
 }
 
+/* a field's own error, under it (Drupal's inline form errors, on since
+   Sep 2026 — user ask, in the media dialog: "add a error message so the
+   user knows"): the meta voice in the brand blue, the hairline above it
+   filling with the same, so the field that failed says so where it is */
+.contact-form__form .form-item--error-message {
+  margin-top: var(--space-3xs);
+  font-size: var(--voice-meta);
+  line-height: 1.4;
+  color: var(--color-icon-blue);
+}
+
+.contact-form__field:has(.form-item--error-message) {
+  border-color: var(--color-icon-blue);
+}
+
 /* the paperclip on Drupal's file field (user catch, Sep 2026: "Paperclip
    icon is missing"): the template's glyph, a label for the file input, set
    at the field's right end as the template sets it on the message

@@ -503,6 +503,16 @@ function _icon_media_image(?EntityInterface $media, string $style_id, ?Cacheable
  */
 function icon_preprocess_views_view(array &$variables): void {
   $view = $variables['view'];
+  // The latest rail's heading and feed, as the Work: latest block set them
+  // on the display (WorkFeedBlock); the bare Views block gets the defaults.
+  if ($view->id() === 'work' && $view->current_display === 'latest') {
+    $heading = (array) ($view->display_handler->getOption('icon_heading') ?: []);
+    $variables['heading_accent'] = (string) ($heading['accent'] ?? '') ?: t('Latest');
+    $variables['heading_caps'] = (string) ($heading['caps'] ?? '') ?: t('Work');
+    // More goes to the work listing, narrowed as the feed is.
+    $category = (string) ($heading['category'] ?? '');
+    $variables['more_url'] = Url::fromUserInput('/work', $category ? ['query' => ['category' => $category]] : [])->toString();
+  }
   // The landings are Canvas pages (Sep 2026): the listing is the View's
   // `landing` block display, placed under the page's Masthead, and the
   // chips link to the page it sits on — whatever its address.

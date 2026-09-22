@@ -1,0 +1,30 @@
+$schema: https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json
+name: Spacer
+group: Layout
+status: stable
+description: |
+  Empty height between two blocks, on the page's own spacing scale
+  (src/components/spacer.css) — for when the page's flow gap is not enough
+  air: a section's worth before a new subject, a line's worth to lift a
+  block off the one above. Nothing is drawn; the Line is the rule.
+props:
+  type: object
+  required:
+    - size
+  properties:
+    size:
+      type: string
+      title: Height
+      description: On the spacing scale — the same steps the page's own gaps use.
+      enum:
+        - small
+        - normal
+        - large
+        - section
+      meta:enum:
+        small: Small (a line's worth)
+        normal: Normal (a block's gap)
+        large: Large
+        section: A section's air
+      examples:
+        - normal

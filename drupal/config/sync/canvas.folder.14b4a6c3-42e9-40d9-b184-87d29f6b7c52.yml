@@ -8,7 +8,7 @@ dependencies:
     - canvas.component.sdc.icon.intro-photo
 name: Filmstrip
 configEntityTypeId: component
-weight: 6
+weight: 7
 items:
   - sdc.icon.filmstrip
   - sdc.icon.intro-fact

@@ -625,6 +625,16 @@ function icon_site_media_source(?MediaInterface $media, string $style_id, ?Cache
     }
     return $source;
   }
+  // A file-source item — a Logo, an Icon (SVG or PNG) — is its file, as is:
+  // no image style takes an SVG (the Testimonial's mark, Sep 2026).
+  if ($media->hasField('field_media_file') && !$media->get('field_media_file')->isEmpty()) {
+    $file = $media->get('field_media_file')->entity;
+    if (!$file) {
+      return [];
+    }
+    $cache?->addCacheableDependency($file);
+    return ['type' => 'image', 'src' => icon_site_file_url($file->getFileUri()), 'alt' => (string) $media->label()];
+  }
   if (!$media->hasField('field_media_image') || $media->get('field_media_image')->isEmpty()) {
     return [];
   }
@@ -1019,6 +1029,21 @@ function icon_site_canvas_storable_prop_shape_alter(CandidateStorablePropShape $
     $storable_prop_shape->fieldWidget = 'media_library_widget';
     return;
   }
+  // A LOGO (`x-icon-media: logo`, the Testimonial's mark, Sep 2026): a
+  // client logo from the Client logos list, or a picture — the media
+  // library, its Logo and Image tabs.
+  if ($schema['x-icon-media'] === 'logo') {
+    $storable_prop_shape->fieldInstanceSettings = [
+      'handler' => 'default:media',
+      'handler_settings' => [
+        'target_bundles' => ['logo' => 'logo', 'image' => 'image'],
+        'sort' => ['field' => '_none', 'direction' => 'ASC'],
+        'auto_create' => FALSE,
+      ],
+    ];
+    $storable_prop_shape->fieldWidget = 'media_library_widget';
+    return;
+  }
   $storable_prop_shape->fieldInstanceSettings = [
     'handler' => 'default:media',
     'handler_settings' => [
@@ -1327,8 +1352,23 @@ function icon_site_media_presave(MediaInterface $media): void {
  * Work page is not asked where a work image belongs. The field is required,
  * so where nothing can be inferred (a shared block, the library itself) the
  * editor picks one.
+ *
+ * Also: the library's own upload check, made safe for a second upload
+ * button. A video's Poster is an image field with an upload button of its
+ * own inside the created item's form; pressing it re-runs the library's
+ * check on the MAIN upload, which reads its file ids from a value the
+ * poster's button never set — a TypeError in FileUploadForm::
+ * validateUploadElement(), and "Oops, something went wrong" in the dialog
+ * (user report, Sep 2026). The check is swapped for the same check with
+ * the guard core forgot.
  */
 function icon_site_form_media_library_add_form_alter(array &$form, FormStateInterface $form_state): void {
+  if (isset($form['container']['upload']['#process']) && is_array($form['container']['upload']['#process'])) {
+    $form['container']['upload']['#process'] = array_map(
+      static fn($callback) => $callback === '::validateUploadElement' ? '_icon_site_media_library_validate_upload' : $callback,
+      $form['container']['upload']['#process'],
+    );
+  }
   $state = $form_state->get('media_library_state');
   if (!$state instanceof MediaLibraryState) {
     return;
@@ -1344,6 +1384,51 @@ function icon_site_form_media_library_add_form_alter(array &$form, FormStateInte
     }
     unset($widget);
   }
+}
+
+/**
+ * Implements hook_form_alter().
+ *
+ * Every form's build id input says which form it belongs to, as Canvas's
+ * own forms' do. In the Canvas editor, Canvas replaces Drupal's
+ * update_build_id ajax command with one that looks the form up by that
+ * marker (data-form-id) and RETURNS, silently, when there is none
+ * (canvas/js/ajax.command.customizations.js) — so a form that is not
+ * Canvas's never learns its new build id. It bites when an ajax rebuild
+ * replaces only part of a form: a video's Poster upload in the media
+ * library. The hidden input keeps an id the server has dropped, Save posts
+ * it, the server finds nothing, builds an empty form and answers as if
+ * Upload had been pressed — nothing saves and nothing says so (user report,
+ * Sep 2026, twice: "Its not saving"). With the marker Canvas sees a form
+ * that is not its own and hands the command back to core.
+ */
+function icon_site_form_alter(array &$form, FormStateInterface $form_state, string $form_id): void {
+  if (isset($form['form_build_id']) && empty($form['form_build_id']['#attributes']['data-form-id'])) {
+    $form['form_build_id']['#attributes']['data-form-id'] = $form_id;
+  }
+}
+
+/**
+ * The media library's upload check, with the guard core forgot.
+ *
+ * FileUploadForm::validateUploadElement() as it stands, except that a
+ * missing file id list counts as none rather than crashing — the case when
+ * another upload button in the dialog (a video's Poster) is the one pressed.
+ */
+function _icon_site_media_library_validate_upload(array $element, FormStateInterface $form_state): array {
+  if ($form_state::hasAnyErrors()) {
+    // When an error occurs during uploading files, remove all files so the
+    // user can re-upload the files.
+    $element['#value'] = [];
+  }
+  $values = (array) $form_state->getValue('upload', []);
+  $cardinality = (int) ($element['#cardinality'] ?? -1);
+  if ($cardinality !== -1 && count($values['fids'] ?? []) > $cardinality) {
+    $form_state->setError($element, t('A maximum of @count files can be uploaded.', ['@count' => $cardinality]));
+    $form_state->setValue('upload', []);
+    $element['#value'] = [];
+  }
+  return $element;
 }
 
 /**

@@ -1,0 +1,29 @@
+{#
+/**
+ * @file
+ * testimonials — the quotes carousel (components/testimonials.css,
+ * js/testimonials.js): the team panel's bar reused — arrows leading, the
+ * counter over the quote column, THE hairline under — and the quotes in the
+ * slot, one showing at a time. The script counts the quotes (not the
+ * children: an empty slot holds a placeholder in the editor), writes the
+ * counter and steps; data-count="1" takes the bar away (user ask, Sep 2026:
+ * "an option to have a single testimonial (hide the left right arrows and
+ * the 01 / 06 and line for single)").
+ */
+#}
+<section class="testimonials" data-testimonials{% if label %} aria-roledescription="carousel" aria-label="{{ label }}"{% endif %}>
+  <div class="testimonials__bar">
+    <div class="testimonials__steps">
+      <button class="testimonials__arrow" type="button" data-testimonials-prev aria-label="{{ 'Previous quote'|t }}">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12H4"/><path d="m10 6-6 6 6 6"/></svg>
+      </button>
+      <button class="testimonials__arrow" type="button" data-testimonials-next aria-label="{{ 'Next quote'|t }}">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12h16"/><path d="m14 6 6 6-6 6"/></svg>
+      </button>
+    </div>
+    <p class="testimonials__counter" aria-live="polite"><span data-testimonials-index>01</span><span class="testimonials__of"> / <span data-testimonials-count>01</span></span></p>
+  </div>
+  <div class="testimonials__track">
+    {% block quotes %}{{ quotes }}{% endblock %}
+  </div>
+</section>
