@@ -4,9 +4,24 @@ status: true
 dependencies:
   module:
     - icon_site
-active_version: 3e4e06e4b6398b1f
+active_version: 24d704e05f427fdc
 versioned_properties:
   active:
+    settings:
+      default_settings:
+        id: icon_work_latest
+        label: 'Work: latest'
+        label_display: '0'
+        provider: icon_site
+        accent: Latest
+        caps: Work
+        category: ''
+        count: 2
+        rule_top: false
+        rule_bottom: false
+    fallback_metadata:
+      slot_definitions: null
+  3e4e06e4b6398b1f:
     settings:
       default_settings:
         id: icon_work_latest
