@@ -426,7 +426,7 @@
 
   .content-page ul.list-slash li {
     position: relative;
-    padding: 0.9em 0 0.9em 1.6em;
+    padding: 0.9em 0 0.9em 1.15em; /* the word closer to its slash (user call, 24 Sep 2026: "too much gap between the slash and the word") — was 1.6em */
     margin: 0;
     border-top: var(--rule-weight) solid var(--rule);
   }
