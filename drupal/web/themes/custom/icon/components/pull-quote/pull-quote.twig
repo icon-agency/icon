@@ -6,13 +6,9 @@
  */
 #}
 {% set classes = ['pull-quote', variant == 'upright' ? 'pull-quote--upright'] %}
-{# the words rise through their masks like a masthead's (data-reveal-words,
-   js/reveal.js — user call, 23 Sep 2026: "the pull quotes [with] the same
-   text animation as the H1 mastheads"); the block's own fade came off so
-   the two gestures do not stutter, the cite keeps it #}
-<blockquote class="{{ classes|filter(c => c)|join(' ') }}">
-  <p class="pull-quote__text" data-reveal-words>{{ text }}</p>
+<blockquote class="{{ classes|filter(c => c)|join(' ') }}" data-animate>
+  <p class="pull-quote__text">{{ text }}</p>
   {% if cite %}
-    <footer class="pull-quote__cite" data-animate>{{ cite }}</footer>
+    <footer class="pull-quote__cite">{{ cite }}</footer>
   {% endif %}
 </blockquote>

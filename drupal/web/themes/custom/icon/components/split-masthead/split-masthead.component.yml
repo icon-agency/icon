@@ -70,9 +70,9 @@ props:
     compact:
       type: boolean
       title: Reduced padding
-      description: Less space above the top line and below the bottom line — the column tucks up under the wordmark (user ask, Sep 2026). Off unless ticked.
+      description: Less space above the top line and below the bottom line — the column tucks up under the wordmark (user ask, Sep 2026). On for a new masthead (user call, 23 Sep 2026); untick for the article's air.
       examples:
-        - false
+        - true
     opening:
       type: string
       title: Opens on
