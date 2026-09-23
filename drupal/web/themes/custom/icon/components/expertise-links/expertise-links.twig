@@ -6,7 +6,7 @@
  * renders the same row in its band (intro.twig) without the page gutter.
  */
 #}
-<div class="expertise-links expertise-links--page" data-expertise-links data-animate>
+<div class="expertise-links{% if gutter is not defined or gutter %} expertise-links--page{% endif %}" data-expertise-links data-animate>
   <span class="expertise-links__label">{{ label|default('Our expertise'|t) }}</span>
   <ul class="expertise-links__list" aria-label="{{ label|default('Our expertise'|t) }}">
     {% block links %}{{ links }}{% endblock %}

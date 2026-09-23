@@ -23,11 +23,20 @@
      browser; re-measure if the links change). The voice is whatever makes
      that fit the width between the gutters, capped at the label voice so it
      never grows past the desktop size. */
-  --nav-row-em: 31; /* 30.75em measured at 375px with the glyph showing (WORK EXPERTISE ABOUT NEWS CONTACT + search, 0.4em item padding, 1.5em glyph), plus a hair */
+  /* THE DESKTOP'S PILL AT EVERY WIDTH (user call, 23 Sep 2026: "the mobile
+     navigation looks different to the desktop? Should be identical"): the
+     same pill, bare until scrolled, scaled as ONE PIECE below md — every
+     padding and gap inside it is the desktop's rem value as a fraction of
+     the desktop's full-size type (18px: 0.75rem = 0.667em, 1rem = 0.889em,
+     0.5rem = 0.444em…), so the proportions are the desktop's whatever the
+     type does — and the type is the label voice capped to fit: the open
+     row (links, search, the home glyph) is --nav-row-em wide, and on a
+     phone narrower than that inside its 0.75rem insets the voice is what fits.
+     The desktop's row at its own paddings needs ~395px at the smallest
+     label size; a phone has 327 — hence the scaling, not a second design.
+     Re-measure --nav-row-em if the links change. */
+  --nav-row-em: 31.3; /* measured at 375px: the open row — the links, the search glyph, the home glyph, the gaps — 29.2em, plus the pill's 0.889em each side, plus a hair */
   --nav-voice: min(var(--voice-label), calc((100vw - 1.5rem) / var(--nav-row-em)));
-  /* the pill's height below md: its padding (0.75em × 2) round the row (the
-     1.5em glyph, plus the links' padding), measured 3.64em; a hair over */
-  --nav-pill-h: calc(var(--nav-voice) * 3.7);
 }
 
 /* ---- Wordmark logo (fixed top-left) ------------------------------------- */
@@ -56,16 +65,19 @@
      away with the page — the bottom pill carries the home glyph from 100px —
      so it can never sit on content or be left stranded behind its mask; the
      masked slide-out below is desktop-only. From md it is fixed, as designed.
-     UNDER THE PILL (user call, 22 Sep 2026: "place the nav back up the top.
-     Move the logo under it"): the pill sits at the top again below md, and
-     the wordmark drops to the row beneath it, on the page's gutter. */
+     TOP LEFT on the gutter (user call, 23 Sep 2026: "move the logo back to
+     the top left"), across the row from the menu's rest square; it sat under
+     a centred pill for a day. */
   position: absolute;
-  top: calc(0.75rem + var(--nav-pill-h) + 0.75rem);
-  /* centred under the pill below md (user call, 22 Sep 2026: "centre the
-     logo and the client link on mobile"); from md, on the page's gutter */
-  left: 50%;
-  translate: -50% 0;
-  z-index: 9999; /* under the pill below md: the open EXPERTISE drawer drops over the wordmark's row */
+  /* the bubble's centre on the square's centre (user call, 23 Sep 2026:
+     "move the logo down a tad, so the middle of the hamburger aligns with
+     the icon logo speech bubble"): the square is 0.75rem down and
+     --nav-pill-h tall (measured by js/header.js on the header), and the
+     bubble's middle sits 18.4% of the mark's height below its top (the
+     bubble runs y 0–18.4 of the 50-unit box) */
+  top: calc(0.75rem + var(--nav-pill-h, 2.75rem) / 2 - 0.184 * var(--header-control));
+  left: var(--gutter-page);
+  z-index: 9999; /* under the pill below md: the OPEN pill runs the row's width, over the wordmark */
   color: var(--color-foreground);
   display: inline-flex;
   /* Doubles as the MASK for the wordmark's slide reveal (see .is-faded below):
@@ -140,15 +152,16 @@
 
 /* ---- The pill nav ------------------------------------------------------- */
 
-/* ONE PILL AT EVERY WIDTH (user call, Sep 2026). Below md the same pill is
-   centred at the TOP of the viewport (it was a thumb-reach bar at the bottom
-   for a fortnight; back up top by user call, 22 Sep 2026, the wordmark under
-   it) in place of the hamburger and full-screen menu, which are parked (see
-   "Parked mobile chrome" below). Its type shrinks with the viewport so the
-   whole row always fits between the gutters (down to the smallest phones),
-   and the EXPERTISE drawer opens downward as on the desktop. From md it is
-   right-aligned so it clears the fixed wordmark, then centred once there's
-   room.
+/* ONE PILL AT EVERY WIDTH (user call, Sep 2026). Below md the same pill
+   RESTS AS A SQUARE at the top right — two lines, the menu — and opens into
+   the row (user call, 23 Sep 2026; it was a thumb-reach bar at the bottom
+   for a fortnight, then a day centred at the top), in place of the parked
+   hamburger and full-screen menu (see "Parked mobile chrome" below). Open,
+   its type shrinks with the viewport so the whole row fits between the
+   gutters (down to the smallest phones), the EXPERTISE drawer opens
+   downward as on the desktop, and the search flips as it does there. From
+   md it is right-aligned so it clears the fixed wordmark, then centred once
+   there's room.
 
    Everything inside the pill that has to scale is sized in em off the pill's
    font-size (--nav-voice, set on .site-header so the wordmark can read it),
@@ -157,10 +170,10 @@
 .site-nav {
   position: fixed;
   inset-inline: 0;
-  top: 0.75rem;
+  top: 0.75rem; /* 12px above and at both sides (user call, 23 Sep 2026: "12px left right top") */
   z-index: 10000;
   display: flex;
-  justify-content: center;
+  justify-content: flex-end; /* the square at the right, across from the wordmark */
   padding-inline: 0.75rem;
   transition: opacity var(--duration-normal) var(--ease-standard);
 }
@@ -225,16 +238,19 @@
   display: flex;
   flex-direction: column; /* the drawer under the row at every width (it dropped up while the pill sat at the bottom) */
   align-items: stretch;
-  padding: 0.75em 1em;
+  padding: 0.667em 0.889em; /* 0.75rem 1rem at the desktop's full-size type; rem from md */
   border-radius: var(--radius-md);
   font-size: var(--nav-voice);
-  /* Below md the pill sits over page content at the bottom of the viewport,
-     so it is always frosted; from md it starts bare and frosts on scroll,
-     hover, the drawer or the search (the rule after this). */
+  /* Below md the pill is ALWAYS frosted — at the top of the page and as the
+     rest square too (user call, 23 Sep 2026: "background always on for the
+     mobile nav"); from md it starts bare and frosts on scroll, hover, the
+     drawer or the search (the rules after this). */
   background: var(--nav-bg-scrolled);
   -webkit-backdrop-filter: blur(24px);
   backdrop-filter: blur(24px);
-  transition: background var(--duration-normal) var(--ease-standard);
+  transition:
+    background var(--duration-normal) var(--ease-standard),
+    padding var(--duration-fast) var(--ease-standard);
 }
 
 @media (min-width: 768px) {
@@ -251,8 +267,8 @@
 .site-nav__row {
   display: flex;
   align-items: center;
-  gap: 0.375em;
-  min-height: 2em;
+  gap: 0.333em; /* 0.375rem */
+  min-height: 1.78em; /* 2rem */
 }
 
 @media (min-width: 768px) {
@@ -270,6 +286,7 @@
    carry the background so the roll reads as one solid pill). -webkit- first
    (LESSONS). */
 .site-nav.is-scrolled .site-nav__pill,
+.site-nav.is-open .site-nav__pill,
 .site-nav.is-search-open .site-nav__pill,
 .site-nav.is-submenu-open .site-nav__pill {
   background: var(--nav-bg-scrolled);
@@ -281,9 +298,7 @@
    sticky :hover on whatever was last tapped, which held the drawer open
    after Esc and would frost the pill for no reason (LESSONS). */
 @media (hover: hover) {
-  .site-nav__pill:hover,
-  .site-nav__pill:has(.site-nav__item--has-submenu:hover),
-  .site-nav__pill:has(.site-nav__drawer:hover) {
+  .site-nav__pill:hover {
     background: var(--nav-bg-scrolled);
     -webkit-backdrop-filter: blur(24px);
     backdrop-filter: blur(24px);
@@ -306,7 +321,7 @@
 .site-nav__link {
   display: flex;
   align-items: center;
-  padding: 0.55em 0.4em; /* below md the items sit a little closer, which buys the type some size */
+  padding: 0.444em; /* --spacing-xs (0.5rem) at the desktop's full-size type; the token from md */
   font-size: var(--nav-voice); /* the label voice from md; below it, whatever fits the width */
   font-weight: var(--font-weight-bold);
   line-height: 1;
@@ -316,6 +331,22 @@
   transition:
     color var(--duration-normal) var(--ease-standard),
     background var(--duration-normal) var(--ease-standard);
+}
+
+/* the EXPERTISE trigger is a button since 23 Sep 2026 (user call: "not a
+   link — to trigger the dropdown, you click it"): the link's class, the
+   button's chrome off */
+button.site-nav__link {
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: var(--nav-voice);
+  font-weight: var(--font-weight-bold);
+  line-height: 1; /* the link's; the font shorthand above would leave the button's own */
+  letter-spacing: inherit;
+  text-transform: inherit;
+  cursor: pointer;
+  appearance: none;
 }
 
 .site-nav__link:hover {
@@ -347,9 +378,9 @@
 }
 
 .site-nav.show-home .site-nav__home {
-  max-width: 2.2em;
-  padding-left: 0.2em;
-  padding-right: 0.4em;
+  max-width: 2.22em; /* 2.5rem */
+  padding-left: 0.222em; /* 0.25rem */
+  padding-right: 0.444em; /* 0.5rem */
   opacity: 1;
 }
 
@@ -381,15 +412,11 @@
   transition: grid-template-rows var(--duration-normal) var(--ease-standard);
 }
 
+/* CLICK TO OPEN, at every pointer (user call, 23 Sep 2026: "click to view
+   dropdown, not the hover"): the hover-open that stood here is gone; the
+   open state is js/header.js's alone. */
 .site-nav.is-submenu-open .site-nav__drawer {
   grid-template-rows: 1fr;
-}
-
-@media (hover: hover) {
-  .site-nav__pill:has(.site-nav__item--has-submenu:hover) .site-nav__drawer,
-  .site-nav__pill:has(.site-nav__drawer:hover) .site-nav__drawer {
-    grid-template-rows: 1fr;
-  }
 }
 
 .site-nav__drawer-inner {
@@ -405,12 +432,11 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 0.75em;
+  gap: 0.667em; /* 0.75rem */
   margin: 0;
-  /* top gap from the row; extra bottom room before the pill's rounded corner
-     left pad aligns
-     items under SERVICES (JS-set) */
-  padding: 1em 0 1em var(--submenu-offset, 0.5em);
+  /* top gap from the row; extra bottom room before the pill's rounded corner;
+     left pad aligns items under SERVICES (JS-set) */
+  padding: 0.889em 0 0.889em var(--submenu-offset, 0.444em); /* 1rem, 0.5rem */
   list-style: none;
 }
 
@@ -437,7 +463,178 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .site-nav__drawer {
+  .site-nav__drawer,
+  .site-nav__pill--nav,
+  .site-nav.is-open .site-nav__pill--nav,
+  .site-nav__burger,
+  .site-nav.is-open .site-nav__burger,
+  .site-nav__home {
+    transition: none;
+  }
+}
+
+/* ---- The phone's menu: a square that opens into the pill ---------------- *
+ * Below md the pill rests collapsed (.site-nav without .is-open): the row
+ * shows only the burger — two lines on a square as tall as the pill — on the
+ * right gutter. .is-open (js/header.js) shows the row in full, the burger
+ * gone: the links, the search glyph, and the home glyph AT THE RIGHT, in the
+ * square's spot (user call, 23 Sep 2026: "the menu with the icon home on the
+ * right"), showing whether or not the page is scrolled. A tap outside, a
+ * scroll, a link or Esc closes it. From md none of this applies: the burger
+ * is gone and the row is the desktop's.
+ *
+ * ANIMATED both ways (user call: "smooth animation on open and closing
+ * back"): the row is always laid out at its full width, in the DESKTOP'S
+ * ORDER — the home glyph, the links, the search (user call: "the order
+ * should be identical to desktop, home icon first"), the burger last; the
+ * PILL clips it, its width easing from the square (the row's height,
+ * measured by js/header.js as --nav-row-h, plus the padding) to THE FULL
+ * WIDTH between the gutters (user call: "width 100% with the same padding
+ * left and right"; the voice's fit cap keeps the row inside that, and the
+ * row centres in what is left). The pill runs right-to-left so the clip
+ * keeps the RIGHT end — the square's burger stays put while the row slides
+ * out leftwards and back; the row and the drawer set the direction straight
+ * again inside. NOTHING IN THE ROW MOVES while it plays (user call: the
+ * items "jump/move position, make it so they are fixed"): the row is
+ * anchored to the pill's right edge, not centred; the home glyph is at its
+ * full width the whole time (the clip hides it when closed); and the burger
+ * is out of the row, laid over its right end, fading rather than shrinking
+ * — so the search glyph is revealed exactly where the burger was, and the
+ * links never shift. Visibility hands over after the ease, so nothing
+ * hidden can take the focus or peep past the clip. (A 0fr → 1fr grid
+ * column, the drawer's device, was tried first: on a fresh page the column
+ * stayed at nothing on the first open.) */
+.site-nav__pill--nav {
+  position: relative; /* the burger's frame */
+  direction: rtl;
+  overflow: hidden;
+  padding-right: 0.667em; /* the same as closed, so the right-anchored row holds still; the open state's extra sits on the left only */
+  width: calc(var(--nav-row-h, 2em) + 1.333em); /* the square: the row plus 0.667em each side */
+  transition:
+    width var(--duration-normal) var(--ease-standard),
+    padding var(--duration-fast) var(--ease-standard),
+    background var(--duration-normal) var(--ease-standard);
+}
+
+.site-nav__row,
+.site-nav__drawer {
+  direction: ltr;
+}
+
+/* the row at its own width on the START edge — the right, in rtl — so it
+   overflows the clip on the left while closed (as a block as wide as the
+   pill it overflowed to the right, past the clip's kept end) and holds
+   still while the pill widens; open, the fit cap leaves it a hair short of
+   the left padding at most */
+.site-nav__row {
+  width: max-content;
+  margin-inline: 0;
+}
+
+.site-nav.is-open .site-nav__pill--nav {
+  width: calc(100vw - 1.5rem);
+}
+
+.site-nav:not(.is-open) .site-nav__list,
+.site-nav:not(.is-open) .site-nav__home {
+  visibility: hidden;
+  transition: visibility 0s var(--duration-normal);
+}
+
+/* the glyph at its full width at every moment below md — the desktop's
+   scroll-reveal would resize the row mid-ease */
+.site-nav__home,
+.site-nav.show-home .site-nav__home {
+  max-width: 2.22em;
+  padding-left: 0.222em;
+  padding-right: 0.444em;
+  opacity: 1;
+  transition: color var(--duration-normal) var(--ease-standard);
+}
+
+.site-nav__burger {
+  position: absolute; /* over the row's right end, out of its flow */
+  top: 0.667em;
+  right: 0.667em;
+  display: inline-grid;
+  place-items: center;
+  width: var(--nav-row-h, 2em); /* the row's height (measured by js/header.js): with the pill's block padding on all four sides, the rest is a square, the lines centred in it */
+  height: var(--nav-row-h, 2em);
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--color-foreground); /* the links' ink; the over-hero and hover rules below name it with them */
+  cursor: pointer;
+  transition:
+    opacity var(--duration-fast) var(--ease-standard),
+    color var(--duration-normal) var(--ease-standard);
+}
+
+.site-nav__burger .site-nav__glyph {
+  width: 1.5em;
+  height: 1.5em;
+}
+
+.site-nav__burger:hover {
+  color: var(--color-icon-blue);
+}
+
+.site-nav:not(.is-open) .site-nav__pill--nav {
+  padding-inline: 0.667em; /* the square: the block padding on both sides */
+}
+
+.site-nav.is-open .site-nav__burger {
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity var(--duration-fast) var(--ease-standard),
+    visibility 0s var(--duration-fast);
+}
+
+@media (min-width: 768px) {
+  .site-nav__pill--nav,
+  .site-nav.is-open .site-nav__pill--nav {
+    position: static;
+    direction: ltr;
+    overflow: visible;
+    width: auto;
+    padding-right: 1rem;
+    transition: background var(--duration-normal) var(--ease-standard);
+  }
+  /* the desktop's scroll-revealed glyph again */
+  .site-nav__home,
+  .site-nav:not(.is-open) .site-nav__home {
+    visibility: visible;
+    max-width: 0;
+    padding-left: 0;
+    padding-right: 0;
+    opacity: 0;
+    transition:
+      max-width var(--duration-normal) var(--ease-standard),
+      opacity var(--duration-fast) var(--ease-standard),
+      padding var(--duration-normal) var(--ease-standard),
+      color var(--duration-normal) var(--ease-standard);
+  }
+  .site-nav.show-home .site-nav__home {
+    max-width: 2.5rem;
+    padding-left: 0.25rem;
+    padding-right: 0.5rem;
+    opacity: 1;
+  }
+  .site-nav__row {
+    width: auto;
+    margin-inline: 0;
+  }
+  .site-nav__burger,
+  .site-nav.is-open .site-nav__burger {
+    display: none;
+  }
+  .site-nav:not(.is-open) .site-nav__pill--nav {
+    padding-inline: 1rem;
+  }
+  .site-nav:not(.is-open) .site-nav__list {
+    visibility: visible;
     transition: none;
   }
 }
@@ -494,7 +691,7 @@
   inset: 0;
   flex-direction: row;
   align-items: center;
-  gap: 0.375em;
+  gap: 0.333em;
   margin: 0;
   transform: rotateX(90deg) translateZ(var(--nav-depth, 1.75rem));
 }
@@ -526,7 +723,7 @@
   /* The glyph is 1.5em (below) inside a box the same height as a link's
      (1em of text + the padding): the extra half-em comes out of the vertical
      padding, so a bigger glyph never grows the pill. */
-  padding: 0.4em 0.4em; /* 1.3em glyph + 0.8em = the link's 2.1em box */
+  padding: 0.294em 0.444em; /* (0.5rem − 0.15em) 0.5rem at the desktop's full-size type; the tokens from md */
   border: 0;
   border-radius: var(--radius-sm);
   background: none;
@@ -621,6 +818,7 @@
  * hero boundary. */
 .site-header.is-over-hero .site-logo,
 .site-header.is-over-hero .site-nav__link,
+.site-header.is-over-hero .site-nav__burger,
 .site-header.is-over-hero .site-nav__home,
 .site-header.is-over-hero .site-nav__submenu-link,
 .site-header.is-over-hero .site-nav__search-trigger,
@@ -643,13 +841,16 @@
 }
 
 @media (hover: hover) {
-  .site-header.is-over-hero .site-nav__pill:hover,
-  .site-header.is-over-hero .site-nav__pill:has(.site-nav__item--has-submenu:hover),
-  .site-header.is-over-hero .site-nav__pill:has(.site-nav__drawer:hover) {
+  .site-header.is-over-hero .site-nav__pill:hover {
     background: var(--nav-bg-over-hero);
   }
 }
 
+/* the desktop's bare pill at the top of the page; below md the pill is
+   always frosted and over a hero wears the tint above at every moment,
+   the rest square included (user call, 23 Sep 2026: the phone's pill read
+   lighter than the desktop's — this reset had been applied at every width
+   for a day, leaving only the blur) */
 @media (min-width: 768px) {
   .site-header.is-over-hero .site-nav__pill {
     background: transparent;

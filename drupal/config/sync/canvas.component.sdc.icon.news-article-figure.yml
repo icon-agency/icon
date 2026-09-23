@@ -196,7 +196,7 @@ versioned_properties:
           derived_schema_metadata: {  }
     fallback_metadata:
       slot_definitions: {  }
-label: Picture
+label: 'Picture (image/video)'
 id: sdc.icon.news-article-figure
 provider: icon
 source: sdc

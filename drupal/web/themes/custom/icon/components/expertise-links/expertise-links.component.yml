@@ -5,8 +5,9 @@ status: stable
 description: >
   The "Our expertise" list (src/components/expertise-links.css): a label
   that locks mid-viewport while the links scroll up past it, the link
-  beside it inked. The homepage intro's list, on any page — fill its slot
-  with Expertise link items.
+  beside it inked. Off the library since Sep 2026: the Expertise links
+  BLOCK renders it from the main menu's Expertise children; the ones
+  placed before still render.
 libraryOverrides:
   dependencies:
     - icon/expertise-links
@@ -21,6 +22,12 @@ props:
       description: The words that lock beside the list.
       examples:
         - Our expertise
+    gutter:
+      type: boolean
+      title: On the page gutter
+      description: On, when the list stands on the page; off inside the intro band or a box.
+      examples:
+        - true
 slots:
   links:
     title: Links

@@ -261,5 +261,5 @@
      aliases resolve at :root and inherit their RESOLVED value, so a
      component-level override of those would silently do nothing — see
      LESSONS.md. */
-  --rule: color-mix(in srgb, currentColor 25%, transparent);
+  --rule: currentColor; /* the full ink, no longer a quarter of it (user call, 23 Sep 2026: "make all lines 100% of their colour") — still derived, so a muted element's line stays its own text's colour */
 }

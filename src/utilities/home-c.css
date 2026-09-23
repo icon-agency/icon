@@ -791,8 +791,12 @@ html:not(.js-animations) .hero__count { display: none; }
    blue themes the ink is light, so the tint inverts to white. */
 .intro__mark {
   display: block;
-  width: calc(var(--mark-ratio) * var(--intro-display));
-  height: calc(var(--mark-ratio) * var(--intro-display));
+  /* a floor of 5.5rem (user call, 23 Sep 2026: "bigger on mobile and
+     tablet") — the ratio of the display voice gave 48px on a phone and
+     54px on a tablet against 88px at 1260 wide; the floor is that
+     desktop size, and past it the ratio takes over unchanged */
+  width: max(5.5rem, calc(var(--mark-ratio) * var(--intro-display)));
+  height: max(5.5rem, calc(var(--mark-ratio) * var(--intro-display)));
   margin: 0 auto var(--space-xs);
   filter: brightness(0);
 }
@@ -816,6 +820,7 @@ html:not(.js-animations) .hero__count { display: none; }
   color: var(--color-icon-black);
   text-align: center;
   text-wrap: balance;
+  container-type: inline-size; /* the caps below are capped by this width */
 }
 
 /* The two halves wear the shared .lockup-accent / .lockup-caps pair above;
@@ -850,6 +855,14 @@ html:not(.js-animations) .hero__count { display: none; }
 .intro__headline .lockup-caps {
   text-wrap: balance;
   margin-top: 0.08em;
+  /* CAPPED by the headline's own width — the masthead's device
+     (components/page-header.css, .page-header__lockup-caps) — so the
+     widest word stays on the page (user catch, 23 Sep 2026: COMMUNICATIONS
+     ran off a phone). COMMUNICATIONS runs 9.6em in Kumbh 900 on the caps
+     tracking (measured), so a tenth of the width per em, a hair under,
+     keeps it inside; on the desktop the token is the smaller of the two
+     and nothing changes. */
+  font-size: min(var(--voice-display), 10.3cqw);
 }
 
 /* ---- The filmstrip ------------------------------------------------------ */

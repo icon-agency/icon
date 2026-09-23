@@ -27,14 +27,14 @@
   {% endembed %}
 
 <div class="intro__band">
-    {# The Expertise links component's row (expertise-links.twig), in the
-       band's left tracks — the same classes, so its css and js apply. #}
-    <div class="intro__expertise expertise-links" data-expertise-links data-animate style="--animate-delay: 120ms">
-      <span class="expertise-links__label">{{ expertise_label|default('Our expertise'|t) }}</span>
-      <ul class="expertise-links__list" aria-label="{{ 'Our expertise'|t }}">
-{# SLOT expertise: Expertise link components. #}
+    {# The Expertise links BLOCK (icon_expertise_links) in the band's left
+       tracks: it renders the row (expertise-links.twig) from the main
+       menu, its gutter off; the wrapper carries the grid placement and
+       the reveal's delay, which the row's data-animate reads (Sep 2026 —
+       the row was typed here, item by item, before). #}
+    <div class="intro__expertise" style="--animate-delay: 120ms">
+{# SLOT expertise: the Expertise links block. #}
 {{ expertise }}
-</ul>
     </div>
     <div class="intro__prose">
       <p class="intro__statement" data-reveal-words>{{ statement }}</p>

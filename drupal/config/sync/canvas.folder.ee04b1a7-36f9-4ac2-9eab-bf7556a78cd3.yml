@@ -8,7 +8,7 @@ dependencies:
     - canvas.component.sdc.icon.intro
 name: Homepage
 configEntityTypeId: component
-weight: 11
+weight: 10
 items:
   - block.icon_featured_work
   - block.icon_hero

@@ -851,13 +851,16 @@ function icon_site_primary_nav(): array {
  * copy as the fallback, plus the social links from the footer-social menu,
  * in menu order.
  *
- * @return array{talk: string, touch: string, touch_url: string, newsletter: string, acknowledgement: string, social: array<int, array{title: string, url: string}>, tags: string[]}
+ * @return array{eyebrow: string, talk: string, touch: string, touch_url: string, newsletter: string, acknowledgement: string, social: array<int, array{title: string, url: string}>, tags: string[]}
  *   The words, the social links (title and URL each) and the cache tags of
  *   everything read.
  */
 function icon_site_footer(): array {
   $config = \Drupal::config('icon_site.footer');
   $out = [
+    // The serif line over the big words (user ask, 23 Sep 2026: "an eyebrow
+    // in this font that says 'Make what matters'"); empty hides it.
+    'eyebrow' => (string) ($config->get('eyebrow') ?? 'Make what matters'),
     'talk' => (string) ($config->get('talk') ?: "Let’s talk"),
     'touch' => (string) ($config->get('touch') ?: 'Get in touch'),
     'touch_url' => (string) ($config->get('touch_url') ?: '/contact'),
@@ -1415,6 +1418,43 @@ function icon_site_form_alter(array &$form, FormStateInterface $form_state, stri
   if (isset($form['form_build_id']) && empty($form['form_build_id']['#attributes']['data-form-id'])) {
     $form['form_build_id']['#attributes']['data-form-id'] = $form_id;
   }
+  if ($form_id === 'component_instance_form') {
+    _icon_site_component_panel_states($form);
+  }
+}
+
+/**
+ * A component panel shows a prop only when the prop it depends on calls for it.
+ *
+ * Form states on the Canvas panel (its form attaches core/drupal.states):
+ * the Columns' Split only with two columns (user call, 23 Sep 2026: "should
+ * this be hidden unless 2 col is selected?"), and a box's custom colours
+ * only when the box is Custom. The prop stays in the form — hidden, not
+ * disabled — so a required one still validates and its value survives.
+ */
+function _icon_site_component_panel_states(array &$form): void {
+  if (empty($form['canvas_component_props']) || !is_array($form['canvas_component_props'])) {
+    return;
+  }
+  // [the prop to show] => [the prop it follows, the values that show it].
+  $rules = [
+    'split' => ['columns', ['2']],
+    'bg' => ['box', ['custom']],
+    'ink' => ['box', ['custom']],
+  ];
+  foreach ($form['canvas_component_props'] as $uuid => &$props) {
+    if (!is_array($props) || str_starts_with((string) $uuid, '#')) {
+      continue;
+    }
+    foreach ($rules as $prop => [$parent, $values]) {
+      if (!isset($props[$prop]) || !isset($props[$parent])) {
+        continue;
+      }
+      $selector = ':input[name="canvas_component_props[' . $uuid . '][' . $parent . ']"]';
+      $props[$prop]['#states']['visible'][] = [$selector => array_map(fn($v) => ['value' => $v], $values)];
+    }
+  }
+  unset($props);
 }
 
 /**

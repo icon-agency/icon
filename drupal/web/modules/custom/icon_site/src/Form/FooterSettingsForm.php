@@ -64,6 +64,13 @@ final class FooterSettingsForm extends ConfigFormBase {
         ':social' => Url::fromRoute('entity.menu.edit_form', ['menu' => 'footer-social'])->toString(),
       ]) . '</p>',
     ];
+    $form['eyebrow'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Call to action eyebrow'),
+      '#description' => $this->t('The serif line over the big words — "Make what matters". Leave it empty for none.'),
+      '#default_value' => $footer['eyebrow'],
+      '#maxlength' => 60,
+    ];
     $form['talk'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Call to action'),
@@ -123,6 +130,7 @@ final class FooterSettingsForm extends ConfigFormBase {
    */
   public function submitForm(array &$form, FormStateInterface $form_state): void {
     $this->config('icon_site.footer')
+      ->set('eyebrow', trim((string) $form_state->getValue('eyebrow')))
       ->set('talk', trim((string) $form_state->getValue('talk')))
       ->set('touch', trim((string) $form_state->getValue('touch')))
       ->set('touch_url', trim((string) $form_state->getValue('touch_url')))

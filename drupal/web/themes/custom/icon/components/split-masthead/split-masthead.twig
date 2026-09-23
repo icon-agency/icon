@@ -21,13 +21,21 @@
  */
 #}
 {% set tag = heading_level|default('h1') %}
-{% set style = style|default('serif') %}
+{% set style = style|default('caps') %} {# caps by default (user call, 23 Sep 2026: a new split masthead should open on the eyebrow and the caps H1, not the article serif) #}
 {% set handover_class = attribute({ dark: 'dark', blue: 'theme-blue', 'light-grey': 'theme-work-article', custom: 'theme-work-article' }, opening|default('none'))|default('') %}
 <div class="page-header page-header--split"{% if handover_class %} data-theme-handover data-theme-handover-class="{{ handover_class }}"{% endif %}>
   <div class="page-header__split">
-    <div class="page-header__split-intro">
+    {# the column's own hairlines, top and bottom (user call, 23 Sep 2026:
+       "update the split masthead to have line top and bottom") — drawn in
+       like every rule (utilities/rules.css); the above and below slots sit
+       inside them #}
+    <div class="page-header__split-intro" data-rule="both">
       <div class="page-header__split-above">{% block above %}{{ above }}{% endblock %}</div>
-      <{{ tag }} class="page-header__split-title page-header__split-title--{{ style }}" data-animate style="--animate-delay: 60ms">
+      {# the shared word cascade (data-reveal-words, js/reveal.js) — the About
+         lockup's and the work masthead's entrance, on this title too (user
+         call, 23 Sep 2026: "can all mastheads have it for consistency?");
+         the eyebrow's word leads, the title's follow #}
+      <{{ tag }} class="page-header__split-title page-header__split-title--{{ style }}" data-reveal-words>
         {%- if eyebrow -%}<span class="page-header__split-eyebrow masthead-accent">{{ eyebrow }}</span>{%- endif -%}
         <span class="page-header__split-text">{{ title|nl2br }}</span>
       </{{ tag }}>

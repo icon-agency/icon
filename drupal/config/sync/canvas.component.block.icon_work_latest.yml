@@ -4,9 +4,65 @@ status: true
 dependencies:
   module:
     - icon_site
-active_version: acde319c7f37c5b1
+active_version: 3e4e06e4b6398b1f
 versioned_properties:
   active:
+    settings:
+      default_settings:
+        id: icon_work_latest
+        label: 'Work: latest'
+        label_display: '0'
+        provider: icon_site
+        accent: Latest
+        caps: Work
+        category: ''
+        count: 2
+    fallback_metadata:
+      slot_definitions: null
+  a9d46e3b3bc0c8ef:
+    settings:
+      default_settings:
+        id: icon_work_latest
+        label: 'Work: latest'
+        label_display: '0'
+        provider: icon_site
+        accent: Latest
+        caps: Work
+        category: ''
+        count: 2
+        rule_top: true
+        rule_bottom: true
+    fallback_metadata:
+      slot_definitions: null
+  3d065b62c357f8ec:
+    settings:
+      default_settings:
+        id: icon_work_latest
+        label: 'Work: latest'
+        label_display: '0'
+        provider: icon_site
+        accent: Latest
+        caps: Work
+        category: ''
+        count: 2
+        rules: true
+    fallback_metadata:
+      slot_definitions: null
+  529d9cd5e71e109f:
+    settings:
+      default_settings:
+        id: icon_work_latest
+        label: 'Work: latest'
+        label_display: '0'
+        provider: icon_site
+        accent: Latest
+        caps: Work
+        category: ''
+        count: 2
+        rules: true
+    fallback_metadata:
+      slot_definitions: null
+  acde319c7f37c5b1:
     settings:
       default_settings:
         id: icon_work_latest

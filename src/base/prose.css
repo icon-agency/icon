@@ -21,6 +21,7 @@
     width: 100%;
     margin-inline: auto;
     padding-inline: var(--gutter-page);
+    container-type: inline-size; /* the caps headings below are capped by this width */
   }
 
   @media (min-width: 1024px) {
@@ -81,7 +82,14 @@
      bold weight; and the MILLER one — the serif at medium, the pull
      quote's voice as a heading. The classes are the editor's. */
   .content-page h2 {
-    font-size: clamp(2.25rem, 3vw, 3.5rem);
+    /* CAPPED by the block's own width — the masthead's device (user catch,
+       23 Sep 2026: "EXPERIENCES." ran past a third-width column, then
+       COMMUNICATIONS past a narrow one): COMMUNICATIONS, the widest caps
+       word the site carries, runs 9.6em in Kumbh 900, so a tenth of the
+       width per em, a hair under, keeps it on its line — the home intro's
+       figure; a full-width block never meets the cap, the clamp is the
+       smaller value there */
+    font-size: min(clamp(2.25rem, 3vw, 3.5rem), 10.2cqw);
     font-weight: 900; /* the heaviest cut, as the masthead's caps (user call) */
     line-height: 1;
     margin-bottom: 1.25rem;
@@ -113,9 +121,9 @@
      team panel's bio size, a weight up — medium — so it holds its own at
      the smaller size (user call: "up the font weight by one"). */
   .content-page p.is-small {
-    font-size: 1.0625rem;
+    font-size: clamp(0.875rem, calc(var(--voice-paragraph) * 0.78), 1.3rem); /* 78% of the paragraph voice (was 73 — user call, 23 Sep 2026: "a tiny bit bigger"): 14px on a phone, 16.5 at ~1260, 21 at the horizon — so Small scales as the copy does */
     font-weight: var(--font-weight-medium);
-    line-height: 1.6;
+    line-height: 1.4; /* the Normal paragraph's ratio, exactly (user call, 23 Sep 2026: Small "feels like a larger line height in relation to the text size") */
   }
 
   /* Paragraph — Large (user ask, Sep 2026): the homepage intro's statement
@@ -128,6 +136,18 @@
     font-weight: var(--font-weight-medium);
     letter-spacing: -0.01em;
     color: var(--icon-black);
+  }
+
+  /* CAPS on any heading (user ask, 23 Sep 2026: "H4 should have a Caps
+     version — there is a Caps label, but that is different — in fact all
+     headings should have that option"): the level's own size, in the caps
+     register the H2 wears by default — Kumbh's heaviest, the caps tracking,
+     set solid. Editor styles Heading 3 — Caps to Heading 6 — Caps. */
+  .content-page :is(h3, h4, h5, h6).is-caps {
+    font-weight: 900;
+    line-height: 1;
+    letter-spacing: var(--tracking-caps);
+    text-transform: uppercase;
   }
 
   /* THE CAPS LABEL VOICE in the editor (user ask, Sep 2026: the Work
@@ -185,7 +205,7 @@
      size, weight, leading and tracking, so a Content block's H2 can stand
      where a masthead would. */
   .content-page h2.is-large {
-    font-size: var(--voice-display);
+    font-size: min(var(--voice-display), 9.8cqw); /* the masthead's cap, for the masthead's word (INTERDISCIPLINARY, 10.1em) */
     font-weight: 900;
     line-height: 1;
     letter-spacing: var(--tracking-caps);
@@ -235,8 +255,8 @@
        want the Normal to be the same font weight as small") — Normal IS
        this paragraph, so the body copy everywhere steps up with it */
     font-weight: var(--font-weight-medium);
-    line-height: 1.5; /* was 1.75, which read airy at the Paragraph voice's size (user call, Sep 2026) */
-    margin-bottom: 2rem;
+    line-height: 1.4; /* was 1.75, then 1.5, each read airy at the Paragraph voice's size (user calls, Sep 2026) */
+    margin-bottom: clamp(0.9375rem, 0.5rem + 0.8vw, 1.5rem); /* a clamp, the house way (user call, 23 Sep 2026): 15px on a phone, 18 at 1260, 24 from 2000 — half again the heading's gap at the desktop; it was 2rem, then the heading's 0.75rem ("maybe too much"), then, on a news article, "feels too tight … not double but increase it" */
     text-wrap: pretty;
     color: var(--icon-grey);
   }
@@ -273,7 +293,7 @@
   }
 
   .content-page blockquote footer {
-    font-size: 0.875rem;
+    font-size: 0.875em; /* of the quote's clamped size (user check, 23 Sep 2026) */
     margin-top: 1.5rem;
     color: var(--icon-grey);
   }
@@ -282,7 +302,7 @@
   .content-page ol {
     margin-bottom: 1.5rem;
     padding-left: 1.5rem;
-    font-size: clamp(1.125rem, 1.75vw, 1.375rem);
+    font-size: var(--voice-paragraph); /* the same clamp the paragraph wears, by its name */
     font-weight: var(--font-weight-medium); /* the paragraph's weight, so a list reads as the copy around it */
     text-wrap: pretty;
     color: var(--icon-grey);
@@ -290,12 +310,12 @@
 
   .content-page ul li,
   .content-page ol li {
-    line-height: 1.75;
+    line-height: 1.45; /* tighter than the paragraph's 1.75 (user call, 23 Sep 2026: "tighten up the line height, but keep the space between list items") */
   }
 
   .content-page ul li:not(:last-child),
   .content-page ol li:not(:last-child) {
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.75rem; /* was 0.5rem (user call, 23 Sep 2026: "more space between items") */
   }
 
   /* A PARAGRAPH STYLE ON A LIST ITEM (user catch, Sep 2026: the partners
@@ -317,11 +337,15 @@
 
   .content-page ul li:has(> p.is-small):not(:last-child),
   .content-page ol li:has(> p.is-small):not(:last-child) {
-    margin-bottom: 0.4rem;
+    margin-bottom: 0.6rem; /* the list's 0.75rem scaled to the Small size (was 0.4rem) */
   }
 
-  .content-page li:has(> p.is-small) {
-    line-height: 1.6;
+  /* an item's lines are the list's tighter 1.45 whatever paragraph style
+     it carries (the Small paragraph's own 1.6 would win otherwise) */
+  .content-page li:has(> p.is-small),
+  .content-page li > p,
+  .content-page li > p.is-small {
+    line-height: 1.45;
   }
 
   /* THE BULLET IS A SLASH (user call, Sep 2026: "for bullet points, try a
@@ -351,15 +375,21 @@
 
   /* an item carrying a paragraph style sizes its slash to that style */
   .content-page ul > li:has(> p.is-small) {
-    font-size: 1.0625rem;
+    font-size: clamp(0.875rem, calc(var(--voice-paragraph) * 0.78), 1.3rem); /* the Small size */
   }
 
-  /* the Caps list is no bullets, one item a line, by design */
-  .content-page ul.list-caps > li {
+  /* the Caps list is no bullets, one item a line, by design; the PLAIN
+     list is the same list with no slash and no indent — flush with the
+     copy's left edge, the item gap kept (user call, 23 Sep 2026: "a bullet
+     version that has no slash, and left aligns with 0 left margin indent";
+     an editor style, Plain list) */
+  .content-page ul.list-caps > li,
+  .content-page ul.list-plain > li {
     padding-left: 0;
   }
 
-  .content-page ul.list-caps > li::before {
+  .content-page ul.list-caps > li::before,
+  .content-page ul.list-plain > li::before {
     content: none;
   }
 
@@ -385,8 +415,10 @@
     border-top: var(--rule-weight) solid var(--rule);
   }
 
-  .content-page ul.list-slash li:not(:last-child) {
-    margin-bottom: 0; /* the rules carry the rhythm, not the gap */
+  .content-page ul.list-slash li:not(:last-child),
+  .content-page ul.list-slash li:has(> p.is-small):not(:last-child),
+  .content-page ul.list-caps li:has(> p.is-small):not(:last-child) {
+    margin-bottom: 0; /* the rules carry the rhythm, not the gap — and the Small item's gap above must not creep in (user catch, 23 Sep 2026: every ruled item but the last had extra room below) */
   }
 
   .content-page ul.list-slash li:last-child {
@@ -491,7 +523,7 @@
     background-color: var(--secondary);
     padding: 0.125rem 0.375rem;
     border-radius: 0.25rem;
-    font-size: 0.875rem;
+    font-size: 0.875em; /* of the copy's clamped size (user check, 23 Sep 2026) */
     font-family: ui-monospace, monospace;
   }
 

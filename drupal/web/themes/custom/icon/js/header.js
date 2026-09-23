@@ -24,6 +24,8 @@
         // The search flip closes the SERVICES drawer before it rolls; the drawer's
         // close is defined inside its own block below and handed up through this.
         var closeSubmenu = function () {};
+        // The phone's menu closes the search face with it, the same way.
+        var closeSearch = function () {};
 
         // ---- Scroll state: frosted pill (>10px), then the hero-exit swap at >100px —
         //      the wordmark fades out as the home glyph (pill + mobile button) fades in.
@@ -93,6 +95,65 @@
           });
         }
 
+        // ---- The phone's menu (the pill's rest square, below md) ----
+        // CSS collapses the pill to the burger without .is-open; this opens it and
+        // closes it on a tap outside, a scroll of more than 40px from where it
+        // opened, a link followed, Esc, or a resize up to the desktop (user call,
+        // 23 Sep 2026: no close button — "tap outside or a link").
+        var burger = document.querySelector("[data-nav-burger]");
+        var closeMobileNav = function () {};
+        if (nav && burger) {
+          var mOpenY = 0;
+          // The rest square's side: the row's height (the CSS adds the padding),
+          // measured — it is the links' line plus their padding at the fitted
+          // voice, which no token states — on load, after the fonts, on resize.
+          // Set on the HEADER, with the pill's own height, so the wordmark (the
+          // pill's sibling) can sit its bubble on the square's centre.
+          var mRow = nav.querySelector(".site-nav__row");
+          var mPill = nav.querySelector(".site-nav__pill--nav");
+          var mHost = nav.closest(".site-header") || nav;
+          function mRowH() {
+            if (mRow) mHost.style.setProperty("--nav-row-h", mRow.offsetHeight + "px");
+            if (mPill) mHost.style.setProperty("--nav-pill-h", mPill.offsetHeight + "px");
+          }
+          mRowH();
+          if (document.fonts && document.fonts.ready) document.fonts.ready.then(mRowH);
+          window.addEventListener("resize", mRowH, { passive: true });
+          function mIsOpen() { return nav.classList.contains("is-open"); }
+          function mOpen() {
+            nav.classList.add("is-open");
+            burger.setAttribute("aria-expanded", "true");
+            mOpenY = window.scrollY;
+          }
+          function mClose() {
+            if (!mIsOpen()) return;
+            nav.classList.remove("is-open");
+            burger.setAttribute("aria-expanded", "false");
+            closeSubmenu();
+            closeSearch();
+          }
+          closeMobileNav = mClose;
+          burger.addEventListener("click", function (e) {
+            e.stopPropagation();
+            mOpen();
+          });
+          document.addEventListener("click", function (e) {
+            if (mIsOpen() && !nav.contains(e.target)) mClose();
+          });
+          nav.addEventListener("click", function (e) {
+            var a = e.target.closest("a");
+            if (a && !a.hasAttribute("data-submenu-trigger")) mClose();
+          });
+          document.addEventListener("keydown", function (e) {
+            if (e.key === "Escape") mClose();
+          });
+          window.addEventListener("scroll", function () {
+            if (mIsOpen() && Math.abs(window.scrollY - mOpenY) > 40) mClose();
+          }, { passive: true });
+          var mdUp = window.matchMedia("(min-width: 768px)");
+          if (mdUp.addEventListener) mdUp.addEventListener("change", function (e) { if (e.matches) mClose(); });
+        }
+
         // ---- SERVICES disclosure (expanding drawer) ----
         // CSS handles the hover-open baseline (:has); JS adds the hover-intent close
         // delay, aria sync, keyboard, touch-open, Esc, outside-click, and aligns the
@@ -102,9 +163,7 @@
         var smDrawer = document.querySelector("[data-submenu-drawer]");
 
         if (nav && smItem && smTrigger && smDrawer) {
-          var smTimer = null;
           var smSuppress = false;
-          var smCoarse = window.matchMedia("(pointer: coarse)").matches;
 
           function smOffset() {
             var t = smTrigger.getBoundingClientRect();
@@ -117,7 +176,6 @@
           function smIsOpen() { return nav.classList.contains("is-submenu-open"); }
           function smOpen() {
             if (smSuppress) return;
-            if (smTimer) { clearTimeout(smTimer); smTimer = null; }
             smOffset();
             nav.classList.add("is-submenu-open");
             smTrigger.setAttribute("aria-expanded", "true");
@@ -127,20 +185,9 @@
             smTrigger.setAttribute("aria-expanded", "false");
           }
           closeSubmenu = smClose;
-          function smScheduleClose() {
-            if (smTimer) clearTimeout(smTimer);
-            smTimer = window.setTimeout(smClose, 150);
-          }
-
-          // Hover (intent delay on close)
-          smItem.addEventListener("mouseenter", smOpen);
-          smItem.addEventListener("mouseleave", smScheduleClose);
-          smDrawer.addEventListener("mouseenter", smOpen);
-          smDrawer.addEventListener("mouseleave", smScheduleClose);
-
-          // Keyboard focus in/out of the item or drawer
-          smItem.addEventListener("focusin", smOpen);
-          smDrawer.addEventListener("focusin", smOpen);
+          // No hover-open (user call, 23 Sep 2026: "click to view dropdown, not
+          // the hover"): the pointer's hover no longer opens or holds the drawer;
+          // the click below does, and the focus leaving it closes it.
           function smFocusOut(e) {
             var to = e.relatedTarget;
             if (!smItem.contains(to) && !smDrawer.contains(to)) smClose();
@@ -158,12 +205,13 @@
             }
           });
 
-          // Touch: first tap opens instead of navigating
+          // A click TOGGLES the drawer, at every pointer (user call, 23 Sep 2026:
+          // the trigger is a button, not a link, and "click to view dropdown, not
+          // the hover").
           smTrigger.addEventListener("click", function (e) {
-            if (smCoarse && !smIsOpen()) {
-              e.preventDefault();
-              smOpen();
-            }
+            e.preventDefault();
+            if (smIsOpen()) smClose();
+            else smOpen();
           });
 
           // Esc closes and returns focus to the trigger (without reopening)
@@ -252,6 +300,7 @@
             if (returnFocus) sOpenBtn.focus({ preventScroll: true });
           }
 
+          closeSearch = function () { sClose(false); };
           sFace.inert = true; // the search face starts edge-on: unreachable until opened
           sOpenBtn.addEventListener("click", sOpen);
           if (sCloseBtn) sCloseBtn.addEventListener("click", function () { sClose(true); });

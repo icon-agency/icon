@@ -1,12 +1,43 @@
 uuid: 28b638c3-2b1d-4417-8b50-396000021a54
 langcode: en
-status: true
+status: false
 dependencies:
   theme:
     - icon
-active_version: 516969338ba6e191
+active_version: d877f95c5fb2a559
 versioned_properties:
   active:
+    settings:
+      prop_field_definitions:
+        label:
+          required: true
+          field_type: string
+          field_storage_settings: {  }
+          field_instance_settings: {  }
+          field_widget: string_textfield
+          default_value:
+            -
+              value: 'Our expertise'
+          expression: ℹ︎string␟value
+          derived_schema_metadata:
+            string_shape: {  }
+        gutter:
+          required: false
+          field_type: boolean
+          field_storage_settings: {  }
+          field_instance_settings: {  }
+          field_widget: boolean_checkbox
+          default_value:
+            -
+              value: true
+          expression: ℹ︎boolean␟value
+          derived_schema_metadata: {  }
+    fallback_metadata:
+      slot_definitions:
+        links:
+          title: Links
+          description: 'Expertise link items, in order.'
+  516969338ba6e191:
     settings:
       prop_field_definitions:
         label:

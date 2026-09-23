@@ -766,6 +766,15 @@ html[data-icon-editing].js-animations .media-reveal iframe {
   padding-block: var(--space-section);
 }
 
+/* On a Canvas page the rail stands INSIDE the page gutter like every block
+   there (user catch, 23 Sep 2026: the cards ran to the viewport's edge) —
+   a margin, not a padding, so its hairlines run within the margins too,
+   not edge to edge (user call, same day); in a case study the frame pads
+   already, so nothing changes there. */
+.page-canvas .work-article__next {
+  margin-inline: var(--gutter-page);
+}
+
 /* The rail masthead: the two-voice lockup, centred as the comp has it. */
 .work-article__next-heading {
   margin: 0 0 var(--space-md);

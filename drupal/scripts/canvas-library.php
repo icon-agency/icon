@@ -47,10 +47,6 @@ $plan = [
     'sdc.icon.testimonials',
     'block.icon_testimonial',
   ],
-  'Expertise' => [
-    'sdc.icon.expertise-links',
-    'sdc.icon.intro-expertise',
-  ],
   'Results' => [
     'sdc.icon.work-stats',
     'sdc.icon.work-stat',
@@ -79,6 +75,9 @@ $plan = [
     'block.icon_team_profiles',
     'block.icon_office',
     'block.icon_clients_marquee',
+    // The "Our expertise" list from the main menu (Sep 2026) — one block
+    // in place of the group and its typed items.
+    'block.icon_expertise_links',
   ],
   'Listings' => [
     'block.views_block.news-landing',
@@ -109,6 +108,10 @@ $hide = [
   // The testimonial SDC renders the Testimonial (item) block's pick; a
   // quote is content now, not typed per page (Sep 2026).
   'sdc.icon.testimonial',
+  // The Expertise links block renders these two from the main menu (Sep
+  // 2026); the group and items placed before still render.
+  'sdc.icon.expertise-links',
+  'sdc.icon.intro-expertise',
   // The Run: the runs are inferred on the page since Sep 2026 (user call —
   // a Run could be missed); the older articles' Runs still render.
   'sdc.icon.run',

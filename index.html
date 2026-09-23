@@ -222,7 +222,7 @@
                 carries no rule) and Small (<code class="ds-code">p.is-small</code>, a step down at medium) &mdash; with body
                 copy itself at MEDIUM weight (user call: &ldquo;the same font weight as small&rdquo;); on a Heading 2,
                 Sentence case, Miller (serif) and Large (<code class="ds-code">h2.is-large</code>, the Masthead&rsquo;s
-                caps H1 to the token); Caps label on an H4; Slash bullets and Caps list on lists. One style per element:
+                caps H1 to the token); Caps label on an H4; Slash bullets, Caps list and Plain list (no slash, no indent, 23 Sep 2026) on lists; list lines are tighter than the paragraph&rsquo;s since then, the item gap kept. One style per element:
                 picking one takes its rivals off.
               </p>
 
@@ -1023,13 +1023,13 @@
                       <ul class="site-nav__list">
                         <li class="site-nav__item"><a class="site-nav__link" href="#">AGENCY</a></li>
                         <li class="site-nav__item site-nav__item--has-submenu">
-                          <a
+                          <button
                             class="site-nav__link"
-                            href="#"
+                            type="button"
                             aria-haspopup="true"
                             aria-expanded="false"
                             aria-controls="nav-services"
-                            >SERVICES</a
+                            >SERVICES</button
                           >
                         </li>
                         <li class="site-nav__item"><a class="site-nav__link" href="#">WORK</a></li>
@@ -1040,6 +1040,7 @@
                     <div class="site-nav__drawer" id="nav-services">
                       <div class="site-nav__drawer-inner">
                         <ul class="site-nav__submenu-list">
+                          <li><a class="site-nav__submenu-link" href="#">Our approach</a></li>
                           <li><a class="site-nav__submenu-link" href="#">Interdisciplinary</a></li>
                           <li><a class="site-nav__submenu-link" href="#">Creative</a></li>
                           <li><a class="site-nav__submenu-link" href="#">Communications</a></li>

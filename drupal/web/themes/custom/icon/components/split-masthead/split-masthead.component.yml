@@ -3,6 +3,8 @@ name: Masthead split
 group: Mastheads
 status: stable
 description: |
+  The column wears its own hairlines, top and bottom (Sep 2026); the above
+  and below slots sit inside them.
   The two-column masthead, the news article's head worn by any page
   (src/components/page-header.css, `.page-header--split`): the heading on
   the left in one of the site's heading voices — the article serif, the
@@ -22,6 +24,8 @@ props:
       type: string
       title: Eyebrow
       description: Optional — the short serif line over the heading, in sentence case, as the Masthead's eyebrow; the section's name.
+      examples:
+        - Section name
     title:
       type: string
       title: Heading
@@ -33,15 +37,15 @@ props:
       title: Heading style
       description: Which of the site's heading voices the heading speaks.
       enum:
-        - serif
         - caps
+        - serif
         - sentence
       meta:enum:
-        serif: Article serif (the news article's headline)
         caps: Masthead caps (the Work and News mastheads' caps line)
+        serif: Article serif (the news article's headline)
         sentence: Display sentence case (the News masthead's title)
       examples:
-        - serif
+        - caps
     heading_level:
       type: string
       title: Heading level

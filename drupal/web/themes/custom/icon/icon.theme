@@ -512,6 +512,10 @@ function icon_preprocess_views_view(array &$variables): void {
     // More goes to the work listing, narrowed as the feed is.
     $category = (string) ($heading['category'] ?? '');
     $variables['more_url'] = Url::fromUserInput('/work', $category ? ['query' => ['category' => $category]] : [])->toString();
+    // The hairlines above and below, each the block's call, off unless
+    // asked for (user call, 23 Sep 2026); the bare Views block has none.
+    $variables['rule_top'] = !empty($heading['rule_top']);
+    $variables['rule_bottom'] = !empty($heading['rule_bottom']);
   }
   // The landings are Canvas pages (Sep 2026): the listing is the View's
   // `landing` block display, placed under the page's Masthead, and the

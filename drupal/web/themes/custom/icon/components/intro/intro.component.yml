@@ -46,7 +46,8 @@ props:
         - About us
     expertise_label:
       type: string
-      title: Expertise heading
+      title: Expertise heading (unused)
+      description: The Expertise links block in the slot below carries its own label now; this stays for the pages placed before.
       examples:
         - Our expertise
 slots:
@@ -55,4 +56,4 @@ slots:
     description: Photo and Fact card components, in the order they drift past.
   expertise:
     title: Expertise links
-    description: Expertise link components — one per service.
+    description: The Expertise links block (its gutter off) — the list from the main menu.

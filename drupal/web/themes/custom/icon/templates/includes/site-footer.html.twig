@@ -45,6 +45,7 @@
   {% else %}
   <h2 class="site-footer__cta">
     <a class="site-footer__cta-link" href="{{ footer.touch_url }}">
+      {% if footer.eyebrow %}<span class="site-footer__eyebrow masthead-accent">{{ footer.eyebrow }}</span>{% endif %}
       <!-- Split per word only so each can rise out of its own mask; the
            space between the spans is real, so the link still reads
            "Let's talk Get in touch". -->

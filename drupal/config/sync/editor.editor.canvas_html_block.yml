@@ -82,6 +82,18 @@ settings:
           label: 'Caps label'
           element: '<h4 class="is-caps-label">'
         -
+          label: 'Heading 3 — Caps'
+          element: '<h3 class="is-caps">'
+        -
+          label: 'Heading 4 — Caps'
+          element: '<h4 class="is-caps">'
+        -
+          label: 'Heading 5 — Caps'
+          element: '<h5 class="is-caps">'
+        -
+          label: 'Heading 6 — Caps'
+          element: '<h6 class="is-caps">'
+        -
           label: Caps
           element: '<p class="is-caps">'
         -
@@ -90,5 +102,8 @@ settings:
         -
           label: 'Caps list'
           element: '<ul class="list-caps">'
+        -
+          label: 'Plain list'
+          element: '<ul class="list-plain">'
 image_upload:
   status: false

@@ -54,15 +54,18 @@
           {% for item in nav %}
             {% if item.children and not drawer %}
               {% set drawer = item %}
+              {# The item with children is a BUTTON that opens the drawer, not a
+                 link (user call, 23 Sep 2026): its page is the drawer's first
+                 row — "Our approach" — so nothing is lost. #}
               <li class="site-nav__item site-nav__item--has-submenu" data-submenu-item>
-                <a
+                <button
                   class="site-nav__link"
-                  href="{{ item.url }}"
+                  type="button"
                   data-submenu-trigger
                   aria-haspopup="true"
                   aria-expanded="false"
                   aria-controls="nav-services"
-                  >{{ item.title|upper }}</a
+                  >{{ item.title|upper }}</button
                 >
               </li>
             {% else %}
@@ -75,6 +78,14 @@
             </button>
           </li>
         </ul>
+        {# The phone's menu button (user call, 23 Sep 2026): below md the pill
+           rests as this square — two lines — at the top right, and opens into
+           the row (links, search, the home glyph at the right). Hidden from
+           md; js/header.js opens it, and a tap outside, a scroll, a link or
+           Esc closes it. #}
+        <button class="site-nav__burger" type="button" aria-label="{{ 'Open menu'|t }}" aria-expanded="false" data-nav-burger>
+          <svg class="site-nav__glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" aria-hidden="true"><path d="M3 8h18" /><path d="M3 16h18" /></svg>
+        </button>
       </div>
 
       <!-- Drawer: grows the pill downward; items align under the trigger -->

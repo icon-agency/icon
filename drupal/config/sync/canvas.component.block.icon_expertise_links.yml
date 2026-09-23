@@ -1,0 +1,24 @@
+uuid: 571c40d5-fb7f-439c-97db-ded036dd30f8
+langcode: en
+status: true
+dependencies:
+  module:
+    - icon_site
+active_version: 63e5c2b1df2d0822
+versioned_properties:
+  active:
+    settings:
+      default_settings:
+        id: icon_expertise_links
+        label: 'Expertise links'
+        label_display: '0'
+        provider: icon_site
+        heading: 'Our expertise'
+        gutter: true
+    fallback_metadata:
+      slot_definitions: null
+label: 'Expertise links'
+id: block.icon_expertise_links
+provider: icon_site
+source: block
+source_local_id: icon_expertise_links

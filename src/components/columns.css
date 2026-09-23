@@ -37,13 +37,15 @@
  * `link_label`), slots column_1…column_4. */
 
 .columns {
+  --columns-gap: var(--grid-gutter); /* the column gap, named, so the thirds below can be measured against it */
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  gap: var(--space-md) var(--grid-gutter);
+  gap: var(--space-md) var(--columns-gap);
   padding-inline: var(--gutter-page);
 }
 
 .columns--gap-tight {
+  --columns-gap: var(--spacing-md);
   gap: var(--spacing-md);
 }
 
@@ -125,7 +127,8 @@
    two text columns held apart by a section's air, the page's column
    gutter reading tight for prose beside prose. */
 .columns--gap-wide {
-  column-gap: var(--space-lg);
+  --columns-gap: var(--space-lg);
+  column-gap: var(--columns-gap);
 }
 
 /* STACKED (below 768 every Columns is one column): the columns read as
@@ -185,20 +188,29 @@
      column and 2/3 2nd. Plus a 2 column 2/3 + 1/3 version as well"): two
      columns split a third and two thirds, either way round, wherever two
      columns stand side by side — the same gutter between them */
+  /* THE THIRD IS A THIRD-COLUMN'S WIDTH: (the row less two gaps) / 3, so a
+     split's narrow column and a three-column row's first column end on the
+     same line at the same gap — 1fr/2fr did not, the split's wide side
+     holding one gap fewer (user catch, 23 Sep 2026: "I've selected gap Wide
+     on 3 column and 2 column split, but they don't match") */
   .columns--2.columns--split-narrow-wide {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+    grid-template-columns: calc((100% - 2 * var(--columns-gap)) / 3) minmax(0, 1fr);
   }
 
   .columns--2.columns--split-wide-narrow {
-    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr) calc((100% - 2 * var(--columns-gap)) / 3);
+  }
+
+  /* THREE ACROSS from the tablet (user call, 23 Sep 2026: a three-column
+     row dropped its third column under the other two at 768 while a pair
+     nested in a wide column held three — "make the three column hold out
+     longer"); four still waits for lg */
+  .columns--3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 
 @media (min-width: 1024px) {
-  .columns--3 {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-
   .columns--4 {
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }

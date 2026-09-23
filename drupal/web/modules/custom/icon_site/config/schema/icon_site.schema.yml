@@ -63,6 +63,9 @@ icon_site.footer:
   type: config_object
   label: 'Global footer'
   mapping:
+    eyebrow:
+      type: label
+      label: 'Call to action eyebrow'
     talk:
       type: label
       label: 'Call to action'
@@ -126,6 +129,21 @@ block.settings.icon_work_latest:
     count:
       type: integer
       label: 'Items shown'
+    # the lines came after the rails were placed (23 Sep 2026): an instance
+    # without them is valid and has both; `rules` was the single setting of
+    # one day, read as both
+    rules:
+      type: boolean
+      label: 'Lines above and below (superseded)'
+      requiredKey: false
+    rule_top:
+      type: boolean
+      label: 'Line above'
+      requiredKey: false
+    rule_bottom:
+      type: boolean
+      label: 'Line below'
+      requiredKey: false
 
 block.settings.icon_team_profiles:
   type: block_settings
@@ -178,3 +196,16 @@ block.settings.icon_filmstrip:
         Range:
           min: 1
           max: 8
+
+block.settings.icon_expertise_links:
+  type: block_settings
+  label: 'Expertise links block settings'
+  constraints:
+    FullyValidatable: ~
+  mapping:
+    heading:
+      type: label
+      label: 'The label beside the list'
+    gutter:
+      type: boolean
+      label: 'On the page gutter'

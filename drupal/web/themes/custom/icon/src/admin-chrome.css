@@ -17,11 +17,12 @@
   --icon-admin-left: var(--drupal-displace-offset-left, 0px);
 }
 
-/* below md the pill sits at the top and the wordmark under it (site-header.css,
-   22 Sep 2026): the same two tops, plus the admin UI's height */
+/* below md the pill rests as a square at the top right and the wordmark sits
+   top left (site-header.css, 23 Sep 2026): the same tops, plus the admin
+   UI's height */
 .site-logo {
-  top: calc(0.75rem + var(--nav-pill-h) + 0.75rem + var(--icon-admin-top));
-  left: calc(50% + var(--icon-admin-left) / 2); /* centred in what the admin sidebar leaves */
+  top: calc(0.75rem + var(--nav-pill-h, 2.75rem) / 2 - 0.184 * var(--header-control) + var(--icon-admin-top));
+  left: calc(var(--gutter-page) + var(--icon-admin-left));
 }
 
 .site-nav {
@@ -32,7 +33,6 @@
 @media (min-width: 768px) {
   .site-logo {
     top: calc(1.75rem + var(--voice-label) * 0.13 - var(--logo-h) * 0.184 + var(--icon-admin-top));
-    left: calc(var(--gutter-page) + var(--icon-admin-left));
   }
   .site-nav {
     top: calc(1rem + var(--icon-admin-top));
