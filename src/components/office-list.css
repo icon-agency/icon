@@ -76,6 +76,7 @@
   display: grid;
   gap: var(--space-2xs);
   font-size: var(--voice-meta);
+  font-weight: var(--font-weight-medium); /* the paragraph's weight (user ask, 23 Sep 2026: "the same font weight as paragraph") */
   font-style: normal; /* address element */
   line-height: var(--line-height-normal);
 }

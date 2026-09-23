@@ -55,6 +55,24 @@ props:
         - h2
       examples:
         - h1
+    line_above:
+      type: boolean
+      title: Line above
+      description: The hairline across the top of the column. On unless unticked.
+      examples:
+        - true
+    line_below:
+      type: boolean
+      title: Line below
+      description: The hairline across the foot of the column (user ask, Sep 2026). On unless unticked.
+      examples:
+        - true
+    compact:
+      type: boolean
+      title: Reduced padding
+      description: Less space above the top line and below the bottom line — the column tucks up under the wordmark (user ask, Sep 2026). Off unless ticked.
+      examples:
+        - false
     opening:
       type: string
       title: Opens on

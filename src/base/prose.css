@@ -31,7 +31,7 @@
   }
 
   .content-page h1 {
-    font-size: clamp(2.25rem, 3vw, 3.75rem);
+    font-size: clamp(2.25rem, 3vw, 4.75rem); /* to the 4xl horizon (~2530px), as the voice tokens run (user check, 23 Sep 2026: the prose stopped at ~2000 while the offices kept growing) */
     font-weight: 500;
     margin-bottom: 1.5rem;
     text-wrap: balance;
@@ -89,7 +89,7 @@
        width per em, a hair under, keeps it on its line — the home intro's
        figure; a full-width block never meets the cap, the clamp is the
        smaller value there */
-    font-size: min(clamp(2.25rem, 3vw, 3.5rem), 10.2cqw);
+    font-size: min(clamp(2.25rem, 3vw, 4.75rem), 10.2cqw); /* the cap at the 4xl horizon (~2530px), not ~1870 (user check, 23 Sep 2026) */
     font-weight: 900; /* the heaviest cut, as the masthead's caps (user call) */
     line-height: 1;
     margin-bottom: 1.25rem;
@@ -121,7 +121,7 @@
      team panel's bio size, a weight up — medium — so it holds its own at
      the smaller size (user call: "up the font weight by one"). */
   .content-page p.is-small {
-    font-size: clamp(0.875rem, calc(var(--voice-paragraph) * 0.78), 1.3rem); /* 78% of the paragraph voice (was 73 — user call, 23 Sep 2026: "a tiny bit bigger"): 14px on a phone, 16.5 at ~1260, 21 at the horizon — so Small scales as the copy does */
+    font-size: clamp(0.875rem, calc(var(--voice-paragraph) * 0.78), 1.375rem); /* 78% of the paragraph voice (was 73 — user call, 23 Sep 2026: "a tiny bit bigger"): 14px on a phone, 16.5 at ~1260, 21 at the horizon — so Small scales as the copy does */
     font-weight: var(--font-weight-medium);
     line-height: 1.4; /* the Normal paragraph's ratio, exactly (user call, 23 Sep 2026: Small "feels like a larger line height in relation to the text size") */
   }
@@ -136,6 +136,22 @@
     font-weight: var(--font-weight-medium);
     letter-spacing: -0.01em;
     color: var(--icon-black);
+  }
+
+  /* ALIGNMENT from the editor's toolbar (user ask, 23 Sep 2026: "add left,
+     center and right align options"): CKEditor's alignment plugin puts
+     Drupal's text-align-* classes on a paragraph or heading; the site's
+     text is left by default, so only the other two draw. */
+  .content-page .text-align-center {
+    text-align: center;
+  }
+
+  .content-page .text-align-right {
+    text-align: right;
+  }
+
+  .content-page .text-align-left {
+    text-align: left;
   }
 
   /* CAPS on any heading (user ask, 23 Sep 2026: "H4 should have a Caps
@@ -214,7 +230,7 @@
   }
 
   .content-page h3 {
-    font-size: clamp(2rem, 2.5vw, 3rem);
+    font-size: clamp(2rem, 2.5vw, 4rem); /* 4xl horizon (user check, 23 Sep 2026) */
     font-weight: 500;
     margin-bottom: 1rem;
     margin-top: 2.5rem;
@@ -223,7 +239,7 @@
   }
 
   .content-page h4 {
-    font-size: clamp(1.25rem, 1.5vw, 1.875rem);
+    font-size: clamp(1.25rem, 1.5vw, 2.4rem); /* 4xl horizon (user check, 23 Sep 2026) */
     font-weight: 600;
     margin-bottom: 0.75rem;
     margin-top: 2rem;
@@ -232,7 +248,7 @@
   }
 
   .content-page h5 {
-    font-size: clamp(1.125rem, 1.25vw, 1.5rem);
+    font-size: clamp(1.125rem, 1.25vw, 2rem); /* 4xl horizon (user check, 23 Sep 2026) */
     font-weight: 600;
     margin-bottom: 0.75rem;
     margin-top: 1.5rem;
@@ -241,7 +257,7 @@
   }
 
   .content-page h6 {
-    font-size: clamp(1rem, 1.1vw, 1.25rem);
+    font-size: clamp(1rem, 1.1vw, 1.75rem); /* 4xl horizon (user check, 23 Sep 2026) */
     font-weight: 600;
     margin-bottom: 0.5rem;
     margin-top: 1rem;
@@ -284,7 +300,7 @@
   .content-page blockquote p {
     font-family: var(--font-serif);
     font-style: normal;
-    font-size: clamp(1.25rem, 2.5vw, 2rem);
+    font-size: clamp(1.25rem, 2.5vw, 3rem); /* runs to ~1920 now, not 1280 (user check, 23 Sep 2026) */
     text-wrap: pretty;
     margin-bottom: 0;
     color: var(--icon-black);
@@ -375,7 +391,7 @@
 
   /* an item carrying a paragraph style sizes its slash to that style */
   .content-page ul > li:has(> p.is-small) {
-    font-size: clamp(0.875rem, calc(var(--voice-paragraph) * 0.78), 1.3rem); /* the Small size */
+    font-size: clamp(0.875rem, calc(var(--voice-paragraph) * 0.78), 1.375rem); /* the Small size */
   }
 
   /* the Caps list is no bullets, one item a line, by design; the PLAIN

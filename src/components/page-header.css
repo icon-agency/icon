@@ -368,6 +368,20 @@
   }
 }
 
+/* --split-compact: the Reduced padding toggle (user ask, 23 Sep 2026: "a
+   reduce padding toggle, with less padding top and bottom"). The column
+   tucks up under the wordmark — the article's second helping of air comes
+   off the grid, and the clearance keeps only a small step under the logo —
+   and closes on a small step instead of the article's 3xl. */
+.page-header--split-compact {
+  padding-top: calc(2rem + var(--logo-h) + var(--space-xs));
+}
+
+.page-header--split-compact .page-header__split {
+  padding-top: 0;
+  margin-bottom: var(--space-sm);
+}
+
 .page-header__split-intro {
   display: flex;
   flex-direction: column;

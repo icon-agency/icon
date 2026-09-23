@@ -22,14 +22,19 @@
 #}
 {% set tag = heading_level|default('h1') %}
 {% set style = style|default('caps') %} {# caps by default (user call, 23 Sep 2026: a new split masthead should open on the eyebrow and the caps H1, not the article serif) #}
+{# Reduced padding (user ask, 23 Sep 2026): the column tucks up under the wordmark and closes on a small step — page-header.css, --split-compact; off unless ticked #}
 {% set handover_class = attribute({ dark: 'dark', blue: 'theme-blue', 'light-grey': 'theme-work-article', custom: 'theme-work-article' }, opening|default('none'))|default('') %}
-<div class="page-header page-header--split"{% if handover_class %} data-theme-handover data-theme-handover-class="{{ handover_class }}"{% endif %}>
+<div class="page-header page-header--split{% if compact %} page-header--split-compact{% endif %}"{% if handover_class %} data-theme-handover data-theme-handover-class="{{ handover_class }}"{% endif %}>
   <div class="page-header__split">
     {# the column's own hairlines, top and bottom (user call, 23 Sep 2026:
-       "update the split masthead to have line top and bottom") — drawn in
-       like every rule (utilities/rules.css); the above and below slots sit
-       inside them #}
-    <div class="page-header__split-intro" data-rule="both">
+       "update the split masthead to have line top and bottom"), each its own
+       toggle (later that day: "add toggles for the line below"), on unless
+       unticked — drawn in like every rule (utilities/rules.css); the above
+       and below slots sit inside them #}
+    {% set top = line_above is not defined or line_above %}
+    {% set bottom = line_below is not defined or line_below %}
+    {% set rule = top and bottom ? 'both' : (top ? 'top' : (bottom ? 'bottom' : '')) %}
+    <div class="page-header__split-intro"{% if rule %} data-rule="{{ rule }}"{% endif %}>
       <div class="page-header__split-above">{% block above %}{{ above }}{% endblock %}</div>
       {# the shared word cascade (data-reveal-words, js/reveal.js) — the About
          lockup's and the work masthead's entrance, on this title too (user
