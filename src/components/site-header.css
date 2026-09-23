@@ -126,6 +126,21 @@
   .site-logo__mark { height: var(--logo-h); }
 }
 
+/* WHERE THE WORDMARK ENDS — its foot, from the page's top, for anything that
+   sits under it (the split masthead's Reduced padding clears it by one
+   space-md: user call, 23 Sep 2026). The same sums as the logo's top above
+   plus its height; below md the pill's rest height stands in for the JS
+   measure (--nav-pill-h), a hair under the measured one. */
+:root {
+  --wordmark-foot: calc(0.75rem + 2.75rem / 2 - 0.184 * 2.75rem + var(--logo-h));
+}
+
+@media (min-width: 768px) {
+  :root {
+    --wordmark-foot: calc(1.75rem + var(--voice-label) * 0.13 + var(--logo-h) * 0.816);
+  }
+}
+
 /* Hide the wordmark once you scroll past the hero, swapping it for the home
    glyph (desktop pill / mobile button). It SLIDES up behind the anchor's mask —
    the same masked reveal the hero lockup lines use — rather than fading. A

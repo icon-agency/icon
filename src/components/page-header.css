@@ -369,17 +369,24 @@
 }
 
 /* --split-compact: the Reduced padding toggle (user ask, 23 Sep 2026: "a
-   reduce padding toggle, with less padding top and bottom"). The column
-   tucks up under the wordmark — the article's second helping of air comes
-   off the grid, and the clearance keeps only a small step under the logo —
-   and closes on a small step instead of the article's 3xl. */
+   reduce padding toggle, with less padding top and bottom"). ONE SPACE —
+   space-md, the grid's own gap between the column and the picture on a
+   phone — everywhere (user call, later that day, marking the phone: "the
+   green is the correct space to apply elsewhere"): from the wordmark's foot
+   to the top line, inside the lines above and below the heading, and the
+   gap to the picture; the column closes on a small step instead of the
+   article's 3xl. */
 .page-header--split-compact {
-  padding-top: calc(2rem + var(--logo-h) + var(--space-xs));
+  padding-top: calc(var(--wordmark-foot) + var(--space-md));
 }
 
 .page-header--split-compact .page-header__split {
   padding-top: 0;
   margin-bottom: var(--space-sm);
+}
+
+.page-header--split-compact .page-header__split-intro {
+  padding-block: var(--space-md);
 }
 
 .page-header__split-intro {
