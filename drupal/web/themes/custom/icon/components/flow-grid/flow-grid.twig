@@ -1,0 +1,11 @@
+{#
+/**
+ * @file
+ * flow-grid — the Grid: one drop slot whose blocks flow across the page,
+ * as many as fit (src/components/flow-grid.css) — the expertise pages'
+ * services, four across on a wide screen (user ask, 24 Sep 2026: "on wider
+ * screens, can these be 4 column?"). The Columns component is the slotted
+ * one; this is the flow.
+ */
+#}
+<div class="flow-grid flow-grid--gap-{{ gap|default('normal') }}">{% block items %}{{ items }}{% endblock %}</div>

@@ -1,0 +1,35 @@
+uuid: 388f0193-a972-4e15-a550-5cab94b3050c
+langcode: en
+status: true
+dependencies:
+  module:
+    - options
+  theme:
+    - icon
+active_version: 82de44e19268797c
+versioned_properties:
+  active:
+    settings:
+      prop_field_definitions:
+        gap:
+          required: false
+          field_type: list_string
+          field_storage_settings:
+            allowed_values_function: canvas_load_allowed_values_for_component_prop
+          field_instance_settings: {  }
+          field_widget: options_select
+          default_value:
+            -
+              value: normal
+          expression: ℹ︎list_string␟value
+          derived_schema_metadata: {  }
+    fallback_metadata:
+      slot_definitions:
+        items:
+          title: 'The blocks'
+          description: 'Content blocks, a boxed Columns, a Pull quote, a Picture — each one a cell.'
+label: Grid
+id: sdc.icon.flow-grid
+provider: icon
+source: sdc
+source_local_id: 'icon:flow-grid'

@@ -33,6 +33,7 @@ $plan = [
   ],
   'Layout' => [
     'sdc.icon.columns',
+    'sdc.icon.flow-grid',
     'sdc.icon.divider',
     'sdc.icon.spacer',
   ],

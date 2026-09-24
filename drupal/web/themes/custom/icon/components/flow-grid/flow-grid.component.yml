@@ -1,0 +1,34 @@
+$schema: https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json
+name: Grid
+group: Layout
+status: stable
+description: |
+  Blocks that flow across the page as many as fit — one on a phone, two
+  from 768px, three from 1024px, four from 1536px
+  (src/components/flow-grid.css). Where Columns is a fixed set of slots side
+  by side, the Grid is a flow: drop in as many Content blocks as there are
+  services and the count per row follows the screen. Every block dropped in
+  is a cell, so a Spacer does not belong here — the grid keeps its own gap.
+  No box of its own: a boxed Columns can be one of its cells (the expertise
+  pages' Featured box).
+props:
+  type: object
+  properties:
+    gap:
+      type: string
+      title: Gap
+      description: The space between the cells, the Columns' own three steps.
+      enum:
+        - normal
+        - tight
+        - wide
+      meta:enum:
+        normal: Normal (the page's column gutter)
+        tight: Tight
+        wide: Wide (a section's air)
+      examples:
+        - normal
+slots:
+  items:
+    title: The blocks
+    description: Content blocks, a boxed Columns, a Pull quote, a Picture — each one a cell.

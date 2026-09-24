@@ -1,0 +1,90 @@
+/* flow-grid.css — the Grid: one drop slot whose blocks flow across the page
+ * grid, as many as fit — one on a phone, two from 768, three from 1024,
+ * FOUR from 1536 (user ask, 24 Sep 2026, of the expertise pages' service
+ * rows: "on wider screens, can these be 4 column?"). Where Columns is a
+ * fixed set of slots side by side, the Grid is a flow: an editor adds a
+ * service by dropping one more Content block, and the count per row is
+ * the screen's, not the row's. Same gaps, same gutter, same child framing
+ * as Columns; no box (put a boxed Columns IN it, as the Featured box is).
+ *
+ * A Spacer has no place inside it — every child is a cell, and the grid
+ * keeps its own row gap (the service rows' stacking spacers came off when
+ * they moved in).
+ *
+ * Drupal: SDC `flow-grid` ("Grid", Layout) — `gap` normal/tight/wide, slot
+ * items. */
+
+.flow-grid {
+  --flow-grid-gap: var(--grid-gutter);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-md) var(--flow-grid-gap);
+  padding-inline: var(--gutter-page);
+}
+
+.flow-grid--gap-tight {
+  --flow-grid-gap: var(--spacing-md);
+  gap: var(--spacing-md);
+}
+
+.flow-grid--gap-wide {
+  --flow-grid-gap: var(--space-lg);
+  column-gap: var(--flow-grid-gap);
+}
+
+@media (min-width: 768px) {
+  .flow-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .flow-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1536px) {
+  .flow-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+/* every child is a cell; a block's wrapper (core's block template, the
+   editor's slot markers) stands aside so the component itself is the
+   cell — as Columns does for its columns */
+.flow-grid > div[id^="block-"],
+.flow-grid > div[id^="block-"] > div:not([class]) {
+  display: contents;
+}
+
+/* the empty grid still stands, so the editor's drop zone has a body */
+.flow-grid:empty,
+.flow-grid > .canvas--slot-empty-placeholder {
+  min-height: 4rem;
+}
+
+/* the cell is the measure: the blocks' own framing comes off — and a
+   boxed Columns inside it is on the gutter already */
+.flow-grid .content-page {
+  max-width: none;
+  margin-inline: 0;
+  padding-inline: 0;
+}
+
+.flow-grid .pull-quote {
+  margin-inline: 0;
+}
+
+.flow-grid .work-stats {
+  max-width: none;
+  padding-inline: 0;
+}
+
+.flow-grid > .columns {
+  padding-inline: 0;
+}
+
+.flow-grid > .columns.columns--box {
+  margin-inline: 0;
+}
