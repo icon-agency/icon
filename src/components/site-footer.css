@@ -412,34 +412,46 @@
   display: grid;
   grid-template-columns: 1fr;
   gap: var(--space-md);
-  align-items: end;
-  margin-top: var(--space-xl);
+  align-items: end; /* the social row and the acknowledgement share a foot (user call, 24 Sep 2026: "LinkedIn Instagram should still align with the bottom of 'ICON recognises…'") */
+  margin-top: var(--space-lg); /* was xl — "less space" (user call, 24 Sep 2026): the same step the mark takes under the Subscribe pill */
 }
 
-@media (min-width: 1024px) {
+/* two columns from the tablet, as the newsletter and offices above are
+   (user call, 24 Sep 2026: the acknowledgement "can still be in the two
+   column layout" — it had dropped to full width below 1024) */
+@media (min-width: 768px) {
   .site-footer__base {
     grid-template-columns: 1fr 1fr;
   }
 }
 
-/* THE LINKS COLUMN: the B Corp mark over the social row (user ask, 24 Sep
-   2026: "add the B corp logo to the bottom left … add a placeholder" — the
-   link is the footer's B Corp listing URL setting, the directory until
-   the listing is up). The mark is a mask over a fill so the black SVG
-   wears the footer's ink: the social row's grey at rest, full ink on
-   hover, as the links beside it. */
+/* THE B CORP MARK (user ask, 24 Sep 2026: "add the B corp logo to the
+   bottom left … add a placeholder" — the link is the footer's B Corp
+   listing URL setting, the directory until the listing is up). It stands
+   in the NEWSLETTER COLUMN under the Subscribe pill, in the spare height
+   beside the offices, one space-lg under the pill — the same space the
+   base row keeps under the offices, so the two read as one (user call,
+   later that day: "less space"; before that it sat over the social row,
+   where its height pushed the acknowledgement down). On the contact page,
+   whose body row is hidden, it stands over the social row instead. The
+   mark is a mask over a fill so the black SVG wears the footer's ink:
+   full ink at rest, the social row's grey on hover. */
 .site-footer__links {
   display: grid;
-  gap: var(--space-md);
+  gap: var(--space-lg);
   justify-items: start;
 }
 
+.site-footer__newsletter .site-footer__bcorp {
+  margin-top: var(--space-lg);
+}
+
 .site-footer__bcorp {
-  --bcorp-h: clamp(4rem, 5vw, 6rem);
+  --bcorp-h: clamp(6.5rem, 13vw, 21rem); /* the fonts' clamp, to the 4xl horizon (user calls, 24 Sep 2026: "clamp scaling like the fonts", "make it bigger", "bigger again", then "a tad smaller"): 87px on a phone (6.5rem at the phone root size), 182 at 1400, 336 at 2560 — about 2.3 × the display voice all the way, so it grows with the Let's talk line */
   display: block;
-  width: calc(var(--bcorp-h) * 0.684); /* the mark's own ratio, 136.9 : 200.1 */
+  width: calc(var(--bcorp-h) * 0.592); /* the mark's own ratio, 129 : 218 (the artwork Matt supplied 24 Sep 2026, taller than the first) */
   height: var(--bcorp-h);
-  background-color: var(--footer-muted);
+  background-color: var(--footer-ink); /* full ink at rest, the grey on hover — the other way round from the links (user call, 24 Sep 2026: "white and opacity hover") */
   mask: url("../assets/brand/B-Corp-Logo-Black-RGB.svg") center / contain no-repeat;
   -webkit-mask: url("../assets/brand/B-Corp-Logo-Black-RGB.svg") center / contain no-repeat;
   transition: background-color var(--duration-fast) var(--ease-standard);
@@ -447,7 +459,7 @@
 
 .site-footer__bcorp:hover,
 .site-footer__bcorp:focus-visible {
-  background-color: var(--footer-ink);
+  background-color: var(--footer-muted);
 }
 
 .site-footer__social {
