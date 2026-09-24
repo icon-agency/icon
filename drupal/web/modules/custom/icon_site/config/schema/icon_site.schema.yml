@@ -63,6 +63,9 @@ icon_site.footer:
   type: config_object
   label: 'Global footer'
   mapping:
+    bcorp_url:
+      type: uri
+      label: 'B Corp listing URL'
     eyebrow:
       type: label
       label: 'Call to action eyebrow'

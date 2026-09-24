@@ -851,7 +851,7 @@ function icon_site_primary_nav(): array {
  * copy as the fallback, plus the social links from the footer-social menu,
  * in menu order.
  *
- * @return array{eyebrow: string, talk: string, touch: string, touch_url: string, newsletter: string, acknowledgement: string, social: array<int, array{title: string, url: string}>, tags: string[]}
+ * @return array{eyebrow: string, talk: string, touch: string, touch_url: string, newsletter: string, acknowledgement: string, bcorp_url: string, social: array<int, array{title: string, url: string}>, tags: string[]}
  *   The words, the social links (title and URL each) and the cache tags of
  *   everything read.
  */
@@ -866,6 +866,10 @@ function icon_site_footer(): array {
     'touch_url' => (string) ($config->get('touch_url') ?: '/contact'),
     'newsletter' => (string) ($config->get('newsletter') ?? 'Join our newsletter for industry insights, news and our latest work'),
     'acknowledgement' => (string) ($config->get('acknowledgement') ?? 'ICON recognises the First Peoples of this nation and their ongoing connection to culture and country. We acknowledge First Nations Peoples as the Traditional Owners, Custodians and Lore Keepers of the world’s oldest living culture and pay respects to their Elders past, present and emerging.'),
+    // The B Corp mark's link (user ask, 24 Sep 2026): the directory until
+    // the listing is up ("I'll give you a link once our listing is up, so
+    // add a placeholder"); empty hides the mark.
+    'bcorp_url' => (string) ($config->get('bcorp_url') ?? 'https://www.bcorporation.net/en-us/find-a-b-corp/'),
     'social' => [],
     'tags' => ['config:icon_site.footer', 'config:system.menu.footer-social'],
   ];

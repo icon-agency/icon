@@ -422,6 +422,34 @@
   }
 }
 
+/* THE LINKS COLUMN: the B Corp mark over the social row (user ask, 24 Sep
+   2026: "add the B corp logo to the bottom left … add a placeholder" — the
+   link is the footer's B Corp listing URL setting, the directory until
+   the listing is up). The mark is a mask over a fill so the black SVG
+   wears the footer's ink: the social row's grey at rest, full ink on
+   hover, as the links beside it. */
+.site-footer__links {
+  display: grid;
+  gap: var(--space-md);
+  justify-items: start;
+}
+
+.site-footer__bcorp {
+  --bcorp-h: clamp(4rem, 5vw, 6rem);
+  display: block;
+  width: calc(var(--bcorp-h) * 0.684); /* the mark's own ratio, 136.9 : 200.1 */
+  height: var(--bcorp-h);
+  background-color: var(--footer-muted);
+  mask: url("../assets/brand/B-Corp-Logo-Black-RGB.svg") center / contain no-repeat;
+  -webkit-mask: url("../assets/brand/B-Corp-Logo-Black-RGB.svg") center / contain no-repeat;
+  transition: background-color var(--duration-fast) var(--ease-standard);
+}
+
+.site-footer__bcorp:hover,
+.site-footer__bcorp:focus-visible {
+  background-color: var(--footer-ink);
+}
+
 .site-footer__social {
   display: flex;
   gap: var(--space-md);

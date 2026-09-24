@@ -64,6 +64,13 @@ final class FooterSettingsForm extends ConfigFormBase {
         ':social' => Url::fromRoute('entity.menu.edit_form', ['menu' => 'footer-social'])->toString(),
       ]) . '</p>',
     ];
+    $form['bcorp_url'] = [
+      '#type' => 'url',
+      '#title' => $this->t('B Corp listing URL'),
+      '#description' => $this->t('Where the B Corp mark at the foot of the page links — the B Corp directory until the listing is up. Leave it empty to hide the mark.'),
+      '#default_value' => $footer['bcorp_url'],
+      '#maxlength' => 255,
+    ];
     $form['eyebrow'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Call to action eyebrow'),
@@ -130,6 +137,7 @@ final class FooterSettingsForm extends ConfigFormBase {
    */
   public function submitForm(array &$form, FormStateInterface $form_state): void {
     $this->config('icon_site.footer')
+      ->set('bcorp_url', trim((string) $form_state->getValue('bcorp_url')))
       ->set('eyebrow', trim((string) $form_state->getValue('eyebrow')))
       ->set('talk', trim((string) $form_state->getValue('talk')))
       ->set('touch', trim((string) $form_state->getValue('touch')))

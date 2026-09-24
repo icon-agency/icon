@@ -101,11 +101,15 @@
   </div>
 
   <div class="site-footer__base">
-    <ul class="site-footer__social" role="list">
-      {% for link in footer.social %}
-        <li><a class="site-footer__social-link" href="{{ link.url }}" target="_blank" rel="noopener noreferrer">{{ link.title }}</a></li>
-      {% endfor %}
-    </ul>
+    <div class="site-footer__links">
+      {# the B Corp mark (user ask, 24 Sep 2026); the link is the footer's B Corp listing URL setting #}
+      {% if footer.bcorp_url %}<a class="site-footer__bcorp" href="{{ footer.bcorp_url }}" target="_blank" rel="noopener noreferrer" aria-label="{{ 'Certified B Corporation'|t }}"></a>{% endif %}
+      <ul class="site-footer__social" role="list">
+        {% for link in footer.social %}
+          <li><a class="site-footer__social-link" href="{{ link.url }}" target="_blank" rel="noopener noreferrer">{{ link.title }}</a></li>
+        {% endfor %}
+      </ul>
+    </div>
     <p class="site-footer__ack">{{ footer.acknowledgement }}</p>
   </div>
 
