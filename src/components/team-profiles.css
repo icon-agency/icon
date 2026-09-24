@@ -50,11 +50,20 @@
   }
 }
 
-/* three across from here up, whatever the monitor — two rows of three
-   read better than one row of six (user call, Sep 2026, after trying it) */
+/* three across from here; FOUR from 1536 (user call, 24 Sep 2026: "I'm
+   still seeing 3 column?" — the wide-screen fourth column the expertise
+   services took the same day, flow-grid.css). The earlier call — three
+   whatever the monitor, two rows of three over one of six (Sep 2026) —
+   stands below 1536. */
 @media (min-width: 1024px) {
   .team__grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1536px) {
+  .team__grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }
 
