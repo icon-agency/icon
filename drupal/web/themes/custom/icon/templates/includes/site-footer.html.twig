@@ -149,5 +149,8 @@
       </span>
     </span>
   </p>
+
+  {# the legal line, the page's last words under the lockup, one line at the page's width (user ask, 24 Sep 2026: "© 2026 ICON Agency (ABN …) Privacy statement. Raise a concern.", then "try moving this, single line 100%"); the year is today's, the ABN and the two links Content → Footer #}
+  <p class="site-footer__legal"><span>&copy; {{ 'now'|date('Y') }} ICON Agency{% if footer.abn %} (ABN {{ footer.abn }}){% endif %}</span>{% if footer.privacy_url %} <a href="{{ footer.privacy_url }}">{{ 'Privacy statement.'|t }}</a>{% endif %}{% if footer.concern_url %} <a href="{{ footer.concern_url }}">{{ 'Raise a concern.'|t }}</a>{% endif %}</p>
   {{ footer_cache }}
 </footer>

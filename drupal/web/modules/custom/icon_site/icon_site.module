@@ -851,7 +851,7 @@ function icon_site_primary_nav(): array {
  * copy as the fallback, plus the social links from the footer-social menu,
  * in menu order.
  *
- * @return array{eyebrow: string, talk: string, touch: string, touch_url: string, newsletter: string, acknowledgement: string, bcorp_url: string, social: array<int, array{title: string, url: string}>, tags: string[]}
+ * @return array{eyebrow: string, talk: string, touch: string, touch_url: string, newsletter: string, acknowledgement: string, bcorp_url: string, abn: string, privacy_url: string, concern_url: string, social: array<int, array{title: string, url: string}>, tags: string[]}
  *   The words, the social links (title and URL each) and the cache tags of
  *   everything read.
  */
@@ -870,6 +870,13 @@ function icon_site_footer(): array {
     // the listing is up ("I'll give you a link once our listing is up, so
     // add a placeholder"); empty hides the mark.
     'bcorp_url' => (string) ($config->get('bcorp_url') ?? 'https://www.bcorporation.net/en-us/find-a-b-corp/'),
+    // The legal line under the acknowledgement (user ask, 24 Sep 2026:
+    // "© 2026 ICON Agency (ABN 12 103 086 451) Privacy statement. Raise a
+    // concern."): the ABN and the two links; the year is today's, in the
+    // template. An empty link drops its words.
+    'abn' => (string) ($config->get('abn') ?? '12 103 086 451'),
+    'privacy_url' => (string) ($config->get('privacy_url') ?? '/privacy'),
+    'concern_url' => (string) ($config->get('concern_url') ?? '/raise-a-concern'),
     'social' => [],
     'tags' => ['config:icon_site.footer', 'config:system.menu.footer-social'],
   ];

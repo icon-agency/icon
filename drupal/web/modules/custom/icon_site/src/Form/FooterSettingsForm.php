@@ -64,6 +64,27 @@ final class FooterSettingsForm extends ConfigFormBase {
         ':social' => Url::fromRoute('entity.menu.edit_form', ['menu' => 'footer-social'])->toString(),
       ]) . '</p>',
     ];
+    $form['abn'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('ABN'),
+      '#description' => $this->t('In the legal line under the acknowledgement — "© (this year) ICON Agency (ABN …)". Leave it empty for no ABN.'),
+      '#default_value' => $footer['abn'],
+      '#maxlength' => 20,
+    ];
+    $form['privacy_url'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Privacy statement link'),
+      '#description' => $this->t('Where "Privacy statement." goes, a path or a URL. Leave it empty to drop the words.'),
+      '#default_value' => $footer['privacy_url'],
+      '#maxlength' => 255,
+    ];
+    $form['concern_url'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Raise a concern link'),
+      '#description' => $this->t('Where "Raise a concern." goes, a path or a URL. Leave it empty to drop the words.'),
+      '#default_value' => $footer['concern_url'],
+      '#maxlength' => 255,
+    ];
     $form['bcorp_url'] = [
       '#type' => 'url',
       '#title' => $this->t('B Corp listing URL'),
@@ -137,6 +158,9 @@ final class FooterSettingsForm extends ConfigFormBase {
    */
   public function submitForm(array &$form, FormStateInterface $form_state): void {
     $this->config('icon_site.footer')
+      ->set('abn', trim((string) $form_state->getValue('abn')))
+      ->set('privacy_url', trim((string) $form_state->getValue('privacy_url')))
+      ->set('concern_url', trim((string) $form_state->getValue('concern_url')))
       ->set('bcorp_url', trim((string) $form_state->getValue('bcorp_url')))
       ->set('eyebrow', trim((string) $form_state->getValue('eyebrow')))
       ->set('talk', trim((string) $form_state->getValue('talk')))

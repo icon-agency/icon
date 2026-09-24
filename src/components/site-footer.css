@@ -413,7 +413,7 @@
   grid-template-columns: 1fr;
   gap: var(--space-md);
   align-items: end; /* the social row and the acknowledgement share a foot (user call, 24 Sep 2026: "LinkedIn Instagram should still align with the bottom of 'ICON recognises…'") */
-  margin-top: var(--space-lg); /* was xl — "less space" (user call, 24 Sep 2026): the same step the mark takes under the Subscribe pill */
+  margin-top: var(--space-xl); /* the CTA's own step down to the body ("see the gap under the Get in touch, can you match these gaps" — user call, 24 Sep 2026) */
 }
 
 /* two columns from the tablet, as the newsletter and offices above are
@@ -429,10 +429,11 @@
    bottom left … add a placeholder" — the link is the footer's B Corp
    listing URL setting, the directory until the listing is up). It stands
    in the NEWSLETTER COLUMN under the Subscribe pill, in the spare height
-   beside the offices, one space-lg under the pill — the same space the
-   base row keeps under the offices, so the two read as one (user call,
-   later that day: "less space"; before that it sat over the social row,
-   where its height pushed the acknowledgement down). On the contact page,
+   beside the offices, one space-xl under the pill — the CTA's own step
+   down to the body, and the base row's under the offices, so the three
+   read as one (user calls, later that day: "less space", then "match
+   these gaps"; before that it sat over the social row, where its height
+   pushed the acknowledgement down). On the contact page,
    whose body row is hidden, it stands over the social row instead. The
    mark is a mask over a fill so the black SVG wears the footer's ink:
    full ink at rest, the social row's grey on hover. */
@@ -443,7 +444,18 @@
 }
 
 .site-footer__newsletter .site-footer__bcorp {
-  margin-top: var(--space-lg);
+  margin-top: var(--space-xl); /* the CTA's step, under the pill too */
+}
+
+/* Beside the offices the mark takes no height of its own: it hangs from
+   the pill into the base row's margin, so the acknowledgement keeps its
+   one step under the offices whatever the mark's height, and the mark
+   sits "naturally closer to the LinkedIn" (user call, 24 Sep 2026).
+   Stacked on a phone it is in the flow, a step above the offices. */
+@media (min-width: 768px) {
+  .site-footer__newsletter .site-footer__bcorp {
+    margin-bottom: calc(-1 * var(--bcorp-h));
+  }
 }
 
 .site-footer__bcorp {
@@ -488,6 +500,37 @@
   margin: 0;
   font-size: var(--footer-voice-meta);
   line-height: var(--line-height-normal);
+}
+
+/* THE LEGAL LINE: the page's last words, under the lockup at the page's
+   width, on one line (user ask, 24 Sep 2026: "© 2026 ICON Agency (ABN …)
+   Privacy statement. Raise a concern.", then "try moving this, single
+   line 100%" — it had sat under the acknowledgement, where it wrapped).
+   It wraps only where a phone forces it. The year is the server's; the
+   ABN and the two links are the footer's settings. */
+.site-footer__legal {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25em 1.5em;
+  /* the lockup pulls what follows up by a space-lg (its negative margin,
+     for the panel's own edge); this puts that back, so the line sits in
+     the lockup's bottom padding, clear of the mark — plus a small step,
+     for the phone, where that padding is 8px */
+  margin: calc(var(--space-lg) + var(--space-xs)) 0 0;
+  font-size: var(--footer-voice-meta);
+  line-height: var(--line-height-normal);
+  color: var(--footer-muted);
+}
+
+.site-footer__legal a {
+  color: inherit;
+  text-decoration: none;
+  transition: color var(--duration-fast) var(--ease-standard);
+}
+
+.site-footer__legal a:hover,
+.site-footer__legal a:focus-visible {
+  color: var(--footer-ink);
 }
 
 /* ---- reduced motion ------------------------------------------------------ */

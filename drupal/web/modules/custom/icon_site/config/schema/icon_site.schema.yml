@@ -84,6 +84,15 @@ icon_site.footer:
     acknowledgement:
       type: text
       label: 'Acknowledgement of Country'
+    abn:
+      type: label
+      label: 'ABN'
+    privacy_url:
+      type: string
+      label: 'Privacy statement link'
+    concern_url:
+      type: string
+      label: 'Raise a concern link'
     login_hero:
       type: integer
       label: 'The Canvas page whose hero the login page plays (0 = the front page)'
