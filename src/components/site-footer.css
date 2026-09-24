@@ -136,8 +136,11 @@
 
 .site-footer__talk {
   display: block;
-  /* the shared display-caps voice (WORK / NEWS mastheads) */
-  font-size: var(--footer-voice-caps);
+  /* the shared display-caps voice (WORK / NEWS mastheads), a third up —
+     the footer's line only, the eyebrow and the mastheads unchanged (user
+     call, 24 Sep 2026: "make the 'Let's talk' font bigger in the footer
+     (only)") */
+  font-size: calc(var(--footer-voice-caps) * 1.3);
   font-weight: 900;
   line-height: 1; /* the About lockup's, not the single-line display register's 0.82 (user call, 23 Sep 2026: "identical to the eye") */
   letter-spacing: var(--tracking-caps);
@@ -390,6 +393,7 @@
      stacked JOIN OUR onto NEWSLETTER (user call, Sep 2026) */
   line-height: 1;
   text-wrap: balance;
+  font-size: var(--footer-voice-caps); /* the display voice as it is: the third up is the Let's talk line's alone */
 }
 
 /* the Subscribe bar under the caps, centred, in the newsletter column's
