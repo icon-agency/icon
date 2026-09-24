@@ -285,7 +285,7 @@ html.is-team-open {
 
 @media (min-width: 1024px) {
   .team-overlay__panel {
-    width: clamp(48rem, 66vw, 84rem);
+    width: clamp(48rem, 66vw, 106rem); /* to the 4xl horizon, as the type (user call, 24 Sep 2026: "including the size of the overlay block, image and fonts, icons"): it stopped at 84rem, ~2040px, while the voices ran to 2560 */
     display: grid;
     grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
     grid-template-rows: auto 1fr;
@@ -366,8 +366,8 @@ html.is-team-open {
 .team-overlay__arrow {
   display: inline-grid;
   place-items: center;
-  width: 2.75rem;
-  height: 2.75rem;
+  width: clamp(2.75rem, 3vw, 4rem); /* on the site's clamp, to the wide horizon (user call, 24 Sep 2026: the overlay "follows all the clamp() and scaling like the rest of the site") */
+  height: clamp(2.75rem, 3vw, 4rem);
   padding: 0;
   border: 0;
   border-radius: var(--radius-icon);
@@ -379,8 +379,8 @@ html.is-team-open {
 
 .team-overlay__close svg,
 .team-overlay__arrow svg {
-  width: 1.5rem;
-  height: 1.5rem;
+  width: clamp(1.5rem, 1.6vw, 2.25rem);
+  height: clamp(1.5rem, 1.6vw, 2.25rem);
 }
 
 .team-overlay__close:hover,
@@ -450,17 +450,18 @@ html.is-team-open {
 
 .team-overlay__bio {
   max-width: 60ch;
-  font-size: 1.0625rem;
-  line-height: 1.6;
+  font-size: clamp(0.875rem, calc(var(--voice-paragraph) * 0.78), 1.375rem); /* the editor's Small paragraph, size and leading (user call, 24 Sep 2026: the overlay on the site's clamps) — was a fixed 17px */
+  line-height: 1.4;
 }
 
 .team-overlay__bio p {
-  margin: 0 0 1em;
+  margin: 0 0 clamp(0.9375rem, 0.5rem + 0.8vw, 1.5rem); /* the prose paragraph's gap */
 }
 
 .team-overlay__linkedin {
   display: inline-block;
   margin-top: var(--space-xs);
+  font-size: var(--voice-meta); /* was the panel's 16px (user call, 24 Sep 2026) */
   color: color-mix(in srgb, var(--footer-ink) 60%, transparent);
   text-decoration: underline;
   text-underline-offset: 0.2em;
