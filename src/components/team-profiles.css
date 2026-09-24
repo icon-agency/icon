@@ -142,7 +142,7 @@
 }
 
 .team__name {
-  font-size: var(--voice-mid);
+  font-size: calc(var(--voice-mid) * 0.88); /* a tad under the mid voice (user call, 24 Sep 2026: "the font size for the name could be a tad smaller") — 28.5px where it was 32.4 */
   font-weight: var(--font-weight-semibold);
   line-height: 1.2;
   letter-spacing: -0.01em;
