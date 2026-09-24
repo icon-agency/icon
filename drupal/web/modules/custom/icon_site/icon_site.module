@@ -876,7 +876,7 @@ function icon_site_footer(): array {
     // template. An empty link drops its words.
     'abn' => (string) ($config->get('abn') ?? '12 103 086 451'),
     'privacy_url' => (string) ($config->get('privacy_url') ?? '/privacy'),
-    'concern_url' => (string) ($config->get('concern_url') ?? '/raise-a-concern'),
+    'concern_url' => (string) ($config->get('concern_url') ?? '/raising-concern-about-icon'),
     'social' => [],
     'tags' => ['config:icon_site.footer', 'config:system.menu.footer-social'],
   ];
