@@ -44,7 +44,6 @@
   var canvas = section.querySelector("[data-hero-sphere-canvas]");
   var THREE = window.THREE;
   var gsap = window.gsap;
-  var ScrollTrigger = window.ScrollTrigger;
   var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   function hasWebGL() {
@@ -124,7 +123,6 @@
   var HEAD_OUT_START = 0.84; // headline begins its reverse-roll out here
 
   var DPR_CAP = 2;
-  var ENABLE_HOVER = false; // hover-to-advance deferred to a follow-up
 
   /* Scroll-choreography state (driven by ScrollTrigger.onUpdate → choreo()). */
   var HERO_INDEX = CARD_COUNT - 1; // the website-loop video card (spins + zooms)

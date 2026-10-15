@@ -102,6 +102,12 @@
           function show(el) {
             el.classList.add("is-current");
             if (!isFilm(el)) return;
+            // The poster arrives with the slide's turn, not with the page: the
+            // markup carries it as data-poster because a browser fetches a real
+            // poster at once, preload="none" or not (29 Sep 2026: 5.2 MB of
+            // posters on every page). Reduced motion holds on it.
+            var poster = el.getAttribute("data-poster");
+            if (poster && !el.getAttribute("poster")) el.setAttribute("poster", poster);
             try { el.currentTime = 0; } catch (e) {} // start clean, not mid-loop
             if (reduce) return; // reduced motion holds a first frame
             var p = el.play();

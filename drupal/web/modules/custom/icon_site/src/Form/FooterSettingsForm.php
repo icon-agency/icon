@@ -4,37 +4,46 @@ declare(strict_types=1);
 
 namespace Drupal\icon_site\Form;
 
-use Drupal\Core\Config\ConfigFactoryInterface;
-use Drupal\Core\Config\TypedConfigManagerInterface;
+use Drupal\Core\Cache\CacheTagsInvalidatorInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
-use Drupal\Core\Form\ConfigFormBase;
+use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\State\StateInterface;
 use Drupal\Core\Url;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * The global footer's words (Content → Footer).
  *
- * The call to action, the newsletter line, the acknowledgement. The offices
- * and the social links are lists of their own, linked from here.
+ * The call to action, the newsletter line, the acknowledgement, the legal
+ * line. The offices and the social links are lists of their own, linked
+ * from here.
+ *
+ * SAVED TO STATE, NOT CONFIG (29 Sep 2026): these are an editor's words, and
+ * the config object they used to be saved into is exported and imported on
+ * every deploy, which reset them (backend audit M8). See
+ * icon_site_footer_setting(). The links are checked on the way in (C2).
  */
-final class FooterSettingsForm extends ConfigFormBase {
+final class FooterSettingsForm extends FormBase {
+
+  /**
+   * The link fields, by their titles, for the validation message.
+   */
+  private const LINKS = ['touch_url', 'privacy_url', 'concern_url', 'bcorp_url'];
 
   public function __construct(
-    ConfigFactoryInterface $config_factory,
-    TypedConfigManagerInterface $typedConfigManager,
+    protected readonly StateInterface $state,
+    protected readonly CacheTagsInvalidatorInterface $cacheTagsInvalidator,
     protected readonly EntityTypeManagerInterface $entityTypeManager,
-  ) {
-    parent::__construct($config_factory, $typedConfigManager);
-  }
+  ) {}
 
   /**
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container): static {
     return new static(
-      $container->get('config.factory'),
-      $container->get('config.typed'),
+      $container->get('state'),
+      $container->get('cache_tags.invalidator'),
       $container->get('entity_type.manager'),
     );
   }
@@ -44,13 +53,6 @@ final class FooterSettingsForm extends ConfigFormBase {
    */
   public function getFormId(): string {
     return 'icon_site_footer';
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  protected function getEditableConfigNames(): array {
-    return ['icon_site.footer'];
   }
 
   /**
@@ -86,7 +88,7 @@ final class FooterSettingsForm extends ConfigFormBase {
       '#maxlength' => 255,
     ];
     $form['bcorp_url'] = [
-      '#type' => 'url',
+      '#type' => 'textfield',
       '#title' => $this->t('B Corp listing URL'),
       '#description' => $this->t('Where the B Corp mark at the foot of the page links — the B Corp directory until the listing is up. Leave it empty to hide the mark.'),
       '#default_value' => $footer['bcorp_url'],
@@ -148,29 +150,53 @@ final class FooterSettingsForm extends ConfigFormBase {
       '#title' => $this->t('Hero reel to play'),
       '#description' => $this->t('The account pages play the slides of this page’s hero, in its order — so reordering that hero reorders the login page too.'),
       '#options' => $pages,
-      '#default_value' => (string) ($this->config('icon_site.footer')->get('login_hero') ?: ''),
+      '#default_value' => (string) (icon_site_footer_setting('login_hero') ?: ''),
     ];
-    return parent::buildForm($form, $form_state);
+    $form['actions'] = ['#type' => 'actions'];
+    $form['actions']['submit'] = [
+      '#type' => 'submit',
+      '#value' => $this->t('Save'),
+      '#button_type' => 'primary',
+    ];
+    return $form;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function validateForm(array &$form, FormStateInterface $form_state): void {
+    foreach (self::LINKS as $key) {
+      $value = trim((string) $form_state->getValue($key));
+      if (!icon_site_footer_link_is_safe($value)) {
+        $form_state->setErrorByName($key, $this->t('%title takes a path on this site starting with a slash, or a full http, https, mailto or tel link.', ['%title' => $form[$key]['#title']]));
+      }
+    }
   }
 
   /**
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state): void {
-    $this->config('icon_site.footer')
-      ->set('abn', trim((string) $form_state->getValue('abn')))
-      ->set('privacy_url', trim((string) $form_state->getValue('privacy_url')))
-      ->set('concern_url', trim((string) $form_state->getValue('concern_url')))
-      ->set('bcorp_url', trim((string) $form_state->getValue('bcorp_url')))
-      ->set('eyebrow', trim((string) $form_state->getValue('eyebrow')))
-      ->set('talk', trim((string) $form_state->getValue('talk')))
-      ->set('touch', trim((string) $form_state->getValue('touch')))
-      ->set('touch_url', trim((string) $form_state->getValue('touch_url')))
-      ->set('newsletter', trim((string) $form_state->getValue('newsletter')))
-      ->set('acknowledgement', trim((string) $form_state->getValue('acknowledgement')))
-      ->set('login_hero', (int) $form_state->getValue('login_hero'))
-      ->save();
-    parent::submitForm($form, $form_state);
+    $values = [];
+    $keys = [
+      'abn',
+      'privacy_url',
+      'concern_url',
+      'bcorp_url',
+      'eyebrow',
+      'talk',
+      'touch',
+      'touch_url',
+      'newsletter',
+      'acknowledgement',
+    ];
+    foreach ($keys as $key) {
+      $values[$key] = trim((string) $form_state->getValue($key));
+    }
+    $values['login_hero'] = (int) $form_state->getValue('login_hero');
+    $this->state->set('icon_site.footer', $values);
+    $this->cacheTagsInvalidator->invalidateTags(['icon_site_footer']);
+    $this->messenger()->addStatus($this->t('The footer has been saved.'));
   }
 
 }

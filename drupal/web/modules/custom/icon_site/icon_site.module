@@ -7,6 +7,7 @@
 
 declare(strict_types=1);
 
+use Drupal\Component\Utility\UrlHelper;
 use Drupal\Component\Utility\Html;
 use Drupal\Core\Render\Markup;
 use Drupal\icon_site\Twig\IconSiteExtension;
@@ -672,10 +673,10 @@ function icon_site_media_source(?MediaInterface $media, string $style_id, ?Cache
  *   page) and the cache tags of where it was read from.
  */
 function icon_site_hero_order(): array {
-  $tags = ['config:icon_site.footer', 'config:system.site', 'canvas_page_list'];
+  $tags = ['icon_site_footer', 'config:icon_site.footer', 'config:system.site', 'canvas_page_list'];
   $storage = \Drupal::entityTypeManager()->getStorage('canvas_page');
   $page = NULL;
-  if ($id = (int) \Drupal::config('icon_site.footer')->get('login_hero')) {
+  if ($id = (int) icon_site_footer_setting('login_hero')) {
     $page = $storage->load($id);
   }
   if (!$page) {
@@ -845,6 +846,65 @@ function icon_site_primary_nav(): array {
 }
 
 /**
+ * One footer setting: the editor's value, else the deployed default.
+ *
+ * THE EDITOR'S WORDS LIVE IN STATE, NOT IN CONFIG (29 Sep 2026). They were
+ * saved into the icon_site.footer config object, which is exported, and
+ * `drush deploy` imports the exported copy on every release — so an editor's
+ * footer change on the host (the B Corp listing's link, say) was reset by the
+ * next deploy (backend audit M8). State is not exported and not imported, so
+ * what an editor saves stays. The config object remains as the DEPLOYED
+ * DEFAULT a key falls back to when no editor has set it; the defaults in
+ * icon_site_footer() are the last resort. An interim home: the programme's
+ * Stage 2 (S2.4) moves editorial footer content to revisionable content.
+ *
+ * @return mixed
+ *   The value, or NULL when neither the editor nor the config names the key.
+ */
+function icon_site_footer_setting(string $key): mixed {
+  $state = \Drupal::state()->get('icon_site.footer');
+  if (is_array($state) && array_key_exists($key, $state)) {
+    return $state[$key];
+  }
+  return \Drupal::config('icon_site.footer')->get($key);
+}
+
+/**
+ * Whether a footer link is one the page may print in an href.
+ *
+ * A path on this site (one leading slash), or an http, https, mailto or tel
+ * URL — nothing else: the value goes into an href as typed, and escaping is
+ * not scheme validation (backend audit C2: `javascript:` survived it).
+ */
+function icon_site_footer_link_is_safe(string $value): bool {
+  if ($value === '') {
+    return TRUE;
+  }
+  if (preg_match('/[\x00-\x20\x7F]/', $value)) {
+    return FALSE;
+  }
+  if ($value[0] === '/') {
+    return !str_starts_with($value, '//') && !str_contains($value, '\\');
+  }
+  $scheme = strtolower((string) parse_url($value, PHP_URL_SCHEME));
+  if ($scheme === 'http' || $scheme === 'https') {
+    return UrlHelper::isValid($value, TRUE);
+  }
+  return $scheme === 'mailto' || $scheme === 'tel';
+}
+
+/**
+ * A stored footer link, or the fallback when it is not one to print.
+ *
+ * The form refuses an unsafe link on the way in; this covers a value stored
+ * before it did, or written by anything that is not the form.
+ */
+function icon_site_footer_link(string $value, string $fallback): string {
+  $value = trim($value);
+  return icon_site_footer_link_is_safe($value) ? $value : $fallback;
+}
+
+/**
  * The global footer's words.
  *
  * The icon_site.footer config (Content → Footer), with the design system's
@@ -856,29 +916,29 @@ function icon_site_primary_nav(): array {
  *   everything read.
  */
 function icon_site_footer(): array {
-  $config = \Drupal::config('icon_site.footer');
+  $get = 'icon_site_footer_setting';
   $out = [
     // The serif line over the big words (user ask, 23 Sep 2026: "an eyebrow
     // in this font that says 'Make what matters'"); empty hides it.
-    'eyebrow' => (string) ($config->get('eyebrow') ?? 'Make what matters'),
-    'talk' => (string) ($config->get('talk') ?: "Let’s talk"),
-    'touch' => (string) ($config->get('touch') ?: 'Get in touch'),
-    'touch_url' => (string) ($config->get('touch_url') ?: '/contact'),
-    'newsletter' => (string) ($config->get('newsletter') ?? 'Join our newsletter for industry insights, news and our latest work'),
-    'acknowledgement' => (string) ($config->get('acknowledgement') ?? 'ICON recognises the First Peoples of this nation and their ongoing connection to culture and country. We acknowledge First Nations Peoples as the Traditional Owners, Custodians and Lore Keepers of the world’s oldest living culture and pay respects to their Elders past, present and emerging.'),
+    'eyebrow' => (string) ($get('eyebrow') ?? 'Make what matters'),
+    'talk' => (string) ($get('talk') ?: "Let’s talk"),
+    'touch' => (string) ($get('touch') ?: 'Get in touch'),
+    'touch_url' => icon_site_footer_link((string) ($get('touch_url') ?: ''), '/contact'),
+    'newsletter' => (string) ($get('newsletter') ?? 'Join our newsletter for industry insights, news and our latest work'),
+    'acknowledgement' => (string) ($get('acknowledgement') ?? 'ICON recognises the First Peoples of this nation and their ongoing connection to culture and country. We acknowledge First Nations Peoples as the Traditional Owners, Custodians and Lore Keepers of the world’s oldest living culture and pay respects to their Elders past, present and emerging.'),
     // The B Corp mark's link (user ask, 24 Sep 2026): the directory until
     // the listing is up ("I'll give you a link once our listing is up, so
     // add a placeholder"); empty hides the mark.
-    'bcorp_url' => (string) ($config->get('bcorp_url') ?? 'https://www.bcorporation.net/en-us/find-a-b-corp/'),
+    'bcorp_url' => icon_site_footer_link((string) ($get('bcorp_url') ?? 'https://www.bcorporation.net/en-us/find-a-b-corp/'), ''),
     // The legal line under the acknowledgement (user ask, 24 Sep 2026:
     // "© 2026 ICON Agency (ABN 12 103 086 451) Privacy statement. Raise a
     // concern."): the ABN and the two links; the year is today's, in the
     // template. An empty link drops its words.
-    'abn' => (string) ($config->get('abn') ?? '12 103 086 451'),
-    'privacy_url' => (string) ($config->get('privacy_url') ?? '/privacy'),
-    'concern_url' => (string) ($config->get('concern_url') ?? '/raising-concern-about-icon'),
+    'abn' => (string) ($get('abn') ?? '12 103 086 451'),
+    'privacy_url' => icon_site_footer_link((string) ($get('privacy_url') ?? '/privacy'), ''),
+    'concern_url' => icon_site_footer_link((string) ($get('concern_url') ?? '/raising-concern-about-icon'), ''),
     'social' => [],
-    'tags' => ['config:icon_site.footer', 'config:system.menu.footer-social'],
+    'tags' => ['icon_site_footer', 'config:icon_site.footer', 'config:system.menu.footer-social'],
   ];
   $tree = \Drupal::menuTree();
   $params = (new MenuTreeParameters())->setMaxDepth(1)->onlyEnabledLinks();

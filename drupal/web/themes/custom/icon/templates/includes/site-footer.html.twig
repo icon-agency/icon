@@ -129,7 +129,13 @@
        on a still) is deliberate: nothing is fetched until js/site-footer.js
        starts the reel, which it only does once the panel is on screen, so
        a page that never scrolls to the footer costs nothing. The theme's
-       two banner films are the fallback for a site with no slides yet. -->
+       two banner films are the fallback for a site with no slides yet.
+
+       THE POSTER IS data-poster, NOT poster (29 Sep 2026): a browser fetches
+       a video's poster at once whatever its preload says, so six posters —
+       5.2 MB of PNG — came down on EVERY page, the privacy policy included,
+       for a reel most visits never reach (measured in the audit follow-up).
+       js/site-footer.js hands a slide its poster when its turn comes. -->
   <p class="site-footer__lockup">
     <span class="sr-only">ICON</span>
     <span class="site-footer__lockup-line" aria-hidden="true">
@@ -137,7 +143,7 @@
         {% if footer_slides is not empty %}
           {% for slide in footer_slides %}
             {% if slide.source.type == 'video' %}
-              <video class="site-footer__slide{{ loop.first ? ' is-current' }}" src="{{ slide.source.src }}"{% if slide.source.poster %} poster="{{ slide.source.poster }}"{% endif %} muted playsinline loop preload="none"></video>
+              <video class="site-footer__slide{{ loop.first ? ' is-current' }}" src="{{ slide.source.src }}"{% if slide.source.poster %} data-poster="{{ slide.source.poster }}"{% endif %} muted playsinline loop preload="none"></video>
             {% else %}
               <img class="site-footer__slide{{ loop.first ? ' is-current' }}" src="{{ slide.source.src }}" alt="" loading="lazy" decoding="async"{% if slide.source.width %} width="{{ slide.source.width }}"{% endif %}{% if slide.source.height %} height="{{ slide.source.height }}"{% endif %}>
             {% endif %}

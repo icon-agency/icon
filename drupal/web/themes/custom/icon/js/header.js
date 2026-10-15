@@ -101,7 +101,6 @@
         // opened, a link followed, Esc, or a resize up to the desktop (user call,
         // 23 Sep 2026: no close button — "tap outside or a link").
         var burger = document.querySelector("[data-nav-burger]");
-        var closeMobileNav = function () {};
         if (nav && burger) {
           var mOpenY = 0;
           // The rest square's side: the row's height (the CSS adds the padding),
@@ -132,7 +131,6 @@
             closeSubmenu();
             closeSearch();
           }
-          closeMobileNav = mClose;
           burger.addEventListener("click", function (e) {
             e.stopPropagation();
             mOpen();

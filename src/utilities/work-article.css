@@ -478,6 +478,39 @@
   gap: var(--space-lg);
 }
 
+/* IN THE EDITOR'S FRAME the page stays plain (opening.js: the blocks are
+   worked on against white, Preview wears the colour) — but the WORK
+   MASTHEAD alone wears the page's pair there, so the editor sees the
+   combination it is typing into Page colour and Ink colour before pressing
+   Preview (user ask, 16 Oct 2026: "see the colours within Drupal … applied
+   just to the Work masthead"). The pair is on <html> as the two custom
+   properties in both modes; this binds them on the masthead the way the
+   chameleon binds them on the page (.theme-work-article above), aliases
+   re-declared so what is inside takes the ink (LESSONS: the aliases resolve
+   where they are declared), and bleeds to the page edges. On the page and
+   in Preview the masthead is on the same ground as everything else, so
+   this changes nothing there. */
+html[data-icon-editing] .work-masthead {
+  --wa-ink: var(--work-article-text);
+  --wa-surface: var(--work-article-bg);
+  --background: var(--wa-surface);
+  --foreground: var(--wa-ink);
+  --icon-black: var(--wa-ink);
+  --icon-grey: color-mix(in srgb, var(--wa-ink) 90%, transparent);
+  --icon-blue: var(--wa-ink);
+  --border: color-mix(in srgb, var(--wa-ink) 20%, transparent);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-border: var(--border);
+  --color-icon-black: var(--icon-black);
+  --color-icon-grey: var(--icon-grey);
+  --color-icon-blue: var(--icon-blue);
+  margin-inline: calc(-1 * var(--gutter-page));
+  padding: var(--space-md) var(--gutter-page) var(--space-lg);
+  background-color: var(--background);
+  color: var(--foreground);
+}
+
 /* IN THE EDITOR'S FRAME the scroll reveals never fire (Canvas loads the
    frame hidden and swaps it in; the observer sees nothing), which left
    every banner, gallery figure and film at its pre-reveal state — blank

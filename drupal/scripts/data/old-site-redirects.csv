@@ -1,0 +1,99 @@
+old_path,new_path,basis,status
+/behaviour-change,/expertise,no behaviour change page on the new site,review
+/icon-creative,/creative,"same page, new path",ready
+/news/2012-02-28-mackie-group-co-announces-proposed-vertical-village-southbank,/news,story not imported to the new site,review
+/news/2016-06-30-love-your-leftovers-and-save-planet,/news,story not imported to the new site,review
+/news/2016-10-05-deakin-digital-get-voice-biometrics-technology,/news,story not imported to the new site,review
+/news/2017-05-10-icon-leads-engagement-60m-cato-square-redevelopment,/news,story not imported to the new site,review
+/news/2017-08-17-10-tips-successful-weibo-and-wechat-campaigns-australia,/news,story not imported to the new site,review
+/news/2018-04-03-four-need-know-wechat-marketing-insights,/news,story not imported to the new site,review
+/news/2018-05-11-meet-icons-gerard-roche-senior-digital-producer,/news,story not imported to the new site,review
+/news/2018-07-23-tedx-melbourne-appoints-icon-agency,/news,story not imported to the new site,review
+/news/2019-01-17-meet-icons-chris-dodds-co-founder-and-head-digital,/news,story not imported to the new site,review
+/news/2019-02-21-unpaid-pitching-stain-our-profession-icon-ceo-talks-telum-media,/news,story not imported to the new site,review
+/news/2019-11-07-new-easy-read-website-launched-ndis,/news,story not imported to the new site,review
+/news/2019-12-11-icon-agency-2019-pr-year-review,/news,story not imported to the new site,review
+/people-culture,/about,no people and culture page on the new site,review
+/pr-communications,/communications,"same page, new path",ready
+/services,/expertise,the services index is the expertise page,ready
+/subscribe,/news,no subscribe page; the newsletter form is in the footer,review
+/work/after-hours-medical-care-awareness-campaign,/work,case study not on the new site: North Western Melbourne Primary Health Network,ready
+/work/air-force-the-runway-portal-development,/work,case study not on the new site: Royal Australian Air Force - The Runway Web Design,ready
+/work/airwallexs-pr-agency,/work,case study not on the new site: Airwallex’s PR Campaign For Growth,ready
+/work/alcohol-and-drug-foundation,/work/adf-campaign-alcohol-and-drug-foundation,same project: Our work for the Alcohol and Drug Foundation,ready
+/work/amrshire-best-weve-ever-bin-campaign,/work,case study not on the new site: The Best We have Ever Bin Awareness Campaign,ready
+/work/australia-india-council,/work,case study not on the new site: Australia India Council PR Campaign,ready
+/work/australian-building-and-construction-commission,/work,case study not on the new site: The Australian Building and Construction Commission,ready
+/work/australian-charities-and-not-profits-commission,/work,case study not on the new site: Australian Charities and Not-For-Profits Commission,ready
+/work/australian-space-agency-website,/work/space-agency-website-australian-space-agency,same project: Australian Space Agency website,ready
+/work/be-boss,/work,case study not on the new site: Be the Boss,ready
+/work/brand-strategy-and-design-kmd-brands,/work,case study not on the new site: Brand Strategy and Design for KMD Brands,ready
+/work/carers-victoria,/work,case study not on the new site: Carers Victoria Public Awareness Campaign,ready
+/work/cato-square-redevelopment,/work,case study not on the new site: Cato Square Redevelopment PR and Communications,ready
+/work/celebrating-movement,/work/fit-for-every-run-the-athletes-foot,same project: Celebrating movement,ready
+/work/city-brimbank,/work,case study not on the new site: City Of Brimbank Brand Awareness Campaign,ready
+/work/city-penrith,/work,case study not on the new site: City of Penrith Community Engagement Campaign,ready
+/work/covid-19-strategic-communications-melbourne-polytechnic,/work,case study not on the new site: COVID-19 strategic communications for Melbourne Polytechnic,ready
+/work/creating-fogo-heroes,/work,case study not on the new site: Creating FOGO heroes,ready
+/work/department-defence-website-development,/work,case study not on the new site: Australian Department of Defence Web Development,ready
+/work/dfat-permanent-protection-visa-communications,/work/permanent-protection-visa-permanent-protection-visa,same project: Permanent Protection Visa,ready
+/work/dine-outside,/work,case study not on the new site: Dine out(side),ready
+/work/engineering-new-website,/work,case study not on the new site: Engineering a new website,ready
+/work/equip-super,/work,case study not on the new site: Equip Super PR Campaign and Strategic Messaging,ready
+/work/essential-services-commission,/work,case study not on the new site: Essential Services Commission Campaign,ready
+/work/female-recruitment-drive-campaign,/work,case study not on the new site: Female recruitment drive campaign,ready
+/work/food-fight,/work,case study not on the new site: Food fight,ready
+/work/fullbridge,/work,case study not on the new site: Fullbridge,ready
+/work/headspace-early-psychosis-program,/work,case study not on the new site: Headspace Help Turn Psychosis Around Campaign,ready
+/work/health-complaints-commissioner-website,/work,case study not on the new site: Health Complaints Commissioner Brand and Website,ready
+/work/health-hub,/work,case study not on the new site: Health Hub,ready
+/work/her-circle,/work,case study not on the new site: Her Circle,ready
+/work/i-can-quit-more,/work/icanquit-cancer-institute-nsw,same project: i Can Quit is more,ready
+/work/immunise-melbourne,/work,case study not on the new site: Immunise Melbourne Awareness Campaign,ready
+/work/its-all-here,/work,case study not on the new site: It's all here,ready
+/work/jana-investment-brand-refresh,/work,case study not on the new site: Jana New Brand Strategy and Development,ready
+/work/jana-investment-public-relations,/work,case study not on the new site: JANA Public Relations and Reputation Campaign,ready
+/work/jumpstart-your-health-program,/work,case study not on the new site: Jumpstart your health program,ready
+/work/kinetic-super-website-development,/work,case study not on the new site: Website and PR Campaign For Kinetic Super,ready
+/work/love-food-hate-waste,/work,case study not on the new site: Love Food Hate Waste Awareness Campaign,ready
+/work/make-more-possible,/work,case study not on the new site: Make more possible,ready
+/work/maurice-blackburn-lawyers-website-and-copywriting,/work,case study not on the new site: Maurice Blackburn Lawyers Website Design and Content,ready
+/work/me-bank-integrated-creative-services,/work,case study not on the new site: ME Bank Brand Development and Integrated Services,ready
+/work/melbourne-ran-nike-led,/work/nike-melbourne-marathon-festival-img-events,same project: Melbourne Ran. Nike Led.,ready
+/work/mental-health-support-website,/work,case study not on the new site: Mental health support website,ready
+/work/monash-uni-alexandria-ux-ui-developement,/work,case study not on the new site: Developing Learning Platform For Monash University,ready
+/work/museum-australian-democracy-mis-and-disinformation-campaign,/work/democracy-cards-museum-of-australian-democracy-moad,same project: Museum of Australian Democracy,ready
+/work/nca-govcms-design-and-development,/work,case study not on the new site: NCA GovCMS design and development,ready
+/work/nci-website,/work,case study not on the new site: NCI Website Design and Development,ready
+/work/ndis-quality-and-safeguards-commission,/work,case study not on the new site: NDIS Quality and Safeguards Commission,ready
+/work/ndis-website-redevelopment,/work,case study not on the new site: NDIS Website Design and Development,ready
+/work/our-work-nwmphn,/work/raise-it-phn-north-western-melbourne,likely the same campaign for the same client: Our work for NWMPHN,review
+/work/path2help,/work,case study not on the new site: Path2Help,ready
+/work/petermac-website-development,/work,case study not on the new site: Website for Peter MacCallum Cancer Centre,ready
+/work/placie-app-relaunch,/work,case study not on the new site: Placie app relaunch,ready
+/work/pr-airwallex,/work,case study not on the new site: PR for Airwallex,ready
+/work/pre-election-campaign,/work,case study not on the new site: Pre-election campaign,ready
+/work/precious-time,/work,case study not on the new site: Precious Time,ready
+/work/pro-bono-project-special-olympics-australia,/work,case study not on the new site: Pro-bono project for Special Olympics Australia,ready
+/work/reduce-your-risk,/work,case study not on the new site: Reduce your risk,ready
+/work/road-motorcycle-safety-campaign,/work,case study not on the new site: Off-road motorcycle safety campaign,ready
+/work/schneider-electric-public-relations,/work,case study not on the new site: Schneider Electric - PR and Brand Strategy,ready
+/work/shft-panel-event-and-video-series-development,/work,case study not on the new site: SH!FT panel event and video series development,ready
+/work/sidra-solutions,/work,case study not on the new site: SIDRA Solutions Website Design and Development,ready
+/work/skybus-pr-and-advertising,/work,case study not on the new site: SkyBus PR And Advertising Campaign,ready
+/work/social-first-world-vet-day,/work,case study not on the new site: Social-first World Vet Day,ready
+/work/sprout-send,/work,case study not on the new site: Sprout Send Website Development and UX Optimisation,ready
+/work/state-trustees-lets-talk-brand-campaign,/work,case study not on the new site: Let us Talk PR and Communications Campaign,ready
+/work/still-six-lives,/work,case study not on the new site: Still Six Lives Website Development and PR Campaign,ready
+/work/sustainability-victoria-e-waste-recycling-behaviour-change-campaign,/work,case study not on the new site: Take Your E-Waste To A Better Place Campaign,ready
+/work/tommee-tippee-donation-drive-pr-campaign,/work,case study not on the new site: Tommee Tippee Donation Drive Communications,ready
+/work/transforming-lives,/work,case study not on the new site: Transforming lives,ready
+/work/user-experience-and-design-system,/work,case study not on the new site: iSelect Website User Experience and Design System,ready
+/work/victorian-primary-health-networks,/work,case study not on the new site: Victorian Primary Health Networks,ready
+/work/we-are-wasteless-generation,/work,case study not on the new site: We are the wasteLESS generation,ready
+/work/world-expo-2025-osaka,/work,case study not on the new site: World Expo 2025 Osaka,ready
+/work/yarra-trams-community-safety-campaign,/work,case study not on the new site: Yarra Trams Trampions Safety Awareness Campaign,ready
+/work/yarra-trams-seniors-behaviour-change-campaign,/work,case study not on the new site: Yarra Trams This Is How We Tram Seniors Campaign,ready
+/work/yarra-trams-trampions-safety-campaign,/work,case study not on the new site: TRAMPIONS,ready
+/work/you-have-right,/work,case study not on the new site: You have the right,ready
+/work/you-havent-been-drinking-alone,/work,case study not on the new site: You Haven’t Been Drinking Alone Campaign,ready

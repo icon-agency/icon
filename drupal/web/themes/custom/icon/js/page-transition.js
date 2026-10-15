@@ -40,7 +40,7 @@
   // over and over (user report, Sep 2026: "Why is this page flashing?"). A
   // framed document opts out before its first render (a later
   // @view-transition rule wins) and does nothing else.
-  var framed = true;
+  var framed;
   try { framed = window.self !== window.top; } catch (err) { framed = true; }
   if (framed || document.documentElement.hasAttribute("data-canvas-preview")) {
     var off = document.createElement("style");
