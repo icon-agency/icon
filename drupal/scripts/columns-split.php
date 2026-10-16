@@ -114,7 +114,7 @@ foreach ([['canvas_page', 'components'], ['node', 'field_work_canvas']] as [$typ
         $autosave->saveEntity($draft_entity);
         print $entity->label() . " (draft): restamped to the new revision\n";
       }
-      if ($conflict = $autosave->getUnresolvedConflictForEntity($fresh)) {
+      if ($fresh instanceof \Drupal\canvas\Entity\Page && ($conflict = $autosave->getUnresolvedConflictForEntity($fresh))) {
         $autosave->resolveConflict($fresh, $conflict);
       }
     }

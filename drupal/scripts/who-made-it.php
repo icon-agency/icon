@@ -107,7 +107,9 @@ foreach ($storage->loadMultiple($ids) as $node) {
       $autosave->saveEntity($draft_entity);
       print $node->label() . " (draft): restamped to the new revision\n";
     }
-    if ($conflict = $autosave->getUnresolvedConflictForEntity($fresh)) {
+    // (the conflict check is Canvas Pages' only — it type-hints Page — so a
+    // node with an open draft threw on the host, 16 Oct 2026)
+    if ($fresh instanceof \Drupal\canvas\Entity\Page && ($conflict = $autosave->getUnresolvedConflictForEntity($fresh))) {
       $autosave->resolveConflict($fresh, $conflict);
     }
   }
