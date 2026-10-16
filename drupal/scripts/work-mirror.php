@@ -407,6 +407,14 @@ foreach ($todo as $folio) {
         $add('sdc.icon.prose', $prose($block['html']));
         break;
 
+      case 'embed':
+        // A YouTube or Vimeo film the old page carried as a remote video
+        // (user catch, 16 Oct 2026, on Democracy Cards: "can you add this
+        // video"): the Video embed component, on its cover-and-play facade.
+        // The data's url is the player's embed address already.
+        $add('sdc.icon.news-article-video', ['embed_url' => $block['url'], 'title' => $block['title'] ?: $folio['project']]);
+        break;
+
       case 'services':
         // In the masthead's deliverables, not a block of its own.
         break;

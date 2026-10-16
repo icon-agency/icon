@@ -223,6 +223,12 @@
    {
     "type": "text",
     "html": "<h2>Who made it</h2>"
+   },
+   {
+    "type": "embed",
+    "url": "https://player.vimeo.com/video/1187586951",
+    "source": "https://vimeo.com/1187586951?share=copy&fl=sv&fe=ci",
+    "title": "NWMPHN | Raise It | 60\""
    }
   ],
   "summary": "ICON’s work ran from strategy and creative ideation through copywriting, art direction and design to a video playlist, social content, and the design and development of the RAISE IT website."
@@ -542,6 +548,12 @@
    {
     "type": "text",
     "html": "<h2>Solution</h2><p>ICON designed and produced Democracy Cards, a deck of open-ended questions about truth, media and democracy, as the centrepiece of the campaign. Using the cards as conversation starters, ICON hit the streets to interview Australians from all walks of life, capturing raw, unscripted perspectives in a vox-pop format.</p><p>These authentic voices revealed common concerns about trust, polarisation and the influence of AI – regardless of political leaning. Interviews were transformed into short-form videos, each focused on a single theme, and launched across social media with targeted media spend to maximise reach.</p><p>By blending a tactile, real-world activation with inclusive, data-led digital storytelling, ICON delivered an approach that was both innovative and deeply aligned to MoAD’s mission.</p><!----> <h2>Results</h2><ul><li><strong>2.2+ million </strong>Australians reached through precision-targeted digital delivery.</li><li><strong>85,553 click-throughs </strong>to educational resources (well exceeding engagement benchmarks) at a <strong>cost-per-click of </strong><br><strong>only $0.35.</strong></li><li>‘Misinformation Explained’ article became the most-viewed campaign resource and <strong>one of the top five most-</strong><br><strong>visited MoAD site pages for the year.</strong></li><li>Balanced sensitivity and clarity in addressing misinformation, strengthening public trust.</li></ul><p>Established a high-impact, cost-effective model for future democratic engagement initiatives.</p><!----><!---->"
+   },
+   {
+    "type": "embed",
+    "url": "https://www.youtube-nocookie.com/embed/c1DjQLPgLbE?rel=0&modestbranding=1&playsinline=1",
+    "source": "https://www.youtube.com/watch?v=c1DjQLPgLbE",
+    "title": "Question of the Day | ICON x Museum of Australian Democracy"
    },
    {
     "type": "services",
@@ -1676,6 +1688,12 @@
     "html": "<h2>Who made it</h2><!----><!---->"
    },
    {
+    "type": "embed",
+    "url": "https://www.youtube-nocookie.com/embed/p6-A1k5gk2A?rel=0&modestbranding=1&playsinline=1",
+    "source": "https://www.youtube.com/watch?v=p6-A1k5gk2A&feature=emb_title",
+    "title": "Stillbirth – Together we can reduce the risk"
+   },
+   {
     "type": "services",
     "items": [
      "Dedicated client service team",
@@ -2078,6 +2096,12 @@
    {
     "type": "text",
     "html": "<h2>Recognition</h2>"
+   },
+   {
+    "type": "embed",
+    "url": "https://www.youtube-nocookie.com/embed/2RI-mwLhT4o?rel=0&modestbranding=1&playsinline=1",
+    "source": "https://www.youtube.com/watch?v=2RI-mwLhT4o&ab_channel=AlcoholandDrugFoundation",
+    "title": "You haven't been drinking alone"
    },
    {
     "type": "services",
@@ -4205,6 +4229,12 @@
     "html": ">"
    },
    {
+    "type": "embed",
+    "url": "https://www.youtube-nocookie.com/embed/z7DSalCDJN4?rel=0&modestbranding=1&playsinline=1",
+    "source": "https://youtu.be/z7DSalCDJN4",
+    "title": "You have the right to not remain silent (15 seconds)"
+   },
+   {
     "type": "services",
     "items": [
      "Creative concept and development",
@@ -5141,6 +5171,12 @@
     "html": ">"
    },
    {
+    "type": "embed",
+    "url": "https://www.youtube-nocookie.com/embed/eoCXabLJF80?rel=0&modestbranding=1&playsinline=1",
+    "source": "https://www.youtube.com/watch?v=eoCXabLJF80",
+    "title": "Reduce Your Risk Campaign Video"
+   },
+   {
     "type": "services",
     "items": [
      "1,500,000 ad impressions (all channels)",
@@ -5532,6 +5568,18 @@
    {
     "type": "text",
     "html": "<h2>Results</h2> <p>Over 12 million (Total People) heard the messaging over the 3-week campaign period. Despite COVID-19 restrictions, radio was still able to provide a strong result for this campaign.</p><!----><ul><li>20% uptake in awareness of key messages</li><li>10% increase of awareness for 18-24 age group</li><li>10% increase in taking action</li></ul><!----> <p> Services included: </p><ul><li>Creative ideation and direction</li><li>Campaign planning, strategy and implementation</li><li>Video production</li><li>Graphic design</li><li>Digital marketing</li></ul><!---->"
+   },
+   {
+    "type": "embed",
+    "url": "https://www.youtube-nocookie.com/embed/1nqSnvhmZhI?rel=0&modestbranding=1&playsinline=1",
+    "source": "https://www.youtube.com/watch?v=1nqSnvhmZhI",
+    "title": "It's your energy, Victoria - your power is in your hands (15 seconds)"
+   },
+   {
+    "type": "embed",
+    "url": "https://www.youtube-nocookie.com/embed/DP0EACTGNzc?rel=0&modestbranding=1&playsinline=1",
+    "source": "https://www.youtube.com/watch?v=DP0EACTGNzc",
+    "title": "It's your energy, Victoria - your power is in your hands (15 seconds)"
    }
   ]
  },
@@ -5659,6 +5707,12 @@
      }
     ],
     "ground": "var(--white)"
+   },
+   {
+    "type": "embed",
+    "url": "https://www.youtube-nocookie.com/embed/Jn_uNa7Jx2c?rel=0&modestbranding=1&playsinline=1",
+    "source": "https://www.youtube.com/watch?v=Jn_uNa7Jx2c",
+    "title": "RECYCLING   Waste, Let's Get It Sorted"
    }
   ]
  },
@@ -5810,6 +5864,12 @@
    {
     "type": "text",
     "html": "<h2>Results</h2> <p>Over 1 million people heard our radio ad, and over 1000 an-hour routed phone calls were made.</p> <p>A unique ad reach of 1.92 million was achieved, as well as 4.8 million ad impressions. The campaign resulted in a 200% increase in web sessions and page views. Across Facebook and Instagram, the campaign exceeded the Awareness KPIs, reaching over 1.4M social users across 4.7K impressions.</p> <p>Stressed out? Feeling helpless? <a href=\"https://headtohelp.org.au/\" rel=\"noreferrer\">Help is here</a>.</p><!----><ul><li><!----></li></ul> <p> Services included: </p><ul><li>Creative ideation and direction</li><li>Graphic design</li><li>Video production</li><li>Social media</li><li>Influencer communications</li><li>Research</li></ul><!----><!---->"
+   },
+   {
+    "type": "embed",
+    "url": "https://www.youtube-nocookie.com/embed/mNL_ukR7hek?rel=0&modestbranding=1&playsinline=1",
+    "source": "https://www.youtube.com/watch?v=mNL_ukR7hek",
+    "title": "Head to Help for mental health support"
    }
   ]
  },
@@ -5902,6 +5962,12 @@
      }
     ],
     "ground": "var(--white)"
+   },
+   {
+    "type": "embed",
+    "url": "https://www.youtube-nocookie.com/embed/nPTTbCk8pqA?rel=0&modestbranding=1&playsinline=1",
+    "source": "https://youtu.be/nPTTbCk8pqA",
+    "title": "The Best We've Ever Bin"
    }
   ]
  },
@@ -6869,6 +6935,12 @@
      }
     ],
     "ground": "#f5f5f5"
+   },
+   {
+    "type": "embed",
+    "url": "https://www.youtube-nocookie.com/embed/jyepBJ1o0eQ?rel=0&modestbranding=1&playsinline=1",
+    "source": "https://youtu.be/jyepBJ1o0eQ",
+    "title": "Take your e-waste to a better place"
    }
   ]
  },
@@ -6946,6 +7018,12 @@
    {
     "type": "text",
     "html": "<h2>Welcome. We are Brimbank</h2> <p>‘We are Brimbank’ is a long-term campaign to strengthen community pride while also promoting the area to the wider Victorian community. While it is still ongoing, Icon’s engaging and emotive integrated new destination brand has been warmly embraced by the Council and many in the community.</p> <p>A particular highlight was the ‘We are Brimbank’ Welcome Café, held during Cultural Diversity Week at the Alfrieda Street Pop Up Park. Six local restaurants and entertainers came together to create a pop-up café, serving free food to the local community from their different cultures. The pop café was held over three days in March 2018. </p> <p>In 2019 we move into the third year of ‘We are Brimbank’ with more community-driven activations and events, PR targeted at business and investor communities and digital brand communications. </p><!----> <p>The campaign was delivered via:</p><!----><ul><li>Paid advertising – cinema, outdoor and press</li><li>Gateway signage, flags and billboards</li><li>Investment collateral targeting government, employers and business</li><li>Public activation and pop-up multicultural café</li><li>Launch PR and events</li></ul><!----><!---->"
+   },
+   {
+    "type": "embed",
+    "url": "https://www.youtube-nocookie.com/embed/7_UXuIsGsMQ?rel=0&modestbranding=1&playsinline=1",
+    "source": "https://www.youtube.com/watch?v=7_UXuIsGsMQ",
+    "title": "We Are Brimbank"
    }
   ]
  },
@@ -7237,6 +7315,12 @@
      }
     ],
     "ground": "var(--white)"
+   },
+   {
+    "type": "embed",
+    "url": "https://www.youtube-nocookie.com/embed/rMJP2wFRAOA?rel=0&modestbranding=1&playsinline=1",
+    "source": "https://youtu.be/rMJP2wFRAOA",
+    "title": "Out of Towners - Tram Coach"
    }
   ]
  },
@@ -7454,6 +7538,12 @@
      }
     ],
     "ground": "var(--white)"
+   },
+   {
+    "type": "embed",
+    "url": "https://www.youtube-nocookie.com/embed/L2XhKVCDzEU?rel=0&modestbranding=1&playsinline=1",
+    "source": "https://www.youtube.com/watch?v=L2XhKVCDzEU&feature=youtu.be",
+    "title": "headspace - Help turn Psychosis around"
    }
   ]
  },
@@ -7598,6 +7688,12 @@
      }
     ],
     "ground": "var(--primary)"
+   },
+   {
+    "type": "embed",
+    "url": "https://www.youtube-nocookie.com/embed/0pQBGg9E8GU?rel=0&modestbranding=1&playsinline=1",
+    "source": "https://youtu.be/0pQBGg9E8GU",
+    "title": "After hours care is always there – broken nose"
    }
   ]
  },
@@ -8165,6 +8261,12 @@
      }
     ],
     "ground": "var(--white)"
+   },
+   {
+    "type": "embed",
+    "url": "https://www.youtube-nocookie.com/embed/LR9uNnACMKs?rel=0&modestbranding=1&playsinline=1",
+    "source": "https://youtu.be/LR9uNnACMKs",
+    "title": "Let's Talk 30sec"
    }
   ]
  },
@@ -8238,6 +8340,12 @@
    {
     "type": "text",
     "html": ">"
+   },
+   {
+    "type": "embed",
+    "url": "https://www.youtube-nocookie.com/embed/pp2o5xbSOCM?rel=0&modestbranding=1&playsinline=1",
+    "source": "https://youtu.be/pp2o5xbSOCM",
+    "title": "Tommee Tippee Tip In: Happy Birthday Piper"
    }
   ]
  },
