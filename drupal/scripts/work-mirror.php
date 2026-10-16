@@ -119,6 +119,20 @@ $image = static function (string $url, string $alt, string $role, string $dir) u
   if ($existing) {
     return reset($existing);
   }
+  // A file ALREADY IN PLACE is used as it is: the host has no Imagick, so a
+  // folio is built locally and its resized files travel up before the run
+  // there (16 Oct 2026, user ask: "push our new folio items … to the upsun
+  // drupal version"); the file is the local run's, resized and renamed.
+  $slug = preg_replace('/[^A-Za-z0-9._-]+/', '-', $base);
+  foreach (['jpg', 'png'] as $ext) {
+    if (($path = $fs->realpath("$dir/$slug.$ext")) && file_exists($path)) {
+      $f = File::create(['uri' => "$dir/$slug.$ext", 'status' => 1]);
+      $f->save();
+      $m = Media::create(['bundle' => 'image', 'name' => $name, 'field_media_image' => ['target_id' => $f->id(), 'alt' => $alt ?: $base]]);
+      $m->save();
+      return $m;
+    }
+  }
   $tmp = $fetch($url);
   if (!$tmp) {
     return NULL;
@@ -170,12 +184,16 @@ $video = static function (string $url, string $name, string $dir) use ($etm, $fs
   if ($existing) {
     return reset($existing);
   }
-  $tmp = $fetch($url);
-  if (!$tmp) {
-    return NULL;
+  // a film already in place (see the image's note) is used as it is
+  $uri = "$dir/" . preg_replace('/[^A-Za-z0-9._-]+/', '-', $name);
+  if (!(($path = $fs->realpath($uri)) && file_exists($path))) {
+    $tmp = $fetch($url);
+    if (!$tmp) {
+      return NULL;
+    }
+    $fs->prepareDirectory($dir, $fs::CREATE_DIRECTORY | $fs::MODIFY_PERMISSIONS);
+    $uri = $fs->move($tmp, $uri, $fs::EXISTS_REPLACE);
   }
-  $fs->prepareDirectory($dir, $fs::CREATE_DIRECTORY | $fs::MODIFY_PERMISSIONS);
-  $uri = $fs->move($tmp, "$dir/" . preg_replace('/[^A-Za-z0-9._-]+/', '-', $name), $fs::EXISTS_REPLACE);
   $f = File::create(['uri' => $uri, 'status' => 1]);
   $f->save();
   $m = Media::create(['bundle' => 'video', 'name' => $name, 'field_media_video_file' => ['target_id' => $f->id()]]);
