@@ -339,6 +339,7 @@ foreach ($todo as $folio) {
   // to populate the deliverables"); a page with no such list keeps the
   // disciplines of its service line.
   $services = [];
+  $who = [];
   foreach ($folio['blocks'] as &$block) {
     if ($block['type'] === 'services') {
       $services = array_merge($services, $block['items']);
@@ -376,13 +377,17 @@ foreach ($todo as $folio) {
     if ($block['type'] === 'text' && preg_match('#<h[23]>\s*Who made it\s*</h[23]>\s*(?:<!--.*?-->\s*)*<ul>(.*?)</ul>#is', $block['html'], $m)) {
       preg_match_all('#<li>(.*?)</li>#is', $m[1], $li);
       $items = array_values(array_filter(array_map(static fn($x) => rtrim(trim(html_entity_decode(strip_tags($x))), '.'), $li[1])));
-      $services = array_merge($services, $items);
+      $who = array_merge($who, $items);
       $block['html'] = trim(str_replace($m[0], '', $block['html']));
     }
   }
   unset($block);
   $folio['blocks'] = array_values(array_filter($folio['blocks'], static fn($b) => $b['type'] !== 'text' || trim(strip_tags($b['html'])) !== ''));
-  $deliverables = array_values(array_unique($services ?: $folio['deliverables']));
+  // The service line's disciplines stand where the old page has no services
+  // list, and "Who made it" ADDS to either — it had replaced the service
+  // line on a page with no services list (caught on the host's Space
+  // Agency, 16 Oct 2026: "Website design and development" gone).
+  $deliverables = array_values(array_unique(array_merge($services ?: $folio['deliverables'], $who)));
   $masthead = [
     'title' => $folio['project'],
     'client' => $folio['client'],
