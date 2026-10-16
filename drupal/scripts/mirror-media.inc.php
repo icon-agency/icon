@@ -31,6 +31,17 @@ $slug = static fn(string $s): string => trim(preg_replace('/[^a-z0-9]+/', '-', s
  */
 $fetch = static function (string $url) use ($http, $fs): ?string {
   $tmp = $fs->tempnam('temporary://', 'mirror-');
+  // a file of our own — public://… — is copied, not fetched (a folio built
+  // from supplied artwork rather than an old page; 16 Oct 2026, the Veteran
+  // and Family Wellbeing Agency website)
+  if (str_starts_with($url, 'public://')) {
+    $path = $fs->realpath($url);
+    if (!$path || !file_exists($path) || !copy($path, $fs->realpath($tmp))) {
+      print "    ! no such file $url\n";
+      return NULL;
+    }
+    return $tmp;
+  }
   try {
     $http->get($url, ['sink' => $fs->realpath($tmp), 'timeout' => 300, 'headers' => ['User-Agent' => 'Mozilla/5.0 (ICON mirror)']]);
   }

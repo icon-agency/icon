@@ -385,6 +385,8 @@ function icon_site_entity_operation_alter(array &$operations, EntityInterface $e
  */
 function icon_site_form_component_instance_form_alter(array &$form, FormStateInterface $form_state): void {
   $form['#attached']['library'][] = 'icon_site/editor_panel';
+  // The colour props' swatch and picker (js/page-data.js).
+  $form['#attached']['library'][] = 'icon_site/page_data';
   // A component whose content is other components in a slot has few or no
   // settings of its own, so its panel came up blank and said nothing about
   // where the pictures go (user, Sep 2026, on a Gallery: "How do I add

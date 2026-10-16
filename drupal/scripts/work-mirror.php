@@ -271,6 +271,21 @@ foreach ($todo as $folio) {
         if (!$medias) {
           break;
         }
+        // A STATED SHAPE on the block (the data's call, for artwork the rules
+        // below would misjudge — a full-page screenshot is "portrait", not a
+        // cut-out): one picture at that shape, or two side by side.
+        if (!empty($block['shape'])) {
+          if (count($medias) === 1) {
+            $add('sdc.icon.news-article-figure', ['shape' => $block['shape'], 'picture' => ['target_id' => (int) $medias[0]->id()]]);
+          }
+          else {
+            $cols = $add('sdc.icon.columns', ['columns' => 2, 'gap' => 'tight', 'box' => 'none', 'split' => 'even']);
+            foreach (array_slice($medias, 0, 2) as $i => $m) {
+              $add('sdc.icon.news-article-figure', ['shape' => $block['shape'], 'picture' => ['target_id' => (int) $m->id()]], $cols, 'column_' . ($i + 1));
+            }
+          }
+          break;
+        }
         // A PORTRAIT film or picture (9:16 and the like) stands as the cut-out
         // of a square figure on the brand's ground, two to a row (user call,
         // 16 Oct 2026: "place the 9:16 in a two column … add the video to the

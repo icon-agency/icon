@@ -177,17 +177,17 @@ form[data-form-id="page_data_form"] .form-checkboxes input[type="checkbox"] {
 }
 
 /* the colour pair: a swatch of the value in each field */
-form[data-form-id="page_data_form"] .icon-colour [class*="_wrap_"] {
+.icon-colour [class*="_wrap_"] {
   position: relative;
 }
 
-form[data-form-id="page_data_form"] .icon-colour input {
+.icon-colour input[type="text"] {
   padding-left: 34px;
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
   font-size: 12px;
 }
 
-form[data-form-id="page_data_form"] .icon-colour__swatch {
+.icon-colour__swatch {
   position: absolute;
   left: 8px;
   top: 50%;
@@ -197,6 +197,22 @@ form[data-form-id="page_data_form"] .icon-colour__swatch {
   border-radius: 5px;
   border: 1px solid rgb(0 0 0 / 0.12);
   pointer-events: none;
+}
+
+/* the browser's colour input, invisible over the swatch: the click lands
+   on it and opens the picker (js/page-data.js writes the pick back) */
+.icon-colour__pick {
+  position: absolute;
+  left: 8px;
+  top: 50%;
+  translate: 0 -50%;
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  opacity: 0;
+  cursor: pointer;
 }
 
 /* the deliverables list, compact: Canvas's own tabledrag (its handle in

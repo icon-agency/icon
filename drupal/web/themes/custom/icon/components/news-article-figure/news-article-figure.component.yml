@@ -60,7 +60,7 @@ props:
     ground:
       type: string
       title: Ground colour
-      description: For a layered figure — the colour behind the cut-out, when there is no ground picture. A hex value, e.g. #2e2e2e.
+      description: 'For a layered figure — the colour behind the cut-out, when there is no ground picture. A hex value, e.g. #2e2e2e.'
     pad:
       type: string
       title: Cut-out inset

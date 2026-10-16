@@ -9112,5 +9112,155 @@
     "ground": "var(--white)"
    }
   ]
+ },
+ {
+  "old_path": "/work/veteran-and-family-wellbeing-agency-website",
+  "project": "Veteran and Family Wellbeing Agency website",
+  "client": "Department of Veterans’ Affairs",
+  "statement": "A clearer path to wellbeing for veterans and families",
+  "categories": [
+   "websites"
+  ],
+  "deliverables": [
+   "Website design and development"
+  ],
+  "action": "",
+  "date": "2026-10-16",
+  "bg": "#e6e0d1",
+  "ink": "#0d0d0d",
+  "tiles": [
+   {
+    "kind": "image",
+    "url": "public://work/_src/vetwell/DVA-Wellbeing–Header 1.png",
+    "alt": "An Air Force member with her two daughters"
+   }
+  ],
+  "hero": {
+   "kind": "image",
+   "url": "public://work/_src/vetwell/DVA-Wellbeing–Header 1.png",
+   "alt": "An Air Force member with her two daughters"
+  },
+  "blocks": [
+   {
+    "type": "text",
+    "html": "<h2>Overview</h2><p>ICON partnered with the Department of Veterans’ Affairs to create the Veteran and Family Wellbeing Agency website, helping veterans and families find support relevant to their lives.</p><p>Combining user experience design, accessible content and GovCMS development, we created a welcoming digital starting point for navigating a complex system.</p><p>The platform provides a foundation for connecting the veteran community with support as their needs change.</p>"
+   },
+   {
+    "type": "media",
+    "items": [
+     {
+      "kind": "image",
+      "url": "public://work/_src/vetwell/Screenshot 2026-10-16 at 4.07.17 pm.png",
+      "alt": "The Veteran and Family Wellbeing Agency homepage"
+     }
+    ]
+   },
+   {
+    "type": "text",
+    "html": "<h2>Background</h2><p>The Royal Commission into Defence and Veteran Suicide and the work of the Veterans and Families Assembly highlighted the need for more connected, trauma-informed support pathways.</p><p>For veterans, wellbeing can involve everything from health and housing to employment, education and social connection.</p><p>With support spread across government and specialist organisations, the new agency’s website needed to help people understand their options and take the next step.</p>"
+   },
+   {
+    "type": "gallery",
+    "items": [
+     {
+      "kind": "image",
+      "url": "public://work/_src/vetwell/DVA-Mobile-Veteran_0-1.png",
+      "alt": "Wellbeing resources for a veteran no longer serving, on a phone"
+     },
+     {
+      "kind": "image",
+      "url": "public://work/_src/vetwell/DVA-Mobile-Transitioning_0-1.png",
+      "alt": "Wellbeing resources for someone transitioning from the ADF, on a phone"
+     },
+     {
+      "kind": "image",
+      "url": "public://work/_src/vetwell/DVA-Mobile-Supporting_0-1.png",
+      "alt": "Wellbeing resources for someone supporting a veteran, on a phone"
+     }
+    ]
+   },
+   {
+    "type": "text",
+    "html": "<h2>Challenge</h2><p>Finding support can be difficult when you’re unsure where to begin. For people navigating uncertainty or distress, complex information and unfamiliar systems can make that first step harder.</p><p>ICON’s challenge was to make the broad range of services easier to navigate, while recognising the different circumstances of veterans and those supporting them.</p><p>The experience needed to offer clear choices without overwhelming users, work across devices and accessibility needs, and accommodate the agency’s future growth.</p>"
+   },
+   {
+    "type": "media",
+    "items": [
+     {
+      "kind": "image",
+      "url": "public://work/_src/vetwell/DVA-Wellbeing-Rectangle 2_0.png",
+      "alt": "The website across desktop and phone screens"
+     }
+    ]
+   },
+   {
+    "type": "text",
+    "html": "<h2>Solution</h2><p>ICON brought together service design, user experience, information architecture, content, accessibility and development around a clear principle: help people find support with less effort.</p><p>The website offers several ways to begin. Users can search for services by need and location, find a nearby hub, or explore wellbeing resources organised around their circumstances. This gives people practical starting points, whether they know what they are looking for or need guidance.</p><p>Clear language, predictable navigation and a strong visual hierarchy support a trauma-informed experience.</p><p>Built on GovCMS Drupal, the platform was developed to meet WCAG 2.1 AA requirements, with accessibility considered throughout design and development.</p><p>Customised AI tools, guided by ICON’s specialists, helped refine responsive components and accelerated front-end development, freeing more time for accessibility and experience improvements.</p><p>Recognised by the Web Excellence Awards across eGovernment, Health Care Services, Veteran &amp; Service Support and Wellness, the website provides a foundation for the agency to grow – helping veterans and families connect with services and take steps towards better wellbeing.</p>"
+   },
+   {
+    "type": "gallery",
+    "items": [
+     {
+      "kind": "image",
+      "url": "public://work/_src/vetwell/Step 1_0-1.png",
+      "alt": "Finding a service: the search, on a phone"
+     },
+     {
+      "kind": "image",
+      "url": "public://work/_src/vetwell/Step 1_0.png",
+      "alt": "Finding a service: the results, on a phone"
+     },
+     {
+      "kind": "image",
+      "url": "public://work/_src/vetwell/Step 4c_0.png",
+      "alt": "Finding a service: a service’s details, on a phone"
+     },
+     {
+      "kind": "image",
+      "url": "public://work/_src/vetwell/Step 4d_0.png",
+      "alt": "Finding a service: the map and opening hours, on a phone"
+     }
+    ]
+   },
+   {
+    "type": "media",
+    "shape": "portrait",
+    "items": [
+     {
+      "kind": "image",
+      "url": "public://work/_src/vetwell/Veteran and Family Wellbeing Agency.png",
+      "alt": "The homepage, top to bottom"
+     },
+     {
+      "kind": "image",
+      "url": "public://work/_src/vetwell/DVA-Wellbeing-Desktop-Resources.png",
+      "alt": "A wellbeing resources collection on desktop"
+     }
+    ]
+   },
+   {
+    "type": "media",
+    "items": [
+     {
+      "kind": "image",
+      "url": "public://work/_src/vetwell/DVA3230_0.jpg.webp",
+      "alt": "An Air Force member with her two daughters among the trees"
+     }
+    ]
+   },
+   {
+    "type": "services",
+    "items": [
+     "User experience design",
+     "Information architecture",
+     "Content design",
+     "Interface design",
+     "Accessibility implementation and testing",
+     "Responsive front-end development",
+     "AI-assisted development",
+     "GovCMS Drupal development"
+    ]
+   }
+  ]
  }
 ]
