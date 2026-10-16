@@ -63,7 +63,7 @@ $image = static function (string $url, string $alt, string $role, string $dir) u
     if (($path = $fs->realpath("$dir/$slug.$ext")) && file_exists($path)) {
       $f = File::create(['uri' => "$dir/$slug.$ext", 'status' => 1]);
       $f->save();
-      $m = Media::create(['bundle' => 'image', 'name' => $name, 'field_media_image' => ['target_id' => $f->id(), 'alt' => $alt ?: $base]]);
+      $m = Media::create(['bundle' => 'image', 'name' => $name, 'field_media_category' => 'work', 'field_media_image' => ['target_id' => $f->id(), 'alt' => $alt ?: $base]]);
       $m->save();
       return $m;
     }
@@ -106,7 +106,7 @@ $image = static function (string $url, string $alt, string $role, string $dir) u
   }
   $f = File::create(['uri' => $uri, 'status' => 1]);
   $f->save();
-  $m = Media::create(['bundle' => 'image', 'name' => $name, 'field_media_image' => ['target_id' => $f->id(), 'alt' => $alt ?: $base]]);
+  $m = Media::create(['bundle' => 'image', 'name' => $name, 'field_media_category' => 'work', 'field_media_image' => ['target_id' => $f->id(), 'alt' => $alt ?: $base]]);
   $m->save();
   return $m;
 };
@@ -131,7 +131,7 @@ $video = static function (string $url, string $name, string $dir) use ($etm, $fs
   }
   $f = File::create(['uri' => $uri, 'status' => 1]);
   $f->save();
-  $m = Media::create(['bundle' => 'video', 'name' => $name, 'field_media_video_file' => ['target_id' => $f->id()]]);
+  $m = Media::create(['bundle' => 'video', 'name' => $name, 'field_media_category' => 'work', 'field_media_video_file' => ['target_id' => $f->id()]]);
   $m->save();
   return $m;
 };

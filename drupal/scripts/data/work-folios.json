@@ -1710,6 +1710,12 @@
     "title": "Stillbirth – Together we can reduce the risk"
    },
    {
+    "type": "embed",
+    "url": "https://player.vimeo.com/video/684085078?h=118aea5357",
+    "source": "https://vimeo.com/684085078/118aea5357",
+    "title": "Holly and Josh, The Stillbirth Promise video.mp4"
+   },
+   {
     "type": "services",
     "items": [
      "Dedicated client service team",
@@ -5305,23 +5311,27 @@
     "items": [
      {
       "kind": "image",
-      "url": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
-      "alt": "FullBridge logo"
+      "url": "https://drupal.iconagency.com.au/files/agency/styles/xxlarge/public/2021-08/FullBridge%20logo.svg.png?itok=lqxQ0jvi",
+      "alt": "FullBridge logo",
+      "svg": "https://drupal.iconagency.com.au/files/agency/2021-08/FullBridge%20logo.svg"
      },
      {
       "kind": "image",
-      "url": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
-      "alt": "FullBridge logo space"
+      "url": "https://drupal.iconagency.com.au/files/agency/styles/xxlarge/public/2021-08/FullBridge%20logo%20space.svg.png?itok=U-_bSN81",
+      "alt": "FullBridge logo space",
+      "svg": "https://drupal.iconagency.com.au/files/agency/2021-08/FullBridge%20logo%20space.svg"
      },
      {
       "kind": "image",
-      "url": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
-      "alt": "FullBridge colour percentage"
+      "url": "https://drupal.iconagency.com.au/files/agency/styles/xxlarge/public/2021-08/FullBridge%20colour%20percentage.svg.png?itok=CCIb9JjD",
+      "alt": "FullBridge colour percentage",
+      "svg": "https://drupal.iconagency.com.au/files/agency/2021-08/FullBridge%20colour%20percentage.svg"
      },
      {
       "kind": "image",
-      "url": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
-      "alt": "FullBridge Colours"
+      "url": "https://drupal.iconagency.com.au/files/agency/styles/xxlarge/public/2021-08/FullBridge%20Colours.svg.png?itok=DMkuthAu",
+      "alt": "FullBridge Colours",
+      "svg": "https://drupal.iconagency.com.au/files/agency/2021-08/FullBridge%20Colours.svg"
      }
     ],
     "ground": "var(--white)"
@@ -5331,13 +5341,15 @@
     "items": [
      {
       "kind": "image",
-      "url": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
-      "alt": "FullBridge business cards"
+      "url": "https://drupal.iconagency.com.au/files/agency/styles/xxlarge/public/2021-08/FullBridge%20business-cards-2.svg.png?itok=m93TlUVm",
+      "alt": "FullBridge business cards",
+      "svg": "https://drupal.iconagency.com.au/files/agency/2021-08/FullBridge%20business-cards-2.svg"
      },
      {
       "kind": "image",
-      "url": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
-      "alt": "FullBridge font"
+      "url": "https://drupal.iconagency.com.au/files/agency/styles/xxlarge/public/2021-08/FullBridge-font.svg.png?itok=kIv73wFs",
+      "alt": "FullBridge font",
+      "svg": "https://drupal.iconagency.com.au/files/agency/2021-08/FullBridge-font.svg"
      }
     ],
     "ground": "var(--white)"
@@ -5433,23 +5445,27 @@
     "items": [
      {
       "kind": "image",
-      "url": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
-      "alt": "logo symbol"
+      "url": "https://drupal.iconagency.com.au/files/agency/styles/xxlarge/public/2021-08/logo-symbol.svg.png?itok=wpqRFxD4",
+      "alt": "logo symbol",
+      "svg": "https://drupal.iconagency.com.au/files/agency/2021-08/logo-symbol.svg"
      },
      {
       "kind": "image",
-      "url": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
-      "alt": "colours"
+      "url": "https://drupal.iconagency.com.au/files/agency/styles/xxlarge/public/2021-08/colours_1.svg.png?itok=3MuKzP6K",
+      "alt": "colours",
+      "svg": "https://drupal.iconagency.com.au/files/agency/2021-08/colours_1.svg"
      },
      {
       "kind": "image",
-      "url": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
-      "alt": "logo detail"
+      "url": "https://drupal.iconagency.com.au/files/agency/styles/xxlarge/public/2021-08/logo-detail_0.svg.png?itok=ygJf_eqp",
+      "alt": "logo detail",
+      "svg": "https://drupal.iconagency.com.au/files/agency/2021-08/logo-detail_0.svg"
      },
      {
       "kind": "image",
-      "url": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
-      "alt": "logos"
+      "url": "https://drupal.iconagency.com.au/files/agency/styles/xxlarge/public/2021-08/logos_0.svg.png?itok=nJfJx86M",
+      "alt": "logos",
+      "svg": "https://drupal.iconagency.com.au/files/agency/2021-08/logos_0.svg"
      },
      {
       "kind": "image",
@@ -6179,8 +6195,9 @@
     "items": [
      {
       "kind": "image",
-      "url": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
-      "alt": "schneider electric"
+      "url": "https://drupal.iconagency.com.au/files/agency/styles/xxlarge/public/2020-10/schneider-electric-vector-logo2.svg.png?itok=8QG4_6Ms",
+      "alt": "schneider electric",
+      "svg": "https://drupal.iconagency.com.au/files/agency/2020-10/schneider-electric-vector-logo2.svg"
      },
      {
       "kind": "image",
