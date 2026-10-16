@@ -3,8 +3,9 @@ langcode: en
 status: true
 dependencies:
   config:
-    - field.field.paragraph.news_article_video.field_news_article_video_url
+    - field.field.paragraph.news_article_video.field_news_article_video_cover
     - field.field.paragraph.news_article_video.field_news_article_video_title
+    - field.field.paragraph.news_article_video.field_news_article_video_url
     - paragraphs.paragraphs_type.news_article_video
 id: paragraph.news_article_video.default
 targetEntityType: paragraph
@@ -12,5 +13,6 @@ bundle: news_article_video
 mode: default
 content: {  }
 hidden:
+  field_news_article_video_cover: true
   field_news_article_video_title: true
   field_news_article_video_url: true

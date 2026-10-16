@@ -19,6 +19,19 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-lg);
+  /* and a section's air above the footer, built in — the article pages
+     get theirs from the Next up / More news rails; a flat page had none,
+     and editors were ending every page on a Spacer (user ask, 16 Oct
+     2026: "would we add a default space to the template?") */
+  padding-bottom: var(--space-section);
+}
+
+/* …except under a page that closes on a band that carries its own floor —
+   the listing band (the /news and /work landings), a Next up rail (the
+   service pages) or the news band; the band sits inside Drupal's block
+   wrapper, hence the descendant */
+.page-canvas:has(> div > div > :last-child :is(.listing-band, .news, .work-article__next)) {
+  padding-bottom: 0;
 }
 
 /* Drupal wraps the region and the block around the components. `contents`

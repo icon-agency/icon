@@ -33,7 +33,9 @@
  * Idempotent: a folio is found by the node its old path redirects to, else
  * by project name and client; the six placeholders the audit maps to old
  * pages are rebuilt in place (their IDs below). Every folio gets a 301 from
- * its old path. Editor changes to a rebuilt folio are REPLACED.
+ * its old path. A folio an editor has saved since (its latest revision is
+ * not the mirror's) is SKIPPED unless ICON_FORCE=1 — a re-run replaced
+ * Matt's published edits once (16 Oct 2026).
  *
  * Run (newest ten):   ddev exec "ICON_SEED=1 ICON_LIMIT=10 drush php:script scripts/work-mirror.php"
  * One or more:        ddev exec "ICON_SEED=1 ICON_ONLY=/work/sextortion,/work/food-fight drush php:script scripts/work-mirror.php"
@@ -258,6 +260,14 @@ foreach ($todo as $folio) {
     print "  new node\n";
   }
   else {
+    // AN EDITED FOLIO IS LEFT ALONE: a node whose latest revision is not the
+    // mirror's own carries an editor's work, and a re-run replaced Matt's
+    // published Sextortion edits (16 Oct 2026). ICON_FORCE=1 overrides.
+    $log = (string) $node->getRevisionLogMessage();
+    if (!str_starts_with($log, 'Mirrored from') && getenv('ICON_FORCE') !== '1') {
+      print "  SKIPPED node {$node->id()}: its latest revision is not the mirror's (\"" . mb_substr($log, 0, 60) . "\"); ICON_FORCE=1 to replace it\n";
+      continue;
+    }
     print "  rebuilding node {$node->id()}\n";
   }
 
@@ -311,11 +321,49 @@ foreach ($todo as $folio) {
   // to populate the deliverables"); a page with no such list keeps the
   // disciplines of its service line.
   $services = [];
-  foreach ($folio['blocks'] as $block) {
+  foreach ($folio['blocks'] as &$block) {
     if ($block['type'] === 'services') {
       $services = array_merge($services, $block['items']);
     }
+    // A "What we delivered" (or Services, Deliverables, What we did) heading
+    // with a list straight under it, written in the body on the old page,
+    // is the deliverables too (user call, 16 Oct 2026, on Raise It: "these
+    // could be the deliverables"): the items move to the masthead and the
+    // heading and list come out of the text.
+    if ($block['type'] === 'text' && preg_match('#<h[23]>\s*(What we delivered|What we did|Our services|Services|Deliverables)\s*</h[23]>\s*(?:<!--.*?-->\s*)*<ul>(.*?)</ul>#is', $block['html'], $m)) {
+      preg_match_all('#<li>(.*?)</li>#is', $m[2], $li);
+      $items = array_values(array_filter(array_map(static fn($x) => trim(html_entity_decode(strip_tags($x))), $li[1])));
+      $services = array_merge($services, $items);
+      // In the text the list becomes ONE SENTENCE under the same heading
+      // (user call, 16 Oct 2026: "summarise the deliverables into a sentence
+      // that reads well … it's now at the top as a list, more general
+      // here"): "ICON's work spanned strategy, creative ideation … and web
+      // design and development." A word keeps its capitals only when it has
+      // two or more (an acronym, GovCMS); Title Case items go to lower case;
+      // an item's own full stop goes.
+      $words = array_map(static fn(string $x) => implode(' ', array_map(static fn(string $w) => preg_match_all('/\p{Lu}/u', $w) >= 2 ? $w : mb_strtolower($w), explode(' ', rtrim(trim($x), '.;:,')))), $items);
+      $last = array_pop($words);
+      $oxford = array_filter($items, static fn($x) => str_contains(" $x ", ' and ')) ? ',' : '';
+      $sentence = $words ? implode(', ', $words) . "$oxford and $last" : $last;
+      // A folio may carry a written line instead (`summary` in the data).
+      $summary = $folio['summary'] ?? "ICON’s work spanned $sentence.";
+      $block['html'] = trim(str_replace($m[0], '<h2>' . $m[1] . '</h2><p>' . htmlspecialchars($summary, ENT_QUOTES) . '</p>', $block['html']));
+    }
+    // "Who made it" — the old page's closing list of the disciplines on the
+    // job (13 folios carry one) — is the deliverables as well (user call,
+    // 16 Oct 2026, on the Space Agency folio: "remove this and add to the
+    // deliverables at top"): the items join the masthead's list and the
+    // heading and list come out of the text altogether; a block left empty
+    // is dropped below.
+    if ($block['type'] === 'text' && preg_match('#<h[23]>\s*Who made it\s*</h[23]>\s*(?:<!--.*?-->\s*)*<ul>(.*?)</ul>#is', $block['html'], $m)) {
+      preg_match_all('#<li>(.*?)</li>#is', $m[1], $li);
+      $items = array_values(array_filter(array_map(static fn($x) => rtrim(trim(html_entity_decode(strip_tags($x))), '.'), $li[1])));
+      $services = array_merge($services, $items);
+      $block['html'] = trim(str_replace($m[0], '', $block['html']));
+    }
   }
+  unset($block);
+  $folio['blocks'] = array_values(array_filter($folio['blocks'], static fn($b) => $b['type'] !== 'text' || trim(strip_tags($b['html'])) !== ''));
   $deliverables = array_values(array_unique($services ?: $folio['deliverables']));
   $masthead = [
     'title' => $folio['project'],
@@ -357,7 +405,7 @@ foreach ($todo as $folio) {
           [$w, $h] = $dims($m);
           return $w > 0 && $h > $w * 1.2;
         };
-        $tall = static fn(Media $m): array => ['shape' => 'square', 'float' => ['target_id' => (int) $m->id()], 'ground' => $accent, 'pad' => '6%'];
+        $tall = static fn(Media $m): array => ['shape' => 'square', 'float' => ['target_id' => (int) $m->id()], 'ground' => $accent, 'pad' => '12%'];
         $rest = [];
         $flush = static function () use (&$rest, $add, $figure, $ground) {
           if (!$rest) {

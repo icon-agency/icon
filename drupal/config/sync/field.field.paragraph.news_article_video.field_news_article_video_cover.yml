@@ -1,0 +1,29 @@
+uuid: c6a52e67-1303-4f68-aece-e27f2aee7dfe
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_news_article_video_cover
+    - media.type.image
+    - paragraphs.paragraphs_type.news_article_video
+id: paragraph.news_article_video.field_news_article_video_cover
+field_name: field_news_article_video_cover
+entity_type: paragraph
+bundle: news_article_video
+label: Cover
+description: "Optional: the still shown with the play control before the film loads, from the media library. Leave it empty and the film's own thumbnail is used."
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:media'
+  handler_settings:
+    target_bundles:
+      image: image
+    sort:
+      field: _none
+      direction: ASC
+    auto_create: false
+    auto_create_bundle: ''
+field_type: entity_reference

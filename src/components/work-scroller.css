@@ -29,6 +29,8 @@
   /* a CARD at the gallery width (user call — like the single-column rows
      above it), wearing the site radius; the strip drifts inside it */
   border-radius: var(--radius-icon);
+  /* an inline-size container: the inset arrives in cqi (see picture.css) */
+  container-type: inline-size;
   padding-block: var(--overlay-pad, 5vw);
   background: var(--overlay-ground, none);
   overflow-x: auto; /* the no-JS strip scrolls by hand */

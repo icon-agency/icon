@@ -71,6 +71,7 @@
         function say() {
           var n = count();
           if (nextHref) {
+            foot.hidden = false;
             statusEl.textContent = isNaN(total)
               ? n + " " + noun
               : Drupal.t("@shown of @total @noun", { "@shown": n, "@total": total, "@noun": noun });
@@ -83,6 +84,10 @@
             statusEl.hidden = true;
             moreEl.hidden = true;
             button.hidden = true;
+            // ...and the PILL ITSELF goes with them: hiding only its three
+            // parts left the frosted ground standing empty at the foot of
+            // a complete list (user catch, 16 Oct 2026: "what is that?").
+            foot.hidden = true;
           }
         }
 

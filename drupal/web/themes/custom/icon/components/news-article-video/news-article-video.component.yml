@@ -5,6 +5,12 @@ status: stable
 description: >
   An embedded film in the article flow — the wide figure band at the
   player's own 16:9 (src/utilities/news-article.css, .news-article__figure--video).
+  Click to play, as the old site had it (16 Oct 2026): a cover still with the
+  play control over it, and the player loads on the click (js/video-embed.js).
+  Pick a Cover, or leave it empty for the film's own thumbnail.
+libraryOverrides:
+  dependencies:
+    - icon/video-embed
 props:
   type: object
   required:
@@ -26,3 +32,13 @@ props:
       description: Names the film for assistive tech (the iframe title).
       examples:
         - 'Campaign film'
+    cover:
+      $ref: json-schema-definitions://canvas.module/image
+      type: object
+      title: Cover
+      description: Optional — the still shown with the play control before the film loads, from the media library. Leave it empty and the film's own thumbnail is used.
+      examples:
+        - src: https://placehold.co/1600x900
+          alt: Film cover
+          width: 1600
+          height: 900

@@ -10,6 +10,7 @@ declare(strict_types=1);
 use Drupal\Component\Utility\UrlHelper;
 use Drupal\Component\Utility\Html;
 use Drupal\Core\Render\Markup;
+use Drupal\Core\StringTranslation\ByteSizeMarkup;
 use Drupal\icon_site\Twig\IconSiteExtension;
 use Drupal\Core\Menu\MenuTreeParameters;
 use Drupal\icon_site\Plugin\Block\HeroBlock;
@@ -1008,7 +1009,32 @@ function icon_site_offices(): array {
  */
 function icon_site_preprocess_media(array &$variables): void {
   $media = $variables['media'] ?? NULL;
-  if (!$media instanceof MediaInterface || !in_array($media->bundle(), ['icon', 'logo'], TRUE) || ($variables['view_mode'] ?? '') !== 'media_library') {
+  if (!$media instanceof MediaInterface || ($variables['view_mode'] ?? '') !== 'media_library') {
+    return;
+  }
+  // THE FILE'S SIZE UNDER ITS NAME, and a picture's pixels (user ask, 16 Oct
+  // 2026, on a 62 MB banner film in the grid: "can you put the file size
+  // here and on images?"), so a heavy pick shows as heavy before it is
+  // placed. Read off the source field's file; a remote film has none.
+  $facts = [];
+  try {
+    $source = $media->getSource()->getSourceFieldDefinition($media->bundle->entity)?->getName();
+    $item = $source && $media->hasField($source) ? $media->get($source)->first() : NULL;
+    $file = $item?->entity;
+    if ($file instanceof FileInterface) {
+      if (!empty($item->width) && !empty($item->height)) {
+        $facts[] = $item->width . ' × ' . $item->height;
+      }
+      $facts[] = (string) ByteSizeMarkup::create((int) $file->getSize());
+    }
+  }
+  catch (\Throwable) {
+    // A source with no file: the name stands alone.
+  }
+  if ($facts) {
+    $variables['name'] = Markup::create(Html::escape((string) $variables['name']) . '<br><span class="media-library-item__facts" style="display:block;margin-top:.15em;font-size:.8em;opacity:.65">' . Html::escape(implode(' · ', $facts)) . '</span>');
+  }
+  if (!in_array($media->bundle(), ['icon', 'logo'], TRUE)) {
     return;
   }
   $svg = (new IconSiteExtension(\Drupal::entityTypeManager(), \Drupal::service('stream_wrapper_manager')))->inlineSvg((string) $media->id(), '');
@@ -1136,6 +1162,32 @@ function icon_site_canvas_storable_prop_shape_alter(CandidateStorablePropShape $
     ],
   ];
   $storable_prop_shape->fieldWidget = 'options_select';
+}
+
+/**
+ * Implements hook_preprocess_HOOK() for html.html.twig.
+ *
+ * The Canvas editor's page says which kind of entity it is editing — a
+ * body class `icon-editing-{bundle}` — so the panel's CKEditor can wear
+ * that page's prose registers (the theme's css/editor.css: a Work
+ * article's H2 is sentence case, not the Canvas page's caps; user catch,
+ * 16 Oct 2026). The editor boots on its catch-all routes (canvas.boot.*)
+ * with the entity only in the REQUEST path — Canvas's path processor
+ * hands /canvas/editor/node/20 to the router as /canvas, so path.current
+ * reads "canvas" and the request's own path is the one to parse.
+ */
+function icon_site_preprocess_html(array &$variables): void {
+  if (!str_starts_with((string) \Drupal::routeMatch()->getRouteName(), 'canvas.boot.')) {
+    return;
+  }
+  $path = \Drupal::request()->getPathInfo();
+  if (!preg_match('#^/canvas/editor/([a-z_]+)/(\d+)#', $path, $m)) {
+    return;
+  }
+  $entity = \Drupal::entityTypeManager()->hasDefinition($m[1]) ? \Drupal::entityTypeManager()->getStorage($m[1])->load($m[2]) : NULL;
+  if ($entity instanceof EntityInterface) {
+    $variables['attributes']['class'][] = 'icon-editing-' . $entity->bundle();
+  }
 }
 
 /**

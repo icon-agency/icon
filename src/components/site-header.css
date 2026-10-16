@@ -364,9 +364,11 @@ button.site-nav__link {
   appearance: none;
 }
 
+/* the hover is the GROUND alone, a touch stronger than it was — no blue
+   on the word (user call, 16 Oct 2026: "I don't like the blue hover colour,
+   just the background is enough. Make the background a little stronger") */
 .site-nav__link:hover {
-  background: color-mix(in srgb, var(--color-background) 20%, transparent);
-  color: var(--color-icon-blue);
+  background: color-mix(in srgb, var(--color-background) 35%, transparent);
 }
 
 @media (min-width: 768px) {
@@ -407,8 +409,9 @@ button.site-nav__link {
   }
 }
 
+/* the same ground as the links' hover (no blue, user call 16 Oct 2026) */
 .site-nav__home:hover {
-  color: var(--color-icon-blue);
+  background: color-mix(in srgb, var(--color-background) 35%, transparent);
 }
 
 .site-nav__home-glyph {
@@ -592,7 +595,7 @@ button.site-nav__link {
 }
 
 .site-nav__burger:hover {
-  color: var(--color-icon-blue);
+  background: color-mix(in srgb, var(--color-background) 35%, transparent);
 }
 
 .site-nav:not(.is-open) .site-nav__pill--nav {
@@ -754,8 +757,7 @@ button.site-nav__link {
 .site-nav__search-trigger:hover,
 .site-nav__search-submit:hover,
 .site-nav__search-close:hover {
-  background: color-mix(in srgb, var(--color-background) 20%, transparent);
-  color: var(--color-icon-blue);
+  background: color-mix(in srgb, var(--color-background) 35%, transparent);
 }
 
 @media (min-width: 768px) {

@@ -242,15 +242,17 @@
                banner variant carries, so the two pages ship the same
                parts (user call, Sep 2026). Demo embed. Drupal: an
                oEmbed/remote-video media item in the body. -->
-          <figure class="news-article__figure news-article__figure--video media-reveal" data-reveal-img>
-            <iframe
-              src="https://www.youtube-nocookie.com/embed/9kqQ7fBv7bM?rel=0&amp;modestbranding=1&amp;playsinline=1"
-              title="Campaign film — demo embed"
-              loading="lazy"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              referrerpolicy="strict-origin-when-cross-origin"
-              allowfullscreen
-            ></iframe>
+          <figure class="news-article__figure news-article__figure--video video-embed media-reveal" data-reveal-img data-video-embed data-embed-url="https://www.youtube-nocookie.com/embed/9kqQ7fBv7bM?rel=0&amp;modestbranding=1&amp;playsinline=1" data-embed-title="Campaign film — demo embed">
+            <!-- Click to play (Oct 2026): the cover is the film's own thumbnail
+                 here (no src: js/video-embed.js asks the player for it); the
+                 iframe arrives on the click. -->
+            <img class="video-embed__cover" alt="" hidden data-video-embed-start />
+            <button class="video-embed__play" type="button" aria-label="Play the film" data-video-embed-start>
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z" /></svg>
+            </button>
+            <noscript>
+              <iframe src="https://www.youtube-nocookie.com/embed/9kqQ7fBv7bM?rel=0&amp;modestbranding=1&amp;playsinline=1" title="Campaign film — demo embed" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+            </noscript>
           </figure>
 
           <figure class="news-article__figure news-article__figure--natural" data-animate>
@@ -526,6 +528,7 @@
     <script src="../js/theme-handover.js"></script>
     <script src="../js/news.js"></script>
     <script src="../js/share.js"></script>
+    <script src="../js/video-embed.js"></script>
     <script src="../js/site-footer.js"></script>
   </body>
 </html>

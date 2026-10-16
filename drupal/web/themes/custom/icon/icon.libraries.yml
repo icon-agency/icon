@@ -152,6 +152,13 @@ work-video:
   dependencies:
     - core/drupal
     - core/once
+# The embedded film's click-to-play cover (the Video embed SDC attaches it).
+video-embed:
+  js:
+    js/video-embed.js: {}
+  dependencies:
+    - core/drupal
+    - core/once
 
 # ── The homepage system ─────────────────────────────────────────────────────
 # hero-loader lights the loading screen and publishes the show's T0. It has to

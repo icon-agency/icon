@@ -1148,6 +1148,12 @@ html:not(.js-animations) .hero__count { display: none; }
   aspect-ratio: 1 / 1; /* the layers are square cut-outs */
 }
 
+/* a layered card frame is an inline-size container: its inset arrives in
+   cqi, 1% of the frame's width on every side (see picture.css) */
+.work__figure--layered {
+  container-type: inline-size;
+}
+
 .work__layers {
   position: absolute;
   inset: 0;

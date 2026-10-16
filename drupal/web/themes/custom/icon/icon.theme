@@ -727,10 +727,14 @@ function _icon_paragraph_props(ParagraphInterface $paragraph, ?CacheableMetadata
     'news_article_figure' => ($image = _icon_media_image($paragraph->get('field_news_article_figure_image')->entity, 'news_hero', $cache))
       ? ['picture' => $image, 'shape' => 'natural']
       : [],
-    'news_article_video' => [
+    // The Cover is the Canvas Video embed's own option (16 Oct 2026): the
+    // still under the play control until the film loads; empty, the
+    // component fetches the film's own thumbnail.
+    'news_article_video' => array_filter([
       'embed_url' => $paragraph->get('field_news_article_video_url')->uri ?? '',
       'title' => $paragraph->get('field_news_article_video_title')->value ?? '',
-    ],
+      'cover' => $paragraph->hasField('field_news_article_video_cover') ? _icon_media_image($paragraph->get('field_news_article_video_cover')->entity, 'work_media', $cache) : NULL,
+    ]),
     default => [],
   };
 }

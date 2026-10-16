@@ -3,16 +3,25 @@ langcode: en
 status: true
 dependencies:
   config:
-    - field.field.paragraph.news_article_video.field_news_article_video_url
+    - field.field.paragraph.news_article_video.field_news_article_video_cover
     - field.field.paragraph.news_article_video.field_news_article_video_title
+    - field.field.paragraph.news_article_video.field_news_article_video_url
     - paragraphs.paragraphs_type.news_article_video
   module:
     - link
+    - media_library
 id: paragraph.news_article_video.default
 targetEntityType: paragraph
 bundle: news_article_video
 mode: default
 content:
+  field_news_article_video_cover:
+    type: media_library_widget
+    weight: 2
+    region: content
+    settings:
+      media_types: {  }
+    third_party_settings: {  }
   field_news_article_video_title:
     type: string_textfield
     weight: 1

@@ -54,3 +54,32 @@
 .ck.ck-style-grid__button__preview > blockquote * {
   font-family: var(--font-serif) !important;
 }
+
+/* THE ARTICLE'S OWN REGISTERS (user catch, 16 Oct 2026: "why is the editor
+   on the right all caps and the content different, it should inherit the
+   style sheet?"): the prose base's H2 is the CAPS default a Canvas page
+   shows, but a Work or News article re-voices its prose — the H2 in
+   sentence case at the bold weight, the body copy a register up at the
+   medium weight (utilities/work-article.css, utilities/news-article.css)
+   — and the panel's editor showed the base. The editor cannot see the page
+   it is typing into, so the body says which: Canvas's editor page is
+   marked `icon-editing-{bundle}` (icon_site_preprocess_html()) and the
+   classic node forms carry core's `page-node-type-{bundle}`. The same
+   values as the page's rules — keep them in step. */
+body.icon-editing-work .ck-content h2,
+body.page-node-type-work .ck-content h2,
+body.page-node-type-news .ck-content h2 {
+  font-size: clamp(1.75rem, 2.3vw, 3.7rem);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-tight);
+  text-transform: none;
+}
+
+body.icon-editing-work .ck-content p,
+body.icon-editing-work .ck-content li,
+body.page-node-type-work .ck-content p,
+body.page-node-type-work .ck-content li {
+  font-size: clamp(1.1875rem, 1.2vw, 1.875rem);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.6;
+}

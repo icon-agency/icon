@@ -280,6 +280,12 @@
   gap: var(--space-lg);
 }
 
+/* air above the footer where the More news band does not follow (the
+   article's own rail is a section's padding; see the work article) */
+main:not(:has(.news-article__related)) .news-article {
+  padding-bottom: var(--space-section);
+}
+
 @media (min-width: 768px) {
   .news-article__body {
     display: grid;

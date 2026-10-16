@@ -10,7 +10,7 @@ field_name: field_work_tile_inset
 entity_type: node
 bundle: work
 label: 'Foreground inset'
-description: 'How far in from each edge the foreground sits, so 22% leaves it 56% of the tile wide (50% would leave nothing; values over 40% are capped). Leave empty for the default.'
+description: 'How much of the frame the cut-out gives up, 0% to 100%: 0% fills the frame edge to edge, 50% leaves it half the width, 100% leaves nothing. Leave empty for the default.'
 required: false
 translatable: true
 default_value: {  }

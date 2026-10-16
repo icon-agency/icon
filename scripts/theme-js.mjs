@@ -52,6 +52,7 @@ export const BEHAVIOURS = {
   "work-article": "iconWorkArticle",
   "work-scroller": "iconWorkScroller",
   "work-video": "iconWorkVideo",
+  "video-embed": "iconVideoEmbed",
   "testimonials": "iconTestimonials",
   "hero-loader": null,
   "page-transition": null,

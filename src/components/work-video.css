@@ -27,7 +27,8 @@
   width: 100%;
 }
 
-.work-video__cover {
+.work-video__cover,
+.video-embed__cover {
   position: absolute;
   inset: 0;
   width: 100%;
@@ -38,7 +39,8 @@
   transition: opacity var(--duration-normal) var(--ease-standard);
 }
 
-.work-video__play {
+.work-video__play,
+.video-embed__play {
   position: absolute;
   z-index: 2;
   top: 50%;
@@ -62,11 +64,14 @@
 }
 
 .work-video__play:hover,
-.work-video__play:focus-visible {
+.work-video__play:focus-visible,
+.video-embed__play:hover,
+.video-embed__play:focus-visible {
   scale: 1.08;
 }
 
-.work-video__play svg {
+.work-video__play svg,
+.video-embed__play svg {
   width: 38%;
   height: 38%;
   translate: 8% 0; /* optical centring of the triangle */
@@ -78,7 +83,36 @@
 .work-video.is-playing .work-video__cover,
 .work-video.is-playing .work-video__play,
 .js-animations .work-video.is-playing .work-video__cover,
-.js-animations .work-video.is-playing .work-video__play {
+.js-animations .work-video.is-playing .work-video__play,
+.video-embed.is-playing .video-embed__cover,
+.video-embed.is-playing .video-embed__play,
+.js-animations .video-embed.is-playing .video-embed__cover,
+.js-animations .video-embed.is-playing .video-embed__play {
   opacity: 0;
   pointer-events: none;
+}
+
+/* THE EMBEDDED FILM (YouTube, Vimeo) wears the same cover and play control
+   (user ask, 16 Oct 2026: the old site's Vimeo cover-and-play approach): the
+   figure is the news article's 16:9 band (news-article.css); the iframe
+   arrives on the click (js/video-embed.js) and fills it. A cover with no
+   still yet (the player's thumbnail still fetching) sits hidden over the
+   dark scrim, so the play control is never alone on white. */
+.video-embed {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-icon);
+  background: var(--scrim-strong);
+}
+
+.video-embed__cover[hidden] {
+  display: none;
+}
+
+.video-embed iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
 }

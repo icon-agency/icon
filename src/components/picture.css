@@ -58,9 +58,40 @@
 }
 
 /* LAYERED: a cut-out over a ground. Natural takes landscape — a float needs
-   a frame. */
+   a frame. The frame is an inline-size CONTAINER so the inset can be set in
+   cqi — 1% of the frame's width on every side. A % inset resolves against
+   the HEIGHT top and bottom and the WIDTH at the sides, which sat a 16:9
+   frame's cut-out closer to the top than the sides (user catch, 16 Oct
+   2026); the twigs emit cqi. */
 .picture--layered {
+  container-type: inline-size;
   background: var(--overlay-ground, none);
+}
+
+/* a card in the scroller's track is sized by its media, which inline-size
+   containment would deny (the card would collapse) — there the inset falls
+   back to the viewport's width */
+.work-scroller__track > .picture--layered {
+  container-type: normal;
+}
+
+/* EMPTY — nothing picked yet: not drawn on the page; in the editor's frame
+   a landscape-sized outline with a prompt, so a Picture just dropped in a
+   column has a body to click and fill (user catch, 16 Oct 2026). */
+.picture--empty {
+  display: none;
+}
+
+html[data-icon-editing] .picture--empty {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 16 / 9;
+  outline: 2px dashed var(--color-icon-grey);
+  outline-offset: -2px;
+  color: var(--color-icon-grey);
+  font: var(--text-sm-font, inherit);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 
 .picture.picture--layered.picture--natural {
@@ -121,6 +152,12 @@
       animation: picture-drift linear both;
       animation-timeline: --picture;
       animation-range: cover 0% cover 100%;
+    }
+
+    /* the cut-out holds still at its inset — only the ground drifts behind
+       it (the zoom and lean ate the cut-out's margin, unevenly) */
+    .picture--parallax.picture--layered > :last-child {
+      animation: none;
     }
   }
 }

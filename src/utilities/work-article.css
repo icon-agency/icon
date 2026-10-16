@@ -478,6 +478,16 @@
   gap: var(--space-lg);
 }
 
+/* Air above the footer: on the page the Next up rail stands there, a
+   section's padding of its own; where no rail follows — the editor's
+   frame and Preview compose the shell without it, and an article with
+   nothing to follow it — the article closes on the same air itself, so
+   the editor sees the page's spacing without ending on a Spacer (user ask,
+   16 Oct 2026). */
+.work-article:not(:has(.work-article__next)) {
+  padding-bottom: var(--space-section);
+}
+
 /* IN THE EDITOR'S FRAME the page stays plain (opening.js: the blocks are
    worked on against white, Preview wears the colour) — but the WORK
    MASTHEAD alone wears the page's pair there, so the editor sees the
@@ -523,6 +533,14 @@ html[data-icon-editing].js-animations .media-reveal iframe {
   scale: 1;
   opacity: 1;
   transition: none;
+}
+
+/* and the Picture's drift stands at rest: the editor's frame never scrolls
+   the view timeline, which froze every picture at the drift's start —
+   zoomed and shifted up (user catch, 16 Oct 2026) */
+html[data-icon-editing] .picture--parallax > img,
+html[data-icon-editing] .picture--parallax > video {
+  animation: none;
 }
 
 /* IN THE EDITOR the runs are not drawn (Canvas renders the tree itself,
@@ -640,6 +658,10 @@ html[data-icon-editing].js-animations .media-reveal iframe {
   position: relative;
   aspect-ratio: 16 / 9;
   overflow: hidden;
+  /* an inline-size container: the inset arrives in cqi — 1% of the frame's
+     width on EVERY side (a % inset was height-based top and bottom, so a
+     16:9 frame's float sat closer to the top; user catch, 16 Oct 2026) */
+  container-type: inline-size;
   background: var(--overlay-ground, none);
 }
 

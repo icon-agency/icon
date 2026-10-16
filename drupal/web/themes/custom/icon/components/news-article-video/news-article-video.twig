@@ -1,18 +1,24 @@
 {#
 /**
  * @file
- * news-article-video — the film figure of templates/news-article.html.
- * Follow-up: a remote-video (oEmbed) media picker once Canvas has a prop
- * shape for it; for now the editor supplies the embed URL.
+ * news-article-video — the film figure of templates/news-article.html,
+ * CLICK TO PLAY (16 Oct 2026; user ask: the old site's cover-and-play-icon
+ * approach for Vimeo). The figure carries the embed address as data; the
+ * cover is the editor's pick or, with none, the player's own thumbnail,
+ * which js/video-embed.js fetches; the click builds the iframe with autoplay
+ * on and fades the cover. Without JS the <noscript> iframe stands.
  */
 #}
-<figure class="news-article__figure news-article__figure--video media-reveal" data-reveal-img>
-  <iframe
-    src="{{ embed_url }}"
-    title="{{ title }}"
-    loading="lazy"
-    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-    referrerpolicy="strict-origin-when-cross-origin"
-    allowfullscreen
-  ></iframe>
+<figure class="news-article__figure news-article__figure--video video-embed media-reveal" data-reveal-img data-video-embed data-embed-url="{{ embed_url }}" data-embed-title="{{ title }}">
+  {% if cover.src is defined and cover.src %}
+    <img class="video-embed__cover" src="{{ cover.src }}" alt="{{ cover.alt|default('') }}"{% if cover.width %} width="{{ cover.width }}"{% endif %}{% if cover.height %} height="{{ cover.height }}"{% endif %} loading="lazy" data-video-embed-start />
+  {% else %}
+    <img class="video-embed__cover" alt="" hidden data-video-embed-start />
+  {% endif %}
+  <button class="video-embed__play" type="button" aria-label="{{ 'Play the film'|t }}" data-video-embed-start>
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z" /></svg>
+  </button>
+  <noscript>
+    <iframe src="{{ embed_url }}" title="{{ title }}" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+  </noscript>
 </figure>

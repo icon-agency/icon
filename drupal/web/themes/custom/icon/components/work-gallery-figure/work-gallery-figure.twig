@@ -44,9 +44,16 @@
   style == 'portrait' ? 'work-gallery__figure--portrait',
   'media-reveal',
 ]|filter(v => v) %}
+{# the inset is on the editor's scale — 0% none, 100% leaves nothing — and
+   the CSS wants the inset from EACH edge, so half (user call, 16 Oct 2026);
+   it goes out in cqi, not %: a % inset resolves against the frame's HEIGHT
+   top and bottom and its WIDTH at the sides, so a 16:9 frame sat its cut-out
+   closer to the top (user catch, 16 Oct 2026) — cqi is 1% of the frame's
+   width on every side (the frame is an inline-size container). A value
+   that is not a plain percentage passes through #}
 {% set styles = [
   layered and ground ? '--overlay-ground: ' ~ ground,
-  layered and pad ? '--overlay-pad: ' ~ pad,
+  layered and pad ? '--overlay-pad: ' ~ (pad matches '/^\\s*\\d+(\\.\\d+)?\\s*%?\\s*$/' ? (pad|replace({'%': ''})|trim / 2) ~ 'cqi' : pad),
 ]|filter(v => v) %}
 <figure class="{{ classes|join(' ') }}" data-reveal-img{% if styles %} style="{{ styles|join('; ') }}"{% endif %}>
   {% for m in layers %}
