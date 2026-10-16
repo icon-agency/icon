@@ -20,24 +20,47 @@ use Drupal\canvas\AutoSave\AutoSaveManager;
 use Drupal\user\Entity\User;
 
 \Drupal::service('account_switcher')->switchTo(User::load(1));
-$etm = \Drupal::entityTypeManager();
+require __DIR__ . '/mirror-media.inc.php';
 $uuid = \Drupal::service('uuid');
-$version = (string) $etm->getStorage('component')->load('sdc.icon.news-article-video')->get('active_version');
+$version = static fn(string $id): string => (string) $etm->getStorage('component')->load($id)->get('active_version');
 $data = json_decode(file_get_contents(__DIR__ . '/data/work-folios.json'), TRUE);
 $decode = static fn($inputs) => is_string($inputs) ? (json_decode($inputs, TRUE) ?: []) : (array) $inputs;
 
 /**
  * Adds a folio's missing embeds to a tree; the number added.
  */
-$fill = static function (array &$items, array $folio) use ($uuid, $version, $decode): int {
+$fill = static function (array &$items, array $folio) use ($uuid, $version, $decode, $media_for, $image, $slug): int {
   $n = 0;
   $blocks = $folio['blocks'];
+  $dir = 'public://work/' . $slug($folio['project']);
   foreach ($blocks as $i => $block) {
-    if ($block['type'] !== 'embed') {
+    // a film with a poster (a Video hosted) travels the same way as an embed
+    $film = $block['type'] === 'media' && count($block['items']) === 1 && ($block['items'][0]['kind'] ?? '') === 'video' && !empty($block['items'][0]['poster']);
+    if ($block['type'] !== 'embed' && !$film) {
       continue;
     }
+    $component = $film ? 'sdc.icon.work-video' : 'sdc.icon.news-article-video';
+    if ($film) {
+      $media = $media_for($block['items'][0], 'photo', $dir);
+      $cover = $media ? $image($block['items'][0]['poster']['url'], $block['items'][0]['poster']['alt'] ?? '', 'photo', $dir) : NULL;
+      if (!$media || !$cover) {
+        print "    ! the film or its poster could not be fetched\n";
+        continue;
+      }
+      $inputs = ['film' => ['target_id' => (int) $media->id()], 'cover' => ['target_id' => (int) $cover->id()], 'title' => $block['items'][0]['title'] ?? $folio['project']];
+      $key = 'film';
+      // (a save from the editor stores the pick as a field item — the id under target_id either way)
+      $same = static fn(array $in) => (int) ($in['film']['target_id'] ?? $in['film']['value']['target_id'] ?? 0) === (int) $media->id();
+    }
+    else {
+      $inputs = ['embed_url' => $block['url'], 'title' => $block['title'] ?: $folio['project']];
+      // (a save from the editor stores the address as a link item — {uri, options};
+      // the plain string is the mirror's; a run read only the string and added
+      // the Democracy Cards film twice, 16 Oct 2026)
+      $same = static fn(array $in) => (is_array($in['embed_url'] ?? NULL) ? ($in['embed_url']['uri'] ?? '') : ($in['embed_url'] ?? '')) === $block['url'];
+    }
     foreach ($items as $item) {
-      if (($item['component_id'] ?? '') === 'sdc.icon.news-article-video' && ($decode($item['inputs'])['embed_url'] ?? '') === $block['url']) {
+      if (($item['component_id'] ?? '') === $component && $same($decode($item['inputs']))) {
         continue 2;
       }
     }
@@ -49,34 +72,59 @@ $fill = static function (array &$items, array $folio) use ($uuid, $version, $dec
         break;
       }
     }
-    $at = NULL;
-    if ($heading !== NULL) {
+    // …and the text block after it, which wins when it is found (a block
+    // between — a gallery — would otherwise be skipped over)
+    $next = NULL;
+    for ($j = $i + 1; $j < count($blocks); $j++) {
+      if ($blocks[$j]['type'] === 'text' && preg_match('#<h[23]>(.+?)</h[23]>#is', $blocks[$j]['html'], $m)) {
+        $next = trim(html_entity_decode(strip_tags($m[1])));
+        break;
+      }
+    }
+    $find = static function (?string $text) use ($items, $decode): ?int {
+      if ($text === NULL) {
+        return NULL;
+      }
+      $at = NULL;
       foreach ($items as $k => $item) {
         if (($item['component_id'] ?? '') === 'sdc.icon.prose' && empty($item['parent_uuid'])) {
           $html = (string) ($decode($item['inputs'])['text']['value'] ?? '');
-          if (preg_match('#<h[23]>\s*' . preg_quote($heading, '#') . '\s*</h[23]>#i', $html)) {
-            $at = $k + 1;
+          if (preg_match('#<h[23]>(.+?)</h[23]>#is', $html, $m) && strcasecmp(trim(html_entity_decode(strip_tags($m[1]))), $text) === 0) {
+            $at = $k;
           }
         }
       }
+      return $at;
+    };
+    $where = '';
+    if (($k = $find($next)) !== NULL) {
+      $at = $k;
+      $where = "before \"$next\"";
+    }
+    elseif (($k = $find($heading)) !== NULL) {
+      $at = $k + 1;
+      $where = "after \"$heading\"";
+    }
+    else {
+      $at = NULL;
+      $where = 'at the end';
     }
     $new = [
       'parent_uuid' => NULL,
       'slot' => NULL,
       'uuid' => $uuid->generate(),
-      'component_id' => 'sdc.icon.news-article-video',
-      'component_version' => $version,
-      'inputs' => json_encode(['embed_url' => $block['url'], 'title' => $block['title'] ?: $folio['project']], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE),
+      'component_id' => $component,
+      'component_version' => $version($component),
+      'inputs' => json_encode($inputs, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE),
       'label' => NULL,
     ];
     if ($at === NULL) {
       $items[] = $new;
-      print "    + " . $block['url'] . " (at the end)\n";
     }
     else {
       array_splice($items, $at, 0, [$new]);
-      print "    + " . $block['url'] . " (after \"$heading\")\n";
     }
+    print "    + " . ($film ? $block['items'][0]['file'] : $block['url']) . " ($where)\n";
     $n++;
   }
   return $n;
@@ -85,7 +133,7 @@ $fill = static function (array &$items, array $folio) use ($uuid, $version, $dec
 $autosave = \Drupal::service(AutoSaveManager::class);
 $storage = $etm->getStorage('node');
 foreach ($data as $folio) {
-  if (!array_filter($folio['blocks'], static fn($b) => $b['type'] === 'embed')) {
+  if (!array_filter($folio['blocks'], static fn($b) => $b['type'] === 'embed' || ($b['type'] === 'media' && count($b['items']) === 1 && ($b['items'][0]['kind'] ?? '') === 'video' && !empty($b['items'][0]['poster'])))) {
     continue;
   }
   $existing = $storage->loadByProperties(['type' => 'work', 'title' => $folio['project'], 'field_work_client' => $folio['client']]);
