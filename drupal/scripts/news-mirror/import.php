@@ -19,6 +19,9 @@ use Drupal\node\Entity\Node;
 use Drupal\paragraphs\Entity\Paragraph;
 
 require_once __DIR__ . '/../_guard.php';
+// As the admin: the stories are moderated, and the transition to Published is
+// the editor's (a drush run is nobody; 16 Oct 2026).
+\Drupal::service('account_switcher')->switchTo(\Drupal\user\Entity\User::load(1));
 
 // The folder this script sits in holds articles.json, the media files and
 // (optionally) all-urls.txt — push them all together, run from there.
@@ -135,6 +138,7 @@ foreach ($articles as $a) {
   $node->set('field_news_content', array_map(fn(Paragraph $p) => ['target_id' => $p->id(), 'target_revision_id' => $p->getRevisionId()], $paras));
   $node->set('path', ['alias' => $alias]);
   $node->set('status', 1);
+  if ($node->hasField('moderation_state')) { $node->set('moderation_state', 'published'); }
   $node->setPromoted(TRUE)->setSticky(FALSE);
   $node->set('created', strtotime($a['date'] . ' 09:00:00'));
   $v = $node->validate();
@@ -148,7 +152,9 @@ foreach ($articles as $a) {
 // The sample stories with no counterpart on the old site come off the site
 // (unpublished, not deleted). A story mirrored in an earlier run is known by
 // its alias, one of the old site's paths (all-urls.txt beside the JSON).
-foreach ($all as $n) {
+// Only on a FULL run, with all-urls.txt beside the JSON: an incremental run
+// (one new story, 16 Oct 2026) must leave every other story as it is.
+foreach ($mirrored ? $all : [] as $n) {
   if (!empty($touched[$n->id()])) { continue; }
   $alias = \Drupal::service('path_alias.manager')->getAliasByPath('/node/' . $n->id());
   if (isset($mirrored[$alias])) { continue; }
