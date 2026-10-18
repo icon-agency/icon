@@ -28,6 +28,17 @@
     var frame = window.frameElement;
     if (frame && frame.hasAttribute("data-canvas-preview")) {
       section.classList.add("is-editing");
+      // Stacked, each quote with a pair of its own wears it on its own strip
+      // (components/testimonials.css paints [data-bg] in edit mode), so every
+      // client's colours show at once (user ask, 19 Oct 2026).
+      items.forEach(function (item) {
+        var bg = item.getAttribute("data-bg");
+        var ink = item.getAttribute("data-ink");
+        if (bg && ink) {
+          item.style.setProperty("--work-article-bg", bg);
+          item.style.setProperty("--work-article-text", ink);
+        }
+      });
       return;
     }
     if (!count) return;

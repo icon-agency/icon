@@ -22,7 +22,10 @@
   // A colour field, by its name — bg, ink, ground, colour, color — or by
   // what it holds, a hex (user ask, 19 Oct 2026: "any time we add a colour,
   // a colour picker"). Canvas's panels and Claro's forms alike.
-  var NAME = /(colou?r|ground|(^|[_\[])bg([_\]]|$)|(^|[_\[])ink([_\]]|$))/i;
+  // bg / ink as a whole word between _ [ ] or the ends: field_testimonial_bg[0][value],
+  // canvas_component_props[…][bg][0][value] (an empty node field had slipped
+  // through — "_bg[" was not matched; user catch, 19 Oct 2026)
+  var NAME = /(colou?r|ground|(^|[_\[])bg([_\[\]]|$)|(^|[_\[])ink([_\[\]]|$))/i;
   function isColour(input) {
     return NAME.test(input.name || "") || HEX.test(input.value.trim());
   }
