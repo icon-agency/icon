@@ -3,7 +3,9 @@ langcode: en
 status: true
 dependencies:
   config:
+    - field.field.node.testimonial.field_testimonial_bg
     - field.field.node.testimonial.field_testimonial_company
+    - field.field.node.testimonial.field_testimonial_ink
     - field.field.node.testimonial.field_testimonial_logo
     - field.field.node.testimonial.field_testimonial_logo_large
     - field.field.node.testimonial.field_testimonial_quote
@@ -61,4 +63,6 @@ content:
     third_party_settings: {  }
     weight: 100
     region: content
-hidden: {  }
+hidden:
+  field_testimonial_bg: true
+  field_testimonial_ink: true

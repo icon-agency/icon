@@ -39,8 +39,48 @@
     if (countEl) countEl.textContent = pad(count);
     var current = 0;
 
+    // ---- the quote's own colours ----------------------------------------
+    // A quote may carry a Ground and Ink pair of its own (data-bg / data-ink,
+    // the Testimonial item's props; user ask, 19 Oct 2026: "control the
+    // background colour and foreground text/logo, like the work page, for
+    // each client testimonial"). While it shows, the box wears the pair the
+    // way the chameleon does — the two custom properties, on the
+    // theme-work-article class — and takes its own colours back after.
+    var box = section.closest(".testimonials__box");
+    // In a box inside a Columns box the carousel's own box gives way to the
+    // outer one (testimonials.css: no ground or padding of its own), so the
+    // outer box is the one to dress (user catch, 19 Oct 2026: the quote's
+    // colours not showing on a carousel placed in a box).
+    var outer = box && box.parentElement && box.parentElement.closest(".columns--box");
+    if (outer) box = outer;
+    var boxClasses = ["dark", "theme-blue", "theme-work-article"];
+    var boxOwn = box ? {
+      classes: boxClasses.filter(function (c) { return box.classList.contains(c); }),
+      bg: box.style.getPropertyValue("--work-article-bg"),
+      ink: box.style.getPropertyValue("--work-article-text")
+    } : null;
+    function dress(item) {
+      if (!box) return;
+      var bg = item.getAttribute("data-bg");
+      var ink = item.getAttribute("data-ink");
+      if (bg && ink) {
+        boxClasses.forEach(function (c) { box.classList.remove(c); });
+        box.classList.add("theme-work-article");
+        box.style.setProperty("--work-article-bg", bg);
+        box.style.setProperty("--work-article-text", ink);
+        box.setAttribute("data-quote-colours", "");
+      } else if (box.hasAttribute("data-quote-colours")) {
+        boxClasses.forEach(function (c) { box.classList.remove(c); });
+        boxOwn.classes.forEach(function (c) { box.classList.add(c); });
+        if (boxOwn.bg) box.style.setProperty("--work-article-bg", boxOwn.bg); else box.style.removeProperty("--work-article-bg");
+        if (boxOwn.ink) box.style.setProperty("--work-article-text", boxOwn.ink); else box.style.removeProperty("--work-article-text");
+        box.removeAttribute("data-quote-colours");
+      }
+    }
+
     function show(i, animate) {
       current = (i + count) % count;
+      dress(items[current]);
       items.forEach(function (item, k) {
         var on = k === current;
         item.setAttribute("aria-hidden", on ? "false" : "true");

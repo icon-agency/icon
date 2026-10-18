@@ -52,6 +52,10 @@ function icon_site_form_node_form_alter(array &$form, FormStateInterface $form_s
   // In the Canvas editor's Page data panel the form dresses itself
   // (css/page-data.css): a library attached to the editor page does not
   // reach it, one the form carries does (work-tiles.css found that out).
+  // Every node form carries the colour fields' swatch and picker: any
+  // field named for a colour, or holding a hex, gets one (js/page-data.js;
+  // 19 Oct 2026).
+  $form['#attached']['library'][] = 'icon_site/page_data';
   if (\Drupal::routeMatch()->getRouteName() === 'canvas.api.form.content_entity') {
     $form['#attached']['library'][] = 'icon_site/page_data';
     // The frame's fields are the Work masthead component's mirror: edited

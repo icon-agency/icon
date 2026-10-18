@@ -3,6 +3,7 @@ name: Testimonials (group)
 group: Testimonials
 status: stable
 description: |
+  A quote with its own Ground and Ink colours (on the Testimonial item) dresses the box in them while it shows, whatever Box is picked here; the box needs to be on.
   A carousel of client quotes (src/components/testimonials.css,
   js/testimonials.js), the team panel's bar — the arrows, the counter, the
   hairline — over one quote at a time: the person and their company on the

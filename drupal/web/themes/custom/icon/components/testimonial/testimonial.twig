@@ -12,7 +12,13 @@
  */
 #}
 {% set mark = logo ? icon_media(logo, 'work_media') : [] %}
-<article class="testimonial" data-testimonial>
+{# The client's own pair (user ask, 19 Oct 2026: "control the background
+   colour and foreground text/logo, like the work page, for each client
+   testimonial"): carried as data, and js/testimonials.js dresses the box
+   in it while this quote shows. Both or neither. #}
+{% set hex = '/^#(?:[0-9a-f]{3,4}|[0-9a-f]{6}|[0-9a-f]{8})$/i' %}
+{% set pair = bg|default('') matches hex and ink|default('') matches hex %}
+<article class="testimonial" data-testimonial{% if pair %} data-bg="{{ bg|trim }}" data-ink="{{ ink|trim }}"{% endif %}>
   <div class="testimonial__who">
     {% if name or role or company %}
       <p class="testimonial__person">

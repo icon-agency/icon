@@ -3,7 +3,9 @@ langcode: en
 status: true
 dependencies:
   config:
+    - field.field.node.testimonial.field_testimonial_bg
     - field.field.node.testimonial.field_testimonial_company
+    - field.field.node.testimonial.field_testimonial_ink
     - field.field.node.testimonial.field_testimonial_logo
     - field.field.node.testimonial.field_testimonial_logo_large
     - field.field.node.testimonial.field_testimonial_quote
@@ -18,12 +20,28 @@ targetEntityType: node
 bundle: testimonial
 mode: default
 content:
+  field_testimonial_bg:
+    type: string_textfield
+    weight: 30
+    region: content
+    settings:
+      size: 12
+      placeholder: ''
+    third_party_settings: {  }
   field_testimonial_company:
     type: string_textfield
     weight: 2
     region: content
     settings:
       size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  field_testimonial_ink:
+    type: string_textfield
+    weight: 31
+    region: content
+    settings:
+      size: 12
       placeholder: ''
     third_party_settings: {  }
   field_testimonial_logo:

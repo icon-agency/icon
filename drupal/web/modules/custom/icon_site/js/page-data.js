@@ -19,11 +19,29 @@
     return "#" + h.slice(0, 6).toLowerCase();
   }
 
+  // A colour field, by its name — bg, ink, ground, colour, color — or by
+  // what it holds, a hex (user ask, 19 Oct 2026: "any time we add a colour,
+  // a colour picker"). Canvas's panels and Claro's forms alike.
+  var NAME = /(colou?r|ground|(^|[_\[])bg([_\]]|$)|(^|[_\[])ink([_\]]|$))/i;
+  function isColour(input) {
+    return NAME.test(input.name || "") || HEX.test(input.value.trim());
+  }
+
   function dress(input) {
     var item = input.closest(".form-item");
     if (!item || item.querySelector(".icon-colour__swatch")) return;
     item.classList.add("icon-colour");
     var host = input.parentElement || item;
+    // Canvas wraps its inputs in a positioned element; Claro does not, so
+    // the swatch had nothing to sit in there (user catch, 19 Oct 2026) — a
+    // wrap of our own round the field, inline so the layout holds
+    if (!/_wrap_/.test(host.className || "")) {
+      var wrap = document.createElement("span");
+      wrap.className = "icon-colour__wrap";
+      input.parentNode.insertBefore(wrap, input);
+      wrap.appendChild(input);
+      host = wrap;
+    }
     var swatch = document.createElement("span");
     swatch.className = "icon-colour__swatch";
     var pick = document.createElement("input");
@@ -98,8 +116,9 @@
       once("icon-page-data-colours", 'form[data-form-id="page_data_form"]', context).forEach(function (form) {
         form.querySelectorAll("#edit-field-work-bg-wrapper input[type='text'], #edit-field-work-ink-wrapper input[type='text']").forEach(dress);
       });
-      // a component's colour props, by name: ground, bg, ink
-      once("icon-prop-colours", 'form[data-form-id="component_instance_form"] input[type="text"][name*="[ground]"], form[data-form-id="component_instance_form"] input[type="text"][name*="[bg]"], form[data-form-id="component_instance_form"] input[type="text"][name*="[ink]"]', context).forEach(dress);
+      // every colour field on the page — a component's props, a node's
+      // fields, the footer's settings — by name or by the hex it holds
+      once("icon-colour-fields", 'input[type="text"]', context).filter(isColour).forEach(dress);
       once("icon-media-remove-guard", 'form[data-form-id="component_instance_form"]', context).forEach(guardRemove);
     }
   };

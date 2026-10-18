@@ -1,0 +1,19 @@
+uuid: 56138499-2684-42d8-a791-741ef6888d30
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_testimonial_bg
+    - node.type.testimonial
+id: node.testimonial.field_testimonial_bg
+field_name: field_testimonial_bg
+entity_type: node
+bundle: testimonial
+label: 'Ground colour'
+description: "Optional: the carousel's box wears this colour while this quote shows — the client's own, like a case study's page colour. A hex value, e.g. #d20f89. Needs a box on the Testimonials group."
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

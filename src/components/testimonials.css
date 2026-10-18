@@ -320,3 +320,32 @@
 .testimonials__track > .canvas--slot-empty-placeholder {
   min-height: 8rem;
 }
+
+/* THE QUOTE'S OWN COLOURS (user ask, 19 Oct 2026): a quote carrying a
+   Ground and Ink pair dresses the box in them while it shows
+   (js/testimonials.js sets the chameleon's two custom properties on the
+   box) — the ground, the words, the hairline, the arrows and the mark (a
+   mask over the ink) all follow; the swap crossfades with the quote. */
+.testimonials__box,
+.columns--box:has(> .columns__col > .testimonials__box),
+.testimonials__box .testimonials__bar,
+.testimonials__box .testimonials__arrow,
+.testimonials__box .testimonials__counter,
+.testimonials__box .testimonial,
+.testimonials__box .testimonial__logo--mono {
+  transition:
+    background-color var(--duration-slow, 0.6s) var(--ease-standard),
+    color var(--duration-slow, 0.6s) var(--ease-standard),
+    border-color var(--duration-slow, 0.6s) var(--ease-standard);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .testimonials__box,
+  .testimonials__box .testimonials__bar,
+  .testimonials__box .testimonials__arrow,
+  .testimonials__box .testimonials__counter,
+  .testimonials__box .testimonial,
+  .testimonials__box .testimonial__logo--mono {
+    transition: none;
+  }
+}

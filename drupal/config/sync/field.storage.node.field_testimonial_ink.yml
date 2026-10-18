@@ -1,0 +1,21 @@
+uuid: 7676fb0f-e04a-4522-8467-6157d92d4afa
+langcode: en
+status: true
+dependencies:
+  module:
+    - node
+id: node.field_testimonial_ink
+field_name: field_testimonial_ink
+entity_type: node
+type: string
+settings:
+  max_length: 9
+  case_sensitive: false
+  is_ascii: false
+module: core
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

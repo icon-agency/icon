@@ -142,6 +142,10 @@ final class TestimonialBlock extends BlockBase implements ContainerFactoryPlugin
         'company' => (string) $node->get('field_testimonial_company')->value,
         'logo' => $node->get('field_testimonial_logo')->target_id ? (int) $node->get('field_testimonial_logo')->target_id : NULL,
         'logo_large' => $node->hasField('field_testimonial_logo_large') && (bool) $node->get('field_testimonial_logo_large')->value,
+        // The client's own pair, the box's colours while this quote shows
+        // (19 Oct 2026; scripts/testimonial-colours.php added the fields).
+        'bg' => $node->hasField('field_testimonial_bg') ? trim((string) $node->get('field_testimonial_bg')->value) : '',
+        'ink' => $node->hasField('field_testimonial_ink') ? trim((string) $node->get('field_testimonial_ink')->value) : '',
       ]),
     ];
     $cache->applyTo($build);

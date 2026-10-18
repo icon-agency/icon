@@ -177,8 +177,15 @@ form[data-form-id="page_data_form"] .form-checkboxes input[type="checkbox"] {
 }
 
 /* the colour pair: a swatch of the value in each field */
-.icon-colour [class*="_wrap_"] {
+.icon-colour [class*="_wrap_"],
+.icon-colour__wrap {
   position: relative;
+}
+
+/* our own wrap, on a form without one (Claro): inline, the field's size */
+.icon-colour__wrap {
+  display: inline-block;
+  max-width: 100%;
 }
 
 .icon-colour input[type="text"] {

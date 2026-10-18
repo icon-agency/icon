@@ -10,7 +10,10 @@
 #}
 {% set tag = heading_level|default('h2') %}
 <a class="work__item{{ wide ? ' work__item--wide' }}" href="{{ url }}" aria-label="{{ title }} — {{ client }}">
-  {% if layers %}
+  {# The legacy layers STAND IN for the Square tile, as the field's help says
+     — a tile that is set wins (user catch, 19 Oct 2026: a tile picked on Fit
+     for Every Run, the mirror's layers still showing). #}
+  {% if layers and not (media.src is defined and media.src) %}
     {# the legacy layered tile (old-site folio items): square cut-outs, back to front #}
     <figure class="work__figure work__figure--legacy media-reveal" data-reveal-img>
       <div class="work__layers">

@@ -51,3 +51,15 @@ props:
       type: boolean
       title: Larger logo
       description: Half again the size, for a mark that sits small in the standard box — a tall or square one.
+    bg:
+      type: string
+      title: Ground colour
+      description: 'Optional: the box wears this colour while this quote shows — the client''s own, like a case study''s page colour. A hex value, e.g. #d20f89. Needs a Box on the Testimonials group; without one there is nothing to colour.'
+      examples:
+        - '#d20f89'
+    ink:
+      type: string
+      title: Ink colour
+      description: 'The text, arrows, line and logo colour on that ground, a hex value, e.g. #ffffff. Used with Ground colour.'
+      examples:
+        - '#ffffff'
