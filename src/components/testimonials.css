@@ -180,9 +180,12 @@
 }
 
 @media (min-width: 768px) {
+  /* a third for the person, the mark and the arrows; two thirds for the
+     quote and the counter (user call, 19 Oct 2026: "one third, two thirds
+     column on the testimonials and controls") */
   .testimonials__bar,
   .testimonial {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr 2fr;
     column-gap: var(--space-lg);
   }
 }
