@@ -27,6 +27,12 @@ header:
   dependencies:
     - core/drupal
     - core/once
+search-panel:
+  js:
+    js/search-panel.js: {}
+  dependencies:
+    - core/drupal
+    - core/once
 reveal:
   js:
     js/reveal.js: {}

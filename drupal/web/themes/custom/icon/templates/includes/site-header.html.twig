@@ -102,7 +102,7 @@
       {% endif %}
     </nav>
     <!-- Search face: rolls in when the pill flips (site-header.css, "Search flip") -->
-    <form class="site-nav__pill site-nav__pill--search" id="nav-search" role="search" action="{{ path('search.view_node_search') }}" method="get" data-search-face inert>
+    <form class="site-nav__pill site-nav__pill--search" id="nav-search" role="search" action="{{ path('icon_site.search') }}" method="get" data-search-face data-search-suggest="{{ path('icon_site.search_suggest') }}" inert>
       <button class="site-nav__search-submit" type="submit" aria-label="{{ 'Search'|t }}">
         <svg class="site-nav__glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="8.5" /><path d="m21.5 21.5-5-5" /></svg>
       </button>

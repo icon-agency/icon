@@ -45,8 +45,20 @@
     }
     if (!track || track.querySelectorAll(":scope > .work-scroller__card, :scope > .picture").length === 0) return;
 
-    // Duplicate the set once for a seamless wrap.
+    // A Picture card carries the scroll-in reveal (.media-reveal,
+    // js/reveal.js): in a strip that drifts, each card revealing as it
+    // crosses into view — and a clone, made here after the reveal has
+    // collected its targets, never revealing at all — read as blank
+    // stretches in the strip (user catch, 19 Oct 2026: "a gap between the
+    // last and first"). The strip is one thing: every card stands revealed.
     var originals = Array.prototype.slice.call(track.children);
+    var shown = function (card) {
+      [card].concat(Array.prototype.slice.call(card.querySelectorAll("[data-reveal-img]"))).forEach(function (el) {
+        if (el.hasAttribute("data-reveal-img")) { el.removeAttribute("data-reveal-img"); el.classList.add("is-revealed"); }
+      });
+    };
+    originals.forEach(shown);
+    // Duplicate the set once for a seamless wrap.
     originals.forEach(function (card) {
       var clone = card.cloneNode(true);
       clone.setAttribute("aria-hidden", "true");

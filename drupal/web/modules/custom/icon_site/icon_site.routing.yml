@@ -61,3 +61,20 @@ icon_site.node_canvas:
     parameters:
       node:
         type: entity:node
+
+# The site search (19 Oct 2026): the results page the pill's form submits
+# to, and the JSON the pill's panel reads as you type. Search API's `site`
+# index on the database (scripts/search-index.php).
+icon_site.search:
+  path: '/search'
+  defaults:
+    _controller: '\Drupal\icon_site\Controller\SearchController::page'
+    _title: 'Search'
+  requirements:
+    _permission: 'access content'
+icon_site.search_suggest:
+  path: '/search/suggest'
+  defaults:
+    _controller: '\Drupal\icon_site\Controller\SearchController::suggest'
+  requirements:
+    _permission: 'access content'

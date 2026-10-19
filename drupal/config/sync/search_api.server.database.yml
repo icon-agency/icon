@@ -1,0 +1,17 @@
+uuid: 421208ae-ed50-4a3b-9ce6-d7e103c5e905
+langcode: en
+status: true
+dependencies:
+  module:
+    - search_api_db
+id: database
+name: Database
+description: "The site's own database — enough for a few hundred items (19 Oct 2026); Solr would be a swap of this server, nothing else."
+backend: search_api_db
+backend_config:
+  database: 'default:default'
+  min_chars: 3
+  matching: words
+  autocomplete:
+    suggest_suffix: true
+    suggest_words: true

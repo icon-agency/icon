@@ -1,0 +1,327 @@
+/* search.css — the site search: the pill's PANEL (.site-search), extending
+ * below the search face as you type, and the results PAGE (.search-page).
+ *
+ * The panel takes the iPad's search as its cue (user ask, 19 Oct 2026:
+ * "the search results appear in an extended block… how the iPad search
+ * bar extends"): it hangs from the pill on the pill's own frosted ground,
+ * the results in their groups — a label, then rows of a small picture, an
+ * eyebrow, the title and the index's excerpt, the matched words marked —
+ * — every result the index finds, scrolling: the panel IS the search
+ * (user call, 19 Oct 2026). Built by js/search-panel.js from icon_site's
+ * JSON; the page is the no-JS fallback only, the same shape at the page's
+ * measure.
+ *
+ * Drupal: SearchController (icon_site), theme hook icon_search_results. */
+
+/* ---- the panel ---------------------------------------------------------- */
+
+/* ONE BLOCK with the search box (user call, 19 Oct 2026): the face goes
+   white and square-cornered below while the panel is out, and the panel
+   hangs from its foot on the same white, cornered below — white and black
+   on every ground, as the iPad's search is. */
+/* Written at the weight of the header's over-hero tint (and its md
+   transparent reset) so the white holds on every page state. */
+.site-header .site-nav .site-nav__pill--search.is-extended,
+.site-header.is-over-hero .site-nav .site-nav__pill--search.is-extended {
+  --color-foreground: var(--black);
+  --color-icon-grey: color-mix(in srgb, var(--black) 55%, transparent);
+  background: var(--color-white);
+  color: var(--black);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.site-search {
+  position: absolute;
+  /* where the search face is — js/search-panel.js measures the pill and
+     writes these — and down to the same air below as the face has above */
+  top: var(--search-top, 100%);
+  right: auto;
+  left: var(--search-left, auto);
+  width: min(max(var(--search-width, 24rem), 24rem), calc(100vw - 1.5rem));
+  height: var(--search-height, 60vh);
+  overflow-y: auto;
+  padding: var(--spacing-sm) var(--spacing-sm) var(--spacing-md);
+  border-radius: 0 0 var(--radius-icon) var(--radius-icon);
+  --color-foreground: var(--black);
+  --color-icon-grey: color-mix(in srgb, var(--black) 55%, transparent);
+  background: var(--color-white);
+  color: var(--black);
+  box-shadow: 0 1.5rem 3rem -1.5rem var(--scrim-strong);
+  z-index: 1;
+  opacity: 0;
+  translate: 0 -0.5rem;
+  transition:
+    opacity var(--duration-fast) var(--ease-standard),
+    translate var(--duration-normal) var(--ease-decelerate);
+}
+
+.site-search.is-open {
+  opacity: 1;
+  translate: 0 0;
+}
+
+.site-search[hidden] {
+  display: none;
+}
+
+.site-search__group + .site-search__group {
+  margin-top: var(--spacing-md);
+  padding-top: var(--spacing-md);
+  border-top: var(--rule-weight) solid var(--rule);
+}
+
+/* the group's name: the small caps label, grey, as a Spotlight section */
+.site-search__label {
+  margin: 0 0 var(--spacing-xs);
+  padding-inline: var(--spacing-xs);
+  font-size: var(--voice-label);
+  font-weight: var(--font-weight-normal);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-icon-grey);
+}
+
+.site-search__count {
+  opacity: 0.7;
+}
+
+.site-search__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: var(--spacing-2xs);
+}
+
+/* a row: the words, then the picture at the right, its top on the row's
+   top (user call, 19 Oct 2026) — all at the one weight AND the one size,
+   a step under the meta voice, the title in the ink, the rest in the grey */
+.site-search__link {
+  display: flex;
+  gap: var(--spacing-md);
+  align-items: flex-start;
+  padding: var(--spacing-sm) var(--spacing-xs);
+  border-radius: var(--radius-sm);
+  color: inherit;
+  font-weight: var(--font-weight-normal);
+  text-decoration: none;
+  transition: background var(--duration-fast) var(--ease-standard);
+}
+
+.site-search__link:hover,
+.site-search__link:focus-visible {
+  background: color-mix(in srgb, var(--black) 6%, transparent);
+}
+
+.site-search__image {
+  flex: none;
+  order: 2;
+  margin-left: auto;
+  width: 3.5rem;
+  height: 3.5rem;
+  object-fit: cover;
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--black) 8%, transparent);
+}
+
+.site-search__text {
+  display: grid;
+  gap: 0.2em;
+  min-width: 0;
+  flex: 1;
+  font-size: calc(var(--voice-meta) * 0.85);
+  line-height: 1.4;
+}
+
+.site-search__eyebrow {
+  color: var(--color-icon-grey);
+}
+
+.site-search__excerpt {
+  color: var(--color-icon-grey);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* the matched words: the ink, not a weight — one weight throughout */
+.site-search mark {
+  background: none;
+  color: var(--black);
+  font-weight: inherit;
+}
+
+.search-page mark {
+  background: none;
+  color: inherit;
+  font-weight: var(--font-weight-bold);
+}
+
+
+.site-search__empty {
+  margin: 0;
+  padding: var(--spacing-xs);
+  color: var(--color-icon-grey);
+}
+
+/* on the phone the panel takes the pill's insets, full width */
+@media (max-width: 767.98px) {
+  .site-search {
+    right: 0;
+    left: 0;
+    width: auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-search {
+    transition: none;
+    translate: 0 0;
+  }
+}
+
+/* wider than the pill, it keeps the pill's right edge */
+@media (min-width: 768px) {
+  .site-search {
+    left: auto;
+    right: calc(100% - var(--search-left, 0px) - var(--search-width, 0px));
+  }
+}
+
+/* ---- the page ----------------------------------------------------------- */
+
+.search-page {
+  padding-inline: var(--gutter-page);
+  padding-top: calc(2rem + var(--logo-h) + var(--space-sm));
+  padding-bottom: var(--space-section);
+  max-width: calc(var(--measure-wide, 64rem) + 2 * var(--gutter-page));
+  margin-inline: auto;
+}
+
+.search-page__label {
+  display: block;
+  margin-bottom: var(--spacing-xs);
+  font-size: var(--voice-label);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-icon-grey);
+}
+
+.search-page__field {
+  display: flex;
+  gap: var(--spacing-xs);
+}
+
+.search-page__input {
+  flex: 1;
+  min-width: 0;
+  padding: var(--spacing-sm);
+  border: var(--rule-weight) solid var(--rule);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: var(--voice-mid);
+}
+
+.search-page__submit {
+  padding: var(--spacing-sm) var(--spacing-md);
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: var(--color-foreground);
+  color: var(--color-background);
+  font: inherit;
+  font-weight: var(--font-weight-bold);
+  cursor: pointer;
+}
+
+.search-page__title {
+  margin: var(--space-md) 0 var(--space-lg);
+  font-size: var(--voice-mid);
+  font-weight: var(--font-weight-bold);
+  text-wrap: balance;
+}
+
+.search-page__group + .search-page__group {
+  margin-top: var(--space-lg);
+}
+
+.search-page__group-title {
+  margin: 0 0 var(--spacing-sm);
+  padding-bottom: var(--spacing-xs);
+  border-bottom: var(--rule-weight) solid var(--rule);
+  font-size: var(--voice-label);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.search-page__count {
+  font-weight: var(--font-weight-normal);
+  color: var(--color-icon-grey);
+}
+
+.search-page__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: var(--spacing-xs);
+}
+
+.search-page__link {
+  display: flex;
+  gap: var(--spacing-md);
+  align-items: center;
+  padding: var(--spacing-sm);
+  margin-inline: calc(-1 * var(--spacing-sm));
+  border-radius: var(--radius-icon);
+  color: inherit;
+  text-decoration: none;
+  transition: background var(--duration-fast) var(--ease-standard);
+}
+
+.search-page__link:hover,
+.search-page__link:focus-visible {
+  background: color-mix(in srgb, var(--color-foreground) 6%, transparent);
+}
+
+.search-page__image {
+  flex: none;
+  width: 5rem;
+  height: 5rem;
+  object-fit: cover;
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--color-foreground) 8%, transparent);
+}
+
+.search-page__text {
+  display: grid;
+  gap: 0.2em;
+  min-width: 0;
+}
+
+.search-page__eyebrow {
+  font-size: var(--voice-meta);
+  color: var(--color-icon-grey);
+}
+
+.search-page__item-title {
+  font-size: var(--voice-mid);
+  font-weight: var(--font-weight-bold);
+  line-height: 1.2;
+}
+
+.search-page__excerpt {
+  color: var(--color-icon-grey);
+  line-height: 1.5;
+}
+
+.search-page__empty {
+  color: var(--color-icon-grey);
+}

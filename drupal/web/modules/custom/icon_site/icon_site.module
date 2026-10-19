@@ -1197,6 +1197,20 @@ function icon_site_preprocess_html(array &$variables): void {
 }
 
 /**
+ * Implements hook_theme().
+ *
+ * The search results page (SearchController::page(); the template beside
+ * the module, for the theme to override).
+ */
+function icon_site_theme(): array {
+  return [
+    'icon_search_results' => [
+      'variables' => ['keys' => '', 'groups' => [], 'total' => 0],
+    ],
+  ];
+}
+
+/**
  * Implements hook_page_attachments().
  *
  * The Canvas editor is one React page; the side panel's forms are rendered

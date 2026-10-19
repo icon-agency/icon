@@ -1,0 +1,47 @@
+{#
+/**
+ * @file
+ * The search results page (src/components/search.css, .search-page): the
+ * field at the top with the words typed, then the results in their groups
+ * — Work, News, Pages, People — each row a picture, an eyebrow, the title
+ * and the index's highlighted excerpt. Drupal: icon_site's
+ * SearchController::page(), theme hook icon_search_results.
+ */
+#}
+<section class="search-page" aria-labelledby="search-title">
+  <form class="search-page__form" role="search" action="{{ path('icon_site.search') }}" method="get">
+    <label class="search-page__label" for="search-keys">{{ 'Search'|t }}</label>
+    <div class="search-page__field">
+      <input class="search-page__input" id="search-keys" type="search" name="keys" value="{{ keys }}" placeholder="{{ 'Search the site'|t }}" autocomplete="off" autofocus />
+      <button class="search-page__submit" type="submit">{{ 'Search'|t }}</button>
+    </div>
+  </form>
+  <h1 class="search-page__title" id="search-title">
+    {% if keys %}
+      {% trans %}{{ total }} result for “{{ keys }}”{% plural total %}{{ total }} results for “{{ keys }}”{% endtrans %}
+    {% else %}
+      {{ 'Search'|t }}
+    {% endif %}
+  </h1>
+  {% for group in groups %}
+    <section class="search-page__group" aria-labelledby="search-group-{{ group.key }}">
+      <h2 class="search-page__group-title" id="search-group-{{ group.key }}">{{ group.label }} <span class="search-page__count">{{ group.total }}</span></h2>
+      <ol class="search-page__list">
+        {% for item in group.items %}
+          <li class="search-page__item">
+            <a class="search-page__link" href="{{ item.url }}">
+              {% if item.image %}<img class="search-page__image" src="{{ item.image }}" alt="" loading="lazy" width="100" height="100" />{% else %}<span class="search-page__image search-page__image--blank" aria-hidden="true"></span>{% endif %}
+              <span class="search-page__text">
+                {% if item.eyebrow %}<span class="search-page__eyebrow">{{ item.eyebrow }}</span>{% endif %}
+                <span class="search-page__item-title">{{ item.title }}</span>
+                {% if item.excerpt %}<span class="search-page__excerpt">{{ item.excerpt|raw }}</span>{% endif %}
+              </span>
+            </a>
+          </li>
+        {% endfor %}
+      </ol>
+    </section>
+  {% else %}
+    {% if keys %}<p class="search-page__empty">{{ 'Nothing matched. Try another word, or fewer.'|t }}</p>{% endif %}
+  {% endfor %}
+</section>

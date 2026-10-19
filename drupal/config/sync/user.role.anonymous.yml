@@ -8,7 +8,6 @@ dependencies:
     - contact
     - filter
     - media
-    - search
     - system
 _core:
   default_config_hash: Tus1ZTNXKIOnrennR1hnTbc7wUPBXHTUm5UdCpEhJSk
@@ -19,6 +18,5 @@ is_admin: false
 permissions:
   - 'access content'
   - 'access site-wide contact form'
-  - 'search content'
   - 'use text format restricted_html'
   - 'view media'

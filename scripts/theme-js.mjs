@@ -35,6 +35,7 @@ const out = join(root, "drupal/web/themes/custom/icon/js");
 /** file basename → Drupal.behaviors key (null = plain IIFE, copied as-is). */
 export const BEHAVIOURS = {
   "header": "iconHeader",
+  "search-panel": "iconSearchPanel",
   "reveal": "iconReveal",
   "velocity-lean": null,
   "cursor-tilt": null,

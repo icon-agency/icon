@@ -25,7 +25,7 @@
   // bg / ink as a whole word between _ [ ] or the ends: field_testimonial_bg[0][value],
   // canvas_component_props[…][bg][0][value] (an empty node field had slipped
   // through — "_bg[" was not matched; user catch, 19 Oct 2026)
-  var NAME = /(colou?r|ground|(^|[_\[])bg([_\[\]]|$)|(^|[_\[])ink([_\[\]]|$))/i;
+  var NAME = /(colou?r|ground|(^|[_[])bg([_[\]]|$)|(^|[_[])ink([_[\]]|$))/i;
   function isColour(input) {
     return NAME.test(input.name || "") || HEX.test(input.value.trim());
   }
