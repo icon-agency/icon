@@ -63,7 +63,30 @@
     // outer box is the one to dress (user catch, 19 Oct 2026: the quote's
     // colours not showing on a carousel placed in a box).
     var outer = box && box.parentElement && box.parentElement.closest(".columns--box");
+    var inner = box;
     if (outer) box = outer;
+
+    // THE LOAD AND THE SCROLL SKEW on the box the quote colours paint (user
+    // ask, 20 Oct 2026: "can the load and scroll skew animation be applied
+    // to this"): the shared velocity engine writes --tm-skew on it
+    // (testimonials.css leans it, as the /work cards lean); and where an
+    // outer box carries the ground, it takes over the inner box's fade-up
+    // entrance — it follows the inner's .is-visible (js/reveal.js) so the
+    // coloured ground rises with the words instead of standing there first.
+    // Not in the editor's frame, where the reveal never fires (the ground
+    // would never show). Reduced motion: no lean; the entrance's own CSS
+    // guard takes the fade away.
+    var lean = box || section;
+    lean.classList.add("testimonials__lean");
+    if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches && window.ICON && window.ICON.velocityLean) {
+      window.ICON.velocityLean(lean, lean, "--tm-skew", 3);
+    }
+    if (outer && inner && inner.hasAttribute("data-animate") && !document.documentElement.hasAttribute("data-icon-editing")) {
+      outer.classList.add("testimonials__host");
+      var follow = function () { outer.classList.toggle("is-visible", inner.classList.contains("is-visible")); };
+      new MutationObserver(follow).observe(inner, { attributes: true, attributeFilter: ["class"] });
+      follow();
+    }
     var boxClasses = ["dark", "theme-blue", "theme-work-article"];
     var boxOwn = box ? {
       classes: boxClasses.filter(function (c) { return box.classList.contains(c); }),

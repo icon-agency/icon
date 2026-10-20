@@ -29,10 +29,12 @@
 {% set box_style = pair[box] is defined ? '--work-article-bg: ' ~ pair[box][0] ~ '; --work-article-text: ' ~ pair[box][1] : '' %}
 {# The site's scroll-in entrance (data-animate — the fade-up the pull quotes
    and the stats band wear; js/reveal.js, utilities/animations.css) on the
-   outermost element: the box when there is one, else the carousel. No
-   velocity skew: in a case study only the media tilts, never the words
-   (user check, 22 Sep 2026: "the scroll skew and load animation is inline
-   with the rest of the site?"). #}
+   outermost element: the box when there is one, else the carousel. The
+   velocity skew came on 20 Oct 2026 (user ask: "can the load and scroll
+   skew animation be applied to this") — js/testimonials.js writes it on
+   the box the quote colours paint, which also takes over the fade-up when
+   it is an outer Columns box; the 22 Sep 2026 call ("in a case study only
+   the media tilts, never the words") gave way to it. #}
 {% if box_class %}<div class="columns columns--1 columns--gap-normal columns--box {{ box_class }} testimonials__box" data-animate{% if box_style %} style="{{ box_style }}"{% endif %}><div class="columns__col">{% endif %}
 <section class="testimonials" data-testimonials{% if not box_class %} data-animate{% endif %}{% if label %} aria-roledescription="carousel" aria-label="{{ label }}"{% endif %}>
   <div class="testimonials__bar">

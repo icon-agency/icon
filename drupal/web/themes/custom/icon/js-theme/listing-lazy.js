@@ -13,10 +13,15 @@
  * "12 of 40 projects" — the noun is the pager's own) with a loading mark
  * takes its place.
  *
- * The category chips navigate — a server-side filter is the only honest
- * one over a paged archive — so the in-place filters (js/news.js,
- * js/work-filter.js, js/work-landing.js) are stepped around by a
- * capture-phase listener that lets the chip's own href run. Lives in
+ * The category chips FETCH — a server-side filter is the only honest one
+ * over a paged archive, so the in-place filters (js/news.js,
+ * js/work-filter.js, js/work-landing.js), which only ever see the rows
+ * loaded so far, are stepped around by a capture-phase listener; but the
+ * page does not reload (user call, 20 Oct 2026: "when I click the filters
+ * the page refreshes, instead of just the work cards below"): the chip's
+ * own href is fetched, its list, pager and chips are swapped into the
+ * page inside a view transition, the address follows (pushState, popstate
+ * honoured), and this behaviour attaches afresh to the new list. Lives in
  * js-theme/ because js/ is generated from the repo-root behaviours. */
 ((Drupal, once) => {
   Drupal.behaviors.iconListingLazy = {
@@ -35,14 +40,56 @@
         if (!section || !pager || !("IntersectionObserver" in window)) return;
         var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-        // Chips navigate: step around js/news.js's in-place filter, which
-        // only ever sees the stories loaded so far.
-        document.addEventListener("click", function (e) {
-          var chip = e.target.closest && e.target.closest("[data-filter]");
-          if (!chip || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
-          e.stopImmediatePropagation();
-          e.stopPropagation();
-        }, true);
+        // Chips fetch and swap (once per page): step around the in-place
+        // filters, which only ever see the rows loaded so far, and bring the
+        // server's filtered first page into the section in place.
+        if (!document.documentElement.hasAttribute("data-listing-swap")) {
+          document.documentElement.setAttribute("data-listing-swap", "");
+          document.addEventListener("click", function (e) {
+            var chip = e.target.closest && e.target.closest("a[data-filter]");
+            if (!chip || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
+            e.stopImmediatePropagation();
+            e.stopPropagation();
+            e.preventDefault();
+            if (chip.getAttribute("aria-current") === "true") return;
+            swap(chip.href, true);
+          }, true);
+          window.addEventListener("popstate", function () { swap(window.location.href, false); });
+        }
+
+        function swap(href, push) {
+          var live = document.querySelector(".news-list, .work-landing__list");
+          var host = live && live.closest("section");
+          var bar = document.querySelector(".filter-bar");
+          if (!live || !host || !bar) { window.location.href = href; return; }
+          host.setAttribute("aria-busy", "true");
+          fetch(href, { credentials: "same-origin", headers: { "X-Requested-With": "listing-lazy" } })
+            .then(function (r) { if (!r.ok) throw new Error(r.status); return r.text(); })
+            .then(function (html) {
+              var doc = new DOMParser().parseFromString(html, "text/html");
+              var nextList = doc.querySelector(".news-list, .work-landing__list");
+              var nextHost = nextList && nextList.closest("section");
+              var nextBar = doc.querySelector(".filter-bar");
+              if (!nextHost || !nextBar) throw new Error("no listing");
+              if (live.__lazyStop) live.__lazyStop();
+              var place = function () {
+                bar.innerHTML = nextBar.innerHTML;
+                host.innerHTML = nextHost.innerHTML;
+                host.removeAttribute("aria-busy");
+                var fresh = host.querySelector(".news-list, .work-landing__list");
+                if (fresh) {
+                  fresh.setAttribute("data-swapped", "");
+                  fresh.querySelectorAll("[data-theme-handover]").forEach(function (el) { el.removeAttribute("data-theme-handover"); });
+                }
+                Drupal.attachBehaviors(host);
+              };
+              var fluid = typeof document.startViewTransition === "function" && !reduce;
+              if (fluid) document.startViewTransition(place);
+              else place();
+              if (push) { try { window.history.pushState({ listing: href }, "", href); } catch (err) {} }
+            })
+            .catch(function () { window.location.href = href; });
+        }
 
         section.classList.add("is-lazy");
         var foot = document.createElement("div");
@@ -211,6 +258,18 @@
           if (entries.some(function (e) { return e.isIntersecting; })) load();
         }, { rootMargin: "0px 0px 60% 0px" });
         io.observe(foot);
+        // the swap retires this list: no more pages into a list that is gone
+        list.__lazyStop = function () { nextHref = null; io.disconnect(); };
+        // a list the swap brought in: js/reveal.js and the card behaviours
+        // ran on the first load only, so its first page is dressed here
+        if (list.hasAttribute("data-swapped")) {
+          Array.prototype.slice.call(list.querySelectorAll(itemSelector)).forEach(function (li, i) {
+            li.classList.remove("is-visible");
+            reveal(li, i);
+            var card = li.querySelector(".news-card, .work__item");
+            if (card) tilt(card);
+          });
+        }
         var ticking = false;
         window.addEventListener("scroll", function () {
           if (ticking || !nextHref) return;

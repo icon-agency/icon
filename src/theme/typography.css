@@ -142,7 +142,7 @@
      display cap x 0.58, so below the 4xl horizon nothing changes — but a
      scope that lets --voice-display keep its vw slope past the cap (the
      work article on XL monitors) now carries this voice along with it. */
-  --voice-accent: max(1.25rem, calc(var(--voice-display) * 0.58));
+  --voice-accent: max(1.25rem, calc(var(--voice-display) * 0.52)); /* 0.52, from 0.58 (user call, 20 Oct 2026: "this font and everywhere it's used like this needs to be a tad smaller") — the footer's eyebrow keeps the same ratio of its own caps */
   /* The same register at 1.5x — every term scaled together, same cap
      horizon. Born as header B's stacked title; the /news masthead joined
      it (user call: News & Insights = the article H1's size). */

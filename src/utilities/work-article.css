@@ -191,10 +191,16 @@
      SCALED from the token, not its own clamp, so it grows and shrinks with
      the system and the client line's 0.3 ratio-lock stays proportional at
      every width. */
-  font-size: calc(var(--voice-display) * 1.25);
-  font-weight: 800; /* a step off the site's 900 (user call) */
+  /* CAPS (user ask, 20 Oct 2026: "try uppercase for work H1s"), as the
+     news masthead's THE LATEST UPDATES AND INSIGHTS: the caps tracking,
+     and the display voice itself — caps read a size up, so the 1.25 step
+     the mixed-case title had would run a client's long name to three
+     lines; the client line's 0.3 lock stays on the same token */
+  font-size: var(--voice-display);
+  font-weight: 900; /* the caps mastheads' weight (user call, 20 Oct 2026: "go 900" — the mixed-case title had sat a step off at 800) */
   line-height: 1;
-  letter-spacing: -0.02em;
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
   text-wrap: balance;
 }
 
@@ -338,6 +344,14 @@
 }
 
 .work-article__facts li {
+  /* the ink stated here, not inherited (user catch, 20 Oct 2026: on the
+     handover "these have a lag changing"): an element that INHERITS a
+     colour mid-transition re-eases its parent's easing — base/typography's
+     300ms on every element — and the facts sat four wrappers under the
+     article's own ink, so they trailed it; stated from the alias — which
+     holds on both sides of the handover, the chameleon's ink and the
+     site's — they flip in the one 300ms with the rest */
+  color: var(--color-foreground);
   font-size: var(--voice-label);
   font-weight: var(--font-weight-medium);
   letter-spacing: 0.05em;
@@ -366,7 +380,7 @@
    instead of rewinding). Same 0.3s ease-out. */
 .work-article__facts a {
   position: relative;
-  color: inherit;
+  color: var(--color-foreground); /* stated, as the items (above), not inherited */
   text-decoration: none;
 }
 

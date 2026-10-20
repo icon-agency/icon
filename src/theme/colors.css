@@ -79,7 +79,13 @@
   --pager-surface-strong: rgb(0 0 0 / 0.12); /* pager prev hover */
 }
 
-.dark {
+/* …and, in the Canvas editor's frame alone, on a Masthead that opens dark
+   or on ICON blue (components/page-header.css re-declares the aliases
+   there): the page stays plain, the masthead shows its opening — as the
+   Work masthead does (user ask, 20 Oct 2026). */
+.dark,
+html[data-icon-editing] .page-header[data-opening="dark"],
+html[data-icon-editing] .page-header[data-opening="dark-hold"] {
   /* THE Icon black (the raw --black) — the same ground the fixed footer
      paints, so a dark opening runs into the footer as ONE unbroken black
      (user call, Aug 2026: the scaffold's #1e1e1e read a step lighter than
@@ -133,7 +139,8 @@
    light and .dark; same mechanism (class on <html>, so the @theme inline
    --color-* aliases re-resolve — see LESSONS.md on per-route theme scope).
    Accents that are blue in the other themes flip to white here. */
-.theme-blue {
+.theme-blue,
+html[data-icon-editing] .page-header[data-opening="blue"] {
   --background: #0000ff;
   --foreground: #ffffff;
   --card: #0000e0;

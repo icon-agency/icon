@@ -383,3 +383,42 @@
   background: var(--background);
   color: var(--foreground);
 }
+
+/* ---- The load and the scroll skew ---------------------------------------
+   (user ask, 20 Oct 2026). js/testimonials.js writes --tm-skew on the box
+   the quote colours paint (the outer Columns box, else the carousel's own
+   box, else the section) through the shared engine (js/velocity-lean.js),
+   the /work cards' gesture at the same 3deg cap; `transform` is safe here,
+   the box carries no other. Where an outer box carries the ground it also
+   takes the inner box's fade-up: .is-visible follows the inner's, and the
+   inner's own transition is stilled so the two do not compound. */
+.testimonials__lean {
+  transform: skewY(var(--tm-skew, 0deg));
+  transform-origin: center center;
+}
+
+.js-animations .testimonials__host {
+  opacity: 0;
+  transform: translateY(20px) skewY(var(--tm-skew, 0deg));
+  transition:
+    opacity var(--duration-slow) var(--ease-standard),
+    transform var(--duration-slow) var(--ease-standard);
+}
+
+.js-animations .testimonials__host.is-visible {
+  opacity: 1;
+  transform: skewY(var(--tm-skew, 0deg));
+}
+
+.js-animations .testimonials__host .testimonials__box[data-animate] {
+  transition-duration: 0s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .testimonials__lean,
+  .js-animations .testimonials__host {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}

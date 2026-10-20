@@ -236,6 +236,45 @@
   /* the dark theme needs no override here */
 }
 
+/* ---- The opening, shown in the editor ----------------------------------
+   IN THE CANVAS EDITOR'S FRAME the page stays on the plain theme (user call,
+   Sep 2026; js-theme/opening.js), but the MASTHEAD wears its own "Opens on"
+   — black, ICON blue, light grey or the custom pair — the way the Work
+   masthead wears the page's pair there (utilities/work-article.css; user
+   ask, 20 Oct 2026: "can all the mastheads show the theme colour, like
+   work masthead"). The twig marks the pick as data-opening; theme/colors.css
+   puts the dark and blue tokens on the marked masthead; the grey and
+   custom picks read the pair icon_preprocess_html() writes on <html>. The
+   aliases are re-declared here because they resolve where declared
+   (LESSONS), and the masthead bleeds to the page edges on its ground. On
+   the page and in Preview the whole page is on this ground already, so
+   nothing changes there. */
+html[data-icon-editing] .page-header[data-opening="light-grey"],
+html[data-icon-editing] .page-header[data-opening="custom"] {
+  --background: var(--work-article-bg);
+  --foreground: var(--work-article-text);
+  --primary: var(--foreground);
+  --primary-foreground: var(--background);
+  --icon-black: var(--foreground);
+  --icon-grey: color-mix(in srgb, var(--foreground) 90%, transparent);
+  --icon-blue: var(--foreground);
+  --border: color-mix(in srgb, var(--foreground) 20%, transparent);
+}
+
+html[data-icon-editing] .page-header[data-opening] {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-border: var(--border);
+  --color-icon-black: var(--icon-black);
+  --color-icon-grey: var(--icon-grey);
+  --color-icon-blue: var(--icon-blue);
+  margin-inline: calc(-1 * var(--gutter-page));
+  background-color: var(--color-background);
+  color: var(--color-foreground);
+}
+
 .page-header--stack .page-header__inner {
   margin-bottom: var(--space-md);
 }

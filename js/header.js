@@ -307,7 +307,9 @@
       if (e.key === "Escape" && sIsOpen()) sClose(true);
     });
     document.addEventListener("click", function (e) {
-      if (sIsOpen() && !sCube.contains(e.target)) sClose(false);
+      // the search panel (js/search-panel.js) hangs outside the cube: its
+      // filters are clicks that keep the search open
+      if (sIsOpen() && !sCube.contains(e.target) && !e.target.closest(".site-search")) sClose(false);
     });
     window.addEventListener("resize", function () { if (sIsOpen()) sDepth(); }, { passive: true });
   }
