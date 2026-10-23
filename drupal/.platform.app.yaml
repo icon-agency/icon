@@ -71,6 +71,11 @@ web:
           allow: true
         '^/robots\.txt$':
           allow: true
+        # the editors' manual the icon_site module ships (23 Oct 2026): its
+        # page is static HTML, which the root location otherwise hands to
+        # Drupal (a 404); its pictures are allowed by the rule above
+        '^/modules/custom/icon_site/manual/[^/]*\.html$':
+          allow: true
         '^/sitemap\.xml$':
           allow: true
         '^/sites/sites\.php$':
