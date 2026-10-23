@@ -316,6 +316,14 @@ function icon_preprocess_page(array &$variables): void {
   $page = _icon_route_canvas_page();
   if (\Drupal::service('path.matcher')->isFrontPage() || ($page && _icon_canvas_page_is_front($page))) {
     $variables['main_attributes']->addClass('page-home');
+    // THE HERO IS BAKED IN (23 Oct 2026; user ask: "can the homepage hero be
+    // baked into the homepage template, so it can't be deleted through the
+    // CMS?"): the front page prints the reel itself, above the Canvas
+    // content, from the saved order (Content → Homepage hero) — in the
+    // editor's frame as on the page, where it is part of the frame, not a
+    // block. The reel's cacheability rides on the page.
+    $variables['hero'] = icon_site_hero_build();
+    _icon_apply_cache($variables, CacheableMetadata::createFromRenderArray($variables['hero']));
   }
   // A page built in Canvas is a flat stack of components with no frame
   // composing it, so it gets one: src/utilities/canvas-page.css spaces the

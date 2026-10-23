@@ -1,0 +1,979 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<!-- ICON Agency website manual. One self-contained file plus the img/ folder: open it in any browser, or host it anywhere.
+     Edit the text below; the left menu and the "Find a topic" box work off the section ids. -->
+<title>ICON website manual</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Kumbh+Sans:wght@400;500;700;900&display=swap">
+<style>
+/* Layout: a fixed ink menu on the left, one readable column of short sections on the right. The site's own palette. */
+:root {
+  --bg: #f4f2ec;
+  --surface: #e9e5dc;
+  --surface-2: #ffffff;
+  --fg: #0d0d0d;
+  --muted: #5c5a55;
+  --line: #d6d2c8;
+  --link: #0000ff;
+  --blue: #0000ff;
+  --on-blue: #ffffff;
+  --tip-bg: #e6e6ff;
+  --care-bg: #ffe3dc;
+  --side-bg: #0d0d0d;
+  --side-fg: #ffffff;
+  --side-muted: rgba(255, 255, 255, .62);
+  --side-line: rgba(255, 255, 255, .12);
+  --side-hover: rgba(255, 255, 255, .07);
+  --side-w: 272px;
+  --display: "Kumbh Sans", "Helvetica Neue", Arial, sans-serif;
+  --body: "Kumbh Sans", "Helvetica Neue", Arial, sans-serif;
+  --serif: Georgia, "Times New Roman", serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #121212; --surface: #1f1f1f; --surface-2: #181818; --fg: #f5f5f5; --muted: #b5b2ab; --line: #333;
+    --link: #8a8aff; --tip-bg: #1c1c4a; --care-bg: #4a1f16; --side-bg: #000; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #121212; --surface: #1f1f1f; --surface-2: #181818; --fg: #f5f5f5; --muted: #b5b2ab; --line: #333;
+  --link: #8a8aff; --tip-bg: #1c1c4a; --care-bg: #4a1f16; --side-bg: #000; color-scheme: dark;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 20px; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--body); font-size: 16px; line-height: 1.6; }
+a { color: var(--link); text-underline-offset: 3px; }
+a:focus-visible, button:focus-visible, input:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; }
+
+/* ---- Side menu ---- */
+.side { position: fixed; inset: 0 auto 0 0; width: var(--side-w); display: flex; flex-direction: column; background: var(--side-bg); color: var(--side-fg); z-index: 20; }
+.side__head { flex: none; padding: calc(22px + env(safe-area-inset-top, 0px)) 20px 18px; border-bottom: 1px solid var(--side-line); }
+.side__title { display: block; font-family: var(--display); font-weight: 900; font-size: 26px; line-height: 1; letter-spacing: .01em; text-transform: uppercase; color: var(--side-fg); text-decoration: none; }
+.side__title:hover { color: #8a8aff; }
+.side__sub { margin: 6px 0 0; font-size: 12px; color: var(--side-muted); }
+.side__find { display: block; width: 100%; margin-top: 14px; padding: 9px 12px; border: 1px solid var(--side-line); border-radius: 4px; background: rgba(255, 255, 255, .08); color: var(--side-fg); font: inherit; font-size: 14px; }
+.side__find::placeholder { color: var(--side-muted); }
+.side__nav { flex: 1; min-height: 0; overflow-y: auto; padding: 18px 20px 40px; }
+.side__group { margin: 0 0 18px; }
+.side__label { margin: 0 0 6px; font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--side-muted); }
+.side__links { list-style: none; margin: 0; padding: 0; }
+.side__links a { display: block; padding: 6px 10px; border-left: 2px solid transparent; border-radius: 0 4px 4px 0; color: var(--side-fg); font-size: 13.5px; line-height: 1.35; text-decoration: none; }
+.side__links a:hover { background: var(--side-hover); }
+.side__links a.is-current { color: #8a8aff; border-left-color: var(--blue); background: var(--side-hover); }
+.side__none { margin: 0; font-size: 13px; color: var(--side-muted); }
+.side__toggle { display: none; }
+
+/* ---- Page ---- */
+.page { margin-left: var(--side-w); padding-block: 44px 96px; padding-inline: clamp(16px, 5vw, 64px); }
+.page > * { max-width: 780px; }
+.hero { margin-bottom: 36px; }
+.hero__eyebrow { margin: 0 0 8px; font-family: var(--serif); font-size: 18px; color: var(--muted); }
+h1 { margin: 0 0 12px; font-family: var(--display); font-weight: 900; font-size: clamp(32px, 4.8vw, 50px); line-height: 1.02; letter-spacing: .01em; text-transform: uppercase; text-wrap: balance; }
+h1 span { color: var(--blue); }
+.hero__lead { margin: 0; font-size: 18px; line-height: 1.55; }
+
+section { padding-top: 34px; margin-top: 34px; border-top: 1px solid var(--line); }
+h2 { margin: 0 0 10px; font-family: var(--display); font-weight: 900; font-size: clamp(22px, 2.6vw, 28px); line-height: 1.15; text-transform: uppercase; letter-spacing: .01em; text-wrap: balance; }
+h3 { margin: 26px 0 8px; font-size: 18px; font-weight: 700; line-height: 1.3; }
+h4 { margin: 18px 0 4px; font-size: 15px; font-weight: 700; }
+p { margin: 0 0 12px; }
+.lead { font-size: 17px; }
+.where { margin: 0 0 14px; font-size: 14px; color: var(--muted); }
+.path { display: inline-block; padding: 2px 9px; border-radius: 4px; background: var(--surface); color: var(--fg); font-size: 13.5px; font-weight: 600; white-space: nowrap; }
+b.ui { font-weight: 700; }
+
+ol.steps { list-style: none; counter-reset: step; margin: 10px 0 14px; padding: 0; display: grid; gap: 8px; }
+ol.steps > li { counter-increment: step; position: relative; padding: 2px 0 2px 42px; min-height: 30px; }
+ol.steps > li::before { content: counter(step); position: absolute; left: 0; top: 1px; width: 28px; height: 28px; display: grid; place-items: center; border-radius: 50%; background: var(--blue); color: var(--on-blue); font-weight: 700; font-size: 14px; }
+ul { margin: 6px 0 14px; padding-left: 20px; }
+li { margin: 3px 0; }
+
+.fields { width: 100%; margin: 10px 0 16px; border-collapse: collapse; font-size: 14.5px; }
+.fields th, .fields td { padding: 9px 12px 9px 0; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+.fields th { width: 34%; font-weight: 600; }
+.fields thead th { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.table-wrap { overflow-x: auto; }
+
+.note { margin: 14px 0; padding: 12px 16px; border-radius: 4px; font-size: 15px; }
+.note > b:first-child { display: block; margin-bottom: 2px; font-size: 12px; letter-spacing: .1em; text-transform: uppercase; }
+.note--tip { background: var(--tip-bg); }
+.note--care { background: var(--care-bg); }
+.note p:last-child { margin-bottom: 0; }
+.note ul { margin: 4px 0 0; padding-left: 18px; }
+.note li { margin: 2px 0; }
+
+.tasks { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; margin: 14px 0 0; padding: 0; list-style: none; }
+.tasks li { margin: 0; }
+.tasks a { display: block; height: 100%; padding: 12px 14px; border: 1px solid var(--line); border-radius: 4px; background: var(--surface-2); color: var(--fg); font-size: 14.5px; font-weight: 600; line-height: 1.35; text-decoration: none; }
+.tasks a:hover { border-color: var(--fg); }
+.tasks a span { display: block; margin-top: 2px; font-size: 12.5px; font-weight: 400; color: var(--muted); }
+
+.block { padding: 12px 0; border-bottom: 1px solid var(--line); }
+.block h4 { margin: 0 0 2px; font-size: 16px; }
+.block p { margin: 0 0 4px; font-size: 15px; }
+.block .fill { color: var(--muted); font-size: 14px; }
+.block ul.fill { margin: 4px 0 2px; padding-left: 18px; }
+.block ul.fill li { margin: 2px 0; line-height: 1.45; }
+.block ul.fill b { color: var(--fg); font-weight: 600; }
+.tag { display: inline-block; margin-left: 6px; padding: 1px 8px; border: 1.5px solid currentColor; border-radius: 999px; font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; vertical-align: 2px; }
+
+details.qa { border-bottom: 1px solid var(--line); }
+details.qa summary { padding: 12px 0; font-weight: 600; cursor: pointer; }
+details.qa > div { padding: 0 0 12px; }
+
+.foot { margin-top: 56px; padding-top: 18px; border-top: 1px solid var(--line); font-size: 13px; color: var(--muted); }
+
+/* Screenshots: a bordered picture with a caption, click for the larger view */
+figure.shot-fig { margin: 14px 0 18px; }
+figure.shot-fig a { display: block; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; background: var(--surface); line-height: 0; }
+figure.shot-fig img { width: 100%; height: auto; display: block; }
+figure.shot-fig figcaption { margin-top: 6px; font-size: 13px; color: var(--muted); }
+
+/* ---- Narrow screens: the menu slides in from a button ---- */
+@media (max-width: 900px) {
+  .side { transform: translateX(-100%); transition: transform .2s ease; width: min(86vw, 320px); }
+  .side.is-open { transform: none; box-shadow: 0 0 0 100vmax rgba(0, 0, 0, .45); }
+  .page { margin-left: 0; padding-block: 76px 72px; }
+  .side__toggle { display: inline-flex; align-items: center; gap: 8px; position: fixed; top: calc(12px + env(safe-area-inset-top, 0px)); left: 16px; z-index: 30; padding: 9px 14px; border: 0; border-radius: 4px; background: var(--side-bg); color: var(--side-fg); font: inherit; font-weight: 600; cursor: pointer; }
+  .fields th { width: 40%; }
+}
+@media (prefers-reduced-motion: reduce) { .side { transition: none; } }
+img { max-width: 100%; }
+[hidden] { display: none !important; }
+
+/* Content block guide: a thumbnail of each block, click for a larger view */
+.block.has-shots { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 20px; align-items: start; }
+.block__shots { display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-end; max-width: 300px; }
+.shot { display: block; width: 140px; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; background: var(--surface); line-height: 0; }
+.shot img { width: 100%; height: 96px; object-fit: cover; object-position: top; display: block; }
+.shot:hover, .shot:focus-visible { border-color: var(--fg); outline: none; }
+.shot:focus-visible { box-shadow: 0 0 0 3px var(--fg); }
+#lightbox { border: 0; padding: 0; background: transparent; max-width: min(96vw, 1180px); width: 96vw; }
+#lightbox::backdrop { background: rgba(0, 0, 0, .85); }
+#lightbox figure { margin: 0; background: var(--surface); border-radius: 10px; overflow: hidden; }
+#lightbox img { display: block; width: 100%; height: auto; max-height: 80vh; object-fit: contain; background: #fff; }
+#lightbox figcaption { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 14px; font-size: 14px; color: var(--fg); }
+#lightbox button { font: inherit; padding: 6px 12px; border: 1px solid var(--line); border-radius: 999px; background: transparent; color: var(--fg); cursor: pointer; }
+@media (max-width: 640px) { .block.has-shots { grid-template-columns: 1fr; } .block__shots { justify-content: flex-start; max-width: none; } }
+</style>
+</head>
+<body>
+
+<button class="side__toggle" type="button" id="menu-toggle" aria-controls="side" aria-expanded="false">☰ Contents</button>
+
+<aside class="side" id="side" aria-label="Contents">
+  <div class="side__head">
+    <a class="side__title" href="#top">ICON website manual</a>
+    <p class="side__sub">iconagency.com.au · Drupal with Canvas</p>
+    <input class="side__find" id="find" type="search" placeholder="Find a topic…" aria-label="Find a topic" autocomplete="off">
+  </div>
+  <nav class="side__nav" id="nav">
+    <div class="side__group">
+      <p class="side__label">Start here</p>
+      <ul class="side__links">
+        <li><a href="#top">Welcome</a></li>
+        <li><a href="#tasks">I want to…</a></li>
+        <li><a href="#how">How the site is put together</a></li>
+        <li><a href="#sign-in">Signing in</a></li>
+        <li><a href="#around">Finding your way around</a></li>
+      </ul>
+    </div>
+    <div class="side__group">
+      <p class="side__label">Pages</p>
+      <ul class="side__links">
+        <li><a href="#edit-page">Edit a page</a></li>
+        <li><a href="#add-page">Add a page</a></li>
+        <li><a href="#blocks">Working with blocks</a></li>
+        <li><a href="#patterns">Patterns: reuse a layout</a></li>
+        <li><a href="#opening">The colour a page opens on</a></li>
+        <li><a href="#block-guide">Block guide</a></li>
+      </ul>
+    </div>
+    <div class="side__group">
+      <p class="side__label">Content</p>
+      <ul class="side__links">
+        <li><a href="#work">Work case studies</a></li>
+        <li><a href="#news">News stories</a></li>
+        <li><a href="#team">Team members</a></li>
+        <li><a href="#testimonials">Testimonials</a></li>
+        <li><a href="#hero">Homepage hero</a></li>
+        <li><a href="#logos">Client logos &amp; icons</a></li>
+        <li><a href="#offices">Offices</a></li>
+        <li><a href="#media">Images, films &amp; files</a></li>
+      </ul>
+    </div>
+    <div class="side__group">
+      <p class="side__label">Across the site</p>
+      <ul class="side__links">
+        <li><a href="#menu">Menu</a></li>
+        <li><a href="#footer">Footer</a></li>
+        <li><a href="#search">Search</a></li>
+        <li><a href="#colours">Colours</a></li>
+        <li><a href="#addresses">Web addresses</a></li>
+      </ul>
+    </div>
+    <div class="side__group">
+      <p class="side__label">Staying safe</p>
+      <ul class="side__links">
+        <li><a href="#saving">Save, preview, publish</a></li>
+        <li><a href="#undo">Undo a change</a></li>
+        <li><a href="#roles">Who can do what</a></li>
+        <li><a href="#help">Something looks wrong</a></li>
+      </ul>
+    </div>
+    <p class="side__none" id="find-none" hidden>No topic matches. Try a shorter word.</p>
+  </nav>
+</aside>
+
+<main class="page" id="top">
+  <header class="hero">
+    <p class="hero__eyebrow">ICON Agency website</p>
+    <h1>Website <span>manual</span></h1>
+    <p class="hero__lead">How to update iconagency.com.au, one task at a time. Pick a topic from the menu, or start with the list below.</p>
+  </header>
+
+  <section id="tasks">
+    <h2>I want to…</h2>
+    <ul class="tasks">
+      <li><a href="#work">Add a case study<span>Work</span></a></li>
+      <li><a href="#news">Publish a news story<span>News, and the homepage feed</span></a></li>
+      <li><a href="#edit-page">Change words or a picture on a page<span>Edit a page</span></a></li>
+      <li><a href="#hero">Change the films on the homepage<span>Content › Homepage hero</span></a></li>
+      <li><a href="#team">Add or reorder a team member<span>Team members</span></a></li>
+      <li><a href="#testimonials">Add a client quote<span>Testimonials</span></a></li>
+      <li><a href="#logos">Add a client logo<span>Client logos</span></a></li>
+      <li><a href="#opening">Change the colour a page opens on<span>Mastheads</span></a></li>
+      <li><a href="#footer">Change the footer or an office<span>Footer and Offices</span></a></li>
+      <li><a href="#patterns">Reuse a layout I like<span>Patterns</span></a></li>
+      <li><a href="#undo">Undo a mistake<span>Revisions</span></a></li>
+    </ul>
+  </section>
+
+  <section id="how">
+    <h2>How the site is put together</h2>
+    <p class="lead">Three kinds of thing to edit.</p>
+    <div class="table-wrap">
+    <table class="fields">
+      <thead><tr><th>Kind</th><th>Examples</th><th>How you edit it</th></tr></thead>
+      <tbody>
+        <tr><th>Pages</th><td>Home, About, Expertise and the five practice pages, Contact, Privacy.</td><td>Stacked <b class="ui">blocks</b> in the <b class="ui">Canvas</b> editor. Click a block, change its fields on the right. See <a href="#edit-page">Edit a page</a>.</td></tr>
+        <tr><th>Records</th><td>Work case studies, News stories, Team members, Testimonials, Hero slides, Offices.</td><td>A <b class="ui">form</b>. Fill in the boxes, save. The site places it on the listings, the homepage and in search. A case study also has a Canvas body.</td></tr>
+        <tr><th>Site-wide settings</th><td>Menu, footer, client logos, icons.</td><td>Their own lists under <span class="path">Content</span> and <span class="path">Structure</span>. Change once, every page updates.</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <ul>
+      <li>The <b class="ui">Work</b> and <b class="ui">News</b> landing pages build themselves from the records. You do not edit their lists; you edit the records.</li>
+      <li>On a page, the usual order is a Masthead, then <b class="ui">Columns and boxes</b> for each band with the content blocks inside. Columns can nest.</li>
+      <li>Every page shares one header, one search and one footer.</li>
+    </ul>
+  </section>
+
+  <section id="sign-in">
+    <h2>Signing in</h2>
+    <ol class="steps">
+      <li>Add <span class="path">/user/login</span> to the website address.</li>
+      <li>Enter your username and password. Choose <b class="ui">Log in</b>.</li>
+      <li>A dark bar appears down the left of every page. That is the site menu.</li>
+    </ol>
+    <figure class="shot-fig"><a class="shot-link" href="img/shots/login.jpg" data-caption="The sign-in page"><img src="img/shots/login.jpg" alt="The sign-in page" loading="lazy"></a><figcaption>The sign-in page.</figcaption></figure>
+    <ul>
+      <li>Forgotten your password? Choose <b class="ui">Reset your password</b> and follow the email.</li>
+      <li>While signed in, every page you can change shows an <b class="ui">Edit</b> link at the top right.</li>
+    </ul>
+  </section>
+
+  <section id="around">
+    <h2>Finding your way around</h2>
+    <p>The dark bar on the left is the site menu. Hover an item to see what is under it.</p>
+    <div class="table-wrap">
+    <table class="fields">
+      <thead><tr><th>Menu item</th><th>What lives there</th></tr></thead>
+      <tbody>
+        <tr><th>Create</th><td>Start a new record: a case study, a story, a person, a quote, a hero slide, an office.</td></tr>
+        <tr><th>Content</th><td>Every record on the site, with a search box and filters. Also the lists for the <b class="ui">Homepage hero</b>, <b class="ui">Client logos</b>, <b class="ui">Icons</b>, <b class="ui">Offices</b> and the <b class="ui">Footer</b>.</td></tr>
+        <tr><th>Pages</th><td>The Canvas pages: Home, About, Expertise, the practice pages, Contact and the legal pages.</td></tr>
+        <tr><th>Media</th><td>Every uploaded picture, film, logo, icon and PDF, in folders.</td></tr>
+        <tr><th>Structure › Menus</th><td>The site menu and the footer links.</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <figure class="shot-fig"><a class="shot-link" href="img/shots/content.jpg" data-caption="Content: every record, with filters"><img src="img/shots/content.jpg" alt="The Content list" loading="lazy"></a><figcaption>Content lists every record. Filter by type, then open one.</figcaption></figure>
+  </section>
+
+  <section id="edit-page">
+    <h2>Edit a page</h2>
+    <p class="where">Where: <span class="path">Pages</span>, or the <b class="ui">Edit</b> link on the page itself</p>
+    <ol class="steps">
+      <li>Open the page on the site and choose <b class="ui">Edit</b>, or choose <b class="ui">Pages</b> in the menu and then the page’s name.</li>
+      <li>The page opens in the <b class="ui">Canvas</b> editor: the page in the middle, your tools in the left rail, the fields on the right.</li>
+      <li>Click the part you want to change. That part is a <b class="ui">block</b>. Its fields appear on the right under <b class="ui">Settings</b>.</li>
+      <li>Change the words or the picture. The page updates as you type.</li>
+      <li>Choose <b class="ui">Preview</b> to see it as a visitor will, with the page’s colour and animation.</li>
+      <li>The button at the top right counts your changes. Click it, then <b class="ui">Publish</b>. The change is live.</li>
+    </ol>
+    <figure class="shot-fig"><a class="shot-link" href="img/shots/editor-masthead-settings.jpg" data-caption="The editor with the About masthead selected: its fields on the right"><img src="img/shots/editor-masthead-settings.jpg" alt="The Canvas editor with a masthead selected and its fields on the right" loading="lazy"></a><figcaption>Click a block and its fields appear on the right. Here, the About page’s masthead.</figcaption></figure>
+    <ul>
+      <li>Nothing on the right? Click the block again, or choose <b class="ui">Settings</b> at the top of the panel. <b class="ui">Page data</b> is the page itself: its title, address and search snippet.</li>
+      <li>Your edits are kept as a draft until you publish, even if you close the browser. The page on the site does not change until then.</li>
+      <li>The editor shows the page plain, on white. The colour the page opens on shows on its masthead, and in <b class="ui">Preview</b>.</li>
+    </ul>
+  </section>
+
+  <section id="add-page">
+    <h2>Add a page</h2>
+    <p class="where">Where: <span class="path">Pages › Add page</span></p>
+    <ol class="steps">
+      <li>Choose <b class="ui">Pages</b>, then <b class="ui">Add page</b>.</li>
+      <li>Type the page’s name in <b class="ui">Title</b> under <b class="ui">Page data</b>. Its address is made from it; change it under <b class="ui">URL alias</b> if you want a shorter one.</li>
+      <li>Add a <b class="ui">Masthead</b> first. Then lay the page out with <b class="ui">Columns and boxes</b> and drop the content blocks into the columns. See <a href="#blocks">Working with blocks</a>.</li>
+      <li>Or start from a saved <a href="#patterns">pattern</a>: the <b class="ui">Patterns</b> tab in the Library holds whole layouts ready to drop in.</li>
+      <li>Choose <b class="ui">Preview</b> to check it, then publish.</li>
+      <li>Want it in the menu? See <a href="#menu">Menu</a>.</li>
+    </ol>
+    <div class="note note--tip"><b>Starting shapes</b>
+      <ul>
+        <li><b class="ui">An information page:</b> Masthead, Content, a Picture or two, a Line between subjects.</li>
+        <li><b class="ui">A practice page:</b> Masthead split with a picture beside the heading, Content, a Grid of services, a boxed Columns for the featured work.</li>
+        <li><b class="ui">A landing page:</b> Masthead, Filmstrip, Columns and boxes, Testimonials.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="blocks">
+    <h2>Working with blocks</h2>
+    <p class="lead">A page is a stack of blocks. Each block is one band of the page.</p>
+    <h3>Add a block</h3>
+    <ol class="steps">
+      <li>Click <b class="ui">+</b> at the top of the left rail. The <b class="ui">Library</b> opens.</li>
+      <li>Blocks are in groups: <b class="ui">Mastheads</b>, <b class="ui">Layout</b>, <b class="ui">Text</b>, <b class="ui">Pictures</b>, <b class="ui">Filmstrip</b>, <b class="ui">Testimonials</b>, <b class="ui">Results</b> and the site’s own blocks. See the <a href="#block-guide">block guide</a>.</li>
+      <li>Drag a block onto the page. A blue line shows where it will land. Drop it.</li>
+      <li>Fill in its fields on the right.</li>
+    </ol>
+    <figure class="shot-fig"><a class="shot-link" href="img/shots/editor-library.jpg" data-caption="The Library: every block, in groups"><img src="img/shots/editor-library.jpg" alt="The editor with the Library open" loading="lazy"></a><figcaption>The Library. Search it by name, or open a group.</figcaption></figure>
+    <h3>Move, copy or remove a block</h3>
+    <ul>
+      <li>Click <b class="ui">Layers</b> (the second icon in the left rail) to see every block on the page as a list. Drag a block up or down the list to move it. Blocks inside a Columns or a Filmstrip sit indented under it.</li>
+      <li>Right-click a block, on the page or in the list, for <b class="ui">Duplicate</b>, <b class="ui">Copy</b> and <b class="ui">Paste</b> (to another page too), <b class="ui">Move</b>, <b class="ui">Create pattern</b> and <b class="ui">Delete</b>.</li>
+      <li>The arrows at the top left undo and redo while you are editing.</li>
+    </ul>
+    <figure class="shot-fig"><a class="shot-link" href="img/shots/editor-layers.jpg" data-caption="Layers: every block on the page as a list"><img src="img/shots/editor-layers.jpg" alt="The editor with the Layers list open" loading="lazy"></a><figcaption>Layers. The order here is the order on the page.</figcaption></figure>
+    <h3>Lay out with Columns first</h3>
+    <p class="lead">The habit that keeps pages tidy: a <b class="ui">Columns and boxes</b> block first, content blocks inside it.</p>
+    <ol class="steps">
+      <li>Drop a <b class="ui">Columns and boxes</b> block where the band of the page will go.</li>
+      <li>Set <b class="ui">Columns</b> to how many across: one for a single band, two for text beside a picture, three or four for a row of boxes.</li>
+      <li>Drop the content into each column: a <b class="ui">Content</b> block, a <b class="ui">Picture</b>, a <b class="ui">Pull quote</b>, a fact card.</li>
+      <li>Need a box inside a box, or two halves in one column? Drop another <b class="ui">Columns and boxes</b> into a column. Columns nest; <b class="ui">Layers</b> shows the nesting as indents.</li>
+      <li>Give the outer Columns a <b class="ui">Box</b> colour when the band should sit on its own ground.</li>
+    </ol>
+    <ul>
+      <li>A block dropped straight onto the page runs the page’s full width. That is right for a Masthead, a Filmstrip, a Line and a Spacer; for everything else, a column keeps the measure readable.</li>
+      <li>The <b class="ui">Grid</b> is the exception for lists: drop the items straight in and it decides how many fit per row.</li>
+    </ul>
+    <h3>Blocks that hold other blocks</h3>
+    <p>Some blocks are containers. Drop the small blocks into them.</p>
+    <div class="table-wrap">
+    <table class="fields">
+      <tbody>
+        <tr><th>Columns and boxes</th><td>One to four columns, each a slot for any block. Tick <b class="ui">Box</b> to put the columns on a coloured ground.</td></tr>
+        <tr><th>Grid</th><td>Drop in as many Content blocks as you have items; the count per row follows the screen.</td></tr>
+        <tr><th>Filmstrip (group)</th><td>Holds <b class="ui">Filmstrip photo</b> and <b class="ui">Filmstrip fact card</b> items.</td></tr>
+        <tr><th>Testimonials (group)</th><td>Holds <b class="ui">Testimonial (item)</b> blocks, one per quote.</td></tr>
+        <tr><th>Result stats (group)</th><td>Holds <b class="ui">Result stats number</b> items, two to a row.</td></tr>
+        <tr><th>Picture scroller (group)</th><td>Holds <b class="ui">Picture</b> blocks that drift past.</td></tr>
+        <tr><th>Run</th><td>On a case study: the reading column, with the Share rail beside it. Content, Results and films go inside.</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="note note--care"><b>Careful</b>
+      <ul>
+        <li>Some blocks make a page work: <b class="ui">Featured work</b>, <b class="ui">Team profiles</b>, <b class="ui">Clients scroller</b> and <b class="ui">Contact form</b>. Edit their settings, but don’t delete them. (The homepage hero is part of the page itself and cannot be deleted.)</li>
+        <li>A deleted block is gone when you publish. Before that, the undo arrow brings it back.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="patterns">
+    <h2>Patterns: reuse a layout</h2>
+    <p class="lead">Built a layout you will want again? Save it as a pattern. It goes into the Library and drops onto any page, blocks, settings and nesting included.</p>
+    <h3>Save a pattern</h3>
+    <ol class="steps">
+      <li>Open <b class="ui">Layers</b> and find the block that holds the layout, usually the outer <b class="ui">Columns and boxes</b>.</li>
+      <li>Right-click it, on the page or in the list, and choose <b class="ui">Create pattern</b>.</li>
+      <li>Give it a <b class="ui">Pattern name</b> that says what it is for: <i>Case study</i>, <i>Text beside picture</i>, <i>Three service boxes</i>. Save.</li>
+    </ol>
+    <figure class="shot-fig"><a class="shot-link" href="img/shots/editor-save-pattern.jpg" data-caption="Right-click a block: Create pattern"><img src="img/shots/editor-save-pattern.jpg" alt="The right-click menu on a block, with Create pattern" loading="lazy"></a><figcaption>Right-click a block for Create pattern.</figcaption></figure>
+    <h3>Use a pattern</h3>
+    <ol class="steps">
+      <li>Click <b class="ui">+</b> to open the Library, then the <b class="ui">Patterns</b> tab.</li>
+      <li>Drag the pattern onto the page, as you would a block.</li>
+      <li>It arrives as ordinary blocks. Change the words and pictures; the pattern itself stays as you saved it.</li>
+    </ol>
+    <ul>
+      <li><b class="ui">+ New</b> on the Patterns tab starts an empty pattern you build from scratch.</li>
+    </ul>
+    <figure class="shot-fig"><a class="shot-link" href="img/shots/editor-patterns.jpg" data-caption="The Library's Patterns tab"><img src="img/shots/editor-patterns.jpg" alt="The Library open on its Patterns tab" loading="lazy"></a><figcaption>The Patterns tab. The site starts with one: <i>Case study</i>, the shape of a Work page body.</figcaption></figure>
+    <ul>
+      <li>A pattern is a copy, not a link. Changing a page built from it does not change the pattern, and changing the pattern does not change pages already built.</li>
+      <li>Patterns are shared by everyone who edits the site. Name them well and keep the list short.</li>
+    </ul>
+  </section>
+
+  <section id="opening">
+    <h2>The colour a page opens on</h2>
+    <p class="lead">A page can open on a colour and hand over to the light theme as you scroll. The masthead decides.</p>
+    <ol class="steps">
+      <li>Click the page’s <b class="ui">Masthead</b> (or <b class="ui">Masthead split</b>).</li>
+      <li>Under <b class="ui">Opens on</b>, pick <b class="ui">Black</b>, <b class="ui">ICON blue</b>, <b class="ui">Light grey</b> or <b class="ui">Custom colours</b>.</li>
+      <li>For Custom, click the swatch beside <b class="ui">Custom background</b> and <b class="ui">Custom foreground</b> to pick the two colours, or type the hex values.</li>
+      <li>Check it in <b class="ui">Preview</b>: the wordmark, the menu pill and the masthead all take the colour.</li>
+    </ol>
+    <ul>
+      <li><b class="ui">Black, all the way down</b> keeps the dark theme to the foot of the page. The Contact page uses it.</li>
+      <li><b class="ui">The page theme</b> means no colour: the page opens light.</li>
+      <li>A case study’s colour comes from its own <b class="ui">Page colour</b> and <b class="ui">Ink colour</b>. See <a href="#work">Work case studies</a>.</li>
+    </ul>
+  </section>
+
+  <section id="block-guide">
+    <h2>Block guide</h2>
+    <p>Every block, in the groups you see in the Library. Click a picture to see it larger.</p>
+
+    <h3>Mastheads</h3>
+    <div class="block has-shots"><div class="block__text"><h4>Masthead</h4><p>The centred page top: a serif line over a big caps line.</p>
+      <ul class="fill">
+        <li><b>Eyebrow</b> – the short serif line, in sentence case. The section’s name</li>
+        <li><b>Heading</b> – type in sentence case; the site sets the capitals. A line break breaks the line</li>
+        <li><b>Heading level</b> – h1 for the page’s own masthead</li>
+        <li><b>Opens on</b> – the page’s colour. See <a href="#opening">The colour a page opens on</a></li>
+        <li>Two slots underneath: <b>Under the heading</b> for the Subscribe bar, <b>Full-width band</b> for a Filmstrip</li>
+      </ul></div><div class="block__shots"><a class="shot" href="img/blocks/full/masthead.jpg" data-caption="Masthead – the About page"><img src="img/blocks/thumb/masthead.jpg" alt="Masthead on the About page" loading="lazy"></a><a class="shot" href="img/blocks/full/masthead-news.jpg" data-caption="Masthead – the News landing, with the Subscribe bar and filter band"><img src="img/blocks/thumb/masthead-news.jpg" alt="Masthead on the News landing" loading="lazy"></a></div></div>
+    <div class="block has-shots"><div class="block__text"><h4>Masthead split</h4><p>The heading on the left, a picture, film or quote on the right. The practice pages and news articles use it.</p>
+      <ul class="fill">
+        <li><b>Eyebrow</b>, <b>Heading</b>, <b>Heading style</b> – caps, article serif or display sentence case</li>
+        <li><b>Line above</b>, <b>Line below</b>, <b>Reduced padding</b></li>
+        <li><b>Opens on</b> – as the Masthead</li>
+        <li>Three slots: <b>Above the heading</b>, <b>Below the heading</b>, <b>Right column</b></li>
+      </ul></div><div class="block__shots"><a class="shot" href="img/blocks/full/masthead-split.jpg" data-caption="Masthead split – the Creative page"><img src="img/blocks/thumb/masthead-split.jpg" alt="Masthead split on the Creative page" loading="lazy"></a><a class="shot" href="img/blocks/full/masthead-article.jpg" data-caption="Masthead split – a news article"><img src="img/blocks/thumb/masthead-article.jpg" alt="Masthead split on a news article" loading="lazy"></a></div></div>
+    <div class="block has-shots"><div class="block__text"><h4>Work masthead</h4><p>The top of a case study: project name, client, banner, feature statement, category and deliverables. Not a block you place: it is part of every case study page, drawn from the case study’s form. See <a href="#work">Work case studies</a>.</p>
+      <ul class="fill">
+        <li>Change it under <b>Page data</b> in the editor, or the case study’s <b>Fields</b> tab</li>
+      </ul></div><div class="block__shots"><a class="shot" href="img/blocks/full/work-masthead.jpg" data-caption="Work masthead – Democracy Cards"><img src="img/blocks/thumb/work-masthead.jpg" alt="Work masthead on a case study" loading="lazy"></a></div></div>
+    <div class="block"><h4>Masthead subscribe bar (item)</h4><p>The newsletter pill. Goes in the Masthead’s <b class="ui">Under the heading</b> slot. It does nothing until the newsletter is connected.</p></div>
+
+    <h3>Text</h3>
+    <div class="block has-shots"><div class="block__text"><h4>Content</h4><p>A run of text: headings, paragraphs, lists, links, bold. The everyday block.</p>
+      <ul class="fill">
+        <li>Headings inside start at Heading 2</li>
+        <li>Keep one subject per Content block. Put a Line or a Spacer between subjects</li>
+      </ul></div><div class="block__shots"><a class="shot" href="img/blocks/full/content.jpg" data-caption="Content – the About page"><img src="img/blocks/thumb/content.jpg" alt="A Content block" loading="lazy"></a></div></div>
+    <div class="block has-shots"><div class="block__text"><h4>Pull quote</h4><p>The big centred serif statement that divides a page.</p>
+      <ul class="fill">
+        <li><b>Quote</b>, <b>Style</b> – italic or upright, <b>Attribution</b> – optional</li>
+      </ul></div><div class="block__shots"><a class="shot" href="img/blocks/full/pull-quote.jpg" data-caption="Pull quote"><img src="img/blocks/thumb/pull-quote.jpg" alt="A pull quote" loading="lazy"></a></div></div>
+
+    <h3>Layout</h3>
+    <div class="block has-shots"><div class="block__text"><h4>Columns and boxes</h4><p>One to four columns side by side, each a slot for any block. Optionally in a coloured box.</p>
+      <ul class="fill">
+        <li><b>Columns</b> – 1 to 4. One column is the way to put a single block in a box</li>
+        <li><b>Split</b> – for two columns: even, or a third and two thirds</li>
+        <li><b>Gap</b> – normal, wide or tight</li>
+        <li><b>Box</b> – none, white, light grey, black, ICON blue or custom colours. What is inside takes the box’s ink</li>
+        <li><b>Link</b> – the whole box goes somewhere</li>
+      </ul></div><div class="block__shots"><a class="shot" href="img/blocks/full/columns-box.jpg" data-caption="Columns and boxes – a boxed column on the Creative page"><img src="img/blocks/thumb/columns-box.jpg" alt="Columns in a box" loading="lazy"></a></div></div>
+    <div class="block has-shots"><div class="block__text"><h4>Grid</h4><p>Blocks that flow across the page as many as fit: one on a phone, up to four on a wide screen. For a list of services.</p>
+      <ul class="fill">
+        <li><b>Gap</b> – normal, tight or wide</li>
+        <li>Drop in a Content block per item</li>
+      </ul></div><div class="block__shots"><a class="shot" href="img/blocks/full/grid.jpg" data-caption="Grid – the Creative page's services"><img src="img/blocks/thumb/grid.jpg" alt="A grid of services" loading="lazy"></a></div></div>
+    <div class="block"><h4>Line</h4><p>A hairline across the page, drawn in as it scrolls into view. No fields.</p></div>
+    <div class="block"><h4>Spacer</h4><p>Empty height between two blocks: <b class="ui">Small</b>, <b class="ui">Normal</b>, <b class="ui">Large</b> or <b class="ui">A section’s air</b>. Nothing is drawn.</p></div>
+
+    <h3>Pictures and films</h3>
+    <div class="block has-shots"><div class="block__text"><h4>Picture (image/video)</h4><p>One picture or a looping film, at its own shape or cropped. The one picture block for every page.</p>
+      <ul class="fill">
+        <li><b>Picture</b> – pick from the media library, or upload</li>
+        <li><b>Cut-out</b> – optional: a second picture with a transparent background that floats over the first, or over a <b>Ground colour</b></li>
+        <li><b>Shape</b> – natural, landscape, square or portrait</li>
+        <li><b>Parallax</b> – a small drift as the page scrolls. Turn it off for a diagram or a screen</li>
+        <li>For two or three across, put Pictures in <b>Columns and boxes</b></li>
+      </ul></div><div class="block__shots"><a class="shot" href="img/blocks/full/picture.jpg" data-caption="Picture"><img src="img/blocks/thumb/picture.jpg" alt="A picture block" loading="lazy"></a></div></div>
+    <div class="block has-shots"><div class="block__text"><h4>Video embed</h4><p>A YouTube or Vimeo film, full width, that plays on click.</p>
+      <ul class="fill">
+        <li><b>Embed URL</b> – the player address, not the watch page: <span class="path">https://www.youtube-nocookie.com/embed/ID</span> or <span class="path">https://player.vimeo.com/video/ID</span></li>
+        <li><b>Title</b> – names the film for screen readers</li>
+        <li><b>Cover</b> – optional still shown before it plays; otherwise the film’s own</li>
+      </ul></div><div class="block__shots"><a class="shot" href="img/blocks/full/video-embed.jpg" data-caption="Video embed"><img src="img/blocks/thumb/video-embed.jpg" alt="An embedded video" loading="lazy"></a></div></div>
+    <div class="block has-shots"><div class="block__text"><h4>Video hosted</h4><p>A film from the media library with an art-directed cover. Plays with sound on click.</p>
+      <ul class="fill">
+        <li><b>Film</b> – a Video from the library, <b>Cover</b>, <b>Title</b></li>
+      </ul></div><div class="block__shots"><a class="shot" href="img/blocks/full/video-hosted.jpg" data-caption="Video hosted"><img src="img/blocks/thumb/video-hosted.jpg" alt="A hosted video with its cover" loading="lazy"></a></div></div>
+    <div class="block has-shots"><div class="block__text"><h4>Picture scroller (group)</h4><p>A strip of pictures and films drifting past, on an optional colour ground. Drop Picture blocks into it.</p>
+      <ul class="fill">
+        <li><b>Ground colour</b> – a hex value, or empty for none</li>
+      </ul></div><div class="block__shots"><a class="shot" href="img/blocks/full/picture-scroller.jpg" data-caption="Picture scroller"><img src="img/blocks/thumb/picture-scroller.jpg" alt="A picture scroller" loading="lazy"></a></div></div>
+    <div class="block"><h4>Gallery row (group) and Gallery row picture (item)</h4><p>One or two figures side by side on a case study. Each item is a picture or film, plain, portrait, or a cut-out layered over a ground.</p></div>
+
+    <h3>Filmstrip</h3>
+    <div class="block has-shots"><div class="block__text"><h4>Filmstrip (group)</h4><p>The strip of tilted cards drifting past, draggable. Holds photo and fact card items in the order you place them.</p>
+      <ul class="fill">
+        <li><b>Accessible label</b> – names the strip for screen readers</li>
+      </ul></div><div class="block__shots"><a class="shot" href="img/blocks/full/filmstrip.jpg" data-caption="Filmstrip – the About page"><img src="img/blocks/thumb/filmstrip.jpg" alt="A filmstrip" loading="lazy"></a></div></div>
+    <div class="block"><h4>Filmstrip photo (item)</h4><p>One card: a picture, or a short film that loops without sound.</p></div>
+    <div class="block has-shots"><div class="block__text"><h4>Filmstrip fact card (item)</h4><p>A blue card with an icon, a headline figure and a label.</p>
+      <ul class="fill">
+        <li><b>Icon</b> – from the site’s icon set. See <a href="#logos">Client logos &amp; icons</a></li>
+        <li><b>Heading</b>, <b>Label</b></li>
+      </ul></div><div class="block__shots"><a class="shot" href="img/blocks/full/fact-card.jpg" data-caption="Fact card"><img src="img/blocks/thumb/fact-card.jpg" alt="A fact card" loading="lazy"></a></div></div>
+
+    <h3>Testimonials and results</h3>
+    <div class="block has-shots"><div class="block__text"><h4>Testimonials (group)</h4><p>The quotes carousel: arrows, a counter, one quote at a time. Turns itself.</p>
+      <ul class="fill">
+        <li><b>Box</b> – light grey, white, black, ICON blue, custom or none</li>
+        <li><b>Accessible label</b> – e.g. “What our clients say”</li>
+        <li>Drop <b>Testimonial (item)</b> blocks in. Each picks a quote from <a href="#testimonials">Testimonials</a></li>
+      </ul></div><div class="block__shots"><a class="shot" href="img/blocks/full/testimonials.jpg" data-caption="Testimonials – the homepage, a quote wearing its client's colour"><img src="img/blocks/thumb/testimonials.jpg" alt="The testimonials carousel" loading="lazy"></a></div></div>
+    <div class="block has-shots"><div class="block__text"><h4>Result stats (group) and Result stats number (item)</h4><p>The results band: two columns of figures with what each counts.</p>
+      <ul class="fill">
+        <li>Per number: <b>Figure</b> (48, 3.2M, 87%), <b>Unit</b> – optional, <b>Label</b></li>
+      </ul></div><div class="block__shots"><a class="shot" href="img/blocks/full/results.jpg" data-caption="Result stats on a case study"><img src="img/blocks/thumb/results.jpg" alt="A results band" loading="lazy"></a><a class="shot" href="img/blocks/full/stats.jpg" data-caption="Result stats on the About page"><img src="img/blocks/thumb/stats.jpg" alt="Stats on the About page" loading="lazy"></a></div></div>
+    <div class="block has-shots"><div class="block__text"><h4>Run (text with the Share rail)</h4><p>On a case study: a run of the reading column with one Share rail beside it. Put Content, Results and films inside; a gallery, scroller or pull quote goes between runs.</p></div><div class="block__shots"><a class="shot" href="img/blocks/full/run.jpg" data-caption="A run on a case study"><img src="img/blocks/thumb/run.jpg" alt="A run with the share rail" loading="lazy"></a></div></div>
+
+    <h3>The site’s own blocks</h3>
+    <p class="fill">These read from records. Place the block, and manage what it shows in its panel or under Content.</p>
+    <div class="block has-shots"><div class="block__text"><h4>Homepage hero</h4><p>The films that pile up and play as a reel under “Make what matters”. Not a block you place: it is part of the homepage, and its reel is managed under <span class="path">Content › Homepage hero</span>. See <a href="#hero">Homepage hero</a>.</p></div><div class="block__shots"><a class="shot" href="img/blocks/full/hero.jpg" data-caption="Homepage hero"><img src="img/blocks/thumb/hero.jpg" alt="The homepage hero" loading="lazy"></a></div></div>
+    <div class="block has-shots"><div class="block__text"><h4>Featured work</h4><p>Five case study tiles in a fixed rhythm. Its panel picks the five, or shows the newest automatically.</p></div><div class="block__shots"><a class="shot" href="img/blocks/full/featured-work.jpg" data-caption="Featured work"><img src="img/blocks/thumb/featured-work.jpg" alt="The featured work grid" loading="lazy"></a></div></div>
+    <div class="block has-shots"><div class="block__text"><h4>News feed (homepage)</h4><p>The newest promoted stories. Its panel pins, removes and adds stories. See <a href="#news">News stories</a>.</p></div><div class="block__shots"><a class="shot" href="img/blocks/full/news-feed.jpg" data-caption="The homepage news feed"><img src="img/blocks/thumb/news-feed.jpg" alt="The homepage news feed" loading="lazy"></a></div></div>
+    <div class="block has-shots"><div class="block__text"><h4>Team profiles</h4><p>The team grid and the panel that opens for each person. Its panel reorders people. See <a href="#team">Team members</a>.</p></div><div class="block__shots"><a class="shot" href="img/blocks/full/team-profiles.jpg" data-caption="Team profiles"><img src="img/blocks/thumb/team-profiles.jpg" alt="The team grid" loading="lazy"></a></div></div>
+    <div class="block has-shots"><div class="block__text"><h4>Clients scroller</h4><p>Two rows of client logos drifting past. Its panel is the logo list. See <a href="#logos">Client logos &amp; icons</a>.</p></div><div class="block__shots"><a class="shot" href="img/blocks/full/clients.jpg" data-caption="Clients scroller"><img src="img/blocks/thumb/clients.jpg" alt="The client logo marquee" loading="lazy"></a></div></div>
+    <div class="block has-shots"><div class="block__text"><h4>Expertise links</h4><p>The “Our expertise” list. It is the Expertise item’s children in the main menu; edit them there.</p></div><div class="block__shots"><a class="shot" href="img/blocks/full/expertise-links.jpg" data-caption="Expertise links"><img src="img/blocks/thumb/expertise-links.jpg" alt="The expertise links" loading="lazy"></a></div></div>
+    <div class="block has-shots"><div class="block__text"><h4>Offices</h4><p>The offices, open, with address, phone and email. Reads <a href="#offices">Offices</a>.</p></div><div class="block__shots"><a class="shot" href="img/blocks/full/offices.jpg" data-caption="Offices on the Contact page"><img src="img/blocks/thumb/offices.jpg" alt="The office list" loading="lazy"></a></div></div>
+    <div class="block has-shots"><div class="block__text"><h4>Contact form</h4><p>The enquiry form: a business enquiry or a careers message. Who receives each is set under <span class="path">Structure › Contact forms</span>.</p></div><div class="block__shots"><a class="shot" href="img/blocks/full/contact-form.jpg" data-caption="Contact form"><img src="img/blocks/thumb/contact-form.jpg" alt="The contact form" loading="lazy"></a></div></div>
+    <div class="block has-shots"><div class="block__text"><h4>Venn diagram</h4><p>The four-practice rings that draw themselves. Five words to change: centre, top, right, bottom, left.</p></div><div class="block__shots"><a class="shot" href="img/blocks/full/venn.jpg" data-caption="Venn diagram"><img src="img/blocks/thumb/venn.jpg" alt="The Venn diagram" loading="lazy"></a></div></div>
+  </section>
+
+  <section id="work">
+    <h2>Work case studies</h2>
+    <p class="where">Where: <span class="path">Create › Work</span>, or <span class="path">Content</span> filtered to Work</p>
+    <p class="lead">A case study is a record plus a Canvas body. The record feeds the Work landing, the homepage and search; the body is the story.</p>
+    <h3>Add a case study</h3>
+    <ol class="steps">
+      <li>Choose <b class="ui">Create</b>, then <b class="ui">Work</b>.</li>
+      <li>Fill in the form (the table below). <b class="ui">Save</b> it as a draft.</li>
+      <li>Choose the <b class="ui">Build in Canvas</b> tab. The top of the page, the title, client, banner, statement and facts, is drawn from the form; you build the body below it.</li>
+      <li>Drop a <b class="ui">Run</b> in and put <b class="ui">Content</b> blocks inside it: Overview, Background, the work. Add <b class="ui">Result stats</b>, a <b class="ui">Video hosted</b> or <b class="ui">Video embed</b> inside the run; <b class="ui">Pull quotes</b>, <b class="ui">Gallery rows</b> and a <b class="ui">Picture scroller</b> between runs.</li>
+      <li><b class="ui">Preview</b>, then publish. On the form, set the state to <b class="ui">Published</b> when the whole thing is ready.</li>
+    </ol>
+    <figure class="shot-fig"><a class="shot-link" href="img/shots/work-form.jpg" data-caption="The Work form"><img src="img/shots/work-form.jpg" alt="The Work form" loading="lazy"></a><figcaption>The Work form. The tile, client and category feed the listing; the colours dress the page.</figcaption></figure>
+    <div class="table-wrap">
+    <table class="fields">
+      <thead><tr><th>Field</th><th>What to put</th></tr></thead>
+      <tbody>
+        <tr><th>Project name</th><td>Short, e.g. <i>Raise It</i>. The heading, the start of the address, the card’s headline.</td></tr>
+        <tr><th>Client</th><td>Under the project name and on the card.</td></tr>
+        <tr><th>Feature statement</th><td>The outcome in one line. The serif line under the banner.</td></tr>
+        <tr><th>Square</th><td>The tile: square, at least 1600px. A picture or a looping film.</td></tr>
+        <tr><th>Wide</th><td>Optional: a 16:9 tile for the wide feature frame, at least 1920px wide.</td></tr>
+        <tr><th>Foreground overlay, Foreground inset</th><td>Optional: a logo or cut-out that floats over the tile, and how far in it sits.</td></tr>
+        <tr><th>Banner</th><td>The wide hero under the title. Falls back to the tile.</td></tr>
+        <tr><th>Categories</th><td>One or more. The first is the filter the Work landing uses.</td></tr>
+        <tr><th>Deliverables</th><td>The services list, one per line.</td></tr>
+        <tr><th>Page colour, Ink colour</th><td>The client pair the whole page wears. Click the swatch to pick. Check the two read well together.</td></tr>
+        <tr><th>Authored on</th><td>Under the form’s side panel. The Work landing is newest first by this date, so set it to the project’s date.</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <ul>
+      <li>The address is made for you: <span class="path">/work/project-name-client</span>.</li>
+      <li>The top of a case study is not a block. To change the title, client, colours, banner or deliverables, use <b class="ui">Page data</b> on the right of the editor, or the form under the <b class="ui">Fields</b> tab; the page follows.</li>
+      <li>Where it appears: the <b class="ui">Work</b> landing and its category filters, the homepage’s Featured work when picked or newest, the “Next up” rail on other case studies, and search.</li>
+    </ul>
+    <figure class="shot-fig"><a class="shot-link" href="img/shots/editor-work.jpg" data-caption="A case study in the Canvas editor: the frame from the form, the body as blocks"><img src="img/shots/editor-work.jpg" alt="A case study open in the Canvas editor" loading="lazy"></a><figcaption>Build in Canvas: the top of the page comes from the form; the body is yours, block by block.</figcaption></figure>
+  </section>
+
+  <section id="news">
+    <h2>News stories</h2>
+    <p class="where">Where: <span class="path">Create › News</span>, or <span class="path">Content</span> filtered to News</p>
+    <h3>Add a story</h3>
+    <ol class="steps">
+      <li>Choose <b class="ui">Create</b>, then <b class="ui">News</b>.</li>
+      <li>Fill in <b class="ui">Title</b>, <b class="ui">Tile image</b>, <b class="ui">Category</b> and <b class="ui">Date</b>.</li>
+      <li>Write the story in <b class="ui">Body</b>: add <b class="ui">Content</b>, <b class="ui">Image</b>, <b class="ui">Video</b> and <b class="ui">Pull quote</b> blocks in any order.</li>
+      <li>Want it on the homepage? Tick <b class="ui">Promote to homepage</b>. Tick <b class="ui">Pin on homepage</b> to keep it at the top whatever its date.</li>
+      <li>Set the state to <b class="ui">Published</b> and <b class="ui">Save</b>.</li>
+    </ol>
+    <figure class="shot-fig"><a class="shot-link" href="img/shots/news-form.jpg" data-caption="The News form"><img src="img/shots/news-form.jpg" alt="The News form" loading="lazy"></a><figcaption>The News form.</figcaption></figure>
+    <div class="table-wrap">
+    <table class="fields">
+      <thead><tr><th>Field</th><th>What to put</th></tr></thead>
+      <tbody>
+        <tr><th>Tile image</th><td>The story’s photo: the square tile on the listing and the homepage, the head photo on the article. Landscape or square, at least 1200px wide.</td></tr>
+        <tr><th>Banner (optional, 2:1)</th><td>A wide image for the article head. With one, the head stacks; without, the tile sits beside the headline.</td></tr>
+        <tr><th>Category</th><td>Agency, Our work, Awards or Insights. The News landing filters on it.</td></tr>
+        <tr><th>Date</th><td>Shown on the card and the article. The listing sorts by it.</td></tr>
+        <tr><th>Video block</th><td>In the body: the embed address of a YouTube or Vimeo player, a title, and an optional cover still.</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <h3>The homepage feed</h3>
+    <p>The homepage shows the newest promoted stories. On the homepage in the editor, click the news feed to open its panel: <b class="ui">Pin</b>, <b class="ui">Remove</b> and <b class="ui">Add a story</b> take effect at once.</p>
+  </section>
+
+  <section id="team">
+    <h2>Team members</h2>
+    <p class="where">Where: <span class="path">Create › Team member</span>, and the Team profiles panel on the About page</p>
+    <ol class="steps">
+      <li>Choose <b class="ui">Create</b>, then <b class="ui">Team member</b>.</li>
+      <li>Fill in <b class="ui">Name</b>, <b class="ui">Role</b>, <b class="ui">Portrait</b> (square, at least 1000px), <b class="ui">Bio</b> (two or three short paragraphs) and <b class="ui">LinkedIn</b>.</li>
+      <li>Set <b class="ui">Order</b>: lower numbers first. Or drag them into order on the About page’s panel.</li>
+      <li>Set the state to <b class="ui">Published</b> and <b class="ui">Save</b>.</li>
+    </ol>
+    <figure class="shot-fig"><a class="shot-link" href="img/shots/team-form.jpg" data-caption="The Team member form"><img src="img/shots/team-form.jpg" alt="The Team member form" loading="lazy"></a><figcaption>The Team member form.</figcaption></figure>
+    <ul>
+      <li>Each published person has an address of their own, <span class="path">/about/their-name</span>, which opens their panel on the About page. Search finds them too.</li>
+      <li>To take someone off the grid without deleting them, untick <b class="ui">Published</b>.</li>
+      <li>On the About page in the editor, click the team grid: its panel lists everyone. Drag to reorder; the order saves at once. <b class="ui">Edit</b> opens the person over the page.</li>
+    </ul>
+  </section>
+
+  <section id="testimonials">
+    <h2>Testimonials</h2>
+    <p class="where">Where: <span class="path">Create › Testimonial</span>, and a Testimonials block on a page</p>
+    <h3>Add a quote</h3>
+    <ol class="steps">
+      <li>Choose <b class="ui">Create</b>, then <b class="ui">Testimonial</b>.</li>
+      <li>Fill in <b class="ui">Name</b>, <b class="ui">Role</b>, <b class="ui">Company</b> and the <b class="ui">Quote</b>. Leave the quotation marks out; the site adds them.</li>
+      <li><b class="ui">Logo</b>: the company’s mark from the media library, shown in one colour. Tick <b class="ui">Larger logo</b> for a tall or square mark.</li>
+      <li><b class="ui">Ground colour</b> and <b class="ui">Ink colour</b>: optional. The carousel’s box wears them while this quote shows, like a case study’s page colour.</li>
+      <li><b class="ui">Save</b>.</li>
+    </ol>
+    <figure class="shot-fig"><a class="shot-link" href="img/shots/testimonial-form.jpg" data-caption="The Testimonial form"><img src="img/shots/testimonial-form.jpg" alt="The Testimonial form" loading="lazy"></a><figcaption>The Testimonial form, with a colour picker on the two colour fields.</figcaption></figure>
+    <h3>Put it on a page</h3>
+    <ol class="steps">
+      <li>In the editor, click the page’s <b class="ui">Testimonials (group)</b> block, or add one from the Library.</li>
+      <li>Drop a <b class="ui">Testimonial (item)</b> into it. In the item’s settings, pick the quote. A new quote appears in the list as soon as it is saved.</li>
+      <li>Reorder the items in <b class="ui">Layers</b>. One item alone shows as a single quote with no arrows.</li>
+    </ol>
+    <div class="note note--tip"><b>Tip</b><p>A quote’s own colours only show when the group has a <b class="ui">Box</b>. With Box set to none there is nothing to colour.</p></div>
+  </section>
+
+  <section id="hero">
+    <h2>Homepage hero</h2>
+    <p class="where">Where: <span class="path">Content › Homepage hero</span>, and <span class="path">Create › Hero slide</span></p>
+    <p class="lead">The hero is part of the homepage itself; it cannot be moved or deleted in the editor. What it plays is a reel of slides, managed in one list.</p>
+    <ol class="steps">
+      <li>Choose <b class="ui">Content</b>, then <b class="ui">Homepage hero</b>. Every slide is listed.</li>
+      <li>Tick <b class="ui">On the reel</b> for the ones to play, up to eight. Drag the handles to order them; the reel plays top to bottom.</li>
+      <li><b class="ui">Add slide</b> at the top makes a new one; <b class="ui">Edit</b> opens a slide’s film or image, client name and link.</li>
+      <li>Choose <b class="ui">Save the reel</b>. The homepage, the login page and the footer’s ICON mask all play the new reel at once.</li>
+    </ol>
+    <figure class="shot-fig"><a class="shot-link" href="img/shots/hero-reel.jpg" data-caption="Content › Homepage hero: the reel as a list"><img src="img/shots/hero-reel.jpg" alt="The Homepage hero list" loading="lazy"></a><figcaption>The reel. Ticked slides play, in this order.</figcaption></figure>
+    <div class="note note--care"><b>Films for the hero</b><p>Six seconds long, MP4, no sound. The reel loops them. A longer or louder film breaks the rhythm.</p></div>
+    <figure class="shot-fig"><a class="shot-link" href="img/shots/hero-slide-form.jpg" data-caption="The Hero slide form"><img src="img/shots/hero-slide-form.jpg" alt="The Hero slide form" loading="lazy"></a><figcaption>A slide: client name, film or image, link.</figcaption></figure>
+  </section>
+
+  <section id="logos">
+    <h2>Client logos &amp; icons</h2>
+    <h3>Client logos</h3>
+    <p class="where">Where: <span class="path">Content › Client logos</span>, or the Clients scroller’s panel on the homepage</p>
+    <ol class="steps">
+      <li>Choose <b class="ui">Content</b>, then <b class="ui">Client logos</b>.</li>
+      <li><b class="ui">Add logo</b>: upload an SVG (preferred) or a PNG, and name it. The name is what screen readers announce.</li>
+      <li>Drag the rows into order. The order saves at once.</li>
+      <li><b class="ui">Edit</b> replaces the file or renames it. <b class="ui">Remove</b> takes it out of the marquee; the file stays in the library.</li>
+    </ol>
+    <figure class="shot-fig"><a class="shot-link" href="img/shots/logos.jpg" data-caption="Client logos"><img src="img/shots/logos.jpg" alt="The client logos list" loading="lazy"></a><figcaption>The client logo list. The marquee runs these in order.</figcaption></figure>
+    <ul>
+      <li>SVG logos: cropped tight, transparent, paths only. The site cleans every SVG on upload and shows it in one colour where it needs to.</li>
+      <li>Tick <b class="ui">Larger logo</b> for a mark that sits small in its card.</li>
+      <li>The same logos are offered to a Testimonial’s <b class="ui">Logo</b> field.</li>
+    </ul>
+    <h3>Icons</h3>
+    <p class="where">Where: <span class="path">Content › Icons</span></p>
+    <p>Single-colour SVG icons for the fact cards and the offices. Add, rename, reorder or remove them here; a new one is offered in the fact card’s <b class="ui">Icon</b> field straight away.</p>
+    <figure class="shot-fig"><a class="shot-link" href="img/shots/icons.jpg" data-caption="Icons"><img src="img/shots/icons.jpg" alt="The icons list" loading="lazy"></a><figcaption>The icon set.</figcaption></figure>
+  </section>
+
+  <section id="offices">
+    <h2>Offices</h2>
+    <p class="where">Where: <span class="path">Content › Offices</span>, or <span class="path">Create › Office</span></p>
+    <ol class="steps">
+      <li>Choose <b class="ui">Content</b>, then <b class="ui">Offices</b>. Open one, or <b class="ui">Add office</b>.</li>
+      <li>Fill in <b class="ui">City</b>, <b class="ui">Traditional place name</b> (Naarm, Gadigal, Meanjin), <b class="ui">Icon</b>, <b class="ui">Address</b> one line per row, <b class="ui">Phone</b> and <b class="ui">Email</b>.</li>
+      <li>Drag the list into order. <b class="ui">Save</b>.</li>
+    </ol>
+    <figure class="shot-fig"><a class="shot-link" href="img/shots/offices.jpg" data-caption="Offices"><img src="img/shots/offices.jpg" alt="The offices list" loading="lazy"></a><figcaption>The offices, in footer order.</figcaption></figure>
+    <p>The footer accordion and the Contact page’s <b class="ui">Offices</b> block both read this list.</p>
+  </section>
+
+  <section id="media">
+    <h2>Images, films &amp; files</h2>
+    <p class="where">Where: <span class="path">Media</span>, or the <b class="ui">Add media</b> button on any picture field</p>
+    <h3>Add a picture or film</h3>
+    <ol class="steps">
+      <li>On the field, choose <b class="ui">Add media</b>. The library opens.</li>
+      <li>Pick one already there, or choose <b class="ui">Upload</b> and pick a file from your computer.</li>
+      <li>Give it a name and, for a picture, alt text: what it shows, for people who cannot see it.</li>
+      <li>Pick the <b class="ui">Folder</b>: Intro, Hero slides, Work or News. The library filters on it.</li>
+      <li><b class="ui">Insert</b>.</li>
+    </ol>
+    <figure class="shot-fig"><a class="shot-link" href="img/shots/media.jpg" data-caption="The media library"><img src="img/shots/media.jpg" alt="The media library" loading="lazy"></a><figcaption>The media library, in folders.</figcaption></figure>
+    <div class="table-wrap">
+    <table class="fields">
+      <thead><tr><th>Where it goes</th><th>Size and shape</th></tr></thead>
+      <tbody>
+        <tr><th>Work tile (Square)</th><td>Square, at least 1600px. Picture or looping film.</td></tr>
+        <tr><th>Work tile (Wide), Banner</th><td>16:9, at least 1920px wide.</td></tr>
+        <tr><th>News tile</th><td>Landscape or square, at least 1200px wide.</td></tr>
+        <tr><th>News banner</th><td>2:1.</td></tr>
+        <tr><th>Portrait</th><td>Square, at least 1000px.</td></tr>
+        <tr><th>Hero slide film</th><td>MP4, six seconds, no sound.</td></tr>
+        <tr><th>Any film</th><td>MP4, encoded for the web. Give it a <b class="ui">Poster</b>: the still the library and the search show for it.</td></tr>
+        <tr><th>Logo, icon</th><td>SVG, single colour for icons.</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <ul>
+      <li>Upload limits: pictures 12 MB, film posters 8 MB, films 80 MB, logos 2 MB, icons 1 MB, documents 25 MB.</li>
+      <li>JPEG for photos, PNG for cut-outs with transparency, SVG for logos and icons.</li>
+      <li>A picture used on a page can be replaced in the library: open it under <b class="ui">Media</b>, change the file, save. Every page using it updates.</li>
+    </ul>
+  </section>
+
+  <section id="menu">
+    <h2>Menu</h2>
+    <p class="where">Where: <span class="path">Structure › Menus › Main navigation</span></p>
+    <ol class="steps">
+      <li>Choose <b class="ui">Structure</b>, <b class="ui">Menus</b>, then <b class="ui">Main navigation</b>.</li>
+      <li><b class="ui">Add link</b>: a name and the page’s address, e.g. <span class="path">/about</span>.</li>
+      <li>Drag links into order, or indent one under <b class="ui">Expertise</b> to put it in that drawer.</li>
+      <li><b class="ui">Save</b>.</li>
+    </ol>
+    <figure class="shot-fig"><a class="shot-link" href="img/shots/menu.jpg" data-caption="The main navigation"><img src="img/shots/menu.jpg" alt="The main navigation menu" loading="lazy"></a><figcaption>The main menu. The Expertise drawer is its indented children.</figcaption></figure>
+    <div class="note note--tip"><b>The Expertise children do three jobs</b><p>They are the drawer under EXPERTISE, the “Our expertise” list on the homepage and the practice pages, and the sections the site search groups results by. Rename one and all three follow.</p></div>
+  </section>
+
+  <section id="footer">
+    <h2>Footer</h2>
+    <p class="where">Where: <span class="path">Content › Footer</span></p>
+    <ol class="steps">
+      <li>Choose <b class="ui">Content</b>, then <b class="ui">Footer</b>.</li>
+      <li>Change the words and the four links. A link is a path starting with a slash, or a full web, mailto or tel address.</li>
+      <li><b class="ui">Save</b>. The footer on every page updates.</li>
+    </ol>
+    <figure class="shot-fig"><a class="shot-link" href="img/shots/footer.jpg" data-caption="The footer settings"><img src="img/shots/footer.jpg" alt="The footer form" loading="lazy"></a><figcaption>The footer form.</figcaption></figure>
+    <ul>
+      <li>The offices in the footer come from <a href="#offices">Offices</a>. The social links are the <b class="ui">Footer social</b> menu under <span class="path">Structure › Menus</span>. The films behind the ICON mask are the <a href="#hero">homepage hero’s reel</a>.</li>
+      <li>The footer has no revisions. Note the old wording before you change it.</li>
+    </ul>
+  </section>
+
+  <section id="search">
+    <h2>Search</h2>
+    <p>The magnifying glass in the menu pill opens the search. Results appear as you type, grouped the way the menu is: Work, Expertise, About, News, Contact. Each result shows a picture where the record has one.</p>
+    <figure class="shot-fig"><a class="shot-link" href="img/shots/search.jpg" data-caption="The site search"><img src="img/shots/search.jpg" alt="The site search open with results" loading="lazy"></a><figcaption>Search, with results grouped by section.</figcaption></figure>
+    <ul>
+      <li>A record is searchable the moment it is published. Unpublished records and drafts never appear.</li>
+      <li>A case study’s picture in the results is its tile; a film shows its poster. A story shows its tile image; a person their portrait.</li>
+      <li>Nothing to do here. There is no search settings page.</li>
+    </ul>
+  </section>
+
+  <section id="colours">
+    <h2>Colours</h2>
+    <p class="lead">Every colour field has a swatch. Click it to pick, or type a hex value such as <span class="path">#0000ff</span>.</p>
+    <div class="table-wrap">
+    <table class="fields">
+      <thead><tr><th>Where</th><th>What it colours</th></tr></thead>
+      <tbody>
+        <tr><th>Masthead › Opens on</th><td>The colour a page opens on. See <a href="#opening">The colour a page opens on</a>.</td></tr>
+        <tr><th>Work › Page colour and Ink colour</th><td>The whole case study page, wordmark and menu included, until the banner scrolls away.</td></tr>
+        <tr><th>Columns and boxes › Box</th><td>The box behind a group of blocks.</td></tr>
+        <tr><th>Testimonials › Box, and a quote’s Ground and Ink</th><td>The carousel’s box, and a per-quote colour while that quote shows.</td></tr>
+        <tr><th>Picture › Ground colour, Picture scroller › Ground colour</th><td>The colour behind a cut-out or a strip.</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="note note--care"><b>Readable pairs</b><p>Check that the ink reads on the ground: dark on light or light on dark, never two mid-tones. The site’s own pairs are black on light grey, white on black and white on ICON blue.</p></div>
+  </section>
+
+  <section id="addresses">
+    <h2>Web addresses</h2>
+    <ul>
+      <li>A case study’s address is made from its project name and client: <span class="path">/work/raise-it-north-western-melbourne-phn</span>.</li>
+      <li>A story’s address is made from its date and title. A page’s is its title, lower-case with hyphens.</li>
+      <li>To change one, edit <b class="ui">URL alias</b> on the form or under <b class="ui">Page data</b>. Keep it short, lower-case, hyphens between words.</li>
+      <li>Changed an address that is already published or printed somewhere? Ask an administrator to add a redirect from the old one, so links keep working.</li>
+    </ul>
+  </section>
+
+  <section id="saving">
+    <h2>Save, preview, publish</h2>
+    <div class="table-wrap">
+    <table class="fields">
+      <thead><tr><th>In a form</th><th>What it does</th></tr></thead>
+      <tbody>
+        <tr><th>Save as Draft</th><td>Keeps your work off the site. Only signed-in people see it.</td></tr>
+        <tr><th>Save as Published</th><td>Puts it on the site now, and in search.</td></tr>
+        <tr><th>Archived</th><td>Takes it off the site without deleting it.</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="table-wrap">
+    <table class="fields">
+      <thead><tr><th>In the Canvas editor</th><th>What it does</th></tr></thead>
+      <tbody>
+        <tr><th>Typing</th><td>Saved as you go, as a draft. Close the browser and it is still there.</td></tr>
+        <tr><th>Preview</th><td>The page as a visitor will see it, with its colour and animation.</td></tr>
+        <tr><th>The changes button</th><td>Top right. Counts your unpublished changes; click it and choose <b class="ui">Publish</b>.</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <ul>
+      <li>A green <b class="ui">Published</b> badge at the top of the editor means the page is live. A draft page shows <b class="ui">Draft</b>.</li>
+      <li>Rather than delete, archive or unpublish. It can come back.</li>
+    </ul>
+  </section>
+
+  <section id="undo">
+    <h2>Undo a change</h2>
+    <h3>While you are editing</h3>
+    <p>The arrows at the top left of the editor undo and redo. In a form, nothing is saved until you choose <b class="ui">Save</b>; leave the page to abandon your edits.</p>
+    <h3>Go back to an earlier version</h3>
+    <ol class="steps">
+      <li>Open the record and choose the <b class="ui">Revisions</b> tab.</li>
+      <li>Every save is listed with its date and note. Choose <b class="ui">Revert</b> beside the one you want.</li>
+    </ol>
+    <figure class="shot-fig"><a class="shot-link" href="img/shots/revisions.jpg" data-caption="A case study's revisions"><img src="img/shots/revisions.jpg" alt="A revisions list" loading="lazy"></a><figcaption>Revisions. Every save is kept.</figcaption></figure>
+    <ul>
+      <li>Pages keep every published version too. Ask an administrator to restore one.</li>
+      <li>Write a line in <b class="ui">Revision log message</b> when you save. Future you will thank you.</li>
+      <li>There is no trash. A deleted record or picture is gone; archive or unpublish instead.</li>
+      <li>The footer, the menu and the logo order have no revisions. Note the old wording first.</li>
+    </ul>
+  </section>
+
+  <section id="roles">
+    <h2>Who can do what</h2>
+    <div class="table-wrap">
+    <table class="fields">
+      <thead><tr><th>Role</th><th>Can</th></tr></thead>
+      <tbody>
+        <tr><th>Content editor</th><td>Everything in this manual: pages, records, media, menu, footer, logos, icons, offices.</td></tr>
+        <tr><th>Administrator</th><td>All of that, plus users, redirects, contact form recipients and technical settings.</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p>Missing a button described here? Your account may have a different role. Ask an administrator.</p>
+  </section>
+
+  <section id="help">
+    <h2>Something looks wrong</h2>
+    <details class="qa"><summary>My case study isn’t on the Work page</summary><div>
+      <ul>
+        <li>Is its state <b class="ui">Published</b>?</li>
+        <li>Does it have a <b class="ui">Category</b>? The landing filters on the first one.</li>
+        <li>Its place in the list is its <b class="ui">Authored on</b> date, newest first.</li>
+      </ul></div></details>
+    <details class="qa"><summary>My story isn’t on the homepage</summary><div>
+      <ul>
+        <li>Is <b class="ui">Promote to homepage</b> ticked? The feed is the newest promoted stories.</li>
+        <li>An older story needs <b class="ui">Pin on homepage</b> too, or newer ones sit above it.</li>
+      </ul></div></details>
+    <details class="qa"><summary>The quote’s colours don’t show</summary><div>
+      <p>The Testimonials group needs a <b class="ui">Box</b>. With no box there is nothing to colour.</p></div></details>
+    <details class="qa"><summary>The page opens light, not in its colour</summary><div>
+      <p>Click the Masthead and check <b class="ui">Opens on</b>. The editor shows the colour on the masthead only; <b class="ui">Preview</b> shows the whole page.</p></div></details>
+    <details class="qa"><summary>A film in the hero stutters or has sound</summary><div>
+      <p>Hero films must be six seconds and silent. Re-export it and replace the file on the slide.</p></div></details>
+    <details class="qa"><summary>I can’t find the hero in the editor</summary><div>
+      <p>It is not a block any more. Its reel lives under <span class="path">Content › Homepage hero</span>; the slides are records under <b class="ui">Create › Hero slide</b>.</p></div></details>
+    <details class="qa"><summary>A picture is blank in the editor</summary><div>
+      <p>Pictures and films load as they scroll into view. Scroll to it, or check it in <b class="ui">Preview</b>. An empty Picture block shows a dashed placeholder: click it and add media.</p></div></details>
+    <details class="qa"><summary>Search doesn’t find my page</summary><div>
+      <ul>
+        <li>Is it published? Drafts are never searchable.</li>
+        <li>Search needs two letters or more, and matches whole words and their stems.</li>
+      </ul></div></details>
+    <details class="qa"><summary>A search result has no picture</summary><div>
+      <p>The record has no picture: a case study whose tile is a film without a <b class="ui">Poster</b>, or a page. Add a poster to the film in the media library.</p></div></details>
+    <details class="qa"><summary>I can’t see the Edit link or a button in this manual</summary><div>
+      <p>Sign in, then check <a href="#roles">Who can do what</a>.</p></div></details>
+  </section>
+
+  <p class="foot">ICON Agency website manual · Drupal 11 with Canvas · October 2026. The pictures show the site as it was when this manual was written; the words and colours on yours may differ.</p>
+</main>
+
+<dialog id="lightbox" aria-label="Picture preview"><figure><img src="" alt=""><figcaption><span></span><button type="button">Close</button></figcaption></figure></dialog>
+<script>
+(function () {
+  // Pictures open a larger view.
+  var box = document.getElementById('lightbox');
+  if (box && typeof box.showModal === 'function') {
+    var img = box.querySelector('img'), cap = box.querySelector('span');
+    document.querySelectorAll('a.shot, a.shot-link').forEach(function (a) {
+      a.addEventListener('click', function (e) {
+        e.preventDefault();
+        img.src = a.getAttribute('href'); img.alt = a.dataset.caption || ''; cap.textContent = a.dataset.caption || '';
+        box.showModal();
+      });
+    });
+    box.querySelector('button').addEventListener('click', function () { box.close(); });
+    box.addEventListener('click', function (e) { if (e.target === box) box.close(); });
+  }
+
+  var side = document.getElementById('side');
+  var toggle = document.getElementById('menu-toggle');
+  var links = Array.prototype.slice.call(document.querySelectorAll('.side__links a'));
+
+  // Narrow screens: open and close the menu.
+  function setOpen(open) {
+    side.classList.toggle('is-open', open);
+    toggle.setAttribute('aria-expanded', String(open));
+  }
+  toggle.addEventListener('click', function () { setOpen(!side.classList.contains('is-open')); });
+  links.forEach(function (a) { a.addEventListener('click', function () { setOpen(false); }); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') setOpen(false); });
+  document.querySelector('.page').addEventListener('click', function () { setOpen(false); });
+
+  // Highlight the section being read.
+  var byId = {};
+  links.forEach(function (a) { byId[a.getAttribute('href').slice(1)] = a; });
+  var targets = Object.keys(byId).map(function (id) { return document.getElementById(id); }).filter(Boolean);
+  function mark() {
+    var current = targets[0];
+    targets.forEach(function (t) { if (t.getBoundingClientRect().top <= 120) current = t; });
+    links.forEach(function (a) { a.classList.toggle('is-current', a === byId[current.id]); });
+  }
+  window.addEventListener('scroll', mark, { passive: true });
+  mark();
+
+  // Find a topic: filter the menu by its link text and by the words in each section.
+  var find = document.getElementById('find');
+  var none = document.getElementById('find-none');
+  var text = {};
+  targets.forEach(function (t) { text[t.id] = (t.textContent || '').toLowerCase(); });
+  find.addEventListener('input', function () {
+    var q = find.value.trim().toLowerCase();
+    var shown = 0;
+    links.forEach(function (a) {
+      var id = a.getAttribute('href').slice(1);
+      var hit = !q || a.textContent.toLowerCase().indexOf(q) > -1 || (text[id] || '').indexOf(q) > -1;
+      a.parentNode.hidden = !hit;
+      if (hit) shown++;
+    });
+    Array.prototype.forEach.call(document.querySelectorAll('.side__group'), function (g) {
+      g.hidden = !g.querySelector('li:not([hidden])');
+    });
+    none.hidden = shown > 0;
+  });
+})();
+</script>
+</body>
+</html>

@@ -8,7 +8,9 @@
  * (`.page-home` on the homepage).
  *
  * Available variables: page.highlighted (status messages), page.content;
- * work_shell / work_frame (the Canvas editor building a Work article, see below).
+ * hero (the homepage hero's reel, on the front page only — baked in, not a
+ * block); work_shell / work_frame (the Canvas editor building a Work
+ * article, see below).
  */
 #}
 <a class="sr-only skip-link" href="#main">{{ 'Skip to content'|t }}</a>
@@ -29,6 +31,8 @@
         <div class="work-article__share-footer">{% include '@icon/includes/share.html.twig' %}</div>
       </article>
     {% else %}
+      {# the homepage hero, baked into the front page (icon_preprocess_page()) #}
+      {{ hero }}
       {{ page.content }}
     {% endif %}
   {% endblock %}

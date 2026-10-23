@@ -31,6 +31,10 @@
   backdrop-filter: none;
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
+  /* the panel's ambient shadow continues up behind the box (user call,
+     23 Oct 2026: "the drop shadow should continue behind the search box,
+     white on it gets lost visually") */
+  box-shadow: 0 0 2.5rem -0.5rem var(--scrim-strong);
 }
 
 /* the field and the glyphs in the ink too: over a hero the header paints
@@ -58,7 +62,9 @@
   --color-icon-grey: color-mix(in srgb, var(--black) 55%, transparent);
   background: var(--color-white);
   color: var(--black);
-  box-shadow: 0 1.5rem 3rem -1.5rem var(--scrim-strong);
+  box-shadow:
+    0 1.5rem 3rem -1.5rem var(--scrim-strong),
+    0 0 2.5rem -0.5rem var(--scrim-strong); /* the ambient half, shared with the face above */
   z-index: 1;
   opacity: 0;
   translate: 0 -0.5rem;

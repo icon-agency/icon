@@ -137,21 +137,8 @@ final class FooterSettingsForm extends FormBase {
       '#default_value' => $footer['acknowledgement'],
       '#rows' => 4,
     ];
-    // The login page's reel: the hero block of a Canvas page.
-    $pages = ['' => $this->t('The front page (default)')];
-    foreach ($this->entityTypeManager->getStorage('canvas_page')->loadMultiple() as $page) {
-      if (icon_site_hero_order_of($page) || $page->access('view')) {
-        $pages[$page->id()] = $page->label() . (icon_site_hero_order_of($page) ? '' : ' — ' . $this->t('no hero block'));
-      }
-    }
-    $form['login'] = ['#type' => 'details', '#title' => $this->t('Login page'), '#open' => TRUE];
-    $form['login']['login_hero'] = [
-      '#type' => 'select',
-      '#title' => $this->t('Hero reel to play'),
-      '#description' => $this->t('The account pages play the slides of this page’s hero, in its order — so reordering that hero reorders the login page too.'),
-      '#options' => $pages,
-      '#default_value' => (string) (icon_site_footer_setting('login_hero') ?: ''),
-    ];
+    // The login page plays the homepage hero's reel (Content → Homepage
+    // hero) since 23 Oct 2026; its own picker went with the baked-in hero.
     $form['actions'] = ['#type' => 'actions'];
     $form['actions']['submit'] = [
       '#type' => 'submit',
@@ -193,7 +180,6 @@ final class FooterSettingsForm extends FormBase {
     foreach ($keys as $key) {
       $values[$key] = trim((string) $form_state->getValue($key));
     }
-    $values['login_hero'] = (int) $form_state->getValue('login_hero');
     $this->state->set('icon_site.footer', $values);
     $this->cacheTagsInvalidator->invalidateTags(['icon_site_footer']);
     $this->messenger()->addStatus($this->t('The footer has been saved.'));

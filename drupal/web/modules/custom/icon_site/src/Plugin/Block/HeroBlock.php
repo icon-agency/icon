@@ -151,33 +151,10 @@ final class HeroBlock extends BlockBase {
    * {@inheritdoc}
    */
   public function build(): array {
-    $reel = icon_site_hero_reel($this->configuration['order'] ?? []);
-    $slots = [];
-    foreach ($reel['slides'] as $slide) {
-      $source = $slide['source'];
-      $slots[] = [
-        '#type' => 'component',
-        '#component' => 'icon:hero-slide',
-        '#props' => [
-          'client' => $slide['client'],
-          'url' => $slide['url'],
-          $source['type'] === 'video' ? 'video' : 'image' => $source['type'] === 'video'
-            ? ['src' => $source['src'], 'poster' => $source['poster'] ?? '']
-            : [
-              'src' => $source['src'],
-              'alt' => $source['alt'] ?? '',
-              'width' => $source['width'] ?? NULL,
-              'height' => $source['height'] ?? NULL,
-            ],
-        ],
-      ];
-    }
-    $build = $slots ? ['#type' => 'component', '#component' => 'icon:hero', '#slots' => ['slides' => $slots]] : [];
-    // The reel's full cacheability — tags, the slides' and media's access
-    // contexts, max-age — on the result, empty or not (the first slide
-    // added invalidates an empty one)
-    $reel['cache']->applyTo($build);
-    return $build;
+    // Off the library since 23 Oct 2026: the front page renders the reel
+    // itself (icon_site_hero_build(), the saved reel); an instance placed
+    // before still renders from its own order.
+    return icon_site_hero_build($this->configuration['order'] ?? []);
   }
 
 }

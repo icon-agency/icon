@@ -1,3 +1,10 @@
+icon_site.hero_reel:
+  path: '/admin/content/hero'
+  defaults:
+    _form: '\Drupal\icon_site\Form\HeroReelForm'
+    _title: 'Homepage hero'
+  requirements:
+    _permission: 'manage icon lists'
 icon_site.client_logos:
   path: '/admin/content/client-logos'
   defaults:

@@ -10,11 +10,15 @@
  *
  * Variables (icon_preprocess_node() / icon_preprocess_page(), via
  * _icon_work_frame()): title, client, banner, statement, categories,
- * deliverables. Since Sep 2026 the frame is normally the Work masthead
+ * deliverables. From Sep to Oct 2026 the frame was the Work masthead
  * COMPONENT at the top of the article's tree (components/work-masthead);
- * this include stands in on an article that has none yet.
+ * since 23 Oct 2026 it is BAKED IN again (user ask: "the work articles
+ * masthead baked in… as they are always the same") — this include is the
+ * frame on every article, in the component's own wrapper so the editor
+ * paints it in the page's pair (utilities/work-article.css).
  */
 #}
+<div class="work-masthead">
 <header class="work-article__head">
   <p class="work-article__eyebrow" data-animate>
     <a class="invite-arrow invite-arrow--back" href="{{ path('<front>') ~ 'work' }}">{{ 'Work'|t }}</a>
@@ -57,3 +61,4 @@
     {% endif %}
   </section>
 {% endif %}
+</div>

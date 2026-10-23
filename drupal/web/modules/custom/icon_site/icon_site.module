@@ -289,58 +289,37 @@ function _icon_site_work_masthead_delta(NodeInterface $node): ?int {
 /**
  * Implements hook_ENTITY_TYPE_presave() for node.
  *
- * The Work masthead component is the frame's editor and the fields are
- * its mirror (Sep 2026): on every save of a Work article the component's
- * values go into the fields the cards, the listings and the filters read.
- * An article whose tree has no masthead yet gets one from its fields,
- * first in the tree — a new article from the classic form, or one from
- * before the component.
+ * The Work article's frame is BAKED IN (23 Oct 2026; it was the Work
+ * masthead component from Sep 2026): the fields are the one source, the
+ * theme draws the frame from them (includes/work-frame.html.twig), and the
+ * component is off the library. A masthead still in a tree — a draft from
+ * before — hands its values to the fields and leaves, so every tree
+ * converges on save.
  */
 function icon_site_node_presave(NodeInterface $node): void {
   if ($node->bundle() !== 'work' || !$node->hasField('field_work_canvas')) {
     return;
   }
   $delta = _icon_site_work_masthead_delta($node);
-  $items = $node->get('field_work_canvas');
   if ($delta === NULL) {
-    $component = \Drupal::entityTypeManager()->getStorage('component')->load('sdc.icon.work-masthead');
-    if (!$component) {
-      return;
-    }
-    $values = $items->getValue();
-    array_unshift($values, [
-      'parent_uuid' => NULL,
-      'slot' => NULL,
-      'uuid' => \Drupal::service('uuid')->generate(),
-      'component_id' => 'sdc.icon.work-masthead',
-      'component_version' => (string) $component->get('active_version'),
-      'inputs' => json_encode(_icon_site_work_masthead_inputs($node) ?: new \stdClass(), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE),
-      'label' => NULL,
-    ]);
-    $items->setValue($values);
     return;
   }
+  $items = $node->get('field_work_canvas');
   $inputs = $items->get($delta)->get('inputs')->getValue();
   $inputs = is_string($inputs) ? (json_decode($inputs, TRUE) ?: []) : (array) $inputs;
   _icon_site_work_fields_from_masthead($node, $inputs);
+  $values = $items->getValue();
+  unset($values[$delta]);
+  $items->setValue(array_values($values));
 }
 
 /**
- * Entity builder for the classic Work form: the fields into the masthead.
+ * Entity builder for the classic Work form: nothing to do since 23 Oct 2026.
  *
- * The other direction of the mirror, for a save from the Fields form: the
- * masthead component takes the fields' values before presave copies them
- * back, so the two agree whichever form saved.
+ * It once wrote the fields into the masthead component; the fields are the
+ * frame now. Kept so the form alter that names it keeps working.
  */
 function _icon_site_work_masthead_from_fields(string $entity_type, NodeInterface $node, array &$form, FormStateInterface $form_state): void {
-  $delta = _icon_site_work_masthead_delta($node);
-  if ($delta === NULL) {
-    return;
-  }
-  $items = $node->get('field_work_canvas');
-  $values = $items->getValue();
-  $values[$delta]['inputs'] = json_encode(_icon_site_work_masthead_inputs($node) ?: new \stdClass(), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
-  $items->setValue($values);
 }
 
 /**
@@ -670,35 +649,86 @@ function icon_site_media_source(?MediaInterface $media, string $style_id, ?Cache
 }
 
 /**
- * The hero reel the LOGIN page plays.
+ * The homepage hero reel: the slides chosen, in order.
  *
- * The hero block on the page named in icon_site.footer `login_hero`
- * (Content → Footer → Login page), else the front page. Its `order` is that
- * block's explicit slide selection.
+ * BAKED INTO THE PAGE since 23 Oct 2026 (user ask: "can the homepage hero be
+ * baked into the homepage template, so it can't be deleted through the
+ * CMS?"): the order lives in State (`icon_site.hero_reel`, written by
+ * Content → Homepage hero, HeroReelForm), the theme renders the reel on the
+ * front page from it (icon_preprocess_page(), page.html.twig `hero`), and
+ * the login page and the footer's mask play the same list. Until the list
+ * has been saved once, the order is read from the front page's old hero
+ * block, so a site mid-migration keeps its reel.
  *
  * @return array{order: int[], tags: string[]}
- *   The chosen slide node IDs in order (empty when no hero block is on the
- *   page) and the cache tags of where it was read from.
+ *   The chosen slide node IDs in order (empty when nothing is chosen) and
+ *   the cache tags of where it was read from.
  */
 function icon_site_hero_order(): array {
-  $tags = ['icon_site_footer', 'config:icon_site.footer', 'config:system.site', 'canvas_page_list'];
+  $tags = ['icon_site_hero_reel'];
+  $saved = \Drupal::state()->get('icon_site.hero_reel');
+  if (is_array($saved)) {
+    return ['order' => array_values(array_filter(array_map('intval', $saved))), 'tags' => $tags];
+  }
+  // Not saved yet: the front page's hero block, as it was before the bake.
+  $tags = Cache::mergeTags($tags, ['config:system.site', 'canvas_page_list']);
   $storage = \Drupal::entityTypeManager()->getStorage('canvas_page');
-  $page = NULL;
-  if ($id = (int) icon_site_footer_setting('login_hero')) {
-    $page = $storage->load($id);
-  }
-  if (!$page) {
-    $front = (string) \Drupal::config('system.site')->get('page.front');
-    $url = $front ? \Drupal::service('path.validator')->getUrlIfValid($front) : NULL;
-    if ($url && $url->isRouted() && !empty($url->getRouteParameters()['canvas_page'])) {
-      $page = $storage->load($url->getRouteParameters()['canvas_page']);
-    }
-  }
+  $front = (string) \Drupal::config('system.site')->get('page.front');
+  $url = $front ? \Drupal::service('path.validator')->getUrlIfValid($front) : NULL;
+  $page = $url && $url->isRouted() && !empty($url->getRouteParameters()['canvas_page']) ? $storage->load($url->getRouteParameters()['canvas_page']) : NULL;
   if (!$page) {
     return ['order' => [], 'tags' => $tags];
   }
   $tags = Cache::mergeTags($tags, $page->getCacheTags());
   return ['order' => icon_site_hero_order_of($page), 'tags' => $tags];
+}
+
+/**
+ * Saves the homepage hero reel's order (Content → Homepage hero).
+ *
+ * @param int[] $order
+ *   The slide node IDs, in reel order.
+ */
+function icon_site_hero_order_set(array $order): void {
+  \Drupal::state()->set('icon_site.hero_reel', array_values(array_unique(array_filter(array_map('intval', $order)))));
+  Cache::invalidateTags(['icon_site_hero_reel']);
+}
+
+/**
+ * The hero, rendered: the reel as the icon:hero component.
+ *
+ * What the front page prints at its top (icon_preprocess_page()); the old
+ * Homepage hero block renders the same from its own order. Empty when no
+ * slide has media. The reel's full cacheability is on the result.
+ *
+ * @param int[]|null $order
+ *   The slide IDs in order, or NULL for the saved reel.
+ */
+function icon_site_hero_build(?array $order = NULL): array {
+  $reel = icon_site_hero_reel($order);
+  $slots = [];
+  foreach ($reel['slides'] as $slide) {
+    $source = $slide['source'];
+    $slots[] = [
+      '#type' => 'component',
+      '#component' => 'icon:hero-slide',
+      '#props' => [
+        'client' => $slide['client'],
+        'url' => $slide['url'],
+        $source['type'] === 'video' ? 'video' : 'image' => $source['type'] === 'video'
+          ? ['src' => $source['src'], 'poster' => $source['poster'] ?? '']
+          : [
+            'src' => $source['src'],
+            'alt' => $source['alt'] ?? '',
+            'width' => $source['width'] ?? NULL,
+            'height' => $source['height'] ?? NULL,
+          ],
+      ],
+    ];
+  }
+  $build = $slots ? ['#type' => 'component', '#component' => 'icon:hero', '#slots' => ['slides' => $slots]] : [];
+  $reel['cache']->applyTo($build);
+  return $build;
 }
 
 /**

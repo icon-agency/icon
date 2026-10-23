@@ -1,3 +1,9 @@
+icon_site.hero_reel:
+  title: 'Homepage hero'
+  description: 'The reel the homepage hero plays — which slides, in what order. The login page plays the same.'
+  route_name: icon_site.hero_reel
+  parent: system.admin_content
+  weight: 9
 icon_site.client_logos:
   title: 'Client logos'
   description: 'The logos in the homepage marquee — add, reorder, rename, remove.'
