@@ -1,4 +1,4 @@
-// shoot.mjs — screenshots for the CMS manual over Chrome's DevTools protocol.
+// shoot.mjs — screenshots for the CMS manual (drupal/web/modules/custom/icon_site/manual) over Chrome's DevTools protocol.
 // Usage: node scripts/manual/shoot.mjs <plan.json>
 // Each step: {url, wait, click, clip (css selector | [x,y,w,h]), out, width, height, eval, scroll}
 import { spawn } from "node:child_process";

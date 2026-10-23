@@ -65,4 +65,18 @@ sections:
           icon_class: help
         weight: -2
         additional: {  }
+      efb9e3e8-e6e8-42e6-a2ed-be08b50188a4:
+        uuid: efb9e3e8-e6e8-42e6-a2ed-be08b50188a4
+        region: footer
+        configuration:
+          id: navigation_link
+          label: Manual
+          label_display: '0'
+          provider: navigation
+          context_mapping: {  }
+          title: Manual
+          uri: 'internal:/admin/manual'
+          icon_class: file
+        weight: -1
+        additional: {  }
     third_party_settings: {  }

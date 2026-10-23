@@ -1,3 +1,10 @@
+icon_site.manual:
+  path: '/admin/manual'
+  defaults:
+    _controller: '\Drupal\icon_site\Controller\ManualController::go'
+    _title: 'Manual'
+  requirements:
+    _permission: 'access administration pages'
 icon_site.hero_reel:
   path: '/admin/content/hero'
   defaults:
