@@ -8,6 +8,7 @@ dependencies:
     - node.type.news
     - node.type.office
     - node.type.team_member
+    - node.type.testimonial
     - node.type.work
     - taxonomy.vocabulary.tags
     - workflows.workflow.editorial
@@ -45,6 +46,7 @@ permissions:
   - 'create office content'
   - 'create team_member content'
   - 'create terms in tags'
+  - 'create testimonial content'
   - 'create url aliases'
   - 'create work content'
   - 'delete any hero_slide content'
@@ -52,12 +54,14 @@ permissions:
   - 'delete any news content'
   - 'delete any office content'
   - 'delete any team_member content'
+  - 'delete any testimonial content'
   - 'delete any work content'
   - 'delete own files'
   - 'edit any hero_slide content'
   - 'edit any news content'
   - 'edit any office content'
   - 'edit any team_member content'
+  - 'edit any testimonial content'
   - 'edit any work content'
   - 'edit canvas_page'
   - 'edit terms in tags'

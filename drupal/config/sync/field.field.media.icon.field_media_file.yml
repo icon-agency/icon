@@ -22,6 +22,6 @@ settings:
   handler_settings: {  }
   file_directory: icons
   file_extensions: svg
-  max_filesize: ''
+  max_filesize: '1 MB'
   description_field: false
 field_type: file

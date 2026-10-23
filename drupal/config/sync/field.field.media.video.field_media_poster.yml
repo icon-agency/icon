@@ -22,7 +22,7 @@ settings:
   handler_settings: {  }
   file_directory: posters
   file_extensions: 'png jpg jpeg webp avif'
-  max_filesize: ''
+  max_filesize: '8 MB'
   max_resolution: ''
   min_resolution: ''
   alt_field: true

@@ -20,6 +20,6 @@ settings:
   handler_settings: {  }
   file_directory: client-logos
   file_extensions: 'svg png'
-  max_filesize: ''
+  max_filesize: '2 MB'
   description_field: false
 field_type: file

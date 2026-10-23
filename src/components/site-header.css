@@ -457,7 +457,7 @@ button.site-nav__link {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 0.667em; /* 0.75rem */
+  gap: 0.222em; /* 0.25rem — the links carry the main link's padding now (20 Oct 2026), so the air between them stays as it was */
   margin: 0;
   /* top gap from the row; extra bottom room before the pill's rounded corner;
      left pad aligns items under SERVICES (JS-set) */
@@ -467,24 +467,40 @@ button.site-nav__link {
 
 @media (min-width: 768px) {
   .site-nav__submenu-list {
-    gap: 0.75rem;
+    gap: 0.25rem;
     padding: 1rem 0 1rem var(--submenu-offset, 0.5rem);
   }
 }
 
 .site-nav__submenu-link {
   display: block;
-  padding: var(--spacing-2xs) 0;
+  /* the main link's box (user ask, 20 Oct 2026: "can the sub menu have the
+     same hover state?"): the same padding and corner, the same ground on
+     hover. The box is pulled back by its own side padding so the TEXT stays
+     where js/header.js aligned it, under the EXPERTISE text — the hover
+     ground then starts at the trigger's box edge, as the trigger's does. */
+  padding: 0.444em; /* the link's: --spacing-xs at the desktop's full-size type; the token from md */
+  margin-inline-start: -0.444em;
+  border-radius: var(--radius-sm);
   font-size: var(--nav-voice);
   font-weight: var(--font-weight-bold);
   text-transform: uppercase; /* labels are authored natural-case */
   color: var(--color-foreground);
   text-decoration: none;
-  transition: opacity var(--duration-fast) var(--ease-standard);
+  transition: background var(--duration-normal) var(--ease-standard);
 }
 
-.site-nav__submenu-link:hover {
-  opacity: 0.7;
+@media (hover: hover) {
+  .site-nav__submenu-link:hover {
+    background: color-mix(in srgb, var(--color-background) 35%, transparent);
+  }
+}
+
+@media (min-width: 768px) {
+  .site-nav__submenu-link {
+    padding: var(--spacing-xs);
+    margin-inline-start: calc(-1 * var(--spacing-xs));
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

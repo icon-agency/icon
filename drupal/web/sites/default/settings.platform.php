@@ -131,13 +131,23 @@ if ($platformsh->inRuntime()) {
   $settings['deployment_identifier'] = $settings['deployment_identifier'] ?? $platformsh->treeId;
 }
 
-// The 'trusted_hosts_pattern' setting allows an admin to restrict the Host header values
-// that are considered trusted.  If an attacker sends a request with a custom-crafted Host
-// header then it can be an injection vector, depending on how the Host header is used.
-// However, Platform.sh already replaces the Host header with the route that was used to reach
-// Platform.sh, so it is guaranteed to be safe.  The following line explicitly allows all
-// Host headers, as the only possible Host header is already guaranteed safe.
-$settings['trusted_host_patterns'] = ['.*'];
+// Trusted hosts: the hostnames of this environment's own routes, read at
+// runtime (audit C3, 23 Oct 2026: the template's `.*` trusted every Host
+// header on the strength of Platform.sh rewriting it; the routes are what
+// the platform actually serves, so they are the list). A wildcard route
+// (`*.example.com`) becomes a wildcard pattern. Outside the runtime — the
+// build hook, a local copy — there are no routes, and the fallback stays
+// open as the template had it.
+$trusted = [];
+if ($platformsh->inRuntime()) {
+  foreach ($platformsh->routes() as $url => $route) {
+    $host = parse_url((string) $url, PHP_URL_HOST);
+    if ($host) {
+      $trusted[] = '^' . str_replace('\\*\\.', '(.+\\.)?', preg_quote($host, '/')) . '$';
+    }
+  }
+}
+$settings['trusted_host_patterns'] = array_values(array_unique($trusted)) ?: ['.*'];
 
 // Import variables prefixed with 'drupalsettings:' into $settings
 // and 'drupalconfig:' into $config.

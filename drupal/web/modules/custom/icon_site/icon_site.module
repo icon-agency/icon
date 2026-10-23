@@ -31,6 +31,7 @@ use Drupal\image\Entity\ImageStyle;
 use Drupal\file\FileInterface;
 use Drupal\image\Plugin\Field\FieldWidget\ImageWidget;
 use Drupal\media\MediaInterface;
+use enshrined\svgSanitize\Sanitizer;
 use Drupal\Core\Render\Element;
 use Drupal\contact\MessageInterface;
 use Drupal\Core\StringTranslation\TranslatableMarkup;
@@ -1475,6 +1476,55 @@ function icon_site_page_top(array &$page_top): void {
     return;
   }
   $page_top['indicator'] = ['#attached' => $page_top['indicator']['#attached'] ?? []];
+}
+
+/**
+ * Implements hook_ENTITY_TYPE_presave() for file.
+ *
+ * An SVG is sanitised on the way IN (audit H6, 23 Oct 2026): the raw
+ * upload used to sit public in the files folder while only the inline
+ * render was cleaned (IconSiteExtension). The same sanitiser rebuilds the
+ * document from its allow-list before the file is saved, so what the
+ * folder holds is what the page shows. A file that will not parse is kept
+ * as it was and logged — the render path already shows nothing for it.
+ */
+function icon_site_file_presave(FileInterface $file): void {
+  icon_site_sanitise_svg_file($file);
+}
+
+/**
+ * Rewrites an SVG file in place through the allow-list sanitiser.
+ *
+ * @return bool|null
+ *   TRUE when the file was rewritten, FALSE when it was already clean, NULL
+ *   when it is not an SVG or could not be read or parsed.
+ */
+function icon_site_sanitise_svg_file(FileInterface $file): ?bool {
+  $uri = (string) $file->getFileUri();
+  $is_svg = $file->getMimeType() === 'image/svg+xml' || str_ends_with(strtolower($uri), '.svg');
+  if (!$is_svg || !is_file($uri) || !is_readable($uri)) {
+    return NULL;
+  }
+  $raw = (string) file_get_contents($uri);
+  if ($raw === '') {
+    return NULL;
+  }
+  $sanitizer = new Sanitizer();
+  $sanitizer->removeRemoteReferences(TRUE);
+  $clean = $sanitizer->sanitize($raw);
+  if (!is_string($clean) || stripos($clean, '<svg') === FALSE) {
+    \Drupal::logger('icon_site')->warning('SVG @uri could not be parsed by the sanitiser and was left as uploaded.', ['@uri' => $uri]);
+    return NULL;
+  }
+  if (trim($clean) === trim($raw)) {
+    return FALSE;
+  }
+  if (@file_put_contents($uri, $clean) === FALSE) {
+    \Drupal::logger('icon_site')->warning('SVG @uri could not be rewritten after sanitising.', ['@uri' => $uri]);
+    return NULL;
+  }
+  $file->setSize(strlen($clean));
+  return TRUE;
 }
 
 /**
