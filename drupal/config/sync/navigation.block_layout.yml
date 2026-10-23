@@ -70,11 +70,11 @@ sections:
         region: footer
         configuration:
           id: navigation_link
-          label: Manual
+          label: 'How to manual'
           label_display: '0'
           provider: navigation
           context_mapping: {  }
-          title: Manual
+          title: 'How to manual'
           uri: 'internal:/admin/manual'
           icon_class: file
         weight: -1

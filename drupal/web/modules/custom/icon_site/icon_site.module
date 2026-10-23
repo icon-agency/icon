@@ -287,6 +287,23 @@ function _icon_site_work_masthead_delta(NodeInterface $node): ?int {
 }
 
 /**
+ * Implements hook_preprocess_HOOK() for navigation_menu.
+ *
+ * The Navigation bar's "How to manual" item opens in a new window (user
+ * ask, 23 Oct 2026: "should this open in a new window?") — the bar's link
+ * block has no setting for it, so the link's attributes are set here, on
+ * the item whose route is the manual's.
+ */
+function icon_site_preprocess_navigation_menu(array &$variables): void {
+  foreach ($variables['items'] ?? [] as &$item) {
+    $url = $item['url'] ?? NULL;
+    if ($url instanceof Url && $url->isRouted() && $url->getRouteName() === 'icon_site.manual') {
+      $url->setOption('attributes', ($url->getOption('attributes') ?: []) + ['target' => '_blank', 'rel' => 'noopener']);
+    }
+  }
+}
+
+/**
  * Implements hook_ENTITY_TYPE_presave() for node.
  *
  * The Work article's frame is BAKED IN (23 Oct 2026; it was the Work
