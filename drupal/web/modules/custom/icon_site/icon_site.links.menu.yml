@@ -28,3 +28,84 @@ icon_site.footer:
   route_name: icon_site.footer
   parent: system.admin_content
   weight: 13
+
+# The Navigation bar's EDIT group (23 Oct 2026; user ask: "is this the best
+# menu set up? … Should it match Create menu, i.e. Edit > and the same
+# structure?"): beside Create, every list an editor opens to change
+# something, in the main menu's order where it maps. The same lists stay
+# under Content for the admin menu.
+icon_site.edit:
+  title: 'Edit'
+  route_name: '<nolink>'
+  menu_name: content
+  weight: -9
+  options:
+    icon:
+      pack_id: navigation
+      icon_id: pencil
+icon_site.edit.work:
+  title: 'Work'
+  description: 'The case studies.'
+  route_name: system.admin_content
+  parent: icon_site.edit
+  weight: -10
+  options:
+    query:
+      type: work
+icon_site.edit.news:
+  title: 'News'
+  description: 'The stories.'
+  route_name: system.admin_content
+  parent: icon_site.edit
+  weight: -9
+  options:
+    query:
+      type: news
+icon_site.edit.team:
+  title: 'Team'
+  description: 'The people on the About page.'
+  route_name: system.admin_content
+  parent: icon_site.edit
+  weight: -8
+  options:
+    query:
+      type: team_member
+icon_site.edit.testimonials:
+  title: 'Testimonials'
+  description: 'The client quotes.'
+  route_name: system.admin_content
+  parent: icon_site.edit
+  weight: -7
+  options:
+    query:
+      type: testimonial
+icon_site.edit.hero:
+  title: 'Homepage hero'
+  description: 'The reel the homepage plays.'
+  route_name: icon_site.hero_reel
+  parent: icon_site.edit
+  weight: -6
+icon_site.edit.logos:
+  title: 'Client logos'
+  description: 'The marquee.'
+  route_name: icon_site.client_logos
+  parent: icon_site.edit
+  weight: -5
+icon_site.edit.icons:
+  title: 'Icons'
+  description: 'The icon set for fact cards and offices.'
+  route_name: icon_site.fact_icons
+  parent: icon_site.edit
+  weight: -4
+icon_site.edit.offices:
+  title: 'Offices'
+  description: 'The offices in the footer.'
+  route_name: icon_site.offices
+  parent: icon_site.edit
+  weight: -3
+icon_site.edit.footer:
+  title: 'Footer'
+  description: 'The footer’s words and links.'
+  route_name: icon_site.footer
+  parent: icon_site.edit
+  weight: -2

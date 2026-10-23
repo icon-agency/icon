@@ -4,13 +4,13 @@ definitions:
   navigation__content__node_type__news:
     menu_name: content
     parent: navigation.create
-    weight: -10
+    weight: -9
     expanded: false
     enabled: true
   navigation__content__node_type__work:
     menu_name: content
     parent: navigation.create
-    weight: -5
+    weight: -10
     expanded: false
     enabled: true
   navigation__content__node_type__hero_slide:
