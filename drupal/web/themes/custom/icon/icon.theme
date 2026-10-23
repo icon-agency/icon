@@ -765,7 +765,9 @@ function _icon_preprocess_node_work(array &$variables, NodeInterface $node): voi
       // floats over either (Sep 2026) — the card shows whichever variant its
       // frame calls for (work-card.twig, home-c.css).
       'media_wide' => $node->hasField('field_work_tile_wide') ? _icon_media_source($node->get('field_work_tile_wide')->entity, 'work_media', $cache) : [],
-      'foreground' => $node->hasField('field_work_tile_fg') ? _icon_media_image($node->get('field_work_tile_fg')->entity, 'work_media', $cache) : [],
+      // A picture or a film (user ask, 23 Oct 2026: "this should have the
+      // same Image and Video add").
+      'foreground' => $node->hasField('field_work_tile_fg') ? _icon_media_source($node->get('field_work_tile_fg')->entity, 'work_media', $cache) : [],
       'inset' => $node->hasField('field_work_tile_inset') ? trim((string) ($node->get('field_work_tile_inset')->value ?? '')) : '',
       // The legacy layered tile (an old-site folio item): the Layers field,
       // back to front — see the Work form's "Legacy folio card" details.

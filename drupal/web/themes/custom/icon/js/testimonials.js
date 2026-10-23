@@ -60,12 +60,16 @@
           var current = 0;
 
           // ---- the quote's own colours ----------------------------------------
-          // A quote may carry a Ground and Ink pair of its own (data-bg / data-ink,
-          // the Testimonial item's props; user ask, 19 Oct 2026: "control the
+          // Each quote carries its Ground and Ink pair (data-bg / data-ink, the
+          // Testimonial's required fields; user ask, 19 Oct 2026: "control the
           // background colour and foreground text/logo, like the work page, for
           // each client testimonial"). While it shows, the box wears the pair the
           // way the chameleon does — the two custom properties, on the
-          // theme-work-article class — and takes its own colours back after.
+          // theme-work-article class. The box is always there (23 Oct 2026: the
+          // group's own Box pick went — "Testimonials define the colours") and
+          // the template draws it in the FIRST quote's pair, so show(0) below
+          // changes nothing on load; a quote with no pair (an older record)
+          // gets the template's fallback back.
           var box = section.closest(".testimonials__box");
           // In a box inside a Columns box the carousel's own box gives way to the
           // outer one (testimonials.css: no ground or padding of its own), so the

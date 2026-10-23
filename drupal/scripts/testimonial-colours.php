@@ -19,7 +19,7 @@ use Drupal\field\Entity\FieldConfig;
 use Drupal\field\Entity\FieldStorageConfig;
 
 $fields = [
-  'field_testimonial_bg' => ['Ground colour', "Optional: the carousel's box wears this colour while this quote shows — the client's own, like a case study's page colour. A hex value, e.g. #d20f89. Needs a box on the Testimonials group.", 30],
+  'field_testimonial_bg' => ['Ground colour', "The carousel's box wears this colour while this quote shows — the client's own, like a case study's page colour. A hex value, e.g. #d20f89.", 30],
   'field_testimonial_ink' => ['Ink colour', 'The text, arrows, line and logo colour on that ground, a hex value, e.g. #ffffff. Used with Ground colour.', 31],
 ];
 foreach ($fields as $name => [$label, $description, $weight]) {
@@ -28,7 +28,7 @@ foreach ($fields as $name => [$label, $description, $weight]) {
     print "$name storage\n";
   }
   if (!FieldConfig::loadByName('node', 'testimonial', $name)) {
-    FieldConfig::create(['field_name' => $name, 'entity_type' => 'node', 'bundle' => 'testimonial', 'label' => $label, 'description' => $description, 'required' => FALSE])->save();
+    FieldConfig::create(['field_name' => $name, 'entity_type' => 'node', 'bundle' => 'testimonial', 'label' => $label, 'description' => $description, 'required' => TRUE])->save();
     print "$name field\n";
   }
   $form = EntityFormDisplay::load('node.testimonial.default');

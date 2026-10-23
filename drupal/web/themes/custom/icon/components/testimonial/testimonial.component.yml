@@ -54,7 +54,7 @@ props:
     bg:
       type: string
       title: Ground colour
-      description: 'Optional: the box wears this colour while this quote shows — the client''s own, like a case study''s page colour. A hex value, e.g. #d20f89. Needs a Box on the Testimonials group; without one there is nothing to colour.'
+      description: 'The carousel''s box wears this colour while this quote shows — the client''s own, like a case study''s page colour. A hex value, e.g. #d20f89.'
       examples:
         - '#d20f89'
     ink:

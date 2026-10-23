@@ -538,8 +538,8 @@ img { max-width: 100%; }
     <h3>Testimonials and results</h3>
     <div class="block has-shots"><div class="block__text"><h4>Testimonials (group)</h4><p>The quotes carousel: arrows, a counter, one quote at a time. Turns itself.</p>
       <ul class="fill">
-        <li><b>Box</b> – light grey, white, black, ICON blue, custom or none</li>
         <li><b>Accessible label</b> – e.g. “What our clients say”</li>
+        <li>The box takes its colours from the quote showing: each Testimonial’s <b>Ground colour</b> and <b>Ink colour</b></li>
         <li>Drop <b>Testimonial (item)</b> blocks in. Each picks a quote from <a href="#testimonials">Testimonials</a></li>
       </ul></div><div class="block__shots"><a class="shot" href="img/blocks/full/testimonials.jpg" data-caption="Testimonials – the homepage, a quote wearing its client's colour"><img src="img/blocks/thumb/testimonials.jpg" alt="The testimonials carousel" loading="lazy"></a></div></div>
     <div class="block has-shots"><div class="block__text"><h4>Result stats (group) and Result stats number (item)</h4><p>The results band: two columns of figures with what each counts.</p>
@@ -583,7 +583,7 @@ img { max-width: 100%; }
         <tr><th>Feature statement</th><td>The outcome in one line. The serif line under the banner.</td></tr>
         <tr><th>Square</th><td>The tile: square, at least 1600px. A picture or a looping film.</td></tr>
         <tr><th>Wide</th><td>Optional: a 16:9 tile for the wide feature frame, at least 1920px wide.</td></tr>
-        <tr><th>Foreground overlay, Foreground inset</th><td>Optional: a logo or cut-out that floats over the tile, and how far in it sits.</td></tr>
+        <tr><th>Foreground overlay, Foreground inset</th><td>Optional: a logo, a cut-out or a short film that floats over the tile, and how far in it sits.</td></tr>
         <tr><th>Banner</th><td>The wide hero under the title. Falls back to the tile.</td></tr>
         <tr><th>Categories</th><td>One or more. The first is the filter the Work landing uses.</td></tr>
         <tr><th>Deliverables</th><td>The services list, one per line.</td></tr>
@@ -653,7 +653,7 @@ img { max-width: 100%; }
       <li>Choose <b class="ui">Create</b>, then <b class="ui">Testimonial</b>.</li>
       <li>Fill in <b class="ui">Name</b>, <b class="ui">Role</b>, <b class="ui">Company</b> and the <b class="ui">Quote</b>. Leave the quotation marks out; the site adds them.</li>
       <li><b class="ui">Logo</b>: the company’s mark from the media library, shown in one colour. Tick <b class="ui">Larger logo</b> for a tall or square mark.</li>
-      <li><b class="ui">Ground colour</b> and <b class="ui">Ink colour</b>: optional. The carousel’s box wears them while this quote shows, like a case study’s page colour.</li>
+      <li><b class="ui">Ground colour</b> and <b class="ui">Ink colour</b>: the client’s own, like a case study’s page colour. The carousel’s box wears them while this quote shows.</li>
       <li><b class="ui">Save</b>.</li>
     </ol>
     <figure class="shot-fig"><a class="shot-link" href="img/shots/testimonial-form.jpg" data-caption="The Testimonial form"><img src="img/shots/testimonial-form.jpg" alt="The Testimonial form" loading="lazy"></a><figcaption>The Testimonial form, with a colour picker on the two colour fields.</figcaption></figure>
@@ -663,7 +663,7 @@ img { max-width: 100%; }
       <li>Drop a <b class="ui">Testimonial (item)</b> into it. In the item’s settings, pick the quote. A new quote appears in the list as soon as it is saved.</li>
       <li>Reorder the items in <b class="ui">Layers</b>. One item alone shows as a single quote with no arrows.</li>
     </ol>
-    <div class="note note--tip"><b>Tip</b><p>A quote’s own colours only show when the group has a <b class="ui">Box</b>. With Box set to none there is nothing to colour.</p></div>
+    <div class="note note--tip"><b>Tip</b><p>The carousel always sits in a box, and the quote colours it; there is nothing to set on the group. Drop the group straight on the page, not inside a boxed <b class="ui">Columns and boxes</b>, or the box sits in a box.</p></div>
   </section>
 
   <section id="hero">
@@ -798,7 +798,7 @@ img { max-width: 100%; }
         <tr><th>Masthead › Opens on</th><td>The colour a page opens on. See <a href="#opening">The colour a page opens on</a>.</td></tr>
         <tr><th>Work › Page colour and Ink colour</th><td>The whole case study page, wordmark and menu included, until the banner scrolls away.</td></tr>
         <tr><th>Columns and boxes › Box</th><td>The box behind a group of blocks.</td></tr>
-        <tr><th>Testimonials › Box, and a quote’s Ground and Ink</th><td>The carousel’s box, and a per-quote colour while that quote shows.</td></tr>
+        <tr><th>Testimonial › Ground colour and Ink colour</th><td>The carousel’s box while that quote shows.</td></tr>
         <tr><th>Picture › Ground colour, Picture scroller › Ground colour</th><td>The colour behind a cut-out or a strip.</td></tr>
       </tbody>
     </table>

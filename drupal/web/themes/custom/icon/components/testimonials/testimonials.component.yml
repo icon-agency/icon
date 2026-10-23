@@ -3,7 +3,6 @@ name: Testimonials (group)
 group: Testimonials
 status: stable
 description: |
-  A quote with its own Ground and Ink colours (on the Testimonial item) dresses the box in them while it shows, whatever Box is picked here; the box needs to be on.
   A carousel of client quotes (src/components/testimonials.css,
   js/testimonials.js), the team panel's bar — the arrows, the counter, the
   hairline — over one quote at a time: the person and their company on the
@@ -11,46 +10,18 @@ description: |
   quotes are Testimonial (item) blocks in the slot, each picking a
   Testimonial from the content — or adding one — in its panel; add, reorder
   and remove them there. With one quote the bar goes and it stands as a single
-  testimonial. It sits in a box by default — light grey, the Columns box's
-  own — or on white, black, blue, two colours of your own, or none.
+  testimonial. It always sits in a box, and THE QUOTE COLOURS THE BOX: each
+  Testimonial's Ground and Ink colours (required on the form) dress it while
+  that quote shows, the first quote's from the moment the page draws. There
+  is no colour to pick here (user call, 23 Oct 2026: "Testimonials define
+  the colours … so why are there two other places to manage colours never
+  seen?").
 libraryOverrides:
   dependencies:
     - icon/testimonials
 props:
   type: object
-  required:
-    - box
   properties:
-    box:
-      type: string
-      title: Box
-      description: >
-        The ground the carousel sits in — padded, on the site's corner — as
-        the Columns box. What is inside takes that ground's ink.
-      enum:
-        - black
-        - light-grey
-        - white
-        - blue
-        - custom
-        - none
-      meta:enum:
-        black: Dark (the dark theme)
-        light-grey: Light grey
-        white: White
-        blue: ICON blue
-        custom: Custom colours (below)
-        none: No box (on the page)
-      examples:
-        - black
-    bg:
-      type: string
-      title: Custom background
-      description: 'A hex colour, e.g. #edeef5. Used when Box is Custom.'
-    ink:
-      type: string
-      title: Custom foreground
-      description: 'The text, arrows, line and logo colour on it, a hex value, e.g. #0d0d0d. Used when Box is Custom.'
     label:
       type: string
       title: Accessible label

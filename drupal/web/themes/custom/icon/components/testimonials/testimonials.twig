@@ -10,33 +10,34 @@
  * "an option to have a single testimonial (hide the left right arrows and
  * the 01 / 06 and line for single)").
  *
- * THE BOX (user call, Sep 2026: "can the testimonials be placed in Column
- * box by default"): the Columns box's own markup and classes around the
- * carousel — a one-column Columns box, so columns.css's padding, corner,
- * grounds and re-declared aliases apply unchanged — light grey to start,
- * or two colours of the editor's own (Custom, the hex pair as the
- * chameleon's custom properties, as Columns does).
+ * THE BOX, ALWAYS, IN THE QUOTE'S COLOURS (user call, 23 Oct 2026:
+ * "Testimonials define the colours … so why are there two other places to
+ * manage colours never seen?" — the group's own Box pick and Custom pair
+ * went): the Columns box's own markup and classes around the carousel — a
+ * one-column Columns box, so columns.css's padding, corner, grounds and
+ * re-declared aliases apply unchanged — on the chameleon's class, the pair
+ * as its two custom properties. The pair is the FIRST quote's, read off the
+ * rendered slot (each Testimonial item carries its Ground and Ink as
+ * data-bg / data-ink), so the page draws in the right colours with no
+ * flash; js/testimonials.js then re-dresses the box as the quotes turn. A
+ * quote without a pair (the fields are required on the form, but an older
+ * record may be blank) falls to light grey on black.
  */
 #}
-{% set box = box|default('black') %}
+{% set rendered %}{% block quotes %}{{ quotes }}{% endblock %}{% endset %}
 {% set hex = '/^#(?:[0-9a-f]{3,4}|[0-9a-f]{6}|[0-9a-f]{8})$/i' %}
-{% set box_class = attribute({ white: 'theme-work-article', 'light-grey': 'theme-work-article', black: 'dark', blue: 'theme-blue', custom: 'theme-work-article' }, box)|default('') %}
-{% set pair = {
-  white: ['var(--color-white)', 'var(--black)'],
-  'light-grey': ['var(--light-grey)', 'var(--black)'],
-  custom: [(bg|default('') matches hex ? bg : 'var(--light-grey)'), (ink|default('') matches hex ? ink : 'var(--black)')],
-} %}
-{% set box_style = pair[box] is defined ? '--work-article-bg: ' ~ pair[box][0] ~ '; --work-article-text: ' ~ pair[box][1] : '' %}
+{% set first_bg = 'data-bg="' in rendered ? rendered|split('data-bg="', 2)[1]|split('"', 2)[0] : '' %}
+{% set first_ink = 'data-ink="' in rendered ? rendered|split('data-ink="', 2)[1]|split('"', 2)[0] : '' %}
+{% set pair = first_bg matches hex and first_ink matches hex %}
+{% set box_style = '--work-article-bg: ' ~ (pair ? first_bg : 'var(--light-grey)') ~ '; --work-article-text: ' ~ (pair ? first_ink : 'var(--black)') %}
 {# The site's scroll-in entrance (data-animate — the fade-up the pull quotes
    and the stats band wear; js/reveal.js, utilities/animations.css) on the
-   outermost element: the box when there is one, else the carousel. The
-   velocity skew came on 20 Oct 2026 (user ask: "can the load and scroll
-   skew animation be applied to this") — js/testimonials.js writes it on
-   the box the quote colours paint, which also takes over the fade-up when
-   it is an outer Columns box; the 22 Sep 2026 call ("in a case study only
-   the media tilts, never the words") gave way to it. #}
-{% if box_class %}<div class="columns columns--1 columns--gap-normal columns--box {{ box_class }} testimonials__box" data-animate{% if box_style %} style="{{ box_style }}"{% endif %}><div class="columns__col">{% endif %}
-<section class="testimonials" data-testimonials{% if not box_class %} data-animate{% endif %}{% if label %} aria-roledescription="carousel" aria-label="{{ label }}"{% endif %}>
+   box. The velocity skew came on 20 Oct 2026 (user ask: "can the load and
+   scroll skew animation be applied to this") — js/testimonials.js writes it
+   on the box the quote colours paint, which also takes over the fade-up
+   when it is an outer Columns box. #}
+<div class="columns columns--1 columns--gap-normal columns--box theme-work-article testimonials__box" data-animate style="{{ box_style }}"><div class="columns__col">
+<section class="testimonials" data-testimonials{% if label %} aria-roledescription="carousel" aria-label="{{ label }}"{% endif %}>
   <div class="testimonials__bar">
     <div class="testimonials__steps">
       {# one quote: a small quotation mark where the arrows would be (user
@@ -52,7 +53,7 @@
     <p class="testimonials__counter" aria-live="polite"><span data-testimonials-index>01</span><span class="testimonials__of"> / <span data-testimonials-count>01</span></span></p>
   </div>
   <div class="testimonials__track">
-    {% block quotes %}{{ quotes }}{% endblock %}
+    {{ rendered }}
   </div>
 </section>
-{% if box_class %}</div></div>{% endif %}
+</div></div>

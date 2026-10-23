@@ -10,8 +10,8 @@ field_name: field_testimonial_bg
 entity_type: node
 bundle: testimonial
 label: 'Ground colour'
-description: "Optional: the carousel's box wears this colour while this quote shows — the client's own, like a case study's page colour. A hex value, e.g. #d20f89. Needs a box on the Testimonials group."
-required: false
+description: "The carousel's box wears this colour while this quote shows — the client's own, like a case study's page colour. A hex value, e.g. #d20f89."
+required: true
 translatable: true
 default_value: {  }
 default_value_callback: ''

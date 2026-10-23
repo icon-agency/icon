@@ -46,7 +46,7 @@
   {# data-tile-film only where there IS a film: those are the ones whose src
      waits on js-theme/work-tile-variants.js. An image-only card needs no
      script — it is lazy and the CSS picks the variant. #}
-  {% set film = media.type == 'video' or (two and media_wide.type == 'video') %}
+  {% set film = media.type == 'video' or (two and media_wide.type == 'video') or foreground.type == 'video' %}
   <figure class="work__figure{{ foreground.src ? ' work__figure--layered' }} media-reveal" data-reveal-img{% if film %} data-tile-film{% endif %}{% if two %} data-tile-variants{% endif %}{% if foreground.src and inset %} style="--overlay-pad: {{ inset matches '/^\\s*\\d+(\\.\\d+)?\\s*%?\\s*$/' ? (inset|replace({'%': ''})|trim / 2) ~ 'cqi' : inset }}"{% endif %}>
     {% if two %}
       {{ card.tile(media, 'square', client) }}
@@ -54,7 +54,12 @@
     {% else %}
       {{ card.tile(media, '', client) }}
     {% endif %}
-    {% if foreground.src %}
+    {# The float is a picture or a film (user ask, 23 Oct 2026: "this should
+       have the same Image and Video add"): a film floats the way a picture
+       does and waits for its src like the tile's film. #}
+    {% if foreground.src and foreground.type == 'video' %}
+      <video class="work__float" data-src="{{ foreground.src }}" preload="none"{% if foreground.poster %} poster="{{ foreground.poster }}"{% endif %} loop muted playsinline aria-hidden="true"></video>
+    {% elseif foreground.src %}
       <img class="work__float" loading="lazy" src="{{ foreground.src }}" alt="{{ foreground.alt }}"{% if foreground.width %} width="{{ foreground.width }}"{% endif %}{% if foreground.height %} height="{{ foreground.height }}"{% endif %} />
     {% endif %}
   </figure>
