@@ -59,17 +59,41 @@ function icon_site_form_node_form_alter(array &$form, FormStateInterface $form_s
   $form['#attached']['library'][] = 'icon_site/page_data';
   if (\Drupal::routeMatch()->getRouteName() === 'canvas.api.form.content_entity') {
     $form['#attached']['library'][] = 'icon_site/page_data';
-    // The frame's fields are the Work masthead component's mirror: edited
-    // by clicking the masthead in the frame, so not here (Sep 2026).
-    foreach (_icon_site_work_masthead_fields() as $field) {
-      if (isset($form[$field])) {
-        $form[$field]['#access'] = FALSE;
-      }
-    }
     // Section headings to scan by (user call, Sep 2026): a heading ahead
     // of each section's first field, carrying the section's rule
     // (css/page-data.css); the Tile and Legacy details head themselves.
     $sections = [];
+    // THE MASTHEAD'S FIELDS, HERE (user report, 26 Oct 2026: "since you
+    // altered the masthead to make it part of the work article, I have no
+    // way of updating"): until 22 Oct the frame's masthead component
+    // mirrored these and this panel hid them; the masthead is the
+    // template's now, drawn from the fields, so the panel is where they
+    // are edited — together, under one heading, ahead of the Tile.
+    // In the page's own order: title, client, banner, statement, category,
+    // deliverables, then the two colours; the Tile and Legacy groups LAST
+    // (user call, 26 Oct 2026: "place this at the bottom").
+    $order = [
+      'title',
+      'field_work_client',
+      'field_work_banner',
+      'field_work_statement',
+      'field_work_category',
+      'field_work_deliverables',
+      'field_work_bg',
+      'field_work_ink',
+    ];
+    foreach ($order as $i => $field) {
+      if (isset($form[$field])) {
+        $form[$field]['#weight'] = -9 + $i;
+      }
+    }
+    if (isset($form['field_work_tile'])) {
+      // The Tile details takes this weight, and Legacy sits just after it.
+      $form['field_work_tile']['#weight'] = 100;
+    }
+    if ($entity instanceof NodeInterface && $entity->bundle() === 'work') {
+      $sections += ['title' => t('Masthead')];
+    }
     // …and the publishing footer (current state, change to) heads itself
     // too, FIRST in the panel (user call: "important, top of the list"),
     // beside Review changes. Under it, closed, one Status group holds the
