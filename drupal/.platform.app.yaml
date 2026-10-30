@@ -20,10 +20,9 @@ relationships:
   database: "db:mysql"
   redis: "cache:redis"
 
-# 4 GB: the whole of the plan's 5 GB less the 1 GB database disk. Raised from
-# 3072 on 30 Oct 2026: icon-build's volume had stayed at 974 MB despite the
-# 3072 here, and filled (check with `df`, not this value).
-disk: 4096
+# 3 GB: the public files are 1.8 GB of films and stills (the plan's 5 GB is
+# shared with the 1 GB database disk).
+disk: 3072
 
 mounts:
   "/web/sites/default/files":
