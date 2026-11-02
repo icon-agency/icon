@@ -22,7 +22,7 @@ relationships:
 
 # 3 GB: the public files are 1.8 GB of films and stills (the plan's 5 GB is
 # shared with the 1 GB database disk).
-disk: 3072
+disk: 4000
 
 mounts:
   "/web/sites/default/files":
