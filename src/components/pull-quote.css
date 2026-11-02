@@ -71,3 +71,28 @@
 .pull-quote--upright .pull-quote__text {
   font-style: normal;
 }
+
+/* The lines, each its own switch (user ask, 2 Nov 2026: "add an option to
+   remove the line top or bottom"). Both on is the default above; a quote
+   that follows a ruled block, or leads into one, drops the edge that would
+   double up. Drupal: hide_line_above / hide_line_below, off by default. */
+.pull-quote--no-line-above {
+  border-top: 0;
+}
+
+.pull-quote--no-line-below {
+  border-bottom: 0;
+}
+
+/* Reduced padding, each edge its own switch (same ask: "a reduced padding
+   option", then "Reduced padding above and another for below"): about half
+   the air on that side, the spacing scale's small step, for a quote that
+   sits hard against a tight block on one side or both. Drupal:
+   reduced_padding_above / reduced_padding_below, off by default. */
+.pull-quote--tight-above {
+  padding-top: var(--space-sm);
+}
+
+.pull-quote--tight-below {
+  padding-bottom: var(--space-sm);
+}

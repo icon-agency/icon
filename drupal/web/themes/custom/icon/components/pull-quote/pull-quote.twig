@@ -2,10 +2,24 @@
 /**
  * @file
  * pull-quote — thin copy of the statement blocks in templates/news-article.html.
- * The variant class is the one conditional, set in plain Twig (no CVA).
+ * The modifier classes are set in plain Twig (no CVA). The lines and the
+ * padding are the editor's (user ask, 2 Nov 2026: "add an option to remove
+ * the line top or bottom, and a reduced padding option. Default as is", then
+ * "Reduced padding above and another for below") — four switches, each OFF
+ * by default, so an untouched quote renders exactly
+ * as before and the editor's panel reads true for a quote placed before the
+ * switches existed (an unset boolean shows off in Canvas; "on unless
+ * unticked" would show off while the line drew).
  */
 #}
-{% set classes = ['pull-quote', variant == 'upright' ? 'pull-quote--upright'] %}
+{% set classes = [
+  'pull-quote',
+  variant == 'upright' ? 'pull-quote--upright',
+  hide_line_above ? 'pull-quote--no-line-above',
+  hide_line_below ? 'pull-quote--no-line-below',
+  reduced_padding_above ? 'pull-quote--tight-above',
+  reduced_padding_below ? 'pull-quote--tight-below',
+] %}
 <blockquote class="{{ classes|filter(c => c)|join(' ') }}" data-animate>
   <p class="pull-quote__text">{{ text }}</p>
   {% if cite %}

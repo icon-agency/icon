@@ -26,6 +26,7 @@ use Drupal\Core\Ajax\ReplaceCommand;
 use Drupal\Core\Cache\Cache;
 use Drupal\Core\Cache\RefinableCacheableDependencyInterface;
 use Drupal\Core\Cache\CacheableMetadata;
+use Drupal\Core\Entity\EntityFormInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\image\Entity\ImageStyle;
 use Drupal\file\FileInterface;
@@ -1685,6 +1686,42 @@ function icon_site_form_alter(array &$form, FormStateInterface $form_state, stri
   if ($form_id === 'component_instance_form') {
     _icon_site_component_panel_states($form);
   }
+  _icon_site_front_page_hero_note($form, $form_state);
+}
+
+/**
+ * The front page's Page data panel says where its hero is edited.
+ *
+ * The hero is the template's, drawn from the reel (icon_site_hero_build()),
+ * so the editor's frame cannot select it (user report, 26 Oct 2026: "I
+ * cant seem to edit this in the CMS since we made it part of the homepage
+ * template"). A note under Status, with the link, in the panel only.
+ */
+function _icon_site_front_page_hero_note(array &$form, FormStateInterface $form_state): void {
+  if (\Drupal::routeMatch()->getRouteName() !== 'canvas.api.form.content_entity') {
+    return;
+  }
+  $object = $form_state->getFormObject();
+  if (!$object instanceof EntityFormInterface) {
+    return;
+  }
+  $page = $object->getEntity();
+  if ($page->getEntityTypeId() !== 'canvas_page' || $page->isNew()) {
+    return;
+  }
+  $front = (string) \Drupal::config('system.site')->get('page.front');
+  if ($front === '' || \Drupal::service('path_alias.manager')->getPathByAlias($front) !== '/page/' . $page->id()) {
+    return;
+  }
+  $form['hero_note'] = [
+    '#type' => 'details',
+    '#title' => t('Homepage hero'),
+    '#open' => TRUE,
+    '#weight' => -85,
+    'note' => [
+      '#markup' => '<p>' . t('The films at the top are not a block: they are part of the homepage itself. Choose and order them under <a href=":url" target="_blank" rel="noopener">Edit › Homepage hero</a>; each film is a Hero slide.', [':url' => Url::fromRoute('icon_site.hero_reel')->toString()]) . '</p>',
+    ],
+  ];
 }
 
 /**

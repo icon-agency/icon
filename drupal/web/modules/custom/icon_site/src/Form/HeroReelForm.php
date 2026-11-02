@@ -50,7 +50,7 @@ final class HeroReelForm extends FormBase {
     $spare = icon_site_hero_available($order);
     $here = Url::fromRoute('icon_site.hero_reel')->toString();
 
-    $form['help'] = ['#markup' => '<p>' . $this->t('The homepage hero plays the ticked slides, top to bottom — drag the handles to order them, up to @max. An unticked slide stays here, ready to add back. The login page and the footer’s ICON mask play the same reel. <em>Edit</em> opens the slide: its film or image, client name and link. Films must be 6 seconds long and muted; the reel loops them.', ['@max' => HeroBlock::MAX]) . '</p>'];
+    $form['help'] = ['#markup' => '<p>' . $this->t('The homepage hero plays the ticked slides, top to bottom — drag the handles to order them, up to @max. An unticked slide stays here, ready to add back. The login page and the footer’s ICON mask play the same reel. <em>Edit</em> opens the slide: its film or image, client name and link. Films must be 6 seconds long and muted; the reel loops them.', ['@max' => HeroBlock::MAX]) . '</p><p>' . $this->t('Standard 16:9 (1920×1080) films. The hero is a fullscreen takeover, so on a phone it crops to portrait and the sides go: keep the focal point in the middle of the frame where possible.') . '</p>'];
     $form['slides'] = [
       '#type' => 'table',
       '#header' => [

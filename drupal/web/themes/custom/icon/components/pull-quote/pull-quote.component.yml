@@ -34,3 +34,27 @@ props:
       description: Optional — who said it.
       examples:
         - 'Client name, role'
+    hide_line_above:
+      type: boolean
+      title: Hide line above
+      description: Drops the hairline across the top of the quote. Off, the line draws as always.
+      examples:
+        - false
+    hide_line_below:
+      type: boolean
+      title: Hide line below
+      description: Drops the hairline across the foot of the quote. Off, the line draws as always.
+      examples:
+        - false
+    reduced_padding_above:
+      type: boolean
+      title: Reduced padding above
+      description: About half the air between the line above and the statement.
+      examples:
+        - false
+    reduced_padding_below:
+      type: boolean
+      title: Reduced padding below
+      description: About half the air between the statement and the line below.
+      examples:
+        - false
