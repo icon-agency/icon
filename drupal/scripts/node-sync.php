@@ -173,6 +173,37 @@ if (!is_array($data) || empty($data['uuid'])) {
 }
 \Drupal::service('account_switcher')->switchTo(User::load(1));
 
+// ICON_ADD_ONLY=1: a guarantee for a host where editors are at work (user
+// ask, 4 Nov 2026: "Do not override the existing folio items on upsun. just
+// add the missing ones. can you guarantee this?"). Anything already here
+// that this import could touch — the same uuid, the same id with the same
+// type and title, or a node of the same type and title under any id — stops the
+// script before a single write, media and files included (they are created
+// below only where missing and never updated — but a guard that fired
+// after them would leave orphans, so it runs first).
+if (getenv('ICON_ADD_ONLY')) {
+  $found = $etm->getStorage('node')->loadByProperties(['uuid' => $data['uuid']]);
+  $sameId = Node::load((int) $data['nid']);
+  // Same title AND the same client, where the type has one: two folios can
+  // share a title for different clients (Reputation management: Schneider
+  // Electric's and Equip Super's), and that is not a clash.
+  $sameTitle = $etm->getStorage('node')->loadByProperties(['type' => $data['type'], 'title' => $data['title']]);
+  $client = $data['fields']['field_work_client'][0]['value'] ?? NULL;
+  if ($client !== NULL) {
+    $sameTitle = array_filter($sameTitle, static fn($n) => $n->hasField('field_work_client') && $n->get('field_work_client')->value === $client);
+  }
+  // The same id under another type or title is not a clash: the import
+  // below creates the folio under a fresh id and never touches that node
+  // (the host's editors filled id 346 with a news story, 4 Nov 2026).
+  if ($sameId && ($sameId->bundle() !== $data['type'] || $sameId->label() !== $data['title'])) {
+    $sameId = NULL;
+  }
+  if ($found || $sameId || $sameTitle) {
+    $hit = $found ? reset($found) : ($sameId ?: reset($sameTitle));
+    throw new \RuntimeException("ADD_ONLY: node {$hit->id()} ({$hit->label()}) is already here — nothing written.");
+  }
+}
+
 // Every media item first, from the files already in place.
 $fileFor = static function (array $f) use ($etm, $fs): File {
   $existing = $etm->getStorage('file')->loadByProperties(['uri' => $f['uri']]);
