@@ -36,19 +36,26 @@
    scroll skew animation be applied to this") — js/testimonials.js writes it
    on the box the quote colours paint, which also takes over the fade-up
    when it is an outer Columns box. #}
-<div class="columns columns--1 columns--gap-normal columns--box theme-work-article testimonials__box" data-animate style="{{ box_style }}"><div class="columns__col">
+{# The gap class is the Columns block's own, so the box's --columns-gap is
+   the one the carousel's grid measures against (user ask, 5 Nov 2026:
+   "add a Normal, tight and Wide … so we can align with content below"). #}
+<div class="columns columns--1 columns--gap-{{ gap in ['wide', 'tight'] ? gap : 'normal' }} columns--box theme-work-article testimonials__box" data-animate style="{{ box_style }}"><div class="columns__col">
 <section class="testimonials" data-testimonials{% if label %} aria-roledescription="carousel" aria-label="{{ label }}"{% endif %}>
   <div class="testimonials__bar">
     <div class="testimonials__steps">
-      {# one quote: a small quotation mark where the arrows would be (user
-         call, 22 Sep 2026); the CSS swaps them on data-count="1" #}
-      <span class="testimonials__quotemark" aria-hidden="true">&ldquo;</span>
       <button class="testimonials__arrow" type="button" data-testimonials-prev aria-label="{{ 'Previous quote'|t }}">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12H4"/><path d="m10 6-6 6 6 6"/></svg>
       </button>
       <button class="testimonials__arrow" type="button" data-testimonials-next aria-label="{{ 'Next quote'|t }}">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12h16"/><path d="m14 6 6 6-6 6"/></svg>
       </button>
+      {# THE LABEL (user call, 5 Nov 2026: "Should this say Testimonial?"):
+         a word in the counter's voice where the lone quotation mark stood
+         (22 Sep 2026) — it names the box, and a screen reader hears it;
+         the mark only repeated the quote's own. With several quotes it
+         stands after the arrows; with one (data-count="1") the arrows go
+         and it takes the column's edge. #}
+      <span class="testimonials__label">{{ heading|default('Testimonial'|t) }}</span>
     </div>
     <p class="testimonials__counter" aria-live="polite"><span data-testimonials-index>01</span><span class="testimonials__of"> / <span data-testimonials-count>01</span></span></p>
   </div>

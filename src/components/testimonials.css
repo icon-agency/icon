@@ -56,24 +56,19 @@
   border-bottom: var(--rule-weight) solid var(--rule);
 }
 
-/* ONE QUOTE (user call, 22 Sep 2026: "replace the arrows with a little
-   quotation mark, and keep the 01, and keep the line"): the bar stays —
-   the hairline and the counter, which reads 01 alone — and a small
-   opening quotation mark in the serif stands where the arrows were, on
-   the column's edge like the first arrow's glyph. */
-.testimonials__quotemark {
-  display: none;
-  place-items: center;
-  height: 2.75rem; /* the arrows' row */
-  margin-left: calc((2.75rem - 1.5rem) / 2); /* undo the steps' pull, back on the edge */
-  font-family: var(--font-serif);
-  /* THE QUOTE'S OWN MARK, exactly — the same size as the “ that opens the
-     words (user call, 22 Sep 2026) — without growing the row: the box
-     stays the arrows' 2.75rem and the glyph centres in it */
-  font-size: calc(var(--voice-mid) * 1.125); /* .testimonial__quote p */
-  font-weight: var(--font-weight-normal);
-  line-height: 0.6; /* the glyph's own height, so it centres on the row */
-  overflow: visible;
+/* THE LABEL (user call, 5 Nov 2026: "Should this say Testimonial?" — a
+   word in place of the lone quotation mark of 22 Sep 2026, which only
+   repeated the quote's own marks and said nothing to a screen reader): the
+   counter's voice exactly — the label size at medium, in the meta grey —
+   so it reads as the band's name the way the work rail's does. With one
+   quote (data-count="1", set by the script) the arrows and the "/ 01" go
+   and the label takes the column's edge. The group's Label field sets the
+   word; "Testimonial" is the default. */
+.testimonials__label {
+  font-size: var(--voice-label);
+  font-weight: var(--font-weight-medium);
+  line-height: 1;
+  color: var(--color-icon-grey);
 }
 
 .testimonials[data-count="1"] .testimonials__arrow,
@@ -81,8 +76,8 @@
   display: none;
 }
 
-.testimonials[data-count="1"] .testimonials__quotemark {
-  display: grid;
+.testimonials[data-count="1"] .testimonials__label {
+  margin-left: calc((2.75rem - 1.5rem) / 2); /* undo the steps' pull, back on the edge */
 }
 
 .testimonials__steps {
@@ -188,11 +183,15 @@
     /* …ON THE PAGE'S THIRDS, not the box's (user check, 19 Oct 2026, the
        quote against the news band's second column): a box's padding insets
        the carousel, so a third of its own width lands a padding's worth
-       right of the page's line. The first column plus the gap is a third
-       of the box's OUTER width, less the padding — --box-pad is the
-       box's (inherited); nothing to subtract on the page. */
-    grid-template-columns: calc((100% + 2 * var(--box-pad, 0px)) / 3 - var(--box-pad, 0px) - var(--space-lg)) 1fr;
-    column-gap: var(--space-lg);
+       right of the page's line. The first column is the Columns block's
+       narrow-wide third — (width − 2 gaps) / 3 — measured on the box's
+       OUTER width, less the padding; the gap is the box's --columns-gap,
+       the Gap pick on the group (user ask, 5 Nov 2026: "so we can align
+       with content below" — the quote sat a third of a gap left of the
+       wide column under it). Match the group's Gap to the Columns below
+       and the two edges meet. */
+    grid-template-columns: calc((100% + 2 * var(--box-pad, 0px) - 2 * var(--columns-gap, var(--grid-gutter))) / 3 - var(--box-pad, 0px)) 1fr;
+    column-gap: var(--columns-gap, var(--grid-gutter));
   }
 }
 
@@ -264,6 +263,18 @@
   background: currentColor;
   -webkit-mask: var(--logo) left bottom / contain no-repeat;
   mask: var(--logo) left bottom / contain no-repeat;
+}
+
+/* A PNG LOGO masks by its brightness, not its alpha (user call, 5 Nov 2026:
+   "allow png logos" — AUSTRAC's mark came as a white crest on an opaque
+   blue square, and the alpha mask painted the whole square). The light
+   parts of the file become the mark in the box's ink; dark or transparent
+   parts fall away. So a PNG logo must be a white mark on a dark or
+   transparent ground; an SVG keeps the alpha mask above. The template
+   adds this class from the file's extension. */
+.testimonial__logo--raster {
+  -webkit-mask-source-type: luminance;
+  mask-mode: luminance;
 }
 
 /* the quote in Miller, the serif, at book weight (user call, Sep 2026:

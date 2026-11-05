@@ -28,6 +28,26 @@ props:
       description: What screen readers call the carousel, e.g. "What our clients say". Not shown.
       examples:
         - What our clients say
+    heading:
+      type: string
+      title: Label
+      description: The word over the quote, in the counter's voice — "Testimonial" unless you say otherwise (user call, 5 Nov 2026). A screen reader hears it too.
+      examples:
+        - Testimonial
+    gap:
+      type: string
+      title: Gap
+      description: The space between the person's column and the quote — the same three as a Columns block's. Pick the one the Columns below use and the quote lines up with their wide column (user ask, 5 Nov 2026).
+      enum:
+        - normal
+        - wide
+        - tight
+      meta:enum:
+        normal: Normal (the page's column gutter)
+        wide: Wide (a section's air between them)
+        tight: Tight (the gallery's 16px)
+      examples:
+        - normal
 slots:
   quotes:
     title: Quotes

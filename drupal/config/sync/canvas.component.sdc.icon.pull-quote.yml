@@ -6,9 +6,243 @@ dependencies:
     - options
   theme:
     - icon
-active_version: cae7d1527ccc3704
+active_version: a3063f7dd2886ebe
 versioned_properties:
   active:
+    settings:
+      prop_field_definitions:
+        text:
+          required: true
+          field_type: string
+          field_storage_settings: {  }
+          field_instance_settings: {  }
+          field_widget: string_textfield
+          default_value:
+            -
+              value: 'How ICON transformed with AI: at the nexus between culture and tech'
+          expression: ℹ︎string␟value
+          derived_schema_metadata:
+            string_shape: {  }
+        variant:
+          required: false
+          field_type: list_string
+          field_storage_settings:
+            allowed_values_function: canvas_load_allowed_values_for_component_prop
+          field_instance_settings: {  }
+          field_widget: options_select
+          default_value:
+            -
+              value: upright
+          expression: ℹ︎list_string␟value
+          derived_schema_metadata: {  }
+        cite:
+          required: false
+          field_type: string
+          field_storage_settings: {  }
+          field_instance_settings: {  }
+          field_widget: string_textfield
+          default_value:
+            -
+              value: 'Client name, role'
+          expression: ℹ︎string␟value
+          derived_schema_metadata:
+            string_shape: {  }
+        hide_line_above:
+          required: false
+          field_type: boolean
+          field_storage_settings: {  }
+          field_instance_settings: {  }
+          field_widget: boolean_checkbox
+          default_value:
+            -
+              value: false
+          expression: ℹ︎boolean␟value
+          derived_schema_metadata: {  }
+        hide_line_below:
+          required: false
+          field_type: boolean
+          field_storage_settings: {  }
+          field_instance_settings: {  }
+          field_widget: boolean_checkbox
+          default_value:
+            -
+              value: false
+          expression: ℹ︎boolean␟value
+          derived_schema_metadata: {  }
+        reduced_padding_above:
+          required: false
+          field_type: boolean
+          field_storage_settings: {  }
+          field_instance_settings: {  }
+          field_widget: boolean_checkbox
+          default_value:
+            -
+              value: false
+          expression: ℹ︎boolean␟value
+          derived_schema_metadata: {  }
+        reduced_padding_below:
+          required: false
+          field_type: boolean
+          field_storage_settings: {  }
+          field_instance_settings: {  }
+          field_widget: boolean_checkbox
+          default_value:
+            -
+              value: false
+          expression: ℹ︎boolean␟value
+          derived_schema_metadata: {  }
+    fallback_metadata:
+      slot_definitions: {  }
+  5d89ea983015e3b4:
+    settings:
+      prop_field_definitions:
+        text:
+          required: true
+          field_type: string
+          field_storage_settings: {  }
+          field_instance_settings: {  }
+          field_widget: string_textfield
+          default_value:
+            -
+              value: 'How ICON transformed with AI: at the nexus between culture and tech'
+          expression: ℹ︎string␟value
+          derived_schema_metadata:
+            string_shape: {  }
+        variant:
+          required: false
+          field_type: list_string
+          field_storage_settings:
+            allowed_values_function: canvas_load_allowed_values_for_component_prop
+          field_instance_settings: {  }
+          field_widget: options_select
+          default_value:
+            -
+              value: upright
+          expression: ℹ︎list_string␟value
+          derived_schema_metadata: {  }
+        cite:
+          required: false
+          field_type: string
+          field_storage_settings: {  }
+          field_instance_settings: {  }
+          field_widget: string_textfield
+          default_value:
+            -
+              value: 'Client name, role'
+          expression: ℹ︎string␟value
+          derived_schema_metadata:
+            string_shape: {  }
+        hide_line_above:
+          required: false
+          field_type: boolean
+          field_storage_settings: {  }
+          field_instance_settings: {  }
+          field_widget: boolean_checkbox
+          default_value:
+            -
+              value: false
+          expression: ℹ︎boolean␟value
+          derived_schema_metadata: {  }
+        hide_line_below:
+          required: false
+          field_type: boolean
+          field_storage_settings: {  }
+          field_instance_settings: {  }
+          field_widget: boolean_checkbox
+          default_value:
+            -
+              value: false
+          expression: ℹ︎boolean␟value
+          derived_schema_metadata: {  }
+        reduced_padding:
+          required: false
+          field_type: boolean
+          field_storage_settings: {  }
+          field_instance_settings: {  }
+          field_widget: boolean_checkbox
+          default_value:
+            -
+              value: false
+          expression: ℹ︎boolean␟value
+          derived_schema_metadata: {  }
+    fallback_metadata:
+      slot_definitions: {  }
+  0d6799395581ca90:
+    settings:
+      prop_field_definitions:
+        text:
+          required: true
+          field_type: string
+          field_storage_settings: {  }
+          field_instance_settings: {  }
+          field_widget: string_textfield
+          default_value:
+            -
+              value: 'How ICON transformed with AI: at the nexus between culture and tech'
+          expression: ℹ︎string␟value
+          derived_schema_metadata:
+            string_shape: {  }
+        variant:
+          required: false
+          field_type: list_string
+          field_storage_settings:
+            allowed_values_function: canvas_load_allowed_values_for_component_prop
+          field_instance_settings: {  }
+          field_widget: options_select
+          default_value:
+            -
+              value: upright
+          expression: ℹ︎list_string␟value
+          derived_schema_metadata: {  }
+        cite:
+          required: false
+          field_type: string
+          field_storage_settings: {  }
+          field_instance_settings: {  }
+          field_widget: string_textfield
+          default_value:
+            -
+              value: 'Client name, role'
+          expression: ℹ︎string␟value
+          derived_schema_metadata:
+            string_shape: {  }
+        line_above:
+          required: false
+          field_type: boolean
+          field_storage_settings: {  }
+          field_instance_settings: {  }
+          field_widget: boolean_checkbox
+          default_value:
+            -
+              value: true
+          expression: ℹ︎boolean␟value
+          derived_schema_metadata: {  }
+        line_below:
+          required: false
+          field_type: boolean
+          field_storage_settings: {  }
+          field_instance_settings: {  }
+          field_widget: boolean_checkbox
+          default_value:
+            -
+              value: true
+          expression: ℹ︎boolean␟value
+          derived_schema_metadata: {  }
+        padding:
+          required: false
+          field_type: list_string
+          field_storage_settings:
+            allowed_values_function: canvas_load_allowed_values_for_component_prop
+          field_instance_settings: {  }
+          field_widget: options_select
+          default_value:
+            -
+              value: normal
+          expression: ℹ︎list_string␟value
+          derived_schema_metadata: {  }
+    fallback_metadata:
+      slot_definitions: {  }
+  cae7d1527ccc3704:
     settings:
       prop_field_definitions:
         text:
@@ -95,3 +329,4 @@ id: sdc.icon.pull-quote
 provider: icon
 source: sdc
 source_local_id: 'icon:pull-quote'
+

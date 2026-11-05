@@ -6,9 +6,15 @@
  *
  * Entity IDs are not stable between environments but UUIDs are, so the
  * export writes every media and node reference in the tree as a UUID and
- * the import looks each up on its own side. A reference the other side
- * does not have (a file uploaded locally: files never travel) drops that
- * component and its children, and says so.
+ * the import looks each up on its own side. The export also carries a
+ * manifest of every media item the tree uses (5 Nov 2026), and the import
+ * creates the ones it lacks from files already in place (files never
+ * travel in the JSON: send them up first, as the folio sync does). A
+ * reference that still cannot be resolved drops that component and its
+ * children, and says so.
+ *
+ * ICON_ADD_ONLY=1 on import refuses to touch a page already at the alias:
+ * the guard for carrying new pages to a host whose pages editors own.
  *
  * Export (from the source, say local), to a file:
  *   ICON_SYNC=export ICON_ALIAS=/about drush php:script scripts/page-sync.php
@@ -20,6 +26,8 @@
 declare(strict_types=1);
 
 use Drupal\canvas\AutoSave\AutoSaveManager;
+use Drupal\file\Entity\File;
+use Drupal\media\Entity\Media;
 use Drupal\user\Entity\User;
 
 $mode = (string) getenv('ICON_SYNC');
@@ -52,20 +60,56 @@ $walk = static function (array $inputs, callable $fn) use (&$walk): array {
   return $inputs;
 };
 
+$fs = \Drupal::service('file_system');
+
+/**
+ * A media item's manifest entry: what the other side needs to rebuild it
+ * (the same shape as scripts/node-sync.php's).
+ */
+$describe = static function (Media $media) use ($fs): array {
+  $source = $media->getSource()->getConfiguration()['source_field'];
+  $item = $media->get($source)->first();
+  $file = $item?->entity;
+  $real = $file ? $fs->realpath($file->getFileUri()) : FALSE;
+  $entry = [
+    'uuid' => $media->uuid(),
+    'bundle' => $media->bundle(),
+    'name' => $media->label(),
+    'source_field' => $source,
+    'uri' => $file ? $file->getFileUri() : NULL,
+    'filename' => $file ? $file->getFilename() : NULL,
+    'filemime' => $file ? $file->getMimeType() : NULL,
+    'filesize' => $real && file_exists($real) ? filesize($real) : 0,
+    'alt' => $item->alt ?? NULL,
+    'title' => $item->title ?? NULL,
+    'width' => $item->width ?? NULL,
+    'height' => $item->height ?? NULL,
+    'poster' => NULL,
+  ];
+  if ($media->bundle() !== 'image' && $media->hasField('thumbnail') && ($thumb = $media->get('thumbnail')->entity) && $thumb->getFileUri() !== $entry['uri']) {
+    $entry['poster'] = ['uri' => $thumb->getFileUri(), 'filename' => $thumb->getFilename(), 'filemime' => $thumb->getMimeType()];
+  }
+  return $entry;
+};
+
 if ($mode === 'export') {
   if (!$page) {
     throw new \RuntimeException("No page at $alias.");
   }
   $refs = [];
+  $manifest = [];
   $components = [];
   foreach ($page->get('components')->getValue() as $item) {
     $inputs = is_string($item['inputs']) ? (json_decode($item['inputs'], TRUE) ?: []) : ($item['inputs'] ?? []);
-    $inputs = $walk($inputs, static function ($id) use (&$refs, $etm) {
+    $inputs = $walk($inputs, static function ($id) use (&$refs, &$manifest, $describe, $etm) {
       // A reference is a media item (pictures, films, icons) or a node.
       foreach (['media', 'node'] as $type) {
         $entity = $etm->getStorage($type)->load((int) $id);
         if ($entity) {
           $refs[$type][(string) $id] = ['uuid' => $entity->uuid(), 'label' => $entity->label()];
+          if ($type === 'media' && !isset($manifest[$entity->uuid()])) {
+            $manifest[$entity->uuid()] = $describe($entity);
+          }
           return "$type:" . $entity->uuid();
         }
       }
@@ -88,6 +132,7 @@ if ($mode === 'export') {
     'published' => $page->isPublished(),
     'components' => $components,
     'refs' => $refs,
+    'media' => array_values($manifest),
   ], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . "\n";
   return;
 }
@@ -101,10 +146,89 @@ $data = json_decode((string) file_get_contents($file), TRUE);
 if (!is_array($data) || empty($data['components'])) {
   throw new \RuntimeException("Nothing to import in $file.");
 }
+if ($page && getenv('ICON_ADD_ONLY')) {
+  throw new \RuntimeException("ADD_ONLY: page {$page->id()} ({$page->label()}) is already at $alias — nothing written.");
+}
 \Drupal::service('account_switcher')->switchTo(User::load(1));
 if (!$page) {
   $page = $pages->create(['title' => $data['title'], 'owner' => 1]);
   print "No page at $alias yet: creating one.\n";
+}
+
+// Every media item in the manifest first, from files already in place.
+$fileFor = static function (array $f) use ($etm, $fs): File {
+  $existing = $etm->getStorage('file')->loadByProperties(['uri' => $f['uri']]);
+  if ($existing) {
+    return reset($existing);
+  }
+  $real = $fs->realpath($f['uri']);
+  if (!$real || !file_exists($real)) {
+    throw new \RuntimeException("File not in place: {$f['uri']} — send it up first.");
+  }
+  $file = File::create([
+    'uri' => $f['uri'],
+    'filename' => $f['filename'],
+    'filemime' => $f['filemime'],
+    'uid' => 1,
+    'status' => 1,
+  ]);
+  $file->save();
+  return $file;
+};
+$created = 0;
+$matched = 0;
+// uuid => media id, for the uuids this side holds under another item.
+$aliases = [];
+foreach ($data['media'] ?? [] as $entry) {
+  if ($etm->getStorage('media')->loadByProperties(['uuid' => $entry['uuid']])) {
+    continue;
+  }
+  if (!empty($entry['uri']) && ($file = $etm->getStorage('file')->loadByProperties(['uri' => $entry['uri']]))) {
+    $fid = (int) reset($file)->id();
+    $holder = $etm->getStorage('media')->getQuery()->accessCheck(FALSE)
+      ->condition('bundle', $entry['bundle'])
+      ->condition($entry['source_field'] . '.target_id', $fid)
+      ->range(0, 1)->execute();
+    if ($holder) {
+      $aliases[$entry['uuid']] = (int) reset($holder);
+      $matched++;
+      continue;
+    }
+  }
+  if (empty($entry['uri'])) {
+    print "Media {$entry['name']} has no file in the export: its component will drop.\n";
+    continue;
+  }
+  $real = $fs->realpath($entry['uri']);
+  if (!$real || !file_exists($real)) {
+    print "Media {$entry['name']}: {$entry['uri']} is not in place here, its component will drop.\n";
+    continue;
+  }
+  $file = $fileFor($entry);
+  $values = [
+    'uuid' => $entry['uuid'],
+    'bundle' => $entry['bundle'],
+    'name' => $entry['name'],
+    'uid' => 1,
+    'status' => 1,
+    $entry['source_field'] => array_filter([
+      'target_id' => $file->id(),
+      'alt' => $entry['alt'],
+      'title' => $entry['title'],
+      'width' => $entry['width'],
+      'height' => $entry['height'],
+    ], static fn($v) => $v !== NULL),
+  ];
+  $media = Media::create($values);
+  if (!empty($entry['poster'])) {
+    $poster = $fileFor($entry['poster']);
+    $media->set('thumbnail', ['target_id' => $poster->id()]);
+  }
+  $media->save();
+  $created++;
+}
+if (!empty($data['media'])) {
+  print "Media: $created created, $matched matched by file, " . (count($data['media']) - $created - $matched) . " already here.\n";
 }
 $versions = static function (string $id) use ($etm): string {
   $c = $etm->getStorage('component')->load($id);
@@ -117,9 +241,12 @@ $dropped = [];
 $tree = [];
 foreach ($data['components'] as $item) {
   $missing = NULL;
-  $inputs = $walk($item['inputs'] ?: [], static function ($ref) use (&$missing, $etm) {
+  $inputs = $walk($item['inputs'] ?: [], static function ($ref) use (&$missing, $etm, $aliases) {
     if (!is_string($ref) || !preg_match('/^(media|node):(.+)$/', $ref, $m)) {
       return $ref;
+    }
+    if ($m[1] === 'media' && isset($aliases[$m[2]])) {
+      return $aliases[$m[2]];
     }
     $found = $etm->getStorage($m[1])->loadByProperties(['uuid' => $m[2]]);
     if (!$found) {

@@ -45,7 +45,7 @@ props:
     logo:
       type: integer
       title: Logo
-      description: The company's mark, from the media library — a client logo or a picture, shown in the box's ink. Optional.
+      description: The company's mark, from the media library — a client logo, shown in the box's ink. An SVG works as it is; a PNG must be a white mark on a dark or transparent ground (its light parts become the mark). Optional.
       x-icon-media: logo
     logo_large:
       type: boolean

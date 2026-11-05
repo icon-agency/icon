@@ -5,6 +5,13 @@
  * page layers give it their measure by parent (.news-article__flow > .content-page).
  */
 #}
-<div class="content-page" data-animate>
+{# AN EMPTY BLOCK IS VISIBLE IN THE EDITOR (user call, 5 Nov 2026: "Make it
+   so I can access zero height content blocks"): with no words — nothing,
+   a stray <br>, a non-breaking space — the block wears .content-page--empty,
+   and in the Canvas editor's frame base/prose.css gives it a height, a
+   dashed line and a note, so it can be found, filled or deleted. On the
+   page itself the class does nothing. #}
+{% set words = text|render|replace({'&nbsp;': ' ', '\u00a0': ' '})|striptags|trim %}
+<div class="content-page{% if words == '' %} content-page--empty{% endif %}" data-animate>
   {{ text }}
 </div>

@@ -28,7 +28,12 @@
       </p>
     {% endif %}
     {% if mark.src %}
-      <span class="testimonial__logo testimonial__logo--mono{% if logo_large %} testimonial__logo--large{% endif %}" style="--logo: url('{{ mark.src|e('css') }}')" role="img" aria-label="{{ mark.alt|default(company|default('')) }}"></span>
+      {# A PNG logo masks by luminance, not alpha (user call, 5 Nov 2026:
+         "allow png logos" — an opaque PNG masked by alpha was a solid
+         block): the mark must be white on a dark or transparent ground.
+         An SVG keeps the alpha mask. #}
+      {% set raster = mark.src|split('?')|first|lower matches '/\\.(png|jpe?g|webp|gif)$/' %}
+      <span class="testimonial__logo testimonial__logo--mono{% if raster %} testimonial__logo--raster{% endif %}{% if logo_large %} testimonial__logo--large{% endif %}" style="--logo: url('{{ mark.src|e('css') }}')" role="img" aria-label="{{ mark.alt|default(company|default('')) }}"></span>
     {% endif %}
   </div>
   {# The quotation marks are the template's (user question, 22 Sep 2026:

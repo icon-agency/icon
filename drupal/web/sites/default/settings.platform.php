@@ -46,6 +46,15 @@ if (isset($platformsh->branch)) {
   }
 }
 
+// Name the environment for the environment indicator (5 Nov 2026). Its
+// favicon script runs on every page and takes the name's first letter for
+// the badge; with no name it threw a TypeError on every page load.
+if (isset($platformsh->branch)) {
+  $config['environment_indicator.indicator']['name'] = $platformsh->branch;
+  $config['environment_indicator.indicator']['bg_color'] = $platformsh->onProduction() ? '#8b1a1a' : '#1a4f8b';
+  $config['environment_indicator.indicator']['fg_color'] = '#ffffff';
+}
+
 // Email
 $config['symfony_mailer.settings']['default_transport'] = 'sendmail';
 $settings['mailer_sendmail_commands'] = [

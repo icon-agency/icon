@@ -159,6 +159,23 @@
   .columns__col:has(.office-list) + .columns__col:has(.office-list) {
     margin-top: 0;
   }
+
+  /* RULED LISTS stacked: a slash or caps list split across two cells
+     (the editor's even pair) meets itself end to start on a phone — the
+     first list's bottom rule, the row gap, the second's top rule (user
+     catch, 5 Nov 2026: "double line and extra space"). The second cell
+     comes up by the gap and its first item drops its top rule, so the two
+     read as the one list they are. */
+  .columns__col:has(> .content-page:last-child > :is(ul.list-slash, ul.list-caps):last-child)
+    + .columns__col:has(> .content-page:first-child > :is(ul.list-slash, ul.list-caps):first-child) {
+    margin-top: -1.25rem;
+  }
+
+  .columns__col:has(> .content-page:last-child > :is(ul.list-slash, ul.list-caps):last-child)
+    + .columns__col:has(> .content-page:first-child > :is(ul.list-slash, ul.list-caps):first-child)
+    > .content-page:first-child > :is(ul.list-slash, ul.list-caps):first-child > li:first-child {
+    border-top: 0;
+  }
 }
 
 /* Two Columns of offices in a row, one under the other: the space between

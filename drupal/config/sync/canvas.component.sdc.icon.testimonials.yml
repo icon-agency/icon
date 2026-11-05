@@ -6,9 +6,85 @@ dependencies:
     - options
   theme:
     - icon
-active_version: fa34f618af34d610
+active_version: 2529bb17a53bfbef
 versioned_properties:
   active:
+    settings:
+      prop_field_definitions:
+        label:
+          required: false
+          field_type: string
+          field_storage_settings: {  }
+          field_instance_settings: {  }
+          field_widget: string_textfield
+          default_value:
+            -
+              value: 'What our clients say'
+          expression: ℹ︎string␟value
+          derived_schema_metadata:
+            string_shape: {  }
+        heading:
+          required: false
+          field_type: string
+          field_storage_settings: {  }
+          field_instance_settings: {  }
+          field_widget: string_textfield
+          default_value:
+            -
+              value: Testimonial
+          expression: ℹ︎string␟value
+          derived_schema_metadata:
+            string_shape: {  }
+        gap:
+          required: false
+          field_type: list_string
+          field_storage_settings:
+            allowed_values_function: canvas_load_allowed_values_for_component_prop
+          field_instance_settings: {  }
+          field_widget: options_select
+          default_value:
+            -
+              value: normal
+          expression: ℹ︎list_string␟value
+          derived_schema_metadata: {  }
+    fallback_metadata:
+      slot_definitions:
+        quotes:
+          title: Quotes
+          description: 'Testimonial (item) components, in the order they are stepped through.'
+  f22f33533d1d57d8:
+    settings:
+      prop_field_definitions:
+        label:
+          required: false
+          field_type: string
+          field_storage_settings: {  }
+          field_instance_settings: {  }
+          field_widget: string_textfield
+          default_value:
+            -
+              value: 'What our clients say'
+          expression: ℹ︎string␟value
+          derived_schema_metadata:
+            string_shape: {  }
+        gap:
+          required: false
+          field_type: list_string
+          field_storage_settings:
+            allowed_values_function: canvas_load_allowed_values_for_component_prop
+          field_instance_settings: {  }
+          field_widget: options_select
+          default_value:
+            -
+              value: normal
+          expression: ℹ︎list_string␟value
+          derived_schema_metadata: {  }
+    fallback_metadata:
+      slot_definitions:
+        quotes:
+          title: Quotes
+          description: 'Testimonial (item) components, in the order they are stepped through.'
+  fa34f618af34d610:
     settings:
       prop_field_definitions:
         label:
@@ -164,28 +240,9 @@ versioned_properties:
         quotes:
           title: Quotes
           description: 'Testimonial (item) components, in the order they are stepped through.'
-  fa34f618af34d610:
-    settings:
-      prop_field_definitions:
-        label:
-          required: false
-          field_type: string
-          field_storage_settings: {  }
-          field_instance_settings: {  }
-          field_widget: string_textfield
-          default_value:
-            -
-              value: 'What our clients say'
-          expression: ℹ︎string␟value
-          derived_schema_metadata:
-            string_shape: {  }
-    fallback_metadata:
-      slot_definitions:
-        quotes:
-          title: Quotes
-          description: 'Testimonial (item) components, in the order they are stepped through.'
 label: 'Testimonials (group)'
 id: sdc.icon.testimonials
 provider: icon
 source: sdc
 source_local_id: 'icon:testimonials'
+

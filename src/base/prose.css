@@ -136,6 +136,7 @@
     font-weight: var(--font-weight-medium);
     letter-spacing: -0.01em;
     color: var(--icon-black);
+    text-wrap: balance; /* a lead is one to three lines: even lines, never a stranded last word. Chrome's pretty gives up when the line above would lose more than ~10% of its width (user call, 5 Nov 2026: a lone "experience" at 1199px) */
   }
 
   /* ALIGNMENT from the editor's toolbar (user ask, 23 Sep 2026: "add left,
@@ -484,7 +485,13 @@
      the ink at 45% — mid grey on white, mid grey on the dark ground, one
      derivation. */
   .content-page a {
-    --link-rule: color-mix(in srgb, var(--icon-black) 45%, transparent);
+    /* The resting line is ICON blue on the light page (user call, 5 Nov
+       2026: "on white BGs, make the underline on all links the icon blue");
+       the themed grounds below keep the ink at 45%. */
+    --link-rule: var(--icon-blue);
+    /* How far the line sits up from the bottom of the inline box: 0 in the
+       copy; a heading set solid lifts it (below). */
+    --link-lift: 0px;
     color: var(--icon-black);
     text-decoration: none;
     background-image:
@@ -495,8 +502,8 @@
       200% 1px,
       100% 1px;
     background-position:
-      100% 100%,
-      right bottom;
+      100% calc(100% - var(--link-lift)),
+      100% calc(100% - var(--link-lift));
     padding-bottom: 0.08em;
     -webkit-box-decoration-break: clone;
     box-decoration-break: clone;
@@ -516,14 +523,31 @@
       200% 1px,
       0% 1px;
     background-position:
-      0% 100%,
-      right bottom;
+      0% calc(100% - var(--link-lift)),
+      100% calc(100% - var(--link-lift));
     /* arriving: the grey leaves first, the blue draws in once it has gone,
        the words turning with it */
     transition:
       background-size var(--duration-normal) var(--ease-standard),
       background-position var(--duration-normal) var(--ease-decelerate) var(--duration-normal),
       color var(--duration-normal) var(--ease-standard) var(--duration-normal);
+  }
+
+  /* A LINK IN A HEADING SET SOLID (user catch, 5 Nov 2026: the caps
+     heading's underline "crashing into the wrapping text"): at line-height 1
+     the inline box runs below the line box, so a line drawn at its bottom
+     lands inside the next line's capitals. The line comes up to sit a
+     little under the baseline instead (the box runs 0.25em below it; 0.22
+     was "too close to the text"), and the box loses its padding. */
+  .content-page :is(h1, h2, h3, h4, h5, h6) a {
+    --link-lift: 0.12em;
+    padding-bottom: 0;
+  }
+
+  /* THEMED GROUNDS keep the ink-derived line: the blue token is near-white
+     there, and a white line under white words reads as a plain underline. */
+  :is(.dark, .theme-blue, .theme-work-article) .content-page a {
+    --link-rule: color-mix(in srgb, var(--icon-black) 45%, transparent);
   }
 
   .content-page strong {
@@ -592,4 +616,30 @@
       transition: none;
     }
   }
+}
+
+/* AN EMPTY CONTENT BLOCK, FOUND (user call, 5 Nov 2026: "Make it so I can
+   access zero height content blocks so it doesn't happen again" — a Content
+   block with no words is zero height in the Canvas preview, so an editor
+   could not see, select or delete it, and the page would not publish: "The
+   property text is required"). The prose template marks a wordless block
+   .content-page--empty; in the editor's frame only (html[data-icon-editing],
+   js-theme/opening.js) it gets a height, the brand-blue dashed line of the
+   editor's own selection and a note in the label voice. On the page the
+   class does nothing: a zero-height block stays invisible there. */
+html[data-icon-editing] .content-page--empty {
+  display: grid;
+  place-items: center;
+  min-height: 3rem;
+  outline: 2px dashed var(--color-icon-blue);
+  outline-offset: 2px;
+}
+
+html[data-icon-editing] .content-page--empty::before {
+  content: "Empty Content block — type here or delete it";
+  font-size: var(--voice-label);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--color-icon-blue);
 }

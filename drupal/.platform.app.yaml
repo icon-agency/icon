@@ -78,6 +78,11 @@ web:
           allow: true
         '^/sitemap\.xml$':
           allow: true
+        # the theme's web manifest (5 Nov 2026): .json is not on the static
+        # extension list above, so without this it fell through to Drupal
+        # and every page logged a 404 for it
+        '^/themes/custom/icon/assets/brand/favicon/manifest\.json$':
+          allow: true
         '^/sites/sites\.php$':
           scripts: false
         '^/sites/[^/]+/settings.*?\.php$':
