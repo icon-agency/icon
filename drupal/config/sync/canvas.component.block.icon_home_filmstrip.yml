@@ -1,0 +1,24 @@
+uuid: 963558fa-b23d-4854-b5d8-df1bb2200394
+langcode: en
+status: true
+dependencies:
+  module:
+    - icon_site
+active_version: fdcaaf2dc5f2ccaf
+versioned_properties:
+  active:
+    settings:
+      default_settings:
+        id: icon_home_filmstrip
+        label: "Filmstrip: the homepage's"
+        label_display: '0'
+        provider: icon_site
+        heading: 'The ICON team'
+    fallback_metadata:
+      slot_definitions: null
+label: "Filmstrip: the homepage's"
+id: block.icon_home_filmstrip
+provider: icon_site
+source: block
+source_local_id: icon_home_filmstrip
+

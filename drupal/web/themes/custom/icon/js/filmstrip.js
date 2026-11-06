@@ -50,6 +50,15 @@
           // placeholder child, and the engine drifting THAT left nothing to drop
           // a card onto (user report, Sep 2026: "I can't add items to the strip").
           if (!track || track.querySelectorAll(".filmstrip__card").length === 0) return;
+          // A BLOCK in the slot (the homepage's strip, mirrored on the 404 and
+          // 403 pages) comes wrapped in Canvas's block div: unwrap it, so the
+          // cards are the track's children the cloning and the loop measure.
+          Array.prototype.slice.call(track.children).forEach(function (child) {
+            if (child.id && child.id.indexOf("block-") === 0) {
+              while (child.firstChild) track.insertBefore(child.firstChild, child);
+              track.removeChild(child);
+            }
+          });
 
           // Duplicate the set once for a seamless wrap. Each clone carries ITS
           // ORIGINAL'S tilt, written inline: the CSS tilts by position in the row

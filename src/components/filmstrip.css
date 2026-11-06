@@ -43,6 +43,14 @@
 /* THE EMPTY STRIP IN THE EDITOR: Canvas marks an empty Cards slot with a
    placeholder; it stands a card's size so there is a target to drop the
    first card onto (the engine leaves an empty strip alone — filmstrip.js). */
+/* A block's wrapper in the track (the homepage's strip mirrored by
+   icon_home_filmstrip on the 404 and 403 pages): transparent to the layout,
+   so its cards are the row's items — on the live page js/filmstrip.js
+   unwraps it outright; in the editor's grid this is what does it. */
+.filmstrip__track > div[id^="block-"] {
+  display: contents;
+}
+
 .filmstrip__track > .canvas--slot-empty-placeholder {
   flex: 0 0 auto;
   width: var(--filmstrip-card-w, clamp(10.5rem, 17vw, 26rem));

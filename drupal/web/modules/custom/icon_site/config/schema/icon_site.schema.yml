@@ -221,3 +221,13 @@ block.settings.icon_expertise_links:
     gutter:
       type: boolean
       label: 'On the page gutter'
+
+block.settings.icon_home_filmstrip:
+  type: block_settings
+  label: "Filmstrip: the homepage's block settings"
+  constraints:
+    FullyValidatable: ~
+  mapping:
+    heading:
+      type: label
+      label: 'Accessible label'
