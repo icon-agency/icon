@@ -6,9 +6,17 @@
 name: "drupal"
 type: "php:8.4"
 
+# PINNED (23 Nov 2026): Composer 2.11.2 and symfony/polyfill-php85 1.44.0
+# came out and the build host is refused when it downloads them from GitHub
+# ("Could not authenticate against github.com" — three builds failed at this
+# step, before any of our code ran). These are the versions the last good
+# build (6 Nov 2026) installed, which the host still holds in its cache.
+# Lift the pin back to "^2.8" once a build can reach GitHub again, or once
+# the project has a COMPOSER_AUTH token.
 dependencies:
   php:
-    composer/composer: "^2.8"
+    composer/composer: "2.11.1"
+    symfony/polyfill-php85: "1.43.0"
 
 runtime:
   extensions:
