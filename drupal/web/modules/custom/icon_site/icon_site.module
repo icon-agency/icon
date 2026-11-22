@@ -1007,10 +1007,10 @@ function icon_site_footer(): array {
     'touch_url' => icon_site_footer_link((string) ($get('touch_url') ?: ''), '/contact'),
     'newsletter' => (string) ($get('newsletter') ?? 'Join our newsletter for industry insights, news and our latest work'),
     'acknowledgement' => (string) ($get('acknowledgement') ?? 'ICON recognises the First Peoples of this nation and their ongoing connection to culture and country. We acknowledge First Nations Peoples as the Traditional Owners, Custodians and Lore Keepers of the world’s oldest living culture and pay respects to their Elders past, present and emerging.'),
-    // The B Corp mark's link (user ask, 24 Sep 2026): the directory until
-    // the listing is up ("I'll give you a link once our listing is up, so
-    // add a placeholder"); empty hides the mark.
-    'bcorp_url' => icon_site_footer_link((string) ($get('bcorp_url') ?? 'https://www.bcorporation.net/en-us/find-a-b-corp/'), ''),
+    // The B Corp mark's link (user ask, 24 Sep 2026): ICON's own listing
+    // in the B Corp directory (23 Nov 2026 — the directory's front page
+    // stood in until the listing was up); empty hides the mark.
+    'bcorp_url' => icon_site_footer_link((string) ($get('bcorp_url') ?? 'https://www.bcorporation.net/en-us/find-a-b-corp/company/iconinc-holdings-pty-ltd/'), ''),
     // The legal line under the acknowledgement (user ask, 24 Sep 2026:
     // "© 2026 ICON Agency (ABN 12 103 086 451) Privacy statement. Raise a
     // concern."): the ABN and the two links; the year is today's, in the

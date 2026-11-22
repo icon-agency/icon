@@ -90,7 +90,7 @@ final class FooterSettingsForm extends FormBase {
     $form['bcorp_url'] = [
       '#type' => 'textfield',
       '#title' => $this->t('B Corp listing URL'),
-      '#description' => $this->t('Where the B Corp mark at the foot of the page links — the B Corp directory until the listing is up. Leave it empty to hide the mark.'),
+      '#description' => $this->t('Where the B Corp mark at the foot of the page links: ICON’s listing in the B Corp directory. Leave it empty to hide the mark.'),
       '#default_value' => $footer['bcorp_url'],
       '#maxlength' => 255,
     ];
