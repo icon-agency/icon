@@ -7,6 +7,7 @@
 
 declare(strict_types=1);
 
+use Drupal\Component\Utility\Unicode;
 use Drupal\Component\Utility\UrlHelper;
 use Drupal\Component\Utility\Html;
 use Drupal\Core\Render\Markup;
@@ -1303,18 +1304,192 @@ function icon_site_page_attachments(array &$attachments): void {
     // icon_site_form_node_form_alter()). Kept for the other canvas.* pages.
     $attachments['#attached']['library'][] = 'icon_site/panel_lists';
   }
-  $page = $route->getRouteName() === 'entity.canvas_page.canonical' ? $route->getParameter('canvas_page') : NULL;
-  if ($page instanceof EntityInterface) {
-    $description = trim((string) ($page->get('description')->value ?? ''));
-    $tags = ['og:title' => ['property' => 'og:title', 'content' => $page->label()]];
-    if ($description !== '') {
-      $tags['description'] = ['name' => 'description', 'content' => $description];
-      $tags['og:description'] = ['property' => 'og:description', 'content' => $description];
+  $meta = _icon_site_head_meta();
+  if (!$meta) {
+    return;
+  }
+  $cache = CacheableMetadata::createFromRenderArray($attachments)->merge($meta['cache']);
+  $tags = [
+    'og:title' => ['property' => 'og:title', 'content' => $meta['title']],
+    'og:type' => ['property' => 'og:type', 'content' => $meta['type']],
+    'og:url' => ['property' => 'og:url', 'content' => $meta['url']],
+    'og:site_name' => ['property' => 'og:site_name', 'content' => \Drupal::config('system.site')->get('name')],
+    'og:image' => ['property' => 'og:image', 'content' => $meta['image']],
+    'twitter:card' => ['name' => 'twitter:card', 'content' => 'summary_large_image'],
+  ];
+  if ($meta['description'] !== '') {
+    $tags['description'] = ['name' => 'description', 'content' => $meta['description']];
+    $tags['og:description'] = ['property' => 'og:description', 'content' => $meta['description']];
+  }
+  if ($meta['published'] !== '') {
+    $tags['article:published_time'] = ['property' => 'article:published_time', 'content' => $meta['published']];
+  }
+  foreach ($tags as $key => $attributes) {
+    $attachments['#attached']['html_head'][] = [['#tag' => 'meta', '#attributes' => $attributes], 'icon_site_' . $key];
+  }
+  $cache->applyTo($attachments);
+}
+
+/**
+ * The head of a public page: what a search result and a shared link say.
+ *
+ * Three kinds of page carry one (10 Nov 2026, the sitemap's day — until
+ * then only a Canvas page had a description, and nothing had a picture):
+ *  - a Canvas page: its title and its Description (Page data), the
+ *    homepage under the site's name and slogan instead of "Home";
+ *  - a Work item: "Project for Client", its Feature statement, its tile;
+ *  - a News story: its title, the opening of its first paragraph, its
+ *    picture, and its date as article:published_time.
+ * A page with no picture of its own wears the module's default card
+ * (assets/share-default.png). Nothing here is a new field — every value
+ * is one the editors already fill.
+ *
+ * @return array{title: string, description: string, type: string, url: string, image: string, published: string, cache: \Drupal\Core\Cache\CacheableMetadata}|null
+ *   The head, or NULL on a route that has none (admin, the editor, a
+ *   listing's node types with no page of their own).
+ */
+function _icon_site_head_meta(): ?array {
+  $route = \Drupal::routeMatch();
+  $cache = (new CacheableMetadata())->addCacheableDependency(\Drupal::config('system.site'));
+  $meta = ['description' => '', 'type' => 'website', 'published' => '', 'cache' => $cache];
+  $media = NULL;
+  $name = $route->getRouteName();
+  $paged = ['work', 'news'];
+  if ($name === 'entity.canvas_page.canonical' && ($entity = $route->getParameter('canvas_page')) instanceof EntityInterface) {
+    $meta['title'] = (string) $entity->label();
+    $meta['description'] = trim((string) ($entity->get('description')->value ?? ''));
+    if (!$entity->get('image')->isEmpty()) {
+      $media = $entity->get('image')->entity;
     }
-    foreach ($tags as $key => $attributes) {
-      $attachments['#attached']['html_head'][] = [['#tag' => 'meta', '#attributes' => $attributes], 'icon_site_' . $key];
+  }
+  elseif ($name === 'entity.node.canonical' && ($entity = $route->getParameter('node')) instanceof NodeInterface && in_array($entity->bundle(), $paged, TRUE)) {
+    $meta['type'] = 'article';
+    $meta['title'] = (string) $entity->label();
+    if ($entity->bundle() === 'work') {
+      $client = trim((string) ($entity->get('field_work_client')->value ?? ''));
+      if ($client !== '') {
+        $meta['title'] = (string) t('@project for @client', ['@project' => $entity->label(), '@client' => $client]);
+      }
+      $meta['description'] = trim((string) ($entity->get('field_work_statement')->value ?? ''));
+      $fields = ['field_work_tile_wide', 'field_work_tile', 'field_work_banner'];
     }
-    CacheableMetadata::createFromRenderArray($attachments)->addCacheableDependency($page)->applyTo($attachments);
+    else {
+      $meta['description'] = _icon_site_news_excerpt($entity);
+      $meta['published'] = (string) ($entity->get('field_news_date')->value ?? '');
+      $fields = ['field_news_image', 'field_news_banner'];
+    }
+    foreach ($fields as $field) {
+      $candidate = $entity->get($field)->entity;
+      if ($candidate instanceof MediaInterface && _icon_site_share_image($candidate) !== '') {
+        $media = $candidate;
+        break;
+      }
+    }
+  }
+  else {
+    return NULL;
+  }
+  $cache->addCacheableDependency($entity);
+  $front = \Drupal::service('path.matcher')->isFrontPage();
+  if ($front) {
+    $site = \Drupal::config('system.site');
+    $meta['title'] = implode(' — ', array_filter([(string) $site->get('name'), (string) $site->get('slogan')]));
+  }
+  $meta['url'] = $front ? Url::fromRoute('<front>', [], ['absolute' => TRUE])->toString() : $entity->toUrl('canonical', ['absolute' => TRUE])->toString();
+  $meta['image'] = $media instanceof MediaInterface ? _icon_site_share_image($media, $cache) : '';
+  if ($meta['image'] === '') {
+    $meta['image'] = \Drupal::service('file_url_generator')->generateAbsoluteString(\Drupal::service('extension.list.module')->getPath('icon_site') . '/assets/share-default.png');
+  }
+  return $meta;
+}
+
+/**
+ * A media item's picture at the share card's size, as an absolute address.
+ *
+ * Only a raster picture makes a card: a film, an SVG or an item with no
+ * file returns ''. The `share` image style crops to 1200 × 630, the size
+ * the social sites and the chat apps draw a large card at.
+ */
+function _icon_site_share_image(MediaInterface $media, ?CacheableMetadata $cache = NULL): string {
+  if (!$media->hasField('field_media_image') || $media->get('field_media_image')->isEmpty()) {
+    return '';
+  }
+  $file = $media->get('field_media_image')->entity;
+  $style = ImageStyle::load('share');
+  if (!$file instanceof FileInterface || !$style || !$style->supportsUri($file->getFileUri())) {
+    return '';
+  }
+  $cache?->addCacheableDependency($media)->addCacheableDependency($file)->addCacheableDependency($style);
+  return $style->buildUrl($file->getFileUri());
+}
+
+/**
+ * A News story's opening, for its description: the first paragraph of text.
+ *
+ * A story has no summary field — its body is a run of paragraph items —
+ * so the description is the first real sentence or two of the first Prose
+ * item, cut at a word near 160 characters, the length a search result
+ * shows.
+ */
+function _icon_site_news_excerpt(NodeInterface $node): string {
+  foreach ($node->get('field_news_content')->referencedEntities() as $paragraph) {
+    if ($paragraph->bundle() !== 'prose' || $paragraph->get('field_prose_text')->isEmpty()) {
+      continue;
+    }
+    $html = (string) $paragraph->get('field_prose_text')->value;
+    $blocks = preg_match_all('#<p\b[^>]*>(.*?)</p>#si', $html, $m) ? $m[1] : [$html];
+    foreach ($blocks as $block) {
+      $text = trim((string) preg_replace('/\s+/u', ' ', Html::decodeEntities(strip_tags(str_replace('<br', ' <br', $block)))));
+      if (mb_strlen($text) >= 40) {
+        return Unicode::truncate($text, 160, TRUE, TRUE);
+      }
+    }
+  }
+  return '';
+}
+
+/**
+ * Implements hook_ENTITY_TYPE_view_alter() for canvas_page.
+ *
+ * The homepage's canonical address is the site's root. Core's entity
+ * controller writes the page's own address (/home), which only redirects
+ * there; the link rides on the page's build, so this is where it is
+ * reachable.
+ */
+function icon_site_canvas_page_view_alter(array &$build, EntityInterface $entity): void {
+  $build['#cache']['contexts'][] = 'url.path.is_front';
+  if (!\Drupal::service('path.matcher')->isFrontPage()) {
+    return;
+  }
+  foreach ($build['#attached']['html_head_link'] ?? [] as $key => $link) {
+    if (($link[0]['rel'] ?? '') === 'canonical') {
+      $build['#attached']['html_head_link'][$key][0]['href'] = Url::fromRoute('<front>', [], ['absolute' => TRUE])->toString();
+    }
+  }
+}
+
+/**
+ * Implements hook_simple_sitemap_links_alter().
+ *
+ * The sitemap lists every published Canvas page, Work item and News story
+ * (config: simple_sitemap.bundle_settings.*). Three Canvas pages are not
+ * destinations: the homepage's own address (the root is already listed, as
+ * the module's custom link) and the two error pages. They are read from
+ * the site's settings, so the ids need not match between environments.
+ */
+function icon_site_simple_sitemap_links_alter(array &$links, $sitemap): void {
+  $aliases = \Drupal::service('path_alias.manager');
+  $skip = [];
+  foreach (['front', '403', '404'] as $key) {
+    $path = (string) \Drupal::config('system.site')->get('page.' . $key);
+    if ($path !== '') {
+      $skip[] = ltrim($aliases->getPathByAlias($path), '/');
+    }
+  }
+  foreach ($links as $key => $link) {
+    if (in_array($link['meta']['path'] ?? '', $skip, TRUE)) {
+      unset($links[$key]);
+    }
   }
 }
 

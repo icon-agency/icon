@@ -41,6 +41,13 @@ function icon_preprocess_html(array &$variables): void {
       $variables['head_title']['title'] = t('@project for @client', ['@project' => $node->label(), '@client' => $client]);
     }
   }
+  // The homepage's title is the site, not the page's own name: "ICON Agency
+  // — <slogan>" where a Canvas page titled Home gave "Home — ICON Agency"
+  // (10 Nov 2026). The slogan is Basic site settings', so it is editable.
+  if (\Drupal::service('path.matcher')->isFrontPage()) {
+    $site = \Drupal::config('system.site');
+    $variables['head_title'] = array_filter(['name' => $site->get('name'), 'slogan' => $site->get('slogan')]);
+  }
   // Font preconnects, as the static templates ship them.
   $variables['#attached']['html_head_link'][] = [['rel' => 'preconnect', 'href' => 'https://fonts.googleapis.com']];
   $variables['#attached']['html_head_link'][] = [

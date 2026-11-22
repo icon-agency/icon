@@ -1,0 +1,21 @@
+uuid: c2c899e2-4e2e-4cef-9276-8eed9d56e5ad
+langcode: en
+status: true
+dependencies: {  }
+name: share
+label: 'Share card (1200 × 630)'
+effects:
+  b29bbaac-2b10-4765-b997-694c5c5b69c5:
+    uuid: b29bbaac-2b10-4765-b997-694c5c5b69c5
+    id: image_scale_and_crop
+    weight: 1
+    data:
+      width: 1200
+      height: 630
+      anchor: center-center
+  6ef14a10-0397-4075-ac5a-0861a75d742b:
+    uuid: 6ef14a10-0397-4075-ac5a-0861a75d742b
+    id: image_convert
+    weight: 2
+    data:
+      extension: jpg

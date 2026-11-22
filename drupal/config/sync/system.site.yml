@@ -4,7 +4,7 @@ langcode: en
 uuid: 9d173137-49ff-48a4-9a1f-55595a1cbcb2
 name: 'ICON Agency'
 mail: admin@example.com
-slogan: ''
+slogan: 'PR, Creative, Behaviour Change & Digital Agency'
 page:
   403: /access-denied
   404: /page-not-found
@@ -13,4 +13,3 @@ admin_compact_mode: false
 weight_select_max: 100
 default_langcode: en
 mail_notification: null
-
