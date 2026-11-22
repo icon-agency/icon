@@ -2,8 +2,8 @@
 /**
  * @file
  * testimonials — the quotes carousel (components/testimonials.css,
- * js/testimonials.js): the team panel's bar reused — arrows leading, the
- * counter over the quote column, THE hairline under — and the quotes in the
+ * js/testimonials.js): the team panel's bar reused — the label leading, the
+ * counter over the quote column, the arrows at the end, THE hairline under — and the quotes in the
  * slot, one showing at a time. The script counts the quotes (not the
  * children: an empty slot holds a placeholder in the editor), writes the
  * counter and steps; data-count="1" takes the bar away (user ask, Sep 2026:
@@ -42,6 +42,16 @@
 <div class="columns columns--1 columns--gap-{{ gap in ['wide', 'tight'] ? gap : 'normal' }} columns--box theme-work-article testimonials__box" data-animate style="{{ box_style }}"><div class="columns__col">
 <section class="testimonials" data-testimonials{% if label %} aria-roledescription="carousel" aria-label="{{ label }}"{% endif %}>
   <div class="testimonials__bar">
+    {# THE LABEL (user call, 5 Nov 2026: "Should this say Testimonial?"):
+       a word in the counter's voice where the lone quotation mark stood
+       (22 Sep 2026) — it names the box, and a screen reader hears it;
+       the mark only repeated the quote's own. It leads the bar on the
+       column's edge. #}
+    <span class="testimonials__label">{{ heading|default('Testimonial'|t) }}</span>
+    <p class="testimonials__counter" aria-live="polite"><span data-testimonials-index>01</span><span class="testimonials__of"> / <span data-testimonials-count>01</span></span></p>
+    {# THE ARROWS CLOSE THE BAR (user ask, 23 Nov 2026: "can you place the
+       left right controls on the right"); with one quote
+       (data-count="1") they go. #}
     <div class="testimonials__steps">
       <button class="testimonials__arrow" type="button" data-testimonials-prev aria-label="{{ 'Previous quote'|t }}">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12H4"/><path d="m10 6-6 6 6 6"/></svg>
@@ -49,15 +59,7 @@
       <button class="testimonials__arrow" type="button" data-testimonials-next aria-label="{{ 'Next quote'|t }}">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12h16"/><path d="m14 6 6 6-6 6"/></svg>
       </button>
-      {# THE LABEL (user call, 5 Nov 2026: "Should this say Testimonial?"):
-         a word in the counter's voice where the lone quotation mark stood
-         (22 Sep 2026) — it names the box, and a screen reader hears it;
-         the mark only repeated the quote's own. With several quotes it
-         stands after the arrows; with one (data-count="1") the arrows go
-         and it takes the column's edge. #}
-      <span class="testimonials__label">{{ heading|default('Testimonial'|t) }}</span>
     </div>
-    <p class="testimonials__counter" aria-live="polite"><span data-testimonials-index>01</span><span class="testimonials__of"> / <span data-testimonials-count>01</span></span></p>
   </div>
   <div class="testimonials__track">
     {{ rendered }}

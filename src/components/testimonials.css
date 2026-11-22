@@ -1,12 +1,15 @@
 /* testimonials.css — the client quotes carousel (user ask, Sep 2026: "a new
  * testimonials component … reusable … Look at the profile left right and
- * line etc to reuse components"). The team panel's bar, reused: the arrows
- * lead on the left, the counter sits over the quote column in the quote's
- * own voice, THE hairline under (rules.css). Then one quote at a time: the
+ * line etc to reuse components"). The team panel's bar, reused: the label
+ * leads on the left, the counter sits over the quote column in the quote's
+ * own voice, the arrows close the bar on the right (user ask, 23 Nov 2026:
+ * "can you place the left right controls on the right"; they led on the
+ * left until then), THE hairline under (rules.css). Then one quote at a time: the
  * person and their company on the left with the company's mark at the
  * foot, the quote on the right in the mid voice. The quotes stack in one
  * grid cell, so the frame is the tallest quote's height and a step never
- * moves the page; the current one fades and rises in (js/testimonials.js
+ * moves the page (from 768 up — stacked in one column, the box is the
+ * showing quote's own height); the current one fades and rises in (js/testimonials.js
  * marks it; reduced motion cuts to it). With one quote the bar goes
  * (data-count="1", set by the script). In the editor (.is-editing) every
  * quote shows, stacked, to select and reorder.
@@ -48,7 +51,8 @@
 /* ---- the bar: the team panel's, on the quote's two columns ---------------- */
 .testimonials__bar {
   display: grid;
-  grid-template-columns: 1fr;
+  /* one row at every width: the label, the counter, the arrows at the end */
+  grid-template-columns: auto 1fr auto;
   align-items: center;
   gap: var(--space-sm);
   padding-bottom: var(--space-sm);
@@ -61,13 +65,18 @@
    repeated the quote's own marks and said nothing to a screen reader): the
    counter's voice exactly — the label size at medium, in the meta grey —
    so it reads as the band's name the way the work rail's does. With one
-   quote (data-count="1", set by the script) the arrows and the "/ 01" go
-   and the label takes the column's edge. The group's Label field sets the
-   word; "Testimonial" is the default. */
+   quote (data-count="1", set by the script) the arrows and the "/ 01" go.
+   The label stands on the column's edge either way. The group's Label
+   field sets the word; "Testimonial" is the default. */
 .testimonials__label {
   font-size: var(--voice-label);
   font-weight: var(--font-weight-medium);
   line-height: 1;
+  /* in capitals (user ask, 23 Nov 2026: "Can you make this uppercase"), at
+     the caps label voice's tracking (prose.css: the Work article's facts
+     row) */
+  letter-spacing: var(--letter-spacing-wider);
+  text-transform: uppercase;
   color: var(--color-icon-grey);
 }
 
@@ -76,15 +85,11 @@
   display: none;
 }
 
-.testimonials[data-count="1"] .testimonials__label {
-  margin-left: calc((2.75rem - 1.5rem) / 2); /* undo the steps' pull, back on the edge */
-}
-
 .testimonials__steps {
   display: flex;
   align-items: center;
   gap: var(--space-2xs);
-  margin-left: calc(-1 * (2.75rem - 1.5rem) / 2); /* the first glyph on the column's edge */
+  margin-right: calc(-1 * (2.75rem - 1.5rem) / 2); /* the last glyph on the column's edge */
 }
 
 .testimonials__arrow {
@@ -169,14 +174,26 @@
 }
 
 .testimonial[aria-hidden="true"] {
+  /* STACKED, THE BOX IS THE QUOTE'S OWN HEIGHT (user ask, 23 Nov 2026, of
+     the phone: "can you remove the fixed height on mobile? the large gaps
+     look odd"): in one column the tallest quote's frame left a short quote
+     with a gap above its person and another above its mark. The quotes out
+     of turn leave the layout, so the box closes on the one showing; the
+     page below moves as the quotes turn. Side by side (768 up) they keep
+     their place in the cell and the frame holds, as before. */
+  display: none;
   visibility: hidden;
   opacity: 0;
   pointer-events: none;
 }
 
 @media (min-width: 768px) {
-  /* a third for the person, the mark and the arrows; two thirds for the
-     quote and the counter (user call, 19 Oct 2026: "one third, two thirds
+  .testimonial[aria-hidden="true"] {
+    display: grid;
+  }
+
+  /* a third for the person, the mark and the label; two thirds for the
+     quote, the counter and the arrows (user call, 19 Oct 2026: "one third, two thirds
      column on the testimonials and controls") */
   .testimonials__bar,
   .testimonial {
@@ -190,8 +207,15 @@
        with content below" — the quote sat a third of a gap left of the
        wide column under it). Match the group's Gap to the Columns below
        and the two edges meet. */
-    grid-template-columns: calc((100% + 2 * var(--box-pad, 0px) - 2 * var(--columns-gap, var(--grid-gutter))) / 3 - var(--box-pad, 0px)) 1fr;
+    --testimonial-third: calc((100% + 2 * var(--box-pad, 0px) - 2 * var(--columns-gap, var(--grid-gutter))) / 3 - var(--box-pad, 0px));
+    grid-template-columns: var(--testimonial-third) 1fr;
     column-gap: var(--columns-gap, var(--grid-gutter));
+  }
+
+  /* the bar's third column is the arrows', as wide as they are; the counter
+     keeps the quote column's left edge */
+  .testimonials__bar {
+    grid-template-columns: var(--testimonial-third) 1fr auto;
   }
 }
 
@@ -203,6 +227,18 @@
   flex-direction: column;
   gap: var(--space-md);
   min-width: 0;
+  /* STACKED, THE QUOTE LEADS (user call, 23 Nov 2026, of the phone: "this
+     might look better being under it on mobile stacking"): in one column
+     the person and the mark follow the quote, as a signature does; side by
+     side (768 up) they keep the left column. The markup's order is the
+     reader's either way — nothing in here takes the focus. */
+  order: 1;
+}
+
+@media (min-width: 768px) {
+  .testimonial__who {
+    order: 0;
+  }
 }
 
 .testimonial__person {
@@ -331,6 +367,7 @@
 }
 
 .testimonials.is-editing .testimonial {
+  display: grid;
   visibility: visible;
   opacity: 1;
   pointer-events: auto;
