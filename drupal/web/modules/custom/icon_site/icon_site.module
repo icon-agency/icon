@@ -35,6 +35,7 @@ use Drupal\image\Plugin\Field\FieldWidget\ImageWidget;
 use Drupal\media\MediaInterface;
 use enshrined\svgSanitize\Sanitizer;
 use Drupal\Core\Render\Element;
+use Drupal\Core\Render\Element\Checkboxes;
 use Drupal\contact\MessageInterface;
 use Drupal\Core\StringTranslation\TranslatableMarkup;
 use Drupal\media_library\MediaLibraryState;
@@ -1446,6 +1447,51 @@ function _icon_site_news_excerpt(NodeInterface $node): string {
     }
   }
   return '';
+}
+
+/**
+ * Implements hook_element_info_alter().
+ *
+ * A tick box list reads its own ticks (icon_site_checkboxes_value()).
+ */
+function icon_site_element_info_alter(array &$info): void {
+  if (isset($info['checkboxes'])) {
+    $info['checkboxes']['#value_callback'] = 'icon_site_checkboxes_value';
+  }
+}
+
+/**
+ * Value callback for a `checkboxes` element: a tick sent as "on" is its key.
+ *
+ * THE REMOVE BUTTON THAT DID NOTHING (user report, 23 Nov 2026, of a Work
+ * item's Page data panel: "clicking these, nothing happens" — the remove
+ * crosses on the Square, Wide and Foreground overlay tiles). Canvas draws
+ * the panel's form in React, and its tick box is an <input type="checkbox">
+ * with no value attribute, so a browser's own submission sends each ticked
+ * box as "on". Canvas's own save does not read the DOM, so a save was fine;
+ * the media widget's Remove (and its Add) is a plain Drupal AJAX submission
+ * of the DOM form, and core's Checkboxes::valueCallback() takes the VALUES
+ * it is sent: Categories arrived as ["websites" => "on"], "on" is not a
+ * category, the form failed validation ("The submitted value on in the
+ * Categories element is not allowed"), the remove handler never ran, and
+ * the AJAX callback then died on the missing item. With no category ticked
+ * the buttons worked, which is why it came and went.
+ *
+ * So a submitted "on" under a key that is one of the element's options
+ * reads as that key — unless "on" is itself an option. Everything else
+ * goes to core's callback untouched. It is site-wide and harmless outside
+ * the editor: a normally rendered tick box sends its own key as its value.
+ */
+function icon_site_checkboxes_value(array &$element, $input, FormStateInterface $form_state) {
+  if (is_array($input)) {
+    $options = $element['#options'] ?? [];
+    foreach ($input as $key => $value) {
+      if ($value === 'on' && !isset($options['on']) && isset($options[$key])) {
+        $input[$key] = (string) $key;
+      }
+    }
+  }
+  return Checkboxes::valueCallback($element, $input, $form_state);
 }
 
 /**
